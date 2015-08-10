@@ -1,8 +1,10 @@
 package com.romens.yjk.health.ui;
 
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -12,10 +14,12 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
+import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.core.NotificationCenter;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
@@ -24,11 +28,12 @@ import com.romens.yjk.health.ui.fragment.HomeStoreFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements NotificationCenter.NotificationCenterDelegate {
 
     private SlidingFixTabLayout slidingFixTabLayout;
     private ViewPager viewPager;
     private HomePagerAdapter pagerAdapter;
+    private ActionBarMenuItem shoppingCartItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +61,10 @@ public class HomeActivity extends BaseActivity {
         slidingFixTabLayout.setViewPager(viewPager);
 
         actionBar.setTitle("要健康");
+        actionBar.setBackButtonImage(R.drawable.ic_wallet_giftcard_white_36dp);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
+        shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -66,6 +73,15 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
+        NotificationCenter.getInstance().addObserver(this, NotificationCenter.shoppingCartCountChanged);
+        NotificationCenter.getInstance().postNotificationName(NotificationCenter.shoppingCartCountChanged, 0);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                NotificationCenter.getInstance().postNotificationName(NotificationCenter.shoppingCartCountChanged, 99);
+            }
+        }, 3000);
     }
 
     private List<String> initPagerTitle() {
@@ -84,6 +100,25 @@ public class HomeActivity extends BaseActivity {
         fragments.add(new HomeDiscoveryFragment());
         fragments.add(new HomeMyFragment());
         return fragments;
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == NotificationCenter.shoppingCartCountChanged) {
+            int count = (int) args[0];
+            updateShoppingCartCount(count);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        NotificationCenter.getInstance().removeObserver(this, NotificationCenter.shoppingCartCountChanged);
+        super.onDestroy();
+    }
+
+    private void updateShoppingCartCount(int count) {
+        Bitmap shoppingCartCount = ShoppingCartUtils.createShoppingCartIcon(this, R.drawable.ic_shopping_cart_white_24dp, count);
+        shoppingCartItem.setIcon(shoppingCartCount);
     }
 
     class HomePagerAdapter extends FragmentViewPagerAdapter {
