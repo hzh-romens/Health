@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<declare-styleable name="AppTheme">-->
+        <!--<attr name="actionBarOverlayTopOffset" format="dimension" />-->
+        <!--<attr name="tab_indicator" format="color" />-->
+        <!--<attr name="color_primary" format="color" />-->
+        <!--<attr name="tab_layout_background" format="color" />-->
+        <!--<attr name="btnBarItemBackground" format="reference" />-->
+
+        <!--<attr name="actionBarIconColor" format="color" />-->
+        <!--<attr name="actionBarInsetStart" format="dimension" />-->
+        <!--<attr name="spinnerBarInsetStart" format="dimension" />-->
+        <!--<attr name="popupItemBackground" format="reference" />-->
+        <!--<attr name="photoItemForeground" format="reference" />-->
+        <!--<attr name="photoItemForegroundBorderless" format="reference" />-->
+
+        <!--<attr name="bottomToolBar" format="reference" />-->
+        <!--<attr name="bottomToolButton" format="reference" />-->
+
+        <!--<attr name="isFloatingWindow" format="boolean" />-->
+
+    <!--</declare-styleable>-->
+
+    <attr name="actionbarCompatTitleStyle" format="reference" />
+    <attr name="actionbarCompatItemStyle" format="reference" />
+    <attr name="actionbarCompatItemHomeStyle" format="reference" />
+    <attr name="actionbarCompatProgressIndicatorStyle" format="reference" />
+    <attr name="activateItemBackground" format="reference" />
+
+    <!-- Default spacing types. -->
+    <attr name="spacing_type">
+
+        <!-- Spacing will be calculated as offset from right bound of view. -->
+        <enum name="right_offset" value="0" />
+        <!-- Spacing will be calculated as right bound of actions container. -->
+        <enum name="actions_width" value="1" />
+        <enum name="left_offset" value="2" />
+        <enum name="content_fixed" value="3" />
+        <enum name="phone_mode" value="4" />
+    </attr>
+
+    <declare-styleable name="ActionsContentView">
+
+        <!-- Spacing type. -->
+        <attr name="spacing_type" />
+        <!-- Spacing value. -->
+        <attr name="spacing" format="dimension" />
+        <!-- Spacing value for actions container. -->
+        <attr name="actions_spacing" format="dimension" />
+        <!-- Actions layout ID to link at view creation time. -->
+        <attr name="actions_layout" format="reference" />
+        <!-- Content layout ID to link at view creation time. -->
+        <attr name="content_layout" format="reference" />
+        <!-- Drawable to be used to draw shadow dropped by content view to actions one. -->
+        <attr name="shadow_drawable" format="reference" />
+        <!-- Shadow width. -->
+        <!--<attr name="shadow_width" format="dimension" />-->
+    </declare-styleable>
+    <declare-styleable name="ActionBar_Bottom">
+        <attr name="action_item_layout" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="Panel">
+
+        <!-- Defines panel animation duration in ms. -->
+        <attr name="animationDuration" format="integer" />
+        <!-- Defines panel position on the screen. -->
+        <attr name="position">
+
+            <!-- Panel placed at top of the screen. -->
+            <enum name="top" value="0" />
+            <!-- Panel placed at bottom of the screen. -->
+            <enum name="bottom" value="1" />
+            <!-- Panel placed at left of the screen. -->
+            <enum name="left" value="2" />
+            <!-- Panel placed at right of the screen. -->
+            <enum name="right" value="3" />
+        </attr>
+        <!-- Identifier for the child that represents the panel's handle. -->
+        <attr name="handle" format="reference" />
+        <!-- Identifier for the child that represents the panel's content. -->
+        <attr name="content" format="reference" />
+        <!-- Defines if flying gesture forces linear interpolator in animation. -->
+        <attr name="linearFlying" format="boolean" />
+        <!-- Defines size relative to parent (must be in form: nn%p). -->
+        <attr name="weight" format="fraction" />
+        <!-- Defines opened handle (drawable/color). -->
+        <attr name="openedHandle" format="reference|color" />
+        <!-- Defines closed handle (drawable/color). -->
+        <attr name="closedHandle" format="reference|color" />
+    </declare-styleable>
+    <declare-styleable name="SmoothButton">
+        <attr name="transitionDrawable" format="reference" />
+        <attr name="transitionDrawableLength" format="integer" />
+        <attr name="transitionTextColorUp" format="color" />
+        <attr name="transitionTextColorDown" format="color" />
+    </declare-styleable>
+    <declare-styleable name="Switcher">
+
+        <!-- Defines switcher animation duration in ms. -->
+        <attr name="animationDuration" />
+        <!-- Defines switcher idle timeout in ms. -->
+        <attr name="idleTimeout" format="integer" />
+        <!-- Defines opened handle (drawable). -->
+        <attr name="decreaseButton" format="reference" />
+        <!-- Defines opened handle (drawable). -->
+        <attr name="increaseButton" format="reference" />
+    </declare-styleable>
+
+    <attr name="navbarStyle" format="reference" />
+    <attr name="popupEditTextStyle" format="reference" />
+    <attr name="popupEditListStyle" format="reference" />
+    <attr name="segmentedControlStyle" format="reference" />
+
+
+    <declare-styleable name="WWBezelImageView">
+        <attr name="wwMaskDrawable" format="reference" />
+        <attr name="wwBorderDrawable" format="reference" />
+        <attr name="wwDesaturateOnPress" format="boolean" />
+    </declare-styleable>
+
+</resources>

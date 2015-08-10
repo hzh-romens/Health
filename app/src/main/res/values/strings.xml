@@ -1,0 +1,34 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">要健康</string>
+    <string name="stream_load_more">加载更多</string>
+    <!-- guide -->
+    <string name="guide_skip">跳过</string>
+    <string name="guide_next">下一步</string>
+    <string name="guide_end">完成</string>
+
+    <!-- tab -->
+    <string name="tab_drug_helper_title">用药助手</string>
+    <string name="tab_health_updates_title">健康时讯</string>
+    <string name="tab_drug_store_title">附近药店</string>
+    <string name="tab_person_center_title">个人中心</string>
+
+    <string name="search_drug">输入药品名、疾病或者扫描药盒条码\t搜索</string>
+
+    <string name="list_item_group_more">更多</string>
+
+    <!--Login-->
+    <string name="account_name_hint">用户名(手机号)</string>
+    <string name="account_pwd_hint">密码</string>
+    <string name="sign_in">登录</string>
+    <string name="sign_up">注册</string>
+    <!--Menu-->
+    <string name="menu_help">帮助</string>
+    <string name="menu_search">搜索</string>
+
+
+    <string name="nearby_pharmacy_back_to_map">查看地图</string>
+    <string name="search_pharmacy_location_progress_message">正在等待定位获取当前位置...</string>
+
+    <string name="load_more">加载更多</string>
+</resources>

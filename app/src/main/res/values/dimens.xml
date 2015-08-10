@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Action Bar auto-hide-on-scroll behavior parameters -->
+    <dimen name="action_bar_auto_hide_min_y">152dp</dimen>
+    <dimen name="action_bar_auto_hide_sensivity">48dp</dimen>
+
+    <dimen name="swipe_refresh_progress_bar_start_margin">-40dp</dimen>
+    <dimen name="swipe_refresh_progress_bar_end_margin">16dp</dimen>
+
+    <dimen name="material_progress_bar">48dp</dimen>
+
+    <dimen name="margin_standard">16dp</dimen>
+    <dimen name="header_bar_height">64dp</dimen>
+    <dimen name="intersection_height">16dp</dimen>
+    <dimen name="sliding_slop">32dp</dimen>
+    <dimen name="sliding_overlay_blur_size">4dp</dimen>
+
+    <dimen name="nearby_pharmacy_header_width">48dp</dimen>
+
+
+    <!-- discovery -->
+    <dimen name="discovery_item_size">80dp</dimen>
+
+    <dimen name="drug_card_size">176dp</dimen>
+    <dimen name="sale_drugs_min_height">184dp</dimen>
+
+</resources>
