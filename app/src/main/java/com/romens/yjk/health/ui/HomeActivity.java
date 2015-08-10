@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.widget.FrameLayout;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
+import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
@@ -34,15 +36,16 @@ public class HomeActivity extends BaseActivity {
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        setContentView(content, actionBar);
         slidingFixTabLayout = new SlidingFixTabLayout(this);
         slidingFixTabLayout.setBackgroundResource(R.color.theme_primary);
         content.addView(slidingFixTabLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
+        FrameLayout frameLayout = new FrameLayout(this);
+        content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         viewPager = new ViewPager(this);
-        content.addView(viewPager, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        frameLayout.addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        setContentView(content, actionBar);
 
-        viewPager.setPageMargin(AndroidUtilities.dp(16));
+
         pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
         viewPager.setAdapter(pagerAdapter);
 
@@ -53,6 +56,16 @@ public class HomeActivity extends BaseActivity {
         slidingFixTabLayout.setViewPager(viewPager);
 
         actionBar.setTitle("要健康");
+        ActionBarMenu actionBarMenu = actionBar.createMenu();
+        actionBarMenu.addItem(0, R.drawable.ic_menu_search);
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+                if (id == -1) {
+                } else if (id == 0) {
+                }
+            }
+        });
     }
 
     private List<String> initPagerTitle() {

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 /**
  * Created by siery on 15/8/10.
@@ -11,7 +12,7 @@ import android.view.ViewGroup;
 public class HomeStoreFragment extends BaseFragment {
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return null;
+        return new LinearLayout(getActivity());
     }
 
     @Override
