@@ -1,1 +1,1 @@
-include ':app', ':romens.android'
+include ':app', ':romens.android', ':romens.extend.scanner'

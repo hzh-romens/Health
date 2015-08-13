@@ -77,4 +77,15 @@ public class DiscoveryCollection {
         public static final int primaryColor=0xFFFF8A65;
     }
 
+    public static final class FindDrugWithScanner {
+        public static final String key = "intent_find_drug_with_scanner";
+        public static final String value = "com.romens.yjk.health.QRSCANNER";
+        public static final String iconRes = "assets://icon/ic_discovery_map.png";
+        public static final String iconUrl = "";
+        public static final String name = "扫码识药";
+        public static final int isCover = 0;
+        public static final int sortIndex=2;
+        public static final int primaryColor=0xFFA1887F;
+    }
+
 }

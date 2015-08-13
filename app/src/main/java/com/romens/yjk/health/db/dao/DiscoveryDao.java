@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.romens.yjk.health.db.entity.DiscoveryCollection.NearbyPharmacy;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.InformationNews;
+import com.romens.yjk.health.db.entity.DiscoveryCollection.FindDrugWithScanner;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 
 import java.util.Calendar;
@@ -44,8 +45,6 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         public final static Property PrimaryColor = new Property(11, int.class, "primaryColor", false, "PRIMARY_COLOR");
     }
 
-    ;
-
 
     public DiscoveryDao(DaoConfig config) {
         super(config);
@@ -80,6 +79,28 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         initCreatedTableData(db);
     }
 
+    public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion){
+        if(newVersion==15){
+            ContentValues values = new ContentValues();
+            //附近药店
+            ContentValues value = new ContentValues();
+            value.put("KEY", FindDrugWithScanner.key);
+            value.put("ICON_RES", FindDrugWithScanner.iconRes);
+            value.put("ICON_URL", FindDrugWithScanner.iconUrl);
+            value.put("NAME", FindDrugWithScanner.name);
+            value.put("VALUE", FindDrugWithScanner.value);
+            value.put("STATUS", 0);
+            int time = (int) Calendar.getInstance().getTimeInMillis();
+            value.put("CREATED", time);
+            value.put("UPDATED", time);
+            value.put("IS_COVER", FindDrugWithScanner.isCover);
+            value.put("SORT_INDEX", FindDrugWithScanner.sortIndex);
+            value.put("PRIMARY_COLOR", FindDrugWithScanner.primaryColor);
+            values.putAll(value);
+            db.insert(TABLENAME, null, values);
+        }
+    }
+
     public static void initCreatedTableData(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         //附近药店
@@ -96,6 +117,8 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         value.put("IS_COVER", NearbyPharmacy.isCover);
         value.put("SORT_INDEX", NearbyPharmacy.sortIndex);
         value.put("PRIMARY_COLOR", NearbyPharmacy.primaryColor);
+        values.putAll(value);
+        db.insert(TABLENAME, null, values);
         //最新资讯
         value = new ContentValues();
         value.put("KEY", InformationNews.key);
@@ -110,6 +133,22 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         value.put("IS_COVER", InformationNews.isCover);
         value.put("SORT_INDEX", InformationNews.sortIndex);
         value.put("PRIMARY_COLOR", InformationNews.primaryColor);
+        values.putAll(value);
+        db.insert(TABLENAME, null, values);
+        //附近药店
+        value = new ContentValues();
+        value.put("KEY", FindDrugWithScanner.key);
+        value.put("ICON_RES", FindDrugWithScanner.iconRes);
+        value.put("ICON_URL", FindDrugWithScanner.iconUrl);
+        value.put("NAME", FindDrugWithScanner.name);
+        value.put("VALUE", FindDrugWithScanner.value);
+        value.put("STATUS", 0);
+        time = (int) Calendar.getInstance().getTimeInMillis();
+        value.put("CREATED", time);
+        value.put("UPDATED", time);
+        value.put("IS_COVER", FindDrugWithScanner.isCover);
+        value.put("SORT_INDEX", FindDrugWithScanner.sortIndex);
+        value.put("PRIMARY_COLOR", FindDrugWithScanner.primaryColor);
         values.putAll(value);
         db.insert(TABLENAME, null, values);
     }

@@ -15,7 +15,7 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
  * Master of DAO (schema version 12): knows all DAOs.
 */
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 12;
+    public static final int SCHEMA_VERSION = 15;
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
@@ -25,6 +25,10 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         DiscoveryDao.dropTable(db, ifExists);
+    }
+
+    public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion){
+        DiscoveryDao.upgradeTable(db, oldVersion, newVersion);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -39,7 +43,7 @@ public class DaoMaster extends AbstractDaoMaster {
             createAllTables(db, false);
         }
     }
-    
+
     /** WARNING: Drops all table on Upgrade! Use only during development. */
     public static class DevOpenHelper extends OpenHelper {
         public DevOpenHelper(Context context, String name, CursorFactory factory) {
@@ -49,8 +53,7 @@ public class DaoMaster extends AbstractDaoMaster {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
-            dropAllTables(db, true);
-            onCreate(db);
+            upgradeAllTables(db, oldVersion,newVersion);
         }
     }
 
