@@ -11,6 +11,7 @@ import com.romens.android.ui.Components.FrameLayoutFixed;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.view.GuideViewPager;
 import com.romens.android.ui.view.PagerIndicator;
+import com.romens.yjk.health.model.ADPagerEntity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,11 +52,7 @@ public class ADPagerCell extends FrameLayoutFixed {
 
             }
         });
-    }
 
-    public void setViewPagerAdapter(PagerAdapter adapter) {
-        viewPager.setAdapter(adapter);
-        createTimer();
     }
 
     @Override
@@ -114,4 +111,12 @@ public class ADPagerCell extends FrameLayoutFixed {
             FileLog.e("tmessages", e);
         }
     }
+
+    public void setAdapter(PagerAdapter adapter){
+        viewPager.setAdapter(adapter);
+        createTimer();
+    }
+
+
+
 }
