@@ -20,5 +20,4 @@ public class AppNotificationCenter extends NotificationCenter {
     private static int totalEvents = maxCursor;
     public static final int shoppingCartCountChanged = totalEvents++;
 
-
 }
