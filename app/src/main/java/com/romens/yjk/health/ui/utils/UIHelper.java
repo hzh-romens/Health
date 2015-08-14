@@ -1,4 +1,4 @@
-package com.romens.yjk.health.ui;
+package com.romens.yjk.health.ui.utils;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
