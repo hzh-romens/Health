@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.romens.yjk.health">
+    package="com.romens.yjk.health" >
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -22,8 +21,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
 
-
-    <!--zxing-->
+    <!-- zxing -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- 震动权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
@@ -36,16 +34,16 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
 
-        <!--高德地图-->
+        <!-- 高德地图 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="f22aabde9a3424ab5ac5e23bafaf5bad" />
 
         <activity
             android:name=".ui.HomeActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,11 +55,16 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.romens.yjk.health.QRSCANNER" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.IllnessActivity"
+            android:label="@string/title_activity_illness" >
         </activity>
     </application>
 

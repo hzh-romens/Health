@@ -23,5 +23,8 @@
 
     <dimen name="drug_card_size">176dp</dimen>
     <dimen name="sale_drugs_min_height">184dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>

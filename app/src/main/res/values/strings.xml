@@ -31,4 +31,8 @@
     <string name="search_pharmacy_location_progress_message">正在等待定位获取当前位置...</string>
 
     <string name="load_more">加载更多</string>
+    <string name="title_activity_illness">IllnessActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
