@@ -44,13 +44,13 @@ public class AttachView extends FrameLayout {
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setEllipsize(TextUtils.TruncateAt.END);
             textView.setTextColor(0xff757575);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 64, 0, 0));
         }
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(85), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(90), MeasureSpec.EXACTLY));
+            super.onMeasure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(95), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(90), MeasureSpec.EXACTLY));
         }
 
         public void setTextAndIcon(CharSequence text, int icon) {
@@ -105,7 +105,7 @@ public class AttachView extends FrameLayout {
         int t = AndroidUtilities.dp(8);
         for (int a = 0; a < size; a++) {
             int y = AndroidUtilities.dp(t + 95 * (a / 4));
-            int x = AndroidUtilities.dp(10) + (a % 4) * (AndroidUtilities.dp(85) + diff);
+            int x = AndroidUtilities.dp(8) + (a % 4) * (AndroidUtilities.dp(85) + diff);
             childTemp = views.get(a);
             childTemp.layout(x, y, x + childTemp.getMeasuredWidth(), y + childTemp.getMeasuredHeight());
         }

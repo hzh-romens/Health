@@ -15,7 +15,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 /**
  * Created by siery on 15/8/14.
  */
-public class ADProductsCell extends FrameLayoutFixed {
+public class ADProductsCell extends FrameLayout {
 
     public ADProductsCell(Context context) {
         super(context);

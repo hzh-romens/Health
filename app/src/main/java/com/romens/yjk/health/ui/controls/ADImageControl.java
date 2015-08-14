@@ -22,7 +22,7 @@ public class ADImageControl extends ADBaseControl {
 
     public static ADHolder createViewHolder(Context context) {
         ADOnlyImageCell adOnlyImageCell = new ADOnlyImageCell(context);
-        adOnlyImageCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(100)));
+        adOnlyImageCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         return new ADHolder(adOnlyImageCell);
     }
 

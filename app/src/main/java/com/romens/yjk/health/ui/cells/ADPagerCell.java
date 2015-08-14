@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
+import android.widget.FrameLayout;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.log.FileLog;
@@ -19,7 +20,7 @@ import java.util.TimerTask;
 /**
  * Created by siery on 15/8/13.
  */
-public class ADPagerCell extends FrameLayoutFixed {
+public class ADPagerCell extends FrameLayout {
     private GuideViewPager viewPager;
     private PagerIndicator pagerIndicator;
 

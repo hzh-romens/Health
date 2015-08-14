@@ -19,7 +19,9 @@ import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADPagerEntity;
 import com.romens.yjk.health.ui.adapter.FocusAdapter;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
+import com.romens.yjk.health.ui.controls.ADEmptyControl;
 import com.romens.yjk.health.ui.controls.ADFunctionControl;
+import com.romens.yjk.health.ui.controls.ADGroupControl;
 import com.romens.yjk.health.ui.controls.ADImageControl;
 import com.romens.yjk.health.ui.controls.ADPagerControl;
 
@@ -91,10 +93,25 @@ public class HomeFocusFragment extends BaseFragment {
         adFunctionEntities.add(new ADFunctionEntity("", "附近药店", R.drawable.attach_location_states));
         adFunctionEntities.add(new ADFunctionEntity("", "附近药店", R.drawable.attach_location_states));
         controls.append(keyCursor, new ADFunctionControl().bindModel(adFunctionEntities));
+
+        keyCursor++;
+        controls.append(keyCursor, new ADEmptyControl());
+
+
+        keyCursor++;
+        controls.append(keyCursor, new ADGroupControl().bindModel("促销优惠", true, R.drawable.more_background_deep_orange));
+
         keyCursor++;
         controls.append(keyCursor, new ADImageControl().bindModel(new ADImageEntity("", "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg")));
+
+        keyCursor++;
+        controls.append(keyCursor, new ADGroupControl().bindModel("健康资讯", true, R.drawable.more_background_greeen));
+
         keyCursor++;
         controls.append(keyCursor, new ADImageControl().bindModel(new ADImageEntity("", "http://img2.imgtn.bdimg.com/it/u=4271709707,3675764479&fm=21&gp=0.jpg")));
+
+        keyCursor++;
+        controls.append(keyCursor, new ADGroupControl().bindModel("为您推荐", true, R.drawable.more_background_orange));
         keyCursor++;
         controls.append(keyCursor, new ADImageControl().bindModel(new ADImageEntity("", "http://img2.imgtn.bdimg.com/it/u=4271709707,3675764479&fm=21&gp=0.jpg")));
         focusAdapter.bindData(controls);

@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
+import com.romens.yjk.health.ui.controls.ADEmptyControl;
 import com.romens.yjk.health.ui.controls.ADFunctionControl;
+import com.romens.yjk.health.ui.controls.ADGroupControl;
 import com.romens.yjk.health.ui.controls.ADImageControl;
 import com.romens.yjk.health.ui.controls.ADPagerControl;
 
@@ -40,8 +42,10 @@ public class FocusAdapter extends RecyclerView.Adapter<ADHolder> {
             return ADFunctionControl.createViewHolder(context);
         } else if (viewType == ADImageControl.TYPE) {
             return ADImageControl.createViewHolder(context);
+        } else if (viewType == ADGroupControl.TYPE) {
+            return ADGroupControl.createViewHolder(context);
         }
-        return null;
+        return ADEmptyControl.createViewHolder(context);
     }
 
     @Override
