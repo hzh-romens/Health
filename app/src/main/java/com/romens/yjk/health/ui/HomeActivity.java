@@ -19,16 +19,16 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.core.NotificationCenter;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
-import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
+import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 import com.romens.yjk.health.ui.fragment.HomeStoreFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends BaseActivity implements NotificationCenter.NotificationCenterDelegate {
+public class HomeActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SlidingFixTabLayout slidingFixTabLayout;
     private ViewPager viewPager;
@@ -73,21 +73,21 @@ public class HomeActivity extends BaseActivity implements NotificationCenter.Not
                 }
             }
         });
-        NotificationCenter.getInstance().addObserver(this, NotificationCenter.shoppingCartCountChanged);
-        NotificationCenter.getInstance().postNotificationName(NotificationCenter.shoppingCartCountChanged, 0);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
+        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                NotificationCenter.getInstance().postNotificationName(NotificationCenter.shoppingCartCountChanged, 99);
+                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 99);
             }
         }, 3000);
     }
 
     private List<String> initPagerTitle() {
         List<String> titles = new ArrayList<>();
+        titles.add("焦点");
         titles.add("健康");
-        titles.add("药店");
         titles.add("探索");
         titles.add("我");
         return titles;
@@ -95,7 +95,7 @@ public class HomeActivity extends BaseActivity implements NotificationCenter.Not
 
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new HomeHealthFragment());
+        fragments.add(new HomeFocusFragment());
         fragments.add(new HomeStoreFragment());
         fragments.add(new HomeDiscoveryFragment());
         fragments.add(new HomeMyFragment());
@@ -104,7 +104,7 @@ public class HomeActivity extends BaseActivity implements NotificationCenter.Not
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationCenter.shoppingCartCountChanged) {
+        if (id == AppNotificationCenter.shoppingCartCountChanged) {
             int count = (int) args[0];
             updateShoppingCartCount(count);
         }
@@ -112,7 +112,7 @@ public class HomeActivity extends BaseActivity implements NotificationCenter.Not
 
     @Override
     public void onDestroy() {
-        NotificationCenter.getInstance().removeObserver(this, NotificationCenter.shoppingCartCountChanged);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         super.onDestroy();
     }
 
