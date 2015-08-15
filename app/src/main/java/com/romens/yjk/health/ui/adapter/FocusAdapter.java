@@ -11,7 +11,10 @@ import com.romens.yjk.health.ui.controls.ADEmptyControl;
 import com.romens.yjk.health.ui.controls.ADFunctionControl;
 import com.romens.yjk.health.ui.controls.ADGroupControl;
 import com.romens.yjk.health.ui.controls.ADImageControl;
+import com.romens.yjk.health.ui.controls.ADNewsControl;
 import com.romens.yjk.health.ui.controls.ADPagerControl;
+import com.romens.yjk.health.ui.controls.ADProductsControl;
+import com.romens.yjk.health.ui.controls.ControlType;
 
 /**
  * Created by siery on 15/8/13.
@@ -36,14 +39,18 @@ public class FocusAdapter extends RecyclerView.Adapter<ADHolder> {
     @Override
     public ADHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        if (viewType == ADPagerControl.TYPE) {
+        if (viewType == ControlType.TYPE_AD_PAGER) {
             return ADPagerControl.createViewHolder(context);
-        } else if (viewType == ADFunctionControl.TYPE) {
+        } else if (viewType == ControlType.TYPE_AD_FUNCTION) {
             return ADFunctionControl.createViewHolder(context);
-        } else if (viewType == ADImageControl.TYPE) {
+        } else if (viewType == ControlType.TYPE_AD_IMAGE) {
             return ADImageControl.createViewHolder(context);
-        } else if (viewType == ADGroupControl.TYPE) {
+        } else if (viewType == ControlType.TYPE_AD_GROUP) {
             return ADGroupControl.createViewHolder(context);
+        }else if(viewType==ControlType.TYPE_AD_NEWS){
+            return ADNewsControl.createViewHolder(context);
+        }else if(viewType==ControlType.TYPE_AD_PRODUCTS){
+            return ADProductsControl.createViewHolder(context);
         }
         return ADEmptyControl.createViewHolder(context);
     }

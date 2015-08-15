@@ -19,7 +19,6 @@ import java.util.List;
  * Created by siery on 15/8/14.
  */
 public class ADPagerControl extends ADBaseControl {
-    public static final int TYPE=0;
     private final List<ADPagerEntity> adPagerEntities = new ArrayList<>();
 
     public ADPagerControl bindModel(List<ADPagerEntity> entities) {
@@ -47,7 +46,7 @@ public class ADPagerControl extends ADBaseControl {
 
     @Override
     public int getType() {
-        return TYPE;
+        return ControlType.TYPE_AD_PAGER;
     }
 
 

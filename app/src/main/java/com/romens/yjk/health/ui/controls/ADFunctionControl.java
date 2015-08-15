@@ -14,7 +14,6 @@ import java.util.List;
  * Created by siery on 15/8/14.
  */
 public class ADFunctionControl extends ADBaseControl {
-    public static final int TYPE=1;
     private final List<ADFunctionEntity> adFunctionEntities = new ArrayList<>();
 
     public ADFunctionControl bindModel(List<ADFunctionEntity> entities) {
@@ -46,6 +45,6 @@ public class ADFunctionControl extends ADBaseControl {
 
     @Override
     public int getType() {
-        return TYPE;
+        return ControlType.TYPE_AD_FUNCTION;
     }
 }

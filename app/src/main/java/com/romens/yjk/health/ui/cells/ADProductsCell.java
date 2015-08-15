@@ -1,57 +1,81 @@
 package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
-import android.text.TextUtils;
-import android.util.TypedValue;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
-import com.romens.android.ui.Components.FrameLayoutFixed;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.viewholder.PaddingDividerItemDecoration;
 
 /**
  * Created by siery on 15/8/14.
  */
 public class ADProductsCell extends FrameLayout {
 
+    private int count=3;
+    private RecyclerView recyclerView;
+
     public ADProductsCell(Context context) {
         super(context);
+        setBackgroundColor(0xffe5e5e5);
+        setPadding(AndroidUtilities.dp(8),AndroidUtilities.dp(8),AndroidUtilities.dp(8),AndroidUtilities.dp(8));
+        recyclerView=new RecyclerView(context);
+        recyclerView.setLayoutManager(new GridLayoutManager(context,count));
+        PaddingDividerItemDecoration itemDecoration=new PaddingDividerItemDecoration(AndroidUtilities.dp(4));
+        itemDecoration.setOrientation(3);
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setAdapter(new ProductAdapter());
+        addView(recyclerView,LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT,LayoutHelper.WRAP_CONTENT,Gravity.CENTER));
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int measureHeight = measureWidth/count+AndroidUtilities.dp(32)+count*AndroidUtilities.dp(16) ;
+        int count = getChildCount();
 
-    public static class AttachButton extends FrameLayout {
+        for (int index = 0; index < count; index++) {
+            final View child = getChildAt(index);
+            if (child.getVisibility() != GONE) {
+                measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth-getPaddingLeft()-getPaddingRight(), MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(measureHeight-getPaddingTop()-getPaddingBottom(), MeasureSpec.EXACTLY));
+            }
+        }
+        setMeasuredDimension(measureWidth, measureHeight);
+    }
 
-        private TextView textView;
-        private ImageView imageView;
+    class ProductAdapter extends RecyclerView.Adapter<CellHolder>{
 
-        public AttachButton(Context context) {
-            super(context);
-
-            imageView = new ImageView(context);
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
-            addView(imageView, LayoutHelper.createFrame(64, 64, Gravity.CENTER_HORIZONTAL | Gravity.TOP));
-
-            textView = new TextView(context);
-            textView.setLines(1);
-            textView.setSingleLine(true);
-            textView.setGravity(Gravity.CENTER_HORIZONTAL);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-            textView.setTextColor(0xff757575);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-            addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 64, 0, 0));
+        @Override
+        public CellHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            ProductCell cell=new ProductCell(parent.getContext());
+            cell.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT,LayoutHelper.WRAP_CONTENT));
+            return new CellHolder(cell);
         }
 
         @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(85), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(90), MeasureSpec.EXACTLY));
+        public void onBindViewHolder(CellHolder holder, int position) {
+            ProductCell cell=(ProductCell)holder.itemView;
+            cell.setValue("胃药胶囊", "http://img.yy960.com/2013/03/20130326132534.JPG");
         }
 
-        public void setTextAndIcon(CharSequence text, int icon) {
-            textView.setText(text);
-            imageView.setBackgroundResource(icon);
+        @Override
+        public int getItemCount() {
+            return count;
         }
     }
+
+    class CellHolder extends RecyclerView.ViewHolder{
+
+        public CellHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
 }

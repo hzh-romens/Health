@@ -12,7 +12,6 @@ import com.romens.yjk.health.ui.components.AttachView;
  * Created by siery on 15/8/14.
  */
 public class ADGroupControl extends ADBaseControl {
-    public static final int TYPE = 9;
     private String groupName;
     private boolean groupMoreEnable;
     private int groupMoreResId;
@@ -40,6 +39,6 @@ public class ADGroupControl extends ADBaseControl {
 
     @Override
     public int getType() {
-        return TYPE;
+        return ControlType.TYPE_AD_GROUP;
     }
 }

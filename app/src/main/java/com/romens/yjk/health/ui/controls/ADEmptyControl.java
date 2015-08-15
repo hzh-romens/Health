@@ -11,7 +11,6 @@ import com.romens.yjk.health.ui.cells.ADHolder;
  * Created by siery on 15/8/14.
  */
 public class ADEmptyControl extends ADBaseControl {
-    public static final int TYPE = -1;
 
     public static ADHolder createViewHolder(Context context) {
         EmptyCell emptyCell = new EmptyCell(context);
@@ -26,6 +25,6 @@ public class ADEmptyControl extends ADBaseControl {
 
     @Override
     public int getType() {
-        return TYPE;
+        return ControlType.TYPE_EMPTY;
     }
 }

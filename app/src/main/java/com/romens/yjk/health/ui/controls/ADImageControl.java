@@ -12,7 +12,6 @@ import com.romens.yjk.health.ui.cells.ADOnlyImageCell;
  * Created by siery on 15/8/14.
  */
 public class ADImageControl extends ADBaseControl {
-    public static final int TYPE=2;
     private ADImageEntity adImageEntity;
 
     public ADImageControl bindModel(ADImageEntity entity){
@@ -35,6 +34,6 @@ public class ADImageControl extends ADBaseControl {
 
     @Override
     public int getType() {
-        return TYPE;
+        return ControlType.TYPE_AD_IMAGE;
     }
 }
