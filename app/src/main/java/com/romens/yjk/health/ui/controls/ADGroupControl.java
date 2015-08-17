@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.cells.ADGroupCell;
@@ -25,6 +26,7 @@ public class ADGroupControl extends ADBaseControl {
 
     public static ADHolder createViewHolder(Context context) {
         ADGroupCell adGroupCell = new ADGroupCell(context);
+        adGroupCell.setTopPadding(AndroidUtilities.dp(16));
         adGroupCell.setBackgroundResource(R.drawable.list_selector);
         adGroupCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         return new ADHolder(adGroupCell);

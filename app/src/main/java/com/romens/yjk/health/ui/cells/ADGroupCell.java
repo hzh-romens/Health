@@ -16,11 +16,13 @@ import com.romens.yjk.health.R;
  * Created by siery on 15/8/14.
  */
 public class ADGroupCell extends FrameLayout {
-    TextView nameView;
-    TextView moreButton;
+    private TextView nameView;
+    private TextView moreButton;
+    private int topPadding = 0;
 
     public ADGroupCell(Context context) {
         super(context);
+        setPadding(0, topPadding, 0, 0);
         nameView = new TextView(context);
         nameView.setTextColor(0xff212121);
         nameView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22);
@@ -53,8 +55,13 @@ public class ADGroupCell extends FrameLayout {
         moreButton.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
     }
 
+    public void setTopPadding(int padding) {
+        topPadding = padding;
+        setPadding(0, topPadding, 0, 0);
+    }
+
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(48), MeasureSpec.EXACTLY));
+        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(48) + topPadding, MeasureSpec.EXACTLY));
     }
 }

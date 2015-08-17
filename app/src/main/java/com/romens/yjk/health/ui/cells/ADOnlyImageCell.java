@@ -22,9 +22,9 @@ public class ADOnlyImageCell extends FrameLayout {
 
     public ADOnlyImageCell(Context context) {
         super(context);
-        setPadding(AndroidUtilities.dp(8),AndroidUtilities.dp(4),AndroidUtilities.dp(8),AndroidUtilities.dp(4));
+        //setPadding(AndroidUtilities.dp(8),AndroidUtilities.dp(4),AndroidUtilities.dp(8),AndroidUtilities.dp(4));
         adImageView = new BackupImageView(context);
-        adImageView.setRoundRadius(AndroidUtilities.dp(4));
+        //adImageView.setRoundRadius(AndroidUtilities.dp(4));
         addView(adImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT,
                 Gravity.CENTER));
     }

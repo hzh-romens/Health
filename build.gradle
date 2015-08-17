@@ -9,6 +9,8 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        // 将Ticwear打包插件添加到classpath
+        classpath 'com.ticwear.tools.build:gradle:1.0.0'
     }
 }
 

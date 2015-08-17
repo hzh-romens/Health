@@ -62,7 +62,7 @@ public class ADProductsCell extends FrameLayout {
         @Override
         public void onBindViewHolder(CellHolder holder, int position) {
             ProductCell cell=(ProductCell)holder.itemView;
-            cell.setValue("胃药胶囊", "http://img.yy960.com/2013/03/20130326132534.JPG");
+            cell.setValue("http://img.yy960.com/2013/03/20130326132534.JPG","胃药胶囊", "$21.5");
         }
 
         @Override

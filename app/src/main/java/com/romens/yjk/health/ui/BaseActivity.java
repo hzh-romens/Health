@@ -50,7 +50,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void onSetupActionBar(ActionBar actionBar) {
         actionBar.setBackgroundResource(R.color.theme_primary);
-        actionBar.setItemsBackground(R.color.theme_primary);
+        actionBar.setItemsBackground(R.drawable.bar_selector);
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
     }
 

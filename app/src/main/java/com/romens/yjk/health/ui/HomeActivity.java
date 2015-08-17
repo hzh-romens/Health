@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.widget.FrameLayout;
 
+import com.mobvoi.android.common.ConnectionResult;
+import com.mobvoi.android.common.api.MobvoiApiClient;
+import com.mobvoi.android.wearable.Wearable;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
@@ -34,6 +38,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private ViewPager viewPager;
     private HomePagerAdapter pagerAdapter;
     private ActionBarMenuItem shoppingCartItem;
+
+    private boolean mResolvingError = false;
+    MobvoiApiClient mobvoiApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +72,16 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
+
+        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
+        debugMenu.addSubItem(2, "测试促销详情", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
                 } else if (id == 0) {
+                } else if (id == 2) {
+                    startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 }
             }
         });
@@ -82,7 +94,51 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 99);
             }
         }, 3000);
+
+        mobvoiApiClient = new MobvoiApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(new MobvoiApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle bundle) {
+                        mResolvingError = false;
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int i) {
+
+                    }
+                })
+                .addOnConnectionFailedListener(new MobvoiApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult connectionResult) {
+                        if (mResolvingError) {
+                            // Already attempting to resolve an error.
+                            return;
+                        } else if (connectionResult.hasResolution()) {
+                            mResolvingError = true;
+                        } else {
+                            mResolvingError = false;
+                        }
+                    }
+                }).build();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mResolvingError) {
+            mobvoiApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        if (!mResolvingError) {
+            mobvoiApiClient.disconnect();
+        }
+        super.onStop();
+    }
+
 
     private List<String> initPagerTitle() {
         List<String> titles = new ArrayList<>();
