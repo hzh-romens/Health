@@ -58,7 +58,7 @@ public class DBInterface {
     /**
      * Query for readable DB
      */
-    private DaoSession openReadableDb() {
+    public DaoSession openReadableDb() {
         isInitOk();
         SQLiteDatabase db = openHelper.getReadableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
@@ -69,7 +69,7 @@ public class DBInterface {
     /**
      * Query for writable DB
      */
-    private DaoSession openWritableDb() {
+    public DaoSession openWritableDb() {
         isInitOk();
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);

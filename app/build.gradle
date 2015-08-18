@@ -78,6 +78,10 @@ dependencies {
     compile 'com.nineoldandroids:library:+'
     //wear
     compile files('libs/mobvoi-api.jar')
+    compile files('libs/Android_2DMapApi_V2.5.0.jar')
+    compile files('libs/Android_Map_V2.5.0.jar')
+    compile files('libs/MapApiLocation_1.3.3.jar')
+    compile files('libs/MapApiServices.jar')
 }
 
 

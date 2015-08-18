@@ -20,17 +20,18 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.model.UserEntity;
 import com.romens.yjk.health.ui.adapter.FocusAdapter;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
+import java.util.ResourceBundle;
+
 /**
  * Created by siery on 15/8/10.
  */
 public class HomeMyFragment extends BaseFragment {
-
-    private static final int COLOR_PRIMARY = 0xff0f9d58;
     private ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -185,7 +186,7 @@ public class HomeMyFragment extends BaseFragment {
                     view = new HeaderCell(adapterContext);
                 }
                 HeaderCell cell = (HeaderCell) view;
-                cell.setTextColor(COLOR_PRIMARY);
+                cell.setTextColor(ResourcesConfig.primaryColor);
                 if (position == otherInfoSectionRow1) {
                     cell.setText("其他");
                 }else if(position==userInfoSectionRow1){

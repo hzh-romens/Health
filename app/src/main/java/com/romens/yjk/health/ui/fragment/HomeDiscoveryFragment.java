@@ -29,6 +29,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 
@@ -205,6 +206,10 @@ public class HomeDiscoveryFragment extends BaseFragment {
         for (LinkedTreeMap<String, String> item : discoveryData) {
             DiscoveryEntity entity = DiscoveryEntity.mapToEntity(item);
             needDb.add(entity);
+        }
+        if (needDb.size() > 0) {
+            DiscoveryDao userDao =DBInterface.instance().openWritableDb().getDiscoveryDao();
+            userDao.insertOrReplaceInTx(needDb);
         }
         bindData();
     }
