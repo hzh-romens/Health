@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -22,6 +24,7 @@ import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.model.UserEntity;
+import com.romens.yjk.health.ui.NewShippingAddressActivity;
 import com.romens.yjk.health.ui.adapter.FocusAdapter;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -66,6 +69,14 @@ public class HomeMyFragment extends BaseFragment {
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == addressRow) {
+                    startActivity(new Intent(getActivity(), NewShippingAddressActivity.class));
+                }
+            }
+        });
     }
 
     @Override
@@ -121,7 +132,7 @@ public class HomeMyFragment extends BaseFragment {
 
         @Override
         public boolean isEnabled(int i) {
-            return i == userProfileRow||i==addressRow;
+            return i == userProfileRow || i == addressRow;
         }
 
         @Override
@@ -148,9 +159,9 @@ public class HomeMyFragment extends BaseFragment {
         public int getItemViewType(int i) {
             if (i == userProfileRow) {
                 return 0;
-            } else if (i==userInfoSectionRow1||i == otherInfoSectionRow1) {
+            } else if (i == userInfoSectionRow1 || i == otherInfoSectionRow1) {
                 return 2;
-            } else if (i==addressRow|i == checkUpdateRow) {
+            } else if (i == addressRow | i == checkUpdateRow) {
                 return 3;
             } else if (i == appInfoRow) {
                 return 4;
@@ -189,7 +200,7 @@ public class HomeMyFragment extends BaseFragment {
                 cell.setTextColor(ResourcesConfig.primaryColor);
                 if (position == otherInfoSectionRow1) {
                     cell.setText("其他");
-                }else if(position==userInfoSectionRow1){
+                } else if (position == userInfoSectionRow1) {
                     cell.setText("个人信息");
                 }
             } else if (type == 3) {
@@ -197,9 +208,9 @@ public class HomeMyFragment extends BaseFragment {
                     view = new TextSettingsCell(adapterContext);
                 }
                 TextSettingsCell cell = (TextSettingsCell) view;
-                if(position==addressRow){
-                    cell.setText("收货地址管理",true);
-                }else if (position == checkUpdateRow) {
+                if (position == addressRow) {
+                    cell.setText("收货地址管理", true);
+                } else if (position == checkUpdateRow) {
                     try {
                         PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
                         cell.setTextAndValue("检查更新", "c" + pInfo.versionCode, true);

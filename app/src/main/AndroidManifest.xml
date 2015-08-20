@@ -122,6 +122,14 @@
         </activity>
 
 
+        <!-- My -->
+        <activity
+            android:name=".ui.NewShippingAddressActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
+
         <activity
             android:name=".ui.IllnessActivity"
             android:label="@string/title_activity_illness"></activity>

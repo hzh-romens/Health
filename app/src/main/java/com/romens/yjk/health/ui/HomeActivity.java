@@ -23,6 +23,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.core.AddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
@@ -124,6 +125,11 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                         }
                     }
                 }).build();
+        setupConfig();
+    }
+
+    private void setupConfig() {
+        AddressHelper.trySetupAddressLocationData();
     }
 
     @Override

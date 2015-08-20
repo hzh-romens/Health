@@ -39,7 +39,7 @@ public class LocationCell extends FrameLayout {
         imageView.setBackgroundResource(R.drawable.round_grey);
         imageView.setSize(AndroidUtilities.dp(30), AndroidUtilities.dp(30));
         imageView.getImageReceiver().setColorFilter(new PorterDuffColorFilter(0xff999999, PorterDuff.Mode.MULTIPLY));
-        addView(imageView, LayoutHelper.createFrame(30, 30, Gravity.TOP | (Gravity.LEFT), 17, 8,0, 0));
+        addView(imageView, LayoutHelper.createFrame(40, 40, Gravity.TOP | (Gravity.LEFT), 17, 8,0, 0));
 
         nameTextView = new TextView(context);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);

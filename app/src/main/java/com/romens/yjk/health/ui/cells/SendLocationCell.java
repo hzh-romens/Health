@@ -22,7 +22,7 @@ public class SendLocationCell extends FrameLayout {
 
         ImageView imageView = new ImageView(context);
         imageView.setImageResource(R.drawable.attach_location);
-        addView(imageView, LayoutHelper.createFrame(50, 50, Gravity.CENTER_VERTICAL | Gravity.LEFT, 17, 0, 0, 0));
+        addView(imageView, LayoutHelper.createFrame(50, 50, Gravity.CENTER_VERTICAL | Gravity.LEFT, 16, 0, 0, 0));
 
         titleTextView = new SimpleTextView(context);
         titleTextView.setTextSize(16);
