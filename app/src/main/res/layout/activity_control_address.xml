@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:id="@+id/control_address_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.romens.android.ui.ActionBar.ActionBar>
+
+    <LinearLayout
+        android:id="@+id/control_address_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/bg_addaddress_gradual"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/control_addres_addaddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/drug_type_child"
+            android:text="点击添加地址"
+            />
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/control_address_swiplayout"
+        android:layout_below="@id/control_address_actionbar"
+        android:layout_above="@id/control_address_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="-20dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/control_address_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
+</RelativeLayout>

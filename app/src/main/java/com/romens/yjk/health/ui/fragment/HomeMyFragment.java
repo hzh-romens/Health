@@ -24,6 +24,7 @@ import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.model.UserEntity;
+import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.NewShippingAddressActivity;
 import com.romens.yjk.health.ui.adapter.FocusAdapter;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
@@ -73,7 +74,7 @@ public class HomeMyFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == addressRow) {
-                    startActivity(new Intent(getActivity(), NewShippingAddressActivity.class));
+                    startActivity(new Intent(getActivity(), ControlAddressActivity.class));
                 }
             }
         });

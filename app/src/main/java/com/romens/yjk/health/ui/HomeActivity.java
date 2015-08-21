@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.mobvoi.android.common.ConnectionResult;
@@ -82,6 +83,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             public void onItemClick(int id) {
                 if (id == -1) {
                 } else if (id == 0) {
+                    startActivity(new Intent(HomeActivity.this,SearchActivity.class));
                 } else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (id == 3) {
@@ -136,7 +138,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     protected void onStart() {
         super.onStart();
         if (!mResolvingError) {
-            mobvoiApiClient.connect();
+//            mobvoiApiClient.connect();
         }
     }
 

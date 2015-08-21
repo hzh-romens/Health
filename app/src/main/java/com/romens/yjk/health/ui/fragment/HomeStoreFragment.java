@@ -38,7 +38,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by siery on 15/8/10.
+ * Created by siery on 15/8/13.
+ * hzh
  */
 public class HomeStoreFragment extends BaseFragment {
     private SwipeRefreshLayout swipeRefreshLayout;

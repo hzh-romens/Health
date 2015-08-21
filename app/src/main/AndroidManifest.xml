@@ -133,6 +133,23 @@
         <activity
             android:name=".ui.IllnessActivity"
             android:label="@string/title_activity_illness"></activity>
+        <activity
+            android:name=".ui.SearchActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.ConsultActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.romens.rhealth.INFORMATION_NEWS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.ControlAddressActivity"/>
     </application>
 
 </manifest>

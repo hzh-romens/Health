@@ -11,6 +11,11 @@ import android.view.View;
 import com.romens.android.AndroidUtilities;
 import com.romens.yjk.health.MyApplication;
 
+/**
+ * create 2015.8.13
+ * hzh
+ * 工具类,
+ */
 
 public class UIUtils {
 	public static Context getContext() {
