@@ -1,0 +1,74 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.romens.yjk.health.ui.ShopCarActivity">
+
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/action_bar"
+        android:layout_gravity="top"
+        />
+   <android.support.v7.widget.RecyclerView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_marginTop="58dp"
+       android:layout_marginBottom="45dp"
+       android:id="@+id/recyclerview"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom"
+        android:background="@color/background_floating_material_dark"
+        android:orientation="horizontal">
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textColor="@android:color/white"
+            android:gravity="center_vertical"
+            android:button="@drawable/btn_check"
+            android:paddingLeft="5dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/all_choice"
+           />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="2.5"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:text="合计：￥200"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:id="@+id/tv_all1"
+                android:gravity="center_vertical"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.8"
+                android:text="总额：￥200"
+                android:textSize="11sp"
+                android:id="@+id/tv_all2"
+                android:textColor="@android:color/white"
+                android:gravity="top"/>
+            </LinearLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/tv_pay"
+            android:text="去结算"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_red_light"
+
+            android:gravity="center"/>
+        </LinearLayout>
+
+
+</FrameLayout>

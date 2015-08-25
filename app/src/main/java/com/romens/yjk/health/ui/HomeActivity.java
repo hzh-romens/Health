@@ -24,6 +24,7 @@ import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.ui.components.logger.Log;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
@@ -127,7 +128,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     protected void onStart() {
         super.onStart();
         if (!mResolvingError) {
-            mobvoiApiClient.connect();
+           // mobvoiApiClient.connect();
         }
     }
 

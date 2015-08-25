@@ -32,6 +32,7 @@ public class ProductCell extends CardView {
         addView(iconView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT,
                 Gravity.TOP | Gravity.CENTER_HORIZONTAL, 4, 4, 4, 4));
 
+
         LinearLayout content = new LinearLayout(context);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);

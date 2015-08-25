@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_selected="true" android:drawable="@drawable/main_bottom_tab_cart_normal"/>
-        <item android:drawable="@drawable/main_bottom_tab_cart_focus"/>
+    <item android:state_selected="true" android:drawable="@drawable/ic_shopping_cart_grey600_24dp"/>
+        <item android:drawable="@drawable/ic_shopping_cart_white_24dp"/>
 
 </selector>
