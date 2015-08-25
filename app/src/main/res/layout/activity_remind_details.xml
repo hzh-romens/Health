@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:id="@+id/remind_detail_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@color/md_white_1000">
+
+                <ImageView
+                    android:id="@+id/remind_details_usericon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/person_image_empty" />
+
+                <TextView
+                    android:id="@+id/remind_detail__user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="50dp"
+                    android:layout_toRightOf="@id/remind_details_usericon"
+                    android:hint="输入服药者"
+                    android:textColorHint="#ccc" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/add_remind_info"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@color/md_white_1000">
+
+                <ImageView
+                    android:id="@+id/remind_details_drugicon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/person_image_empty" />
+
+                <TextView
+                    android:id="@+id/remind_detail__drug"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="50dp"
+                    android:layout_toRightOf="@id/remind_details_drugicon"
+                    android:hint="获取药物"
+                    android:textColorHint="#ccc" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ccc">
+
+                <RelativeLayout
+                    android:id="@+id/remind_detail_hintlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ccc">
+
+                    <TextView
+                        android:id="@+id/hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="80dp"
+                        android:layout_marginTop="30dp"
+                        android:text="服药周期"
+                        android:textColor="#999"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/remind_detail_timeshint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/hint"
+                        android:layout_marginLeft="80dp"
+                        android:layout_marginTop="15dp"
+                        android:text="每1天服用1次"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/choose_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_below="@id/remind_detail_hintlayout"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#999" />
+
+                <RelativeLayout
+                    android:id="@+id/time_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/choose_bottom"
+                    android:layout_marginTop="20dp">
+                    <TextView
+                        android:id="@+id/remind_detail_datehint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="80dp"
+                        android:text="开始时间"
+                        android:textColor="#999"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/remind_detail__date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/remind_detail_datehint"
+                        android:layout_marginLeft="80dp"
+                        android:layout_marginTop="15dp"
+                        android:text="2015年8月24日"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

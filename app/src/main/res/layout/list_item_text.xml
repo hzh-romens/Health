@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="10dp"
+    android:drawablePadding="10dp"
+    android:gravity="center_vertical"
+    android:drawableRight="@drawable/ic_arrow_drop_down_grey600_24dp"
+    android:text="08:30" />

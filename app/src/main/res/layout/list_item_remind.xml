@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drug_type_child">
+
+    <ImageView
+        android:id="@+id/remind_item_usericon"
+        android:background="@drawable/person_image_empty"
+        android:layout_margin="15dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+    <TextView
+        android:id="@+id/remind_item_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/remind_item_usericon"
+        android:layout_marginTop="20dp"
+        android:text="我"/>
+    <TextView
+        android:id="@+id/remind_item_drug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/remind_item_user"
+        android:layout_toRightOf="@id/remind_item_usericon"
+        android:layout_marginTop="5dp"
+        android:text="感冒"/>
+    <TextView
+        android:id="@+id/remind_item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/remind_item_drug"
+        android:layout_toRightOf="@id/remind_item_usericon"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        android:text="1天1次"/>
+
+    <TextView
+        android:id="@+id/remind_item_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/md_yellow_800"
+        android:text="详情"/>
+
+</RelativeLayout>

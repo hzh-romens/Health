@@ -150,6 +150,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.ControlAddressActivity"/>
+        <activity android:name=".ui.RemindActivity"/>
+        <activity android:name=".ui.AddRemindActivity"/>
+        <activity android:name=".ui.RemindDetailActivity"/>
+        <receiver android:name=".ui.components.RemindReceiver"/>
+        <activity android:name=".ui.AlarmActivity"/>
     </application>
 
 </manifest>
