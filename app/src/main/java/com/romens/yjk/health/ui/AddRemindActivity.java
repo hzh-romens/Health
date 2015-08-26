@@ -39,6 +39,7 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.RemindEntity;
+import com.romens.yjk.health.ui.utils.UIUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -104,8 +105,8 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         remindFlag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    Toast.makeText(AddRemindActivity.this,"-->"+isChecked,Toast.LENGTH_SHORT).show();
+                if (isChecked) {
+                    Toast.makeText(AddRemindActivity.this, "-->" + isChecked, Toast.LENGTH_SHORT).show();
                     setRemind();
                 }
             }
@@ -122,9 +123,11 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
                 if (i == -1) {
                     finish();
                 } else if (i == 0) {
-                    if (editUser.getText().toString().trim().equals("") && editUser.getText() == null) {
+                    String userStr = editUser.getText().toString().trim();
+                    String drugStr = editDrug.getText().toString().trim();
+                    if (userStr.equals("输入服药者") || userStr.equals("")) {
                         Toast.makeText(AddRemindActivity.this, "请输入服药者", Toast.LENGTH_SHORT).show();
-                    } else if (editDrug.getText().toString().trim().equals("") && editDrug.getText() == null) {
+                    } else if (drugStr.equals("获取药物") || drugStr.equals("")) {
                         Toast.makeText(AddRemindActivity.this, "请输入药物", Toast.LENGTH_SHORT).show();
                     } else {
                         RemindEntity entity = new RemindEntity();
@@ -136,7 +139,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
                         bundle.putSerializable("entity", entity);
                         Intent intent = new Intent(AddRemindActivity.this, RemindActivity.class);
                         intent.putExtra("bundle", bundle);
-                        setResult(0, intent);
+                        setResult(1, intent);
                         finish();
                     }
                 }
@@ -144,7 +147,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
-    public void setRemind(){
+    public void setRemind() {
 
     }
 
@@ -176,40 +179,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
                 simpleDialog(view);
                 break;
             case R.id.day_layout:
-                oldDay = day;
-                final View dayview = LayoutInflater.from(this).inflate(R.layout.dialog_day_count, null);
-                final Dialog dialog = simpleDialog(dayview);
-                RadioGroup group = (RadioGroup) dayview.findViewById(R.id.dialog_day_group);
-                group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        RadioButton button = (RadioButton) dayview.findViewById(checkedId);
-                        String str = (String) button.getHint();
-                        day = Integer.parseInt(str);
-                        Toast.makeText(AddRemindActivity.this, str, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                dayview.findViewById(R.id.dialog_day_cancel).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        day = oldDay;
-                        dialog.dismiss();
-                    }
-                });
-
-                dayview.findViewById(R.id.dialog_day_confirm).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (day != 1) {
-                            days.setText("每" + day + "天");
-                        } else {
-                            days.setText("每天");
-                        }
-                        setTimesHint();
-                        dialog.dismiss();
-                    }
-                });
+                dayLayoutClick();
                 break;
             case R.id.count_layout:
                 timesDialog();
@@ -222,10 +192,50 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
                 break;
         }
     }
-    private Date startDateTime;
+
+    public void dayLayoutClick(){
+        oldDay = day;
+        final View dayview = LayoutInflater.from(this).inflate(R.layout.dialog_day_count, null);
+        final Dialog dialog = simpleDialog(dayview);
+        RadioGroup group = (RadioGroup) dayview.findViewById(R.id.dialog_day_group);
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton button = (RadioButton) dayview.findViewById(checkedId);
+                String str = (String) button.getHint();
+                day = Integer.parseInt(str);
+                Toast.makeText(AddRemindActivity.this, str, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dayview.findViewById(R.id.dialog_day_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                day = oldDay;
+                dialog.dismiss();
+            }
+        });
+
+        dayview.findViewById(R.id.dialog_day_confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (day != 1) {
+                    days.setText("每" + day + "天");
+                } else {
+                    days.setText("每天");
+                }
+                setTimesHint();
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private String dateStr;
+
     class SimpleCalendarDialogFragment extends DialogFragment implements OnDateChangedListener {
         DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
         private Button finish;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.dialog_calendar, container, false);
@@ -236,11 +246,11 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
             super.onViewCreated(view, savedInstanceState);
             MaterialCalendarView widget = (MaterialCalendarView) view.findViewById(R.id.calendarView);
             widget.setOnDateChangedListener(this);
-            finish = (Button) findViewById(R.id.calendar_finish);
+            finish = (Button) view.findViewById(R.id.calendar_finish);
             finish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startDate.setText(startDateTime+"");
+                    startDate.setText(dateStr);
                     dismiss();
                 }
             });
@@ -248,8 +258,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
 
         @Override
         public void onDateChanged(@NonNull MaterialCalendarView widget, CalendarDay date) {
-
-            startDateTime=date.getDate();
+            dateStr=FORMATTER.format(date.getDate());
         }
     }
 
@@ -281,7 +290,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 if (timesData.size() > 0) {
-                    timesData.remove(timesData.size());
+                    timesData.remove(timesData.size() - 1);
                     times.setText(timesData.size() + "次");
                     adapter.notifyDataSetChanged();
                 }
@@ -343,7 +352,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             TimesViewHolder holder = null;
             if (convertView == null) {
                 convertView = LayoutInflater.from(context).inflate(R.layout.list_item_text, null);
@@ -357,7 +366,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Toast.makeText(context, "-->" + position, Toast.LENGTH_SHORT).show();
                 }
             });
             return convertView;
@@ -433,7 +442,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
                 TextView textView = new TextView(context);
                 textView.setText(data.get(position));
                 textView.setPadding(AndroidUtilities.dp(20), AndroidUtilities.dp(10), AndroidUtilities.dp(20), AndroidUtilities.dp(10));
-                textView.setTextSize(AndroidUtilities.dp(14));
+                textView.setTextSize(16);
                 textView.setLayoutParams(params);
                 textView.setGravity(Gravity.CENTER);
                 linearLayout.addView(textView);

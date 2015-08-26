@@ -45,7 +45,7 @@ public class RemindActivity extends BaseActivity {
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listView.addItemDecoration(new RemindItemDecoration(AndroidUtilities.dp(10), AndroidUtilities.dp(20), data.size()));
 
-        actionBar.setTitle("服务提醒");
+        actionBar.setTitle("用药提醒");
         actionBar.setBackgroundResource(R.color.theme_primary);
         actionBar.setMinimumHeight(AndroidUtilities.dp(100));
         ActionBarMenu menu = actionBar.createMenu();
@@ -57,7 +57,7 @@ public class RemindActivity extends BaseActivity {
                     finish();
                 } else if (i == 1) {
                     Intent intent = new Intent(RemindActivity.this, AddRemindActivity.class);
-                    startActivityForResult(intent, 0);
+                    startActivityForResult(intent, 1);
                 }
             }
         });
@@ -66,7 +66,7 @@ public class RemindActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 0) {
+        if (resultCode == 1) {
             Bundle bundle = data.getBundleExtra("bundle");
             RemindEntity entity = (RemindEntity) bundle.getSerializable("entity");
             this.data.add(entity);
