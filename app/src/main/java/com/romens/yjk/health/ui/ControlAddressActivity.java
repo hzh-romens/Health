@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,10 +61,10 @@ public class ControlAddressActivity extends BaseActivity {
 //        listView.setAdapter(adapter);
 //        listLayout.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        setContentView(R.layout.activity_control_address, R.id.control_address_actionbar);
+        setContentView(R.layout.activity_shipping_address, R.id.action_bar);
 
         actionBar = getMyActionBar();
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.control_address_swiplayout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
         UIHelper.setupSwipeRefreshLayoutProgress(swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -75,7 +74,7 @@ public class ControlAddressActivity extends BaseActivity {
         });
         listView = (RecyclerView) findViewById(R.id.control_address_recycler);
         listView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
-        addAddress = (Button) findViewById(R.id.control_addres_addaddress);
+        //addAddress = (Button) findViewById(R.id.control_addres_addaddress);
         initData();
         adapter = new ControlAddressAdapter(this, entitis);
         listView.setAdapter(adapter);

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
+import com.romens.yjk.health.BuildConfig;
 import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
 import com.romens.yjk.health.db.dao.DiscoveryDao;

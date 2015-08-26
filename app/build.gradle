@@ -22,7 +22,18 @@ android {
                 output.outputFile = new File(file.parentFile, fileName)
             }
         }
+        manifestPlaceholders = [APK_CHANNEL_VALUE: "romens"]
     }
+
+    productFlavors {
+        channel_yjk {
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "yjk"]
+        }
+        channel_nj_xszk {
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "nj_xszk"]
+        }
+    }
+
     sourceSets.release {
         manifest.srcFile 'config/release/AndroidManifest.xml'
     }
