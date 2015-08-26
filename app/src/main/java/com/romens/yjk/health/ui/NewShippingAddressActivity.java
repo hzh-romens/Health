@@ -2,8 +2,6 @@ package com.romens.yjk.health.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,8 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Components.RecyclerListView;
 import com.romens.android.ui.cells.TextCheckCell;
 import com.romens.android.ui.cells.TextSettingsCell;
+import com.romens.android.ui.support.widget.LinearLayoutManager;
+import com.romens.android.ui.support.widget.RecyclerView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.cells.EditTextCell;
 
