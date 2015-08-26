@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:id="@+id/add_remind_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/add_remind_user"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/md_white_1000">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/person_image_empty" />
+
+                <TextView
+                    android:id="@+id/add_remind_chooseuser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:drawableRight="@drawable/ic_arrow_drop_down_grey600_24dp"
+                    android:gravity="center"
+                    android:text="获取成员"
+                    android:textSize="@dimen/abc_text_size_body_1_material" />
+
+                <EditText
+                    android:id="@+id/add_remind_edituser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="100dp"
+                    android:layout_toLeftOf="@id/add_remind_chooseuser"
+                    android:hint="输入服药者"
+                    android:textColorHint="#ccc"
+                    android:textSize="@dimen/abc_text_size_body_1_material" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/add_remind_info"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@id/add_remind_user"
+                android:background="@color/md_white_1000">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/person_image_empty" />
+
+                <TextView
+                    android:id="@+id/add_remind_choosedrug"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:drawableRight="@drawable/ic_arrow_drop_down_grey600_24dp"
+                    android:gravity="center"
+                    android:text="获取药物"
+                    android:textSize="@dimen/abc_text_size_body_1_material" />
+
+                <EditText
+                    android:id="@+id/add_remind_editdrug"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="100dp"
+                    android:layout_toLeftOf="@id/add_remind_choosedrug"
+                    android:hint="获取药物"
+                    android:textColorHint="#ccc"
+                    android:textSize="@dimen/abc_text_size_body_1_material" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/add_remind_info"
+                android:background="#eee">
+
+                <TextView
+                    android:id="@+id/hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="30dp"
+                    android:text="服药周期"
+                    android:textColor="#999"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/add_remind_timeshint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hint"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="15dp"
+                    android:text="每1天服用1次"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/choose_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_below="@id/add_remind_timeshint"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#999" />
+
+                <RelativeLayout
+                    android:id="@+id/day_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/choose_top"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="重复"
+                        android:textColor="#999" />
+
+                    <ImageView
+                        android:id="@+id/day_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/ic_arrow_drop_down_grey600_24dp" />
+
+                    <TextView
+                        android:id="@+id/add_remind_days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/day_arrow"
+                        android:text="每天"
+                        android:textColor="#999" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/count_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/day_layout"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="次数"
+                        android:textColor="#999" />
+
+                    <ImageView
+                        android:id="@+id/count_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/ic_arrow_drop_down_grey600_24dp" />
+
+                    <TextView
+                        android:id="@+id/add_remind_counts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/count_arrow"
+                        android:text="1次"
+                        android:textColor="#999" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/choose_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_below="@id/count_layout"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#999" />
+
+                <RelativeLayout
+                    android:id="@+id/start_date_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/choose_bottom"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="15dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="开始时间"
+                        android:textColor="#999" />
+
+                    <ImageView
+                        android:id="@+id/date_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/ic_arrow_drop_down_grey600_24dp" />
+
+                    <TextView
+                        android:id="@+id/add_remind_startdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/date_arrow"
+                        android:text="2015年8月21"
+                        android:textColor="#999" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/time_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_below="@id/start_date_layout"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#999" />
+
+                <RelativeLayout
+                    android:id="@+id/remind_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/time_bottom"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginTop="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="是否提醒"
+                        android:textColor="#999" />
+
+                    <Switch
+                        android:id="@+id/add_remind_remindflag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerHorizontal="true" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

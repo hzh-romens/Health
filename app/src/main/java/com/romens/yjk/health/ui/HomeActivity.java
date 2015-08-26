@@ -82,6 +82,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
+                    startActivity(new Intent(HomeActivity.this, RemindActivity.class));
                 } else if (id == 0) {
                     startActivity(new Intent(HomeActivity.this,SearchActivity.class));
                 } else if (id == 2) {

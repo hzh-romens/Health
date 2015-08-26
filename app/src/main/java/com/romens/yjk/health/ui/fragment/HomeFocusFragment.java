@@ -109,7 +109,7 @@ public class HomeFocusFragment extends BaseFragment {
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                Log.i("info", msg.protocol + "");
+//                Log.i("info", msg.protocol + "");
                 if(msg!=null) {
                     Log.e("tag", "msg->"+msg);
                 }
