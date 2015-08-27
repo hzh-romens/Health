@@ -127,6 +127,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
                 datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
                 datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
                 datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
                 GridViewAdapter gridViewAdapter = new GridViewAdapter(datas, mContext);
                 holders.gridView.setAdapter(gridViewAdapter);
                 break;

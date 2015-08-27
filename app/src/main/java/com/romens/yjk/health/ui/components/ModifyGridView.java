@@ -32,7 +32,7 @@ public class ModifyGridView extends GridView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int measureHeight = measureWidth/counts+ AndroidUtilities.dp(32)+counts*AndroidUtilities.dp(16) ;
+        int measureHeight = measureWidth/counts+counts*AndroidUtilities.dp(48);
         int count = getChildCount();
         int yCount=0;
         if(count%counts==0){
@@ -44,12 +44,12 @@ public class ModifyGridView extends GridView {
             for (int index = 0; index < count; index++) {
                 final View child = getChildAt(index);
                 if (child.getVisibility() != GONE) {
-                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight - getPaddingTop() - getPaddingBottom()), MeasureSpec.EXACTLY));
+                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth -  AndroidUtilities.dp(8), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight  - AndroidUtilities.dp(8)), MeasureSpec.EXACTLY));
 
                 }
             }
 
-            setMeasuredDimension(measureWidth, measureHeight * yCount);
+            setMeasuredDimension(measureWidth,measureHeight+counts*AndroidUtilities.dp(48));
         }else{
             setMeasuredDimension(measureWidth, measureHeight);
         }

@@ -7,33 +7,24 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.SparseBooleanArray;
+import android.util.SparseArray;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ShopCarTestEntity;
-import com.romens.yjk.health.model.TestEntity;
 import com.romens.yjk.health.ui.adapter.ShopCarAdapter;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
+import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShopCarActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private ShopCarAdapter shopCarAdapter;
-    private List<ShopCarTestEntity> data;
-    private CheckBox all_choice;
-    private TextView tv_all1,tv_all2,tv_pay;
+    private SparseArray<ShopCarTestEntity> data;
+    private CheckableFrameLayout all_choice;
+    private TextView tv_all1, tv_all2, tv_pay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +42,9 @@ public class ShopCarActivity extends BaseActivity {
                 }
             }
         });
-        recyclerView= (RecyclerView)findViewById(R.id.recyclerview);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        final ABaseLinearLayoutManager layoutManager=new ABaseLinearLayoutManager(ShopCarActivity.this, LinearLayoutManager.VERTICAL,false);
+        final ABaseLinearLayoutManager layoutManager = new ABaseLinearLayoutManager(ShopCarActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
 
@@ -65,9 +56,6 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
                 super.onDrawOver(c, parent, state);
-                //   int curPosition = layoutManager.findFirstVisibleItemPosition();
-                // View curItemView = layoutManager.findViewByPosition(curPosition);
-                // LayoutInflater.from(getActivity()).inflate(R.layo.);
                 Paint paint = new Paint();
                 int childCount = parent.getChildCount();
                 for (int i = 0; i < childCount; i++) {
@@ -91,62 +79,36 @@ public class ShopCarActivity extends BaseActivity {
         });
         //获取数据
         getData();
-        shopCarAdapter=new ShopCarAdapter(this,data);
-        recyclerView.setAdapter(shopCarAdapter);
-        //计算价钱
-
+        shopCarAdapter = new ShopCarAdapter(this, data);
         shopCarAdapter.AdapterListener(new ShopCarAdapter.AdapterCallback() {
             @Override
-            public void onCheckStateChanged(int position, boolean checked) {
-                Toast.makeText(ShopCarActivity.this, "sahdkahsksah", Toast.LENGTH_SHORT).show();
-                data.get(position).setCheck(checked);
-                boolean allSelected = shopCarAdapter.isAllSelected();
-                if (allSelected) {
-                    all_choice.setChecked(true);
-                } else {
-                    all_choice.setChecked(false);
-                }
+            public void onDataChanged() {
+                all_choice.setChecked(shopCarAdapter.isAllSelected());
+            }
+
+            @Override
+            public void sumMoneyChange(String money) {
+                tv_all1.setText("合计$" + money);
+                tv_all2.setText("合计$" + money);
             }
         });
+        recyclerView.setAdapter(shopCarAdapter);
+
+        all_choice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shopCarAdapter.switchAllSelect(!all_choice.isChecked());
+            }
+        });
+
 
     }
 
     private void initView() {
-        all_choice= (CheckBox) findViewById(R.id.all_choice);
-        tv_all1= (TextView) findViewById(R.id.tv_all1);
-        tv_all2= (TextView) findViewById(R.id.tv_all2);
-        tv_pay= (TextView) findViewById(R.id.tv_pay);
-        all_choice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (!data.get(i).getCheck()) {
-                            data.get(i).setCheck(true);
-                        }
-                    }
-                    try {
-                        shopCarAdapter.notifyDataSetChanged();
-                    } catch (Exception e) {
-                        Log.e("onCheckChanged", e.getMessage());
-                    }
-
-                }else{
-                    if(shopCarAdapter.isAllSelected()) {
-                        for (int i = 0; i < data.size(); i++) {
-                            data.get(i).setCheck(false);
-                        }
-                        try {
-                            shopCarAdapter.notifyDataSetChanged();
-                        } catch (Exception e) {
-                            Log.e("onCheckChanged", e.getMessage());
-                        }
-                    }
-
-
-                }
-            }
-        });
+        all_choice = (CheckableFrameLayout) findViewById(R.id.all_choice);
+        tv_all1 = (TextView) findViewById(R.id.tv_all1);
+        tv_all2 = (TextView) findViewById(R.id.tv_all2);
+        tv_pay = (TextView) findViewById(R.id.tv_pay);
 
     }
 
@@ -157,13 +119,13 @@ public class ShopCarActivity extends BaseActivity {
     }
 
     private void getData() {
-        data=new ArrayList<ShopCarTestEntity>();
-        data.add(new ShopCarTestEntity(1, "青霉素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "同仁药房",true,"22.0"));
-        data.add(new ShopCarTestEntity(2, "新康泰克", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "青岛药房", false, "22.0"));
-        data.add(new ShopCarTestEntity(3, "九九感冒灵", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "山东药房", true, "22.0"));
-        data.add(new ShopCarTestEntity(4, "罗素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "江西药房", false, "22.0"));
-        data.add(new ShopCarTestEntity(4, "罗素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "广州药房", true, "22.0"));
-        data.add(new ShopCarTestEntity(4, "罗素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "河南药房", false, "22.0"));
+        data = new SparseArray<ShopCarTestEntity>();
+        data.append(0, new ShopCarTestEntity(1, "青霉素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "同仁药房", true, 22.0, 1));
+        data.append(1, new ShopCarTestEntity(2, "新康泰克", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "青岛药房", false, 22.0, 2));
+        data.append(2, new ShopCarTestEntity(3, "九九感冒灵", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "山东药房", true, 22.0, 3));
+        data.append(3, new ShopCarTestEntity(4, "罗素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "江西药房", false, 22.0, 4));
+        data.append(4, new ShopCarTestEntity(4, "罗素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "广州药房", true, 22.0, 3));
+        data.append(5, new ShopCarTestEntity(4, "罗素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "河南药房", false, 22.0, 5));
     }
 
 

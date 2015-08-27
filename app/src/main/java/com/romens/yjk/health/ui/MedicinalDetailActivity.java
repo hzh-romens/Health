@@ -99,8 +99,11 @@ public class MedicinalDetailActivity extends BaseActivity implements AppNotifica
                 } else {
                     int top = recyclerView.getChildAt(0).getTop();
                     int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                    int top1 = recyclerView.getChildAt(firstVisibleItemPosition).getTop();
-                    Log.i("出现在屏幕上的第一个Item的id-----3",firstVisibleItemPosition+"-----top"+top+"--------top1"+top1);
+                   // if( recyclerView.getChildAt(firstVisibleItemPosition).getTop()!=0) {
+                     //   int top1 = recyclerView.getChildAt(firstVisibleItemPosition).getTop();
+                       // Log.i("出现在屏幕上的第一个Item的id-----3",firstVisibleItemPosition+"-----top"+top+"--------top1"+top1);
+                    //}
+
                 }
             }
         });

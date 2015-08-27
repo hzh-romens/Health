@@ -10,7 +10,16 @@ public class ShopCarTestEntity {
     private String imageUrl;
     private String infor;
     private Boolean check;
-    private String price;
+    private Double price;
+    private int num;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 
     public Boolean getCheck() {
         return check;
@@ -20,11 +29,11 @@ public class ShopCarTestEntity {
         this.check = check;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -59,12 +68,14 @@ public class ShopCarTestEntity {
     public void setJson(String json) {
         this.json = json;
     }
-    public ShopCarTestEntity(int type, String json, String imageUrl, String infor,boolean check,String price){
-        this.Type=type;
-        this.json=json;
-        this.imageUrl=imageUrl;
-        this.infor=infor;
-        this.check=check;
-        this.price=price;
+
+    public ShopCarTestEntity(int type, String json, String imageUrl, String infor, boolean check, Double price,int num) {
+        this.Type = type;
+        this.json = json;
+        this.imageUrl = imageUrl;
+        this.infor = infor;
+        this.check = check;
+        this.price = price;
+        this.num=num;
     }
 }

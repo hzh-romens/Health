@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.fragment;
 
 
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,6 +27,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.TestEntity;
 
+import com.romens.yjk.health.ui.IllnessActivity;
 import com.romens.yjk.health.ui.adapter.FlowlayoutAdapter;
 import com.romens.yjk.health.ui.adapter.StoreAdapter;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
@@ -96,6 +98,15 @@ public class HomeStoreFragment extends BaseFragment {
         mDatas.add("第三方鉴定师");
         flowlayoutAdapter=new FlowlayoutAdapter(flowLayout,getActivity(),mDatas);
         flowlayoutAdapter.andTextView();
+        flowlayoutAdapter.ItemClickListener(new FlowlayoutAdapter.FlowLayoutItemClick() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(getActivity(), mDatas.get(position), Toast.LENGTH_SHORT)
+                        .show();
+                Intent i=new Intent(getActivity(), IllnessActivity.class);
+                getActivity().startActivity(i);
+            }
+        });
        // andTextView(flowLayout,getActivity(),datas);
         footView = LayoutInflater.from(getActivity()).inflate(R.layout.recycler_view_item_type_footer, null);
         LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -211,9 +222,6 @@ public class HomeStoreFragment extends BaseFragment {
         swipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshlayout);
         flowLayout= (FlowLayout) view.findViewById(R.id.flowlayout);
         recyclerView= (RecyclerView) view.findViewById(R.id.recyclerview);
-//        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT);
-//        recyclerView.setLayoutParams(layoutParams);
     }
 
 

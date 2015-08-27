@@ -2,29 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp">
-
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="0dp"
+    android:padding="5dp"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="115dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_weight="1"
-        android:button="@drawable/btn_check"
-        android:gravity="center" />
+        android:orientation="horizontal">
+
+    <com.romens.yjk.health.ui.components.CheckableFrameLayout
+        android:id="@+id/checkbox"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_allcheck_selector"
+        android:gravity="center"
+        android:layout_marginRight="3dp"/>
 
     <ImageView
         android:id="@+id/iv_detail"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2.4"
+        android:layout_width="64dp"
+        android:layout_height="96dp"
         android:scaleType="centerInside"
+        android:layout_gravity="center"
         android:src="@drawable/ic_launcher" />
+        </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="6"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="15dp">
@@ -37,51 +42,55 @@
             android:singleLine="true"
             android:text="多少分开始动画，建设的快速离开"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:layout_marginBottom="3dip"
+            android:layout_marginTop="3dip"
+            android:textSize="@dimen/text_size_large" />
 
         <TextView
             android:id="@+id/tv_store"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dip"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="青岛药店"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_medium" />
 
         <TextView
             android:id="@+id/tv_active"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dip"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="今天九折"
             android:textColor="@android:color/black"
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_size_medium" />
 
         <TextView
             android:id="@+id/tv_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dip"
+
             android:ellipsize="end"
             android:singleLine="true"
             android:text="￥22"
             android:textColor="@android:color/black"
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_size_medium" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="30dp"
+            android:layout_marginBottom="3dip"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/bt_reduce"
                 android:layout_width="35dp"
                 android:layout_height="match_parent"
+
                 android:background="@drawable/shopping_cart_product_num_reduce"
                 android:gravity="center" />
 
@@ -92,7 +101,7 @@
                 android:background="@drawable/shopping_cart_product_num_edit"
                 android:gravity="center"
                 android:text="1"
-                android:textSize="13sp" />
+                android:textSize="@dimen/text_size_medium" />
 
             <Button
                 android:id="@+id/bt_add"

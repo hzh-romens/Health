@@ -27,6 +27,7 @@ public class FlowlayoutAdapter {
     private FlowLayout mFlowLayout;
     private Context mContext;
     private List<String> mData;
+
     public FlowlayoutAdapter(FlowLayout flowLayout,Context context,List<String> data){
         this.mFlowLayout=flowLayout;
         this.mContext=context;
@@ -39,7 +40,12 @@ public class FlowlayoutAdapter {
 //        return 0;
 //    }
     public interface FlowLayoutItemClick{
+        void onItemClick(int position);
+    }
+    private FlowLayoutItemClick flowLayoutItemClick;
 
+    public void ItemClickListener(FlowLayoutItemClick flowLayoutItemClick) {
+        this.flowLayoutItemClick = flowLayoutItemClick;
     }
     public void andTextView() {
         // mFlowLayout = new FlowLayout(MainActivity.this);
@@ -79,14 +85,12 @@ public class FlowlayoutAdapter {
             tv.setGravity(Gravity.CENTER);
             tv.setPadding(textPaddingH, textPaddingV, textPaddingH,
                     textPaddingV);
+            final int position=i;
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    flowLayoutItemClick.onItemClick(position);
 
-                    Toast.makeText(mContext, text, Toast.LENGTH_SHORT)
-                            .show();
-                    Intent i=new Intent(mContext, IllnessActivity.class);
-                    mContext.startActivity(i);
 
                 }
             });
