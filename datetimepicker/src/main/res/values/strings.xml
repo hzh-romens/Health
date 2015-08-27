@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="http://schemas.android.com/apk/res/android">
+    <string name="done_label">完成</string>
+    <string name="day_picker_description">按月份划分的日期网格</string>
+    <string name="year_picker_description">年份列表</string>
+    <string name="select_day">选择月份和日期</string>
+    <string name="select_year">选择年份</string>
+    <string name="item_is_selected">已选择 <xliff:g id="ITEM">%1$s</xliff:g></string>
+    <string name="sans_serif" translatable="false">sans-serif</string>
+    <string name="day_of_week_label_typeface" translatable="false">sans-serif</string>
+
+    <string name="time_placeholder" translatable="false">--</string>
+    <string name="time_separator" translatable="false">:</string>
+
+    <!-- Accessibility announcement when a number that had been typed in is deleted [CHAR_LIMIT=NONE] -->
+    <string name="deleted_key">已删除 <xliff:g id="KEY">%1$s</xliff:g></string>
+    <!--
+         Content description for the hour selector in the time picker, which displays
+         selectable hours of the day along the inside edge of a circle, as in an analog clock.
+         [CHAR LIMIT=50]
+    -->
+    <string name="hour_picker_description">小时转盘</string>
+    <!--
+         Content description for the minute selector in the time picker, which displays
+         selectable five-minute intervals along the inside edge of a circle, as in an analog clock.
+         [CHAR LIMIT=50]
+    -->
+    <string name="minute_picker_description">分钟转盘</string>
+    <string name="radial_numbers_typeface" translatable="false">sans-serif</string>
+    <string name="select_hours">选择小时</string>
+    <string name="select_minutes">选择分钟</string>
+</resources>

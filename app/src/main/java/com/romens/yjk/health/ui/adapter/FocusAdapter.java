@@ -1,10 +1,11 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.romens.android.ui.support.widget.RecyclerView;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
 import com.romens.yjk.health.ui.controls.ADEmptyControl;

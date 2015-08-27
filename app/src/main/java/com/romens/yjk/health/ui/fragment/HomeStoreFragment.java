@@ -41,7 +41,8 @@ import java.util.List;
 
 
 /**
- * Created by siery on 15/8/10.
+ * Created by siery on 15/8/13.
+ * hzh
  */
 public class HomeStoreFragment extends BaseFragment {
     private SwipeRefreshLayout swipeRefreshLayout;

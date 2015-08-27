@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.mobvoi.android.common.ConnectionResult;
@@ -23,8 +24,8 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.core.AddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.ui.components.logger.Log;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
@@ -76,13 +77,18 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
         ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
         debugMenu.addSubItem(2, "测试促销详情", 0);
+        debugMenu.addSubItem(3, "测试附近药店", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
+                    startActivity(new Intent(HomeActivity.this, RemindActivity.class));
                 } else if (id == 0) {
+                    startActivity(new Intent(HomeActivity.this,SearchActivity.class));
                 } else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
+                } else if (id == 3) {
+                    startActivity(new Intent(HomeActivity.this, LocationActivity.class));
                 }
             }
         });
@@ -122,13 +128,18 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                         }
                     }
                 }).build();
+        setupConfig();
+    }
+
+    private void setupConfig() {
+        AddressHelper.trySetupAddressLocationData();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         if (!mResolvingError) {
-           // mobvoiApiClient.connect();
+//            mobvoiApiClient.connect();
         }
     }
 

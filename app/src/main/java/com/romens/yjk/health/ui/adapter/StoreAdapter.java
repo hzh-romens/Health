@@ -1,7 +1,7 @@
 package com.romens.yjk.health.ui.adapter;
 
 /**
- * Created by romens007 on 2015/8/13.
+ * Created by hzh on 2015/8/13.
  */
 import android.content.Context;
 import android.content.Intent;

@@ -1,7 +1,10 @@
 package com.romens.yjk.health.ui.utils;
 
+import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.TypedValue;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.yjk.health.R;
 
 /**
@@ -15,5 +18,13 @@ public class UIHelper {
                     R.color.refresh_progress_2,
                     R.color.refresh_progress_3);
         }
+    }
+
+    public static void updateSwipeRefreshProgressBarTop(Context context, SwipeRefreshLayout refreshLayout) {
+        if (refreshLayout == null) {
+            return;
+        }
+        int end = AndroidUtilities.getCurrentActionBarHeight();
+        refreshLayout.setProgressViewOffset(false, 0, end);
     }
 }

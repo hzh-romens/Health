@@ -5,10 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
+import com.romens.yjk.health.BuildConfig;
 import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
+import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
+import com.romens.yjk.health.db.entity.DrugGroupEntity;
 
 import java.util.List;
 
@@ -51,14 +54,14 @@ public class DBInterface {
     public void initDbHelp(Context ctx) {
         context = ctx;
         close();
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ctx, "RHealth.db", null);
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ctx, "YJKHealth.db", null);
         this.openHelper = helper;
     }
 
     /**
      * Query for readable DB
      */
-    private DaoSession openReadableDb() {
+    public DaoSession openReadableDb() {
         isInitOk();
         SQLiteDatabase db = openHelper.getReadableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
@@ -69,7 +72,7 @@ public class DBInterface {
     /**
      * Query for writable DB
      */
-    private DaoSession openWritableDb() {
+    public DaoSession openWritableDb() {
         isInitOk();
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
@@ -105,6 +108,19 @@ public class DBInterface {
         DiscoveryDao dao = openReadableDb().getDiscoveryDao();
         DiscoveryEntity entity = dao.queryBuilder()
                 .orderDesc(DiscoveryDao.Properties.Updated)
+                .limit(1)
+                .unique();
+        if (entity == null) {
+            return 0;
+        } else {
+            return entity.getUpdated();
+        }
+    }
+
+    public int getDrugGroupDataLastTime() {
+        DrugGroupDao dao = openReadableDb().getDrugGroupDao();
+        DrugGroupEntity entity = dao.queryBuilder()
+                .orderDesc(DrugGroupDao.Properties.Updated)
                 .limit(1)
                 .unique();
         if (entity == null) {

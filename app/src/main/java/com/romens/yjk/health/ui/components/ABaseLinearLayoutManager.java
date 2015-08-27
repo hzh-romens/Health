@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /**
- * Created by romens007 on 2015/8/12.
+ * Created by hzh on 2015/8/12.
  */
 public class ABaseLinearLayoutManager extends LinearLayoutManager implements RecyclerViewScrollManager.OnScrollManagerLocation {
     private static final String TAG = ABaseLinearLayoutManager.class.getSimpleName();

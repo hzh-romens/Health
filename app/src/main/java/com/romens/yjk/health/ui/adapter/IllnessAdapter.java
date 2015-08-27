@@ -19,7 +19,7 @@ import com.romens.yjk.health.ui.IllnessActivity;
 import java.util.List;
 
 /**
- * Created by romens007 on 2015/8/14.
+ * Created by hzh on 2015/8/14.
  */
 public class IllnessAdapter extends RecyclerView.Adapter{
     private List<String> mdatas;

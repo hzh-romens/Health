@@ -25,7 +25,7 @@ public class DiscoveryCollection {
 
     public static final class NearbyPharmacy {
         public static final String key = "intent_nearby_pharmacy";
-        public static final String value = "com.romens.rhealth.NEARBYPHARMACY";
+        public static final String value = "com.romens.yjk.health.NEARBYPHARMACY";
         public static final String iconRes = "assets://icon/ic_discovery_map.png";
         public static final String iconUrl = "";
         public static final String name = "附近药店";

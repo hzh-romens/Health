@@ -3,17 +3,30 @@ package com.romens.yjk.health.ui.fragment;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Components.RecyclerListView;
+import com.romens.android.ui.support.widget.LinearLayoutManager;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.ADFunctionEntity;
 import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADPagerEntity;
@@ -29,6 +42,7 @@ import com.romens.yjk.health.ui.controls.ADProductsControl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by siery on 15/8/10.
@@ -74,7 +88,42 @@ public class HomeFocusFragment extends BaseFragment {
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
-        onHandleData();
+        requestDataChanged();
+    }
+
+    private void requestDataChanged() {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", "");
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetHomeConfig", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+                }))
+                .build();
+        FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(getActivity(),msg.msg,Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+//                Log.i("info", msg.protocol + "");
+                if(msg!=null) {
+                    Log.e("tag", "msg->"+msg);
+                }
+                onHandleData();
+//                if (errorMsg == null) {
+//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+////                    onResponseAllDiscovery(responseProtocol.getResponse());
+//
+//
+//                } else {
+//                    Log.e("reqGetAllUsers", "ERROR");
+//                }
+            }
+        });
     }
 
     private void onHandleData() {

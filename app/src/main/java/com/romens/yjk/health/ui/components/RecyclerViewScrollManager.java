@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by romens007 on 2015/8/12.
+ * Created by hzh on 2015/8/12.
  */
 public class RecyclerViewScrollManager {
     private List<OnRecyclerViewScrollListener> scrollListeners;
