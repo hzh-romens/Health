@@ -1,1 +1,1 @@
-include ':wear', ':app', ':romens.android', ':romens.extend.scanner', ':datetimepicker'
+include ':datetimepicker', ':app',":romens.android",":romens.extend.scanner"

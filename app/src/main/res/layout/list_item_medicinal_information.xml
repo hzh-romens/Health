@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_name"
         android:text="信息:"
-        android:textSize="15sp"
+        android:textSize="@dimen/text_size_medium"
         android:padding="5dp"
         android:gravity="center_vertical"/>
     <TextView android:layout_width="0dp"
@@ -19,6 +19,6 @@
         android:gravity="center_vertical|right"
         android:text="具体内容"
         android:padding="5dp"
-        android:textSize="15sp"/>
+        android:textSize="@dimen/text_size_medium"/>
 
 </LinearLayout>

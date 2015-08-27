@@ -27,14 +27,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_store_name"
             android:text="1号店"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_large"
             android:padding="5dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_store_infor"
             android:text="主要经营感冒药等等"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_medium"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"/>

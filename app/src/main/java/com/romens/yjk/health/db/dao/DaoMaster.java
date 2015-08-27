@@ -24,6 +24,7 @@ public class DaoMaster extends AbstractDaoMaster {
         DiscoveryDao.createTable(db, ifNotExists);
         DrugGroupDao.createTable(db,ifNotExists);
         LocationAddressDao.createTable(db,ifNotExists);
+
     }
     
     /** Drops underlying database table using DAOs. */

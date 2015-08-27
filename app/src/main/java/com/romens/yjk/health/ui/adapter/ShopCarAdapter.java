@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
@@ -7,11 +8,15 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +29,7 @@ import com.romens.android.io.image.ImageUtils;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ShopCarTestEntity;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
+import com.romens.yjk.health.ui.utils.DialogUtils;
 
 
 import java.util.List;
@@ -38,6 +44,7 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     private int num;
     //商品的总价钱
     private double allMoney;
+    private int startNum;
 
     private final SparseBooleanArray itemStates = new SparseBooleanArray();
 
@@ -73,6 +80,7 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
                 allMoney = allMoney + datas.get(i).getPrice() * datas.get(i).getNum();
             }
         }
+
         //switchAllSelect(false);
     }
 
@@ -138,12 +146,11 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ShopHolder shopHolder = (ShopHolder) holder;
-
         shopHolder.iv_detail.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
         shopHolder.iv_detail.setImageBitmap(ImageUtils.bindLocalImage("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg"));
         Drawable defaultDrawables = shopHolder.iv_detail.getDrawable();
         ImageManager.loadForView(mContext, shopHolder.iv_detail, "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg", defaultDrawables, defaultDrawables);
-        shopHolder.tv_num.setText("1");
+        shopHolder.tv_num.setText(mDatas.get(position).getNum() + "");
         shopHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +166,32 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 //弹出一个dialog
+                DialogUtils dialogUtils=new DialogUtils();
+                dialogUtils.show(shopHolder.tv_num.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
+                    @Override
+                    public void getGoodsNum(int num) {
+
+                        if(itemStates.get(position)){
+                            int startNum = mDatas.get(position).getNum();
+                            if(num>startNum){
+                                int add = num - startNum;
+                                double addMoney = add * mDatas.get(position).getPrice();
+                                allMoney = allMoney + addMoney;
+                                updateMoney((allMoney + ""));
+                            }else{
+                                int reduce= startNum - num;
+                                double reduceMoney = reduce * mDatas.get(position).getPrice();
+                                allMoney = allMoney - reduceMoney;
+                                updateMoney((allMoney + ""));
+                            }
+                             mDatas.get(position).setNum(num);
+                            shopHolder.tv_num.setText(num+"");
+                        }else{
+                             mDatas.get(position).setNum(num);
+                            shopHolder.tv_num.setText(num+"");
+                        }
+                    }
+                });
             }
         });
     }
@@ -199,18 +232,37 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View v) {
             num = Integer.parseInt(tv_num.getText().toString());
+            startNum=num;
             switch (v.getId()) {
                 case R.id.bt_reduce:
                     if (num > 1) {
                         num--;
                         tv_num.setText(num + "");
+                        if(itemStates.get(getPosition())) {
+
+                            mDatas.get(getPosition()).setNum(num);
+                            int reduceNum = startNum - num;
+                            double reduceMoney = reduceNum * mDatas.get(getPosition()).getPrice();
+                            allMoney = allMoney - reduceMoney;
+                            updateMoney((allMoney + ""));
+                        }
+
                     } else {
                         tv_num.setText(num + "");
+                        mDatas.get(getPosition()).setNum(num);
                     }
                     break;
                 case R.id.bt_add:
                     num++;
                     tv_num.setText(num + "");
+
+                    if(itemStates.get(getPosition())) {
+                        mDatas.get(getPosition()).setNum(num);
+                        int addNum = num - startNum;
+                        double addMoney = addNum * mDatas.get(getPosition()).getPrice();
+                        allMoney = allMoney + addMoney;
+                        updateMoney((allMoney + ""));
+                    }
                     break;
                 case R.id.et_num:
                     break;
@@ -222,4 +274,8 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         return mDatas.get(position).getType();
     }
+
+
+
 }
+
