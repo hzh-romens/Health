@@ -6,22 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.io.image.ImageManager;
 import com.romens.android.io.image.ImageUtils;
-import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.AboutTestEntity;
 import com.romens.yjk.health.model.TestEntity;
 import com.romens.yjk.health.ui.components.ModifyGridView;
-import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -64,7 +60,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             view = View.inflate(mContext, R.layout.list_item_medicinal_store, null);
             holder = new StoreHolder(view);
         } else if (viewType == 7) {
-            view = View.inflate(mContext, R.layout.list_item_more, null);
+            view = View.inflate(mContext, R.layout.list_item_medicinalmore, null);
             holder = new MoreHolder(view);
         } else if(viewType==8){
             view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
