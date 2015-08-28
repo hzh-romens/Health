@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="bottom"
+    android:layout_gravity="bottom"
+    android:background="#434343">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/favorite"
+        android:text="收藏"
+        android:textSize="11sp"
+        android:textColor="#80ffffff"
+        android:gravity="center"
+        android:drawablePadding="2dip"
+        android:drawableTop="@drawable/img_xin2"
+        />
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@id/shopcar"
+        android:textSize="12sp"
+        android:src="@drawable/shopcar_bgc"
+       />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/shopcar"
+        android:text="加入购物车"
+        android:textSize="16sp"
+        android:textColor="#80ffffff"
+        android:background="@android:color/holo_red_light"
+        android:gravity="center"/>
+    </LinearLayout>
+</RelativeLayout>

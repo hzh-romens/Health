@@ -1,13 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <ScrollView
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    >
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            ></LinearLayout>
-        </ScrollView>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="45dp"
+        >
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/action_bar"
+        android:layout_gravity="top"
+       />
 
-</LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@+id/action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@id/recyclerview"
+            android:layout_marginTop="38dp"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/background_floating_material_dark"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/ask"
+            android:text="咨询"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@android:color/white"
+            android:gravity="center_horizontal|bottom"
+            android:drawablePadding="2dip"
+            android:paddingBottom="2dp"
+            android:drawableTop="@drawable/ic_person_outline_white_24dp"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/favorite"
+            android:text="收藏"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@android:color/white"
+            android:gravity="center_horizontal|bottom"
+            android:drawablePadding="2dip"
+            android:paddingBottom="2dp"
+            android:drawableTop="@drawable/ic_star_outline_white_24dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@id/shopcar"
+            android:textSize="@dimen/text_size_small"
+            android:text="库存"
+            android:textColor="@android:color/white"
+            android:gravity="center_horizontal|bottom"
+            android:drawablePadding="2dip"
+            android:paddingBottom="2dp"
+            android:drawableTop="@drawable/shopcar_bgc"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:id="@+id/tv_buy"
+            android:text="加入购物车"
+            android:textSize="@dimen/text_size_large"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_red_light"
+            android:gravity="center"/>
+    </LinearLayout>
+</RelativeLayout>

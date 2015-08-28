@@ -3,4 +3,9 @@
     <item name="flowlayout" type="id">false</item>
     <item name="recyclerview" type="id">false</item>
     <item name="swiperefreshlayout" type="id">false</item>
+    <item name="btn_back" type="id">false</item>
+    <item name="text_title" type="id">false</item>
+    <item name="action_bar" type="id">false</item>
+    <item name="favorite" type="id">false</item>
+    <item name="shopcar" type="id">false</item>
 </resources>

@@ -31,6 +31,7 @@ public class ADGroupCell extends FrameLayout {
         nameView.setSingleLine(true);
         nameView.setEllipsize(TextUtils.TruncateAt.END);
         nameView.setGravity((Gravity.LEFT) | Gravity.CENTER_VERTICAL);
+
         addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, (Gravity.LEFT) | Gravity.CENTER_VERTICAL, 16, 0, 72, 0));
 
         moreButton = new TextView(context);
@@ -42,6 +43,7 @@ public class ADGroupCell extends FrameLayout {
         moreButton.setSingleLine(true);
         moreButton.setText("更多");
         moreButton.setGravity(Gravity.CENTER);
+
         addView(moreButton, LayoutHelper.createFrame(48, 32, (Gravity.RIGHT) | Gravity.CENTER_VERTICAL, 0, 0, 16, 0));
 
     }

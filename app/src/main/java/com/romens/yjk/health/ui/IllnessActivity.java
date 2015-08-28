@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.romens.android.AndroidUtilities;
+import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.adapter.IllnessAdapter;
 import com.romens.yjk.health.ui.adapter.StoreAdapter;
@@ -68,7 +70,19 @@ public class IllnessActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_illness);
+        setContentView(R.layout.activity_illness,R.id.action_bar);
+
+        ActionBar actionBar = getMyActionBar();
+        actionBar.setTitle("某某疾病");
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+                if (id == -1) {
+                    finish();
+                } else if (id == 0) {
+                }
+            }
+        });
         swipeRefreshLayout= (SwipeRefreshLayout)findViewById(R.id.swiperefreshlayout);
         recyclerView= (RecyclerView)findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -147,7 +161,7 @@ public class IllnessActivity extends BaseActivity {
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.bottom = HomeStoreFragment.dip2px(IllnessActivity.this, 1);
+                outRect.bottom= AndroidUtilities.dp(1);
                 super.getItemOffsets(outRect, view, parent, state);
             }
         });

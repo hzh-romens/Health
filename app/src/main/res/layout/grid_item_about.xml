@@ -1,0 +1,53 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview"
+    android:layout_gravity="center"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardCornerRadius="4dp"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:padding="4dp"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:id="@+id/iv_medicinal"
+        android:layout_gravity="top|center_horizontal"
+        android:padding="4dp"
+        />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingRight="8dp"
+    android:paddingLeft="8dp">
+    <TextView
+        android:text="胃药胶囊"
+        android:textSize="@dimen/text_size_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_name"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:padding="3dp"/>
+        <TextView
+            android:text="￥21.0"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/hangout_green"
+            android:id="@+id/tv_price"
+            android:singleLine="true"
+            android:gravity="center_vertical|right"
+            android:padding="3dp"/>
+    </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
