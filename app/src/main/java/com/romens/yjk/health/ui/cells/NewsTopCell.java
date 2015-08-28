@@ -36,10 +36,10 @@ public class NewsTopCell extends FrameLayout {
 
         iconView = new BackupImageView(context);
         iconView.setRoundRadius(2);
-        addView(iconView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 132, Gravity.BOTTOM, 8, 0, 8, 0));
+        addView(iconView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 140, Gravity.BOTTOM, 8, 0, 8, 0));
 
         FrameLayout nameContainer = new FrameLayout(context);
-        nameContainer.setBackgroundColor(0x70000000);
+        nameContainer.setBackgroundColor(0x80000000);
         addView(nameContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM, 8, 0, 8, 0));
         nameView = new TextView(context);
         nameView.setTextColor(0xffffffff);
@@ -60,7 +60,7 @@ public class NewsTopCell extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(140) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
+        super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(156) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
     }
 
     @Override

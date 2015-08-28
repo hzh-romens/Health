@@ -84,6 +84,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:support-v4:+'
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.android.support:cardview-v7:+'
     compile 'com.android.support:palette-v7:+'
@@ -110,6 +111,8 @@ dependencies {
     //other
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.prolificinteractive:material-calendarview:0.7.0'
+    compile project(':MaterialDesign')
+    compile project(':datetimepicker')
 }
 
 
