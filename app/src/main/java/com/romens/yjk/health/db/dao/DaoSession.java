@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
+import com.romens.yjk.health.model.ShopCarTestEntity;
 
 import java.util.Map;
 
@@ -31,6 +32,9 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig locationAddressDaoConfig;
     private final LocationAddressDao locationAddressDao;
 
+    private final DaoConfig shoDaoConfig;
+    private final ShopCarDao shopCarDao;
+
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
@@ -49,12 +53,18 @@ public class DaoSession extends AbstractDaoSession {
         locationAddressDaoConfig.initIdentityScope(type);
         locationAddressDao = new LocationAddressDao(locationAddressDaoConfig, this);
         registerDao(LocationAddressEntity.class, locationAddressDao);
+
+        shoDaoConfig=daoConfigMap.get(ShopCarDao.class).clone();
+        shoDaoConfig.initIdentityScope(type);
+        shopCarDao=new ShopCarDao(shoDaoConfig,this);
+        registerDao(ShopCarTestEntity.class,shopCarDao);
     }
 
     public void clear() {
         discoveryDaoConfig.getIdentityScope().clear();
         drugGroupDaoConfig.getIdentityScope().clear();
         locationAddressDaoConfig.getIdentityScope().clear();
+        shoDaoConfig.getIdentityScope().clear();
     }
 
     public DiscoveryDao getDiscoveryDao() {
@@ -67,6 +77,9 @@ public class DaoSession extends AbstractDaoSession {
 
     public LocationAddressDao getLocationAddressDao() {
         return locationAddressDao;
+    }
+    public ShopCarDao getShopCarDao(){
+        return  shopCarDao;
     }
 
 }
