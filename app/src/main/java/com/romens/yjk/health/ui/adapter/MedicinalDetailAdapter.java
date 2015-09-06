@@ -3,8 +3,10 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +21,8 @@ import com.romens.yjk.health.ui.components.ModifyGridView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.widget.AbsListView.*;
 
 /**
  * Created by romens007 on 2015/8/17.
@@ -60,7 +64,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             view = View.inflate(mContext, R.layout.list_item_medicinal_store, null);
             holder = new StoreHolder(view);
         } else if (viewType == 7) {
-            view = View.inflate(mContext, R.layout.list_item_medicinalmore, null);
+            view = View.inflate(mContext, R.layout.list_item_medicinal_more, null);
             holder = new MoreHolder(view);
         } else if(viewType==8){
             view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
@@ -70,7 +74,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             holder=new EmptyHolder(view);
         }
         //        不知道为什么在xml设置的“android:layout_width="match_parent"”无效了，需要在这里重新设置
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
         return holder;
     }
@@ -85,7 +89,6 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
                 imageHolder.iv.setImageBitmap(ImageUtils.bindLocalImage(imageUrl));
                 Drawable defaultDrawable = imageHolder.iv.getDrawable();
                 ImageManager.loadForView(mContext, imageHolder.iv,imageUrl, defaultDrawable, defaultDrawable);
-
                 break;
             case 1:
                 informationHolder inforHolder = (informationHolder) holder;
@@ -123,7 +126,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
                 datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
                 datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
                 datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+            //  datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
                 GridViewAdapter gridViewAdapter = new GridViewAdapter(datas, mContext);
                 holders.gridView.setAdapter(gridViewAdapter);
                 break;

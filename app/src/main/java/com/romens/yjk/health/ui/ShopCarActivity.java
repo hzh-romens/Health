@@ -124,8 +124,8 @@ public class ShopCarActivity extends BaseActivity {
                 Toast.makeText(ShopCarActivity.this,"功能暂未开放",Toast.LENGTH_SHORT).show();
                 List<ShopCarTestEntity> datas = shopCarAdapter.getDatas();
                 if(datas!=null){
-                    ShopCarDao shopCarDao = DBInterface.instance().openWritableDb().getShopCarDao();
-                    shopCarDao.insertOrReplaceInTx(datas);
+                   // ShopCarDao shopCarDao = DBInterface.instance().openWritableDb().getShopCarDao();
+                    //shopCarDao.insertOrReplaceInTx(datas);
 
             }
             }

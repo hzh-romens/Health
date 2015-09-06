@@ -67,7 +67,7 @@ public class MedicinalDetailActivity extends BaseActivity implements AppNotifica
         data.add(new TestEntity(7, "更多", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
         data.add(new TestEntity(4, "", "", ""));
         data.add(new TestEntity(5, "推荐药品", "", ""));
-        data.add(new TestEntity(8, "青霉素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "￥40"));
+        data.add(new TestEntity(8, "青霉素", "http://img.yy960.com/2013/03/20130326132534.JPG", "￥40"));
         medicinalDetailAdapter = new MedicinalDetailAdapter(data, MedicinalDetailActivity.this);
         recyclerView.setAdapter(medicinalDetailAdapter);
 
