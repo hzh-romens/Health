@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
-import com.romens.yjk.health.model.ShopCarTestEntity;
+import com.romens.yjk.health.db.entity.RemindEntity;
 
 import java.util.Map;
 
@@ -32,8 +32,8 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig locationAddressDaoConfig;
     private final LocationAddressDao locationAddressDao;
 
-    private final DaoConfig shoDaoConfig;
-    private final ShopCarDao shopCarDao;
+    private final RemindDao remindDao;
+    private final DaoConfig remindDaoConfig;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -54,17 +54,16 @@ public class DaoSession extends AbstractDaoSession {
         locationAddressDao = new LocationAddressDao(locationAddressDaoConfig, this);
         registerDao(LocationAddressEntity.class, locationAddressDao);
 
-        shoDaoConfig=daoConfigMap.get(ShopCarDao.class).clone();
-        shoDaoConfig.initIdentityScope(type);
-        shopCarDao=new ShopCarDao(shoDaoConfig,this);
-        registerDao(ShopCarTestEntity.class,shopCarDao);
+        remindDaoConfig = daoConfigMap.get(RemindDao.class).clone();
+        remindDao=new RemindDao(remindDaoConfig,this);
+        registerDao(RemindEntity.class,remindDao);
     }
 
     public void clear() {
         discoveryDaoConfig.getIdentityScope().clear();
         drugGroupDaoConfig.getIdentityScope().clear();
         locationAddressDaoConfig.getIdentityScope().clear();
-        shoDaoConfig.getIdentityScope().clear();
+        remindDaoConfig.getIdentityScope().clear();
     }
 
     public DiscoveryDao getDiscoveryDao() {
@@ -78,8 +77,8 @@ public class DaoSession extends AbstractDaoSession {
     public LocationAddressDao getLocationAddressDao() {
         return locationAddressDao;
     }
-    public ShopCarDao getShopCarDao(){
-        return  shopCarDao;
-    }
 
+    public RemindDao getRemindDao() {
+        return remindDao;
+    }
 }

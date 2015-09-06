@@ -355,7 +355,7 @@ public class LocationActivity extends BaseActivity {
                 public void onClick(View v) {
                     if (myLocation != null) {
 //                        try {
-//                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(String.format(Locale.US, "http://maps.google.com/maps?saddr=%f,%f&daddr=%f,%f", myLocation.getLatitude(), myLocation.getLongitude(), messageObject.messageOwner.media.geo.lat, messageObject.messageOwner.media.geo._long)));
+//                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(String.dateFormat(Locale.US, "http://maps.google.com/maps?saddr=%f,%f&daddr=%f,%f", myLocation.getLatitude(), myLocation.getLongitude(), messageObject.messageOwner.media.geo.lat, messageObject.messageOwner.media.geo._long)));
 //                            getParentActivity().startActivity(intent);
 //                        } catch (Exception e) {
 //                            FileLog.e("LocationActivity", e);

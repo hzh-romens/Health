@@ -1,11 +1,13 @@
 package com.romens.yjk.health.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,10 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +43,8 @@ public class RemindActivity extends BaseActivity {
         adapter = new RemindAdapter(data, this);
         actionBar = getMyActionBar();
         listView = (RecyclerView) findViewById(R.id.remind_list);
-        setAdapter();
+        listView.setAdapter(adapter);
+        setListVewBackground();
 
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listView.addItemDecoration(new RemindItemDecoration(AndroidUtilities.dp(10), AndroidUtilities.dp(20), data.size()));
@@ -56,36 +60,38 @@ public class RemindActivity extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 1) {
-                    Intent intent = new Intent(RemindActivity.this, AddRemindActivity.class);
-                    startActivityForResult(intent, 1);
+                    startActivity(new Intent(RemindActivity.this, AddRemindActivity.class));
                 }
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 1) {
-            Bundle bundle = data.getBundleExtra("bundle");
-            RemindEntity entity = (RemindEntity) bundle.getSerializable("entity");
-            this.data.add(entity);
-            adapter.notifyDataSetChanged();
-            setAdapter();
-        }
+    protected void onRestart() {
+        super.onRestart();
+        initData();
+        adapter.setData(data);
+        adapter.notifyDataSetChanged();
+        setListVewBackground();
     }
 
-    private void setAdapter() {
-        listView.setAdapter(adapter);
+    private void initData() {
+        RemindDao remindDao = DBInterface.instance().openReadableDb().getRemindDao();
+        data = remindDao.readDb(remindDao);
+    }
+
+//    private List<RemindEntity> readDb() {
+//        RemindDao remindDao = DBInterface.instance().openReadableDb().getRemindDao();
+//        List<RemindEntity> entities = remindDao.queryBuilder().orderDesc(RemindDao.Properties.Id).list();
+//        return entities;
+//    }
+
+    private void setListVewBackground() {
         if (data.size() <= 0) {
             listView.setBackgroundResource(R.drawable.guide_1);
         } else {
             listView.setBackgroundColor(0xdddddd);
         }
-    }
-
-    private void initData() {
-        data = new ArrayList<>();
     }
 
     class RemindItemDecoration extends RecyclerView.ItemDecoration {
@@ -115,6 +121,10 @@ public class RemindActivity extends BaseActivity {
 
         private List<RemindEntity> data;
         private Context context;
+
+        public void setData(List<RemindEntity> data) {
+            this.data = data;
+        }
 
         public RemindAdapter(List<RemindEntity> data, Context context) {
             this.data = data;
