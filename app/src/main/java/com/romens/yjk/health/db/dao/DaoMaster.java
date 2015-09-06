@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.romens.yjk.health.BuildConfig;
-
 import de.greenrobot.dao.AbstractDaoMaster;
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 
@@ -24,7 +22,7 @@ public class DaoMaster extends AbstractDaoMaster {
         DiscoveryDao.createTable(db, ifNotExists);
         DrugGroupDao.createTable(db,ifNotExists);
         LocationAddressDao.createTable(db,ifNotExists);
-
+        RemindDao.createTable(db,ifNotExists);
     }
     
     /** Drops underlying database table using DAOs. */
@@ -32,12 +30,14 @@ public class DaoMaster extends AbstractDaoMaster {
         DiscoveryDao.dropTable(db, ifExists);
         DrugGroupDao.dropTable(db,ifExists);
         LocationAddressDao.dropTable(db,ifExists);
+        RemindDao.dropTable(db,ifExists);
     }
 
     public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion){
         DiscoveryDao.upgradeTable(db, oldVersion, newVersion);
         DrugGroupDao.upgradeTable(db,oldVersion,newVersion);
         LocationAddressDao.upgradeTable(db,oldVersion,newVersion);
+        RemindDao.upgradeTable(db,oldVersion,newVersion);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -62,7 +62,7 @@ public class DaoMaster extends AbstractDaoMaster {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
-            upgradeAllTables(db, oldVersion, newVersion);
+            upgradeAllTables(db, oldVersion,newVersion);
         }
     }
 
@@ -71,6 +71,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(DiscoveryDao.class);
         registerDaoClass(DrugGroupDao.class);
         registerDaoClass(LocationAddressDao.class);
+        registerDaoClass(RemindDao.class);
     }
     
     public DaoSession newSession() {

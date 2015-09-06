@@ -1,47 +1,39 @@
 package com.romens.yjk.health.ui;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
-import android.content.Context;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateChangedListener;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.library.datetimepicker.date.DatePickerDialog;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
-import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
-import com.romens.yjk.health.ui.utils.UIUtils;
+import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
+import com.romens.yjk.health.ui.cells.ChooseUserPopupWindow;
+import com.romens.yjk.health.ui.components.AddRemindCallback;
+import com.romens.yjk.health.ui.components.RemindReceiver;
+import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,25 +44,38 @@ import java.util.List;
  * Created by anlc on 2015/8/21.
  * 添加提醒页面
  */
-public class AddRemindActivity extends BaseActivity implements View.OnClickListener {
+public class AddRemindActivity extends BaseActivity implements View.OnClickListener,
+        DatePickerDialog.OnDateSetListener, AddRemindCallback {
 
-    private TextView chooseUser;
-    private TextView chooseDrug;
     private RelativeLayout dayLayout;
     private RelativeLayout countLayout;
     private RelativeLayout remindLayout;
     private RelativeLayout startDateLayout;
+    private TextView chooseUser;
+    private TextView chooseDrug;
     private TextView timesHint;
     private TextView days;
     private TextView counts;
-    private TextView startDate;
+    private TextView startDateView;
     private EditText editUser;
     private EditText editDrug;
     private Switch remindFlag;
+    private Button deleteBtn;
+
     private List<String> data;
     private int day = 1;
     private int oldDay = 1;
     private int oldTimes = 1;
+
+    private int startRemindYear;
+    private int startRemindMouth;
+    private int startRemindDay;
+    private int startRemindHour;
+    private int startRemindMinute;
+
+    private int isRemind = 0;
+    private List<String> timesData;
+    private List<String> timesDataTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,39 +84,65 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         ActionBar actionBar = getMyActionBar();
 
         initData();
+        initView();
+        actionBarEvent(actionBar);
 
-        chooseUser = (TextView) findViewById(R.id.add_remind_chooseuser);
-        chooseDrug = (TextView) findViewById(R.id.add_remind_choosedrug);
-        editUser = (EditText) findViewById(R.id.add_remind_edituser);
-        editDrug = (EditText) findViewById(R.id.add_remind_editdrug);
-        days = (TextView) findViewById(R.id.add_remind_days);
-        counts = (TextView) findViewById(R.id.add_remind_counts);
-        timesHint = (TextView) findViewById(R.id.add_remind_timeshint);
-        startDate = (TextView) findViewById(R.id.add_remind_startdate);
-        remindFlag = (Switch) findViewById(R.id.add_remind_remindflag);
+        isRemindDetailFrom();
+    }
 
-        dayLayout = (RelativeLayout) findViewById(R.id.day_layout);
-        countLayout = (RelativeLayout) findViewById(R.id.count_layout);
-        remindLayout = (RelativeLayout) findViewById(R.id.remind_layout);
-        startDateLayout = (RelativeLayout) findViewById(R.id.start_date_layout);
+    /**
+     * 判断intent是否有值
+     * 有：说明从详情页跳转过来，要编辑的
+     * 无：说明是新增的
+     */
+    private void isRemindDetailFrom() {
+        Intent intent = getIntent();
+        RemindEntity entity = (RemindEntity) intent.getSerializableExtra("editEntity");
+        if (entity != null) {
+            viewSetData(entity);
+        }
+    }
 
-        chooseDrug.setOnClickListener(this);
-        chooseUser.setOnClickListener(this);
-        dayLayout.setOnClickListener(this);
-        countLayout.setOnClickListener(this);
-        remindLayout.setOnClickListener(this);
-        startDateLayout.setOnClickListener(this);
-
-        remindFlag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private void viewSetData(final RemindEntity entity) {
+        deleteBtn = (Button) findViewById(R.id.add_remind_deleteBtn);
+        deleteBtn.setVisibility(View.VISIBLE);
+        editUser.setText(entity.getUser());
+        editDrug.setText(entity.getDrug());
+        timesHint.setText(entity.getCount());
+        startDateView.setText(TransformDateUitls.getYearDate(Long.parseLong(entity.getStartDate())));
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Toast.makeText(AddRemindActivity.this, "-->" + isChecked, Toast.LENGTH_SHORT).show();
-                    setRemind();
-                }
+            public void onClick(View v) {
+                updateDb(entity);
+                Intent toRemindIntent = new Intent(AddRemindActivity.this, RemindActivity.class);
+                toRemindIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(toRemindIntent);
             }
         });
+        timesData = new ArrayList<>();
+        timesData.add(entity.getFirstTime());
+        if (!entity.getSecondtime().equals("-1")) {
+            timesData.add(entity.getSecondtime());
+        }
+        if (!entity.getThreeTime().equals("-1")) {
+            timesData.add(entity.getThreeTime());
+        }
+        if (!entity.getFourTime().equals("-1")) {
+            timesData.add(entity.getFourTime());
+        }
+        if (!entity.getFiveTime().equals("-1")) {
+            timesData.add(entity.getFiveTime());
+        }
+        counts.setText(timesData.size() + "次");
+        timesDataTemp.clear();
+        for (int j = 0; j < timesData.size(); j++) {
+            if (!timesData.get(j).equals("-1")) {
+                timesDataTemp.add(timesData.get(j));
+            }
+        }
+    }
 
+    private void actionBarEvent(ActionBar actionBar) {
         actionBar.setTitle("新增提醒");
         actionBar.setBackgroundResource(R.color.theme_primary);
         actionBar.setMinimumHeight(AndroidUtilities.dp(100));
@@ -130,70 +161,184 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
                     } else if (drugStr.equals("获取药物") || drugStr.equals("")) {
                         Toast.makeText(AddRemindActivity.this, "请输入药物", Toast.LENGTH_SHORT).show();
                     } else {
-                        RemindEntity entity = new RemindEntity();
-                        entity.setUserIcon(R.drawable.person_image_empty);
-                        entity.setUser(editUser.getText().toString());
-                        entity.setDrug(editDrug.getText().toString());
-                        entity.setCount(day + "天" + oldTimes + "次");
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("entity", entity);
-                        Intent intent = new Intent(AddRemindActivity.this, RemindActivity.class);
-                        intent.putExtra("bundle", bundle);
-                        setResult(1, intent);
-                        finish();
+                        saveAddFinish();
                     }
                 }
             }
         });
     }
 
-    public void setRemind() {
-
+    //保存到数据库并退出当前的activity
+    private void saveAddFinish() {
+        for (int i = 0; i < timesDataTemp.size(); i++) {
+            timesData.set(i, timesDataTemp.get(i));
+        }
+        RemindEntity entity = new RemindEntity();
+        entity.setUserIcon(R.drawable.person_image_empty);
+        entity.setUser(editUser.getText().toString());
+        entity.setDrug(editDrug.getText().toString());
+        entity.setCount("每" + day + "天服用" + oldTimes + "次");
+        entity.setStartDate(getStartDate() + "");
+        int times = timesData.size();
+        entity.setFirstTime(timesData.get(0));
+        entity.setSecondtime(timesData.get(1));
+        entity.setThreeTime(timesData.get(2));
+        entity.setFourTime(timesData.get(3));
+        entity.setFiveTime(timesData.get(4));
+        entity.setTimes(times);
+        entity.setIsRemind(isRemind);
+        if (isRemind == 1) {
+            setRemind(entity);
+        }
+        writeDb(entity);
+        finish();
     }
 
+    private void initView() {
+        chooseUser = (TextView) findViewById(R.id.add_remind_chooseuser);
+        chooseDrug = (TextView) findViewById(R.id.add_remind_choosedrug);
+        editUser = (EditText) findViewById(R.id.add_remind_edituser);
+        editDrug = (EditText) findViewById(R.id.add_remind_editdrug);
+        days = (TextView) findViewById(R.id.add_remind_days);
+        counts = (TextView) findViewById(R.id.add_remind_counts);
+        timesHint = (TextView) findViewById(R.id.add_remind_timeshint);
+        startDateView = (TextView) findViewById(R.id.add_remind_startdate);
+        remindFlag = (Switch) findViewById(R.id.add_remind_remindflag);
+        dayLayout = (RelativeLayout) findViewById(R.id.day_layout);
+        countLayout = (RelativeLayout) findViewById(R.id.count_layout);
+        remindLayout = (RelativeLayout) findViewById(R.id.remind_layout);
+        startDateLayout = (RelativeLayout) findViewById(R.id.start_date_layout);
+        chooseDrug.setOnClickListener(this);
+        chooseUser.setOnClickListener(this);
+        dayLayout.setOnClickListener(this);
+        countLayout.setOnClickListener(this);
+        remindLayout.setOnClickListener(this);
+        startDateLayout.setOnClickListener(this);
+        remindFlag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isRemind = 1;
+                }
+            }
+        });
+        startDateView.setText(getCurrentTime());
+    }
+
+    public String getStartDate() {
+        //需在设置完每个时间的字段后调用
+        long startDate_long = 0;
+        String startDate_Str = startRemindYear + "-" + startRemindMouth + "-" + startRemindDay + " " + startRemindHour + ":" + startRemindMinute;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            Date date = format.parse(startDate_Str);
+            startDate_long = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return startDate_long + "";
+    }
+
+    //获得当前时间
+    public String getCurrentTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        startRemindYear = calendar.get(Calendar.YEAR);
+        startRemindMouth = calendar.get(Calendar.MONTH) + 1;
+        startRemindDay = calendar.get(Calendar.DAY_OF_MONTH);
+        startRemindHour = calendar.get(Calendar.HOUR_OF_DAY);
+        startRemindMinute = calendar.get(Calendar.MINUTE);
+        return startRemindYear + "-" + startRemindMouth + "-" + startRemindDay;
+    }
+
+    //添加提醒到系统中
+    public void setRemind(RemindEntity entity) {
+        Intent intent = new Intent(AddRemindActivity.this, RemindReceiver.class);
+        PendingIntent sender = PendingIntent.getBroadcast(AddRemindActivity.this, 0, intent, 0);
+
+        Calendar currentDate = Calendar.getInstance();
+
+        Date startDateTemp = TransformDateUitls.getDate(Long.parseLong(entity.getStartDate()));
+        String startDateStr = TransformDateUitls.getLong(startDateTemp);
+
+        long date = TransformDateUitls.getDate(startDateStr);
+        long firstTime = TransformDateUitls.getTimeLong(entity.getFirstTime());
+        long firstLong = (date + firstTime) + currentDate.getTimeZone().getRawOffset();
+
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, firstLong, 50000, sender);
+
+//        String secondTime=entity.getSecondtime();
+//        if(!secondTime.equals("-1")){
+//            manager.setRepeating(AlarmManager.RTC_WAKEUP, firstLong+5000, 50000, sender);
+//        }
+    }
+
+    //设置标题中的内容
     public void setTimesHint() {
         timesHint.setText("每" + day + "天服用" + oldTimes + "次");
     }
 
     private void initData() {
         data = new ArrayList<>();
-        data.add("其他人");
         data.add("我");
+        timesData = new ArrayList<>();
+        timesDataTemp = new ArrayList<>();
+        timesDataTemp.add("08:30");
+        for (int i = 0; i < 5; i++) {
+            timesData.add("-1");
+        }
+    }
+
+    private void writeDb(RemindEntity entity) {
+        RemindDao remindDao = DBInterface.instance().openReadableDb().getRemindDao();
+        remindDao.insert(entity);
+    }
+
+    private void updateDb(RemindEntity entity) {
+        RemindDao deleteDao = DBInterface.instance().openReadableDb().getRemindDao();
+        deleteDao.delete(entity);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_remind_chooseuser:
-                MyPopupWindow popupWindow = new MyPopupWindow(this, data);
+                ChooseUserPopupWindow popupWindow = new ChooseUserPopupWindow(this, data);
                 popupWindow.show(chooseUser);
                 break;
             case R.id.add_remind_choosedrug:
-                View view = LayoutInflater.from(this).inflate(R.layout.dialog_search_drug, null);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(AddRemindActivity.this, SearchActivity.class));
-                    }
-                });
-                simpleDialog(view);
+                chooseUserDialog();
                 break;
             case R.id.day_layout:
-                dayLayoutClick();
+                showCountDialog();
                 break;
             case R.id.count_layout:
-                timesDialog();
+                new AddRemindTimesDailog(this, timesDataTemp, oldTimes).show();
                 break;
             case R.id.remind_layout:
                 break;
             case R.id.start_date_layout:
-                SimpleCalendarDialogFragment fragment = new SimpleCalendarDialogFragment();
-                fragment.show(getSupportFragmentManager(), "calendar_dialog");
+                showDatePickerDialog();
+                startDateLayout.setClickable(false);
                 break;
         }
     }
 
-    public void dayLayoutClick(){
+    //选择用户的dialog
+    private void chooseUserDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_search_drug, null);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AddRemindActivity.this, SearchActivity.class));
+            }
+        });
+        simpleDialog(view);
+    }
+
+    //选择间隔几天提示dialog
+    public void showCountDialog() {
         oldDay = day;
         final View dayview = LayoutInflater.from(this).inflate(R.layout.dialog_day_count, null);
         final Dialog dialog = simpleDialog(dayview);
@@ -230,36 +375,50 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
+    public static final String DATEPICKER_TAG = "datepicker";
     private String dateStr;
 
-    class SimpleCalendarDialogFragment extends DialogFragment implements OnDateChangedListener {
-        DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
-        private Button finish;
+    //选择日期的dialog
+    public void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), true);
+        datePickerDialog.setVibrate(true);
+        datePickerDialog.setYearRange(1985, 2028);
+        datePickerDialog.setCloseOnSingleTapDay(false);
+        datePickerDialog.show(getSupportFragmentManager(), DATEPICKER_TAG);
+        datePickerDialog.setOnDateSetListener(this);
+    }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.dialog_calendar, container, false);
-        }
+    @Override
+    public void setEditUserText(String str) {
+        editUser.setText(str);
+    }
 
-        @Override
-        public void onViewCreated(View view, Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-            MaterialCalendarView widget = (MaterialCalendarView) view.findViewById(R.id.calendarView);
-            widget.setOnDateChangedListener(this);
-            finish = (Button) view.findViewById(R.id.calendar_finish);
-            finish.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startDate.setText(dateStr);
-                    dismiss();
-                }
-            });
-        }
+    @Override
+    public void setCountsText(int oldTimes) {
+        this.oldTimes = oldTimes;
+        counts.setText(oldTimes + "次");
+    }
 
-        @Override
-        public void onDateChanged(@NonNull MaterialCalendarView widget, CalendarDay date) {
-            dateStr=FORMATTER.format(date.getDate());
-        }
+    @Override
+    public void setTimesHintText(int oldTimes) {
+        this.oldTimes = oldTimes;
+        setTimesHint();
+    }
+
+    @Override
+    public void setTimesDate(List<String> timesData) {
+        this.timesDataTemp = timesData;
+    }
+
+    @Override//选择完日期调用的方法
+    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        startRemindYear = year;
+        startRemindMouth = month + 1;
+        startRemindDay = day;
+        dateStr = TransformDateUitls.getYearDate(Long.parseLong(getStartDate()));
+        startDateView.setText(dateStr);
+        startDateLayout.setClickable(true);
     }
 
     public Dialog simpleDialog(View view) {
@@ -267,187 +426,5 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         dialog.show();
         dialog.getWindow().setContentView(view);
         return dialog;
-    }
-
-    public void timesDialog() {
-        //设置1天的提醒次数的dialog
-        final List<String> timesData = new ArrayList<>();
-        timesData.add("08:30");
-
-        final Dialog timesCountDialog = new AlertDialog.Builder(this).create();
-        View timesCountView = LayoutInflater.from(this).inflate(R.layout.dialog_times_count, null);
-        ListView timesList = (ListView) timesCountView.findViewById(R.id.times_count_list);
-        final TimesAdapter adapter = new TimesAdapter(timesData, this);
-        timesList.setAdapter(adapter);
-
-        ImageView minusBtn = (ImageView) timesCountView.findViewById(R.id.times_count_minus);
-        ImageView addBtn = (ImageView) timesCountView.findViewById(R.id.times_count_add);
-        TextView cancel = (TextView) timesCountView.findViewById(R.id.times_count_cancel);
-        TextView confirm = (TextView) timesCountView.findViewById(R.id.times_count_confirm);
-        final TextView times = (TextView) timesCountView.findViewById(R.id.times_count_count);
-        oldTimes = timesData.size();
-        minusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (timesData.size() > 0) {
-                    timesData.remove(timesData.size() - 1);
-                    times.setText(timesData.size() + "次");
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                timesData.add("08:30");
-                times.setText(timesData.size() + "次");
-                adapter.notifyDataSetChanged();
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                counts.setText(oldTimes + "次");
-                timesCountDialog.dismiss();
-            }
-        });
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oldTimes = timesData.size();
-                counts.setText(oldTimes + "次");
-                setTimesHint();
-                timesCountDialog.dismiss();
-                Toast.makeText(AddRemindActivity.this, "click_ok", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        timesCountDialog.show();
-        timesCountDialog.getWindow().setContentView(timesCountView);
-    }
-
-    class TimesAdapter extends BaseAdapter {
-        //设置1天的提醒次数的适配器
-        private List<String> data;
-        private Context context;
-
-        public TimesAdapter(List<String> data, Context context) {
-            this.data = data;
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return data.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return data.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            TimesViewHolder holder = null;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.list_item_text, null);
-                holder = new TimesViewHolder();
-                holder.textView = (TextView) convertView.findViewById(R.id.list_item_text);
-                convertView.setTag(holder);
-            } else {
-                holder = (TimesViewHolder) convertView.getTag();
-            }
-            holder.textView.setText(data.get(position));
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "-->" + position, Toast.LENGTH_SHORT).show();
-                }
-            });
-            return convertView;
-        }
-    }
-
-    class TimesViewHolder {
-        private TextView textView;
-    }
-
-    class MyPopupWindow {
-        //选择提醒用户的弹窗
-        private Context context;
-        private ListView listView;
-        private LinearLayout layout;
-        private List<String> data;
-        private PopupAdapter adapter;
-        private PopupWindow popupWindow;
-
-        public MyPopupWindow(Context context, final List<String> data) {
-            this.context = context;
-            this.data = data;
-            listView = new ListView(context);
-            listView.setDividerHeight(0);
-            listView.setDivider(null);
-            listView.setScrollbarFadingEnabled(false);
-            layout = new LinearLayout(context);
-            layout.addView(listView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
-            adapter = new PopupAdapter();
-            listView.setAdapter(adapter);
-
-            popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layout.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int width = layout.getMeasuredWidth();
-            popupWindow.setWidth(width);
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    editUser.setText(data.get(position));
-                    popupWindow.dismiss();
-                }
-            });
-        }
-
-        public void show(View view) {
-            popupWindow.setFocusable(true);
-            popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.drug_type_child));
-            popupWindow.showAsDropDown(view);
-        }
-
-        class PopupAdapter extends BaseAdapter {
-
-            @Override
-            public int getCount() {
-                return data.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return data.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                LinearLayout linearLayout = new LinearLayout(context);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                TextView textView = new TextView(context);
-                textView.setText(data.get(position));
-                textView.setPadding(AndroidUtilities.dp(20), AndroidUtilities.dp(10), AndroidUtilities.dp(20), AndroidUtilities.dp(10));
-                textView.setTextSize(16);
-                textView.setLayoutParams(params);
-                textView.setGravity(Gravity.CENTER);
-                linearLayout.addView(textView);
-                return linearLayout;
-            }
-        }
     }
 }

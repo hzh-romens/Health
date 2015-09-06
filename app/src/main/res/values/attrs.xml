@@ -2,23 +2,23 @@
 <resources>
 
     <!--<declare-styleable name="AppTheme">-->
-        <!--<attr name="actionBarOverlayTopOffset" format="dimension" />-->
-        <!--<attr name="tab_indicator" format="color" />-->
-        <!--<attr name="color_primary" format="color" />-->
-        <!--<attr name="tab_layout_background" format="color" />-->
-        <!--<attr name="btnBarItemBackground" format="reference" />-->
+        <!--<attr name="actionBarOverlayTopOffset" dateFormat="dimension" />-->
+        <!--<attr name="tab_indicator" dateFormat="color" />-->
+        <!--<attr name="color_primary" dateFormat="color" />-->
+        <!--<attr name="tab_layout_background" dateFormat="color" />-->
+        <!--<attr name="btnBarItemBackground" dateFormat="reference" />-->
 
-        <!--<attr name="actionBarIconColor" format="color" />-->
-        <!--<attr name="actionBarInsetStart" format="dimension" />-->
-        <!--<attr name="spinnerBarInsetStart" format="dimension" />-->
-        <!--<attr name="popupItemBackground" format="reference" />-->
-        <!--<attr name="photoItemForeground" format="reference" />-->
-        <!--<attr name="photoItemForegroundBorderless" format="reference" />-->
+        <!--<attr name="actionBarIconColor" dateFormat="color" />-->
+        <!--<attr name="actionBarInsetStart" dateFormat="dimension" />-->
+        <!--<attr name="spinnerBarInsetStart" dateFormat="dimension" />-->
+        <!--<attr name="popupItemBackground" dateFormat="reference" />-->
+        <!--<attr name="photoItemForeground" dateFormat="reference" />-->
+        <!--<attr name="photoItemForegroundBorderless" dateFormat="reference" />-->
 
-        <!--<attr name="bottomToolBar" format="reference" />-->
-        <!--<attr name="bottomToolButton" format="reference" />-->
+        <!--<attr name="bottomToolBar" dateFormat="reference" />-->
+        <!--<attr name="bottomToolButton" dateFormat="reference" />-->
 
-        <!--<attr name="isFloatingWindow" format="boolean" />-->
+        <!--<attr name="isFloatingWindow" dateFormat="boolean" />-->
 
     <!--</declare-styleable>-->
 
@@ -55,7 +55,7 @@
         <!-- Drawable to be used to draw shadow dropped by content view to actions one. -->
         <attr name="shadow_drawable" format="reference" />
         <!-- Shadow width. -->
-        <!--<attr name="shadow_width" format="dimension" />-->
+        <!--<attr name="shadow_width" dateFormat="dimension" />-->
     </declare-styleable>
     <declare-styleable name="ActionBar_Bottom">
         <attr name="action_item_layout" format="reference" />

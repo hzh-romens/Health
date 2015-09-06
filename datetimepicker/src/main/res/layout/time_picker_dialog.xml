@@ -32,7 +32,7 @@
             android:layout_gravity="center" />
     </FrameLayout>
 
-    <com.sleepbot.datetimepicker.time.RadialPickerLayout
+    <com.romens.android.library.datetimepicker.time.RadialPickerLayout
         android:id="@+id/time_picker"
         android:layout_height="@dimen/picker_dimen"
         android:layout_width="wrap_content"

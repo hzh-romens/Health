@@ -278,6 +278,20 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerHorizontal="true" />
                 </RelativeLayout>
+
+                <Button
+                    android:id="@+id/add_remind_deleteBtn"
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@id/remind_layout"
+                    android:layout_marginLeft="70dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/btn_primary"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/abc_text_size_body_1_material"
+                    android:text="删  除" />
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

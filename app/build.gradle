@@ -110,6 +110,7 @@ dependencies {
     //other
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.prolificinteractive:material-calendarview:0.7.0'
+    compile project(':datetimepicker')
 }
 
 

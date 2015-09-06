@@ -187,6 +187,7 @@
     <orderEntry type="library" exported="" name="okio-1.4.0" level="project" />
     <orderEntry type="module" module-name="romens.extend.scanner" exported="" />
     <orderEntry type="module" module-name="romens.android" exported="" />
+    <orderEntry type="module" module-name="datetimepicker" exported="" />
     <orderEntry type="library" exported="" name="romens.android-unspecified" level="project" />
   </component>
 </module>
