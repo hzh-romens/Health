@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/YJKHealth.iml" filepath="$PROJECT_DIR$/YJKHealth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MaterialDesign/MaterialDesign.iml" filepath="$PROJECT_DIR$/MaterialDesign/MaterialDesign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/YJKHealthForAndroid.iml" filepath="$PROJECT_DIR$/YJKHealthForAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/datetimepicker/datetimepicker.iml" filepath="$PROJECT_DIR$/datetimepicker/datetimepicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/romens.android/romens.android.iml" filepath="$PROJECT_DIR$/romens.android/romens.android.iml" />
       <module fileurl="file://$PROJECT_DIR$/romens.extend.scanner/romens.extend.scanner.iml" filepath="$PROJECT_DIR$/romens.extend.scanner/romens.extend.scanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
     </modules>
   </component>
 </project>

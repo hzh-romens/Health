@@ -23,6 +23,7 @@ import com.romens.android.ui.support.widget.RecyclerView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.model.HealthNewsEntity;
 import com.romens.yjk.health.ui.cells.NewsCell;
 import com.romens.yjk.health.ui.cells.NewsTopCell;
@@ -115,11 +116,12 @@ public class HealthNewsActivity extends BaseActivity {
         return refreshLayout.isRefreshing();
     }
 
+
     private void requestData() {
         changeRefreshState(true);
         long lastTime = Calendar.getInstance().getTimeInMillis();
         Map<String, Object> args = new HashMap<>();
-        args.put("TIME", "1436514695");
+        args.put("TIME", lastTime);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetHealthInfoList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -148,6 +150,14 @@ public class HealthNewsActivity extends BaseActivity {
         adapter.bindData(entities);
         adapter.notifyDataSetChanged();
         changeRefreshState(false);
+    }
+
+    @Override
+    public void onDestroy() {
+       if(handleJsonThread!=null){
+           handleJsonThread.interrupt();
+       }
+        super.onDestroy();
     }
 
     private void handleResponseData(final String data) {

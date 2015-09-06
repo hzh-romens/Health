@@ -32,6 +32,7 @@ import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.utils.DialogUtils;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +50,19 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     private final SparseBooleanArray itemStates = new SparseBooleanArray();
 
 
+    public List<ShopCarTestEntity> getDatas(){
+        List<ShopCarTestEntity> datas=new ArrayList<ShopCarTestEntity>();
+        if(mDatas!=null) {
+            for (int i = 0; i < mDatas.size(); i++) {
+                mDatas.get(i).setCode("");
+                datas.add(mDatas.get(i));
+            }
+            return datas;
+        }else{
+            return null;
+        }
 
+    }
     public boolean isAllSelected() {
         int index = itemStates.indexOfValue(false);
         return index < 0;
@@ -75,8 +88,9 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
         itemStates.clear();
         int size = datas == null ? 0 : datas.size();
         for (int i = 0; i < size; i++) {
-            itemStates.put(i, datas.get(i).getCheck());
-            if (datas.get(i).getCheck()) {
+
+            itemStates.put(i,Boolean.parseBoolean(datas.get(i).getCheck()));
+            if (Boolean.parseBoolean(datas.get(i).getCheck())) {
                 allMoney = allMoney + datas.get(i).getPrice() * datas.get(i).getNum();
             }
         }
@@ -95,6 +109,7 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
                 all = all + prices;
 
             }
+            mDatas.get(i).setCheck(value+"");
         }
         allMoney=all;
         updateData();
@@ -118,6 +133,7 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
         }
         s = allMoney + "";
         updateMoney(s);
+        mDatas.get(position).setCheck(value + "");
     }
 
     private void updateMoney(String s) {
@@ -158,7 +174,7 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
             }
         });
         shopHolder.checkBox.setChecked(itemStates.get(position));
-        shopHolder.tv_infor.setText(mDatas.get(position).getJson());
+        shopHolder.tv_infor.setText(mDatas.get(position).getName());
         shopHolder.tv_price.setText(mDatas.get(position).getPrice() + "");
         shopHolder.tv_active.setText("8月24日活动，药品八折");
         shopHolder.tv_num.setText(mDatas.get(position).getNum() + "");
