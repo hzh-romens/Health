@@ -98,8 +98,6 @@ public class HomeFocusFragment extends BaseFragment {
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
                 .build();
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
             @Override
@@ -168,5 +166,9 @@ public class HomeFocusFragment extends BaseFragment {
         keyCursor++;
         controls.append(keyCursor, new ADProductsControl());
         focusAdapter.bindData(controls);
+    }
+
+    private void handleResponseData(String json){
+
     }
 }
