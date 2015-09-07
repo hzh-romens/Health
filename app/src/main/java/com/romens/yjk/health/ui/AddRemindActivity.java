@@ -75,6 +75,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
     private int isRemind = 0;
     private List<String> timesData;
     private List<String> timesDataTemp;
+    private boolean isFromDetail = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         RemindEntity entity = (RemindEntity) intent.getSerializableExtra("editEntity");
         if (entity != null) {
             viewSetData(entity);
+            isFromDetail = true;
         }
     }
 
@@ -112,7 +114,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateDb(entity);
+                deleteDb(entity);
                 cancelRemind(entity);
                 Intent toRemindIntent = new Intent(AddRemindActivity.this, RemindActivity.class);
                 toRemindIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -179,17 +181,24 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         entity.setStartDate(getStartDate() + "");
         int times = timesData.size();
         entity.setFirstTime(timesData.get(0));
-        entity.setSecondtime(timesData.get(1));
-        entity.setThreeTime(timesData.get(2));
-        entity.setFourTime(timesData.get(3));
-        entity.setFiveTime(timesData.get(4));
+        entity.setSecondtime(times > 1 ? timesData.get(1) : "-1");
+        entity.setThreeTime(times > 2 ? timesData.get(2) : "-1");
+        entity.setFourTime(times > 3 ? timesData.get(3) : "-1");
+        entity.setFiveTime(times > 4 ? timesData.get(4) : "-1");
         entity.setTimes(times);
         entity.setIsRemind(isRemind);
         if (isRemind == 1) {
             setRemind(entity);
         }
-        writeDb(entity);
-        finish();
+        if (isFromDetail) {
+            updateDb(entity);
+            Intent toRemindIntent = new Intent(AddRemindActivity.this, RemindActivity.class);
+            toRemindIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(toRemindIntent);
+        } else {
+            writeDb(entity);
+            finish();
+        }
     }
 
     private void initView() {
@@ -255,21 +264,22 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         String startDateStr = TransformDateUitls.getLong(startDateTemp);
         long startDateLong = TransformDateUitls.getDate(startDateStr);
 
-        setRemindTime(startDateLong, entity.getFirstTime());
-        setRemindTime(startDateLong, entity.getSecondtime());
-        setRemindTime(startDateLong, entity.getThreeTime());
-        setRemindTime(startDateLong, entity.getFourTime());
-        setRemindTime(startDateLong, entity.getFiveTime());
+        setRemindTime(startDateLong, entity.getFirstTime(), entity);
+        setRemindTime(startDateLong, entity.getSecondtime(), entity);
+        setRemindTime(startDateLong, entity.getThreeTime(), entity);
+        setRemindTime(startDateLong, entity.getFourTime(), entity);
+        setRemindTime(startDateLong, entity.getFiveTime(), entity);
     }
 
-    public void setRemindTime(long startDateLong, String timeStr) {
+    public void setRemindTime(long startDateLong, String timeStr, RemindEntity entity) {
         Calendar currentDate = Calendar.getInstance();
         long intervalTime = 1000 * 60 * 60 * 24 * day;
         if (!timeStr.equals("-1")) {
             long time = TransformDateUitls.getTimeLong(timeStr);
             long remindTime = (startDateLong + time) + currentDate.getTimeZone().getRawOffset();
             Intent intent = new Intent(AddRemindActivity.this, RemindReceiver.class);
-            intent.putExtra("type", (int)remindTime);
+            intent.putExtra("type", (int) remindTime);
+            intent.putExtra("remindInfoEntity", entity);
             startAlarmRemind(intent, remindTime, intervalTime, (int) remindTime);
         }
     }
@@ -298,7 +308,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
             long time = TransformDateUitls.getTimeLong(timeStr);
             long remindTime = (startDateLong + time) + currentDate.getTimeZone().getRawOffset();
             Intent intent = new Intent(AddRemindActivity.this, RemindReceiver.class);
-            PendingIntent sender = PendingIntent.getBroadcast(this, (int)remindTime, intent, 0);
+            PendingIntent sender = PendingIntent.getBroadcast(this, (int) remindTime, intent, 0);
             AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
             manager.cancel(sender);
         }
@@ -326,6 +336,11 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void updateDb(RemindEntity entity) {
+        RemindDao deleteDao = DBInterface.instance().openReadableDb().getRemindDao();
+        deleteDao.update(entity);
+    }
+
+    private void deleteDb(RemindEntity entity) {
         RemindDao deleteDao = DBInterface.instance().openReadableDb().getRemindDao();
         deleteDao.delete(entity);
     }
