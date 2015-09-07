@@ -7,14 +7,13 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
+
 import android.view.View;
-import android.widget.Toast;
+
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -28,6 +27,8 @@ import com.romens.yjk.health.ui.fragment.HomeStoreFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.widget.Toast.*;
 
 /*
 create 2015.8.14
@@ -58,10 +59,10 @@ public class IllnessActivity extends BaseActivity {
                     illnessAdapter.notifyDataSetChanged();
                     break;
                 case HomeStoreFragment.EMPTY:
-                    Toast.makeText(IllnessActivity.this, "数据为空...", Toast.LENGTH_SHORT).show();
+                    makeText(IllnessActivity.this, "数据为空...", LENGTH_SHORT).show();
                     break;
                 case HomeStoreFragment.ERROR:
-                    Toast.makeText(IllnessActivity.this,"数据获取异常...",Toast.LENGTH_SHORT).show();
+                    makeText(IllnessActivity.this, "数据获取异常...", LENGTH_SHORT).show();
                     break;
             }
         }

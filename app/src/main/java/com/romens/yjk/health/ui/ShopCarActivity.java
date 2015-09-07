@@ -120,14 +120,14 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //向服务器发送请求，并将其存到数据库
-               // if(data)
-                Toast.makeText(ShopCarActivity.this,"功能暂未开放",Toast.LENGTH_SHORT).show();
+                // if(data)
+                Toast.makeText(ShopCarActivity.this, "功能暂未开放", Toast.LENGTH_SHORT).show();
                 List<ShopCarTestEntity> datas = shopCarAdapter.getDatas();
-                if(datas!=null){
-                    ShopCarDao shopCarDao = DBInterface.instance().openWritableDb().getShopCarDao();
-                    shopCarDao.insertOrReplaceInTx(datas);
+                if (datas != null) {
+                    // ShopCarDao shopCarDao = DBInterface.instance().openWritableDb().getShopCarDao();
+                    //shopCarDao.insertOrReplaceInTx(datas);
 
-            }
+                }
             }
         });
     }
@@ -140,12 +140,12 @@ public class ShopCarActivity extends BaseActivity {
 
     private void getData() {
         data = new SparseArray<ShopCarTestEntity>();
-        data.append(0, new ShopCarTestEntity("1",1, "青霉素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "同仁药房", "true", 22.0, 1));
-        data.append(1, new ShopCarTestEntity("2",2, "新康泰克", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "青岛药房", "false", 22.0, 2));
-        data.append(2, new ShopCarTestEntity("3",3, "九九感冒灵", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "山东药房", "true", 22.0, 3));
-        data.append(3, new ShopCarTestEntity("4",4, "罗素1", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "江西药房", "false", 22.0, 4));
-        data.append(4, new ShopCarTestEntity("5",4, "罗素2", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "广州药房", "true", 22.0, 3));
-        data.append(5, new ShopCarTestEntity("6",4, "罗素3", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "河南药房", "false", 22.0, 5));
+        data.append(0, new ShopCarTestEntity("1", 1, "青霉素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "同仁药房", "true", 22.0, 1));
+        data.append(1, new ShopCarTestEntity("2", 2, "新康泰克", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "青岛药房", "false", 22.0, 2));
+        data.append(2, new ShopCarTestEntity("3", 3, "九九感冒灵", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "山东药房", "true", 22.0, 3));
+        data.append(3, new ShopCarTestEntity("4", 4, "罗素1", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "江西药房", "false", 22.0, 4));
+        data.append(4, new ShopCarTestEntity("5", 4, "罗素2", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "广州药房", "true", 22.0, 3));
+        data.append(5, new ShopCarTestEntity("6", 4, "罗素3", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "河南药房", "false", 22.0, 5));
     }
 
 

@@ -7,13 +7,18 @@ import android.view.View;
 import android.widget.GridView;
 
 import com.romens.android.AndroidUtilities;
+import com.squareup.okhttp.internal.Util;
 
 
 /**
  * Created by romens007 on 2015/8/18.
  */
 public class ModifyGridView extends GridView {
-    private int counts=3;
+    private int counts;
+    int verticalSpacing;
+    int horizontalSpacing;
+    int paddings;
+    int measureHeight;
     public ModifyGridView(Context context) {
         super(context);
     }
@@ -30,28 +35,56 @@ public class ModifyGridView extends GridView {
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if(getNumColumns()!=0){
+            counts=getNumColumns();
+        }
+        if(getVerticalSpacing()!=0) {
 
-        int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int measureHeight = measureWidth/counts+counts*AndroidUtilities.dp(48);
+            verticalSpacing = getVerticalSpacing();
+        }
+        if(getHorizontalSpacing()!=0) {
+
+            horizontalSpacing = getHorizontalSpacing();
+        }
+        if(getPaddingBottom()!=0){
+            paddings=getPaddingBottom();
+        }
+
         int count = getChildCount();
         int yCount=0;
+
         if(count%counts==0){
             yCount= count /counts;
         }else {
             yCount=(count/counts)+1;
         }
+        int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
+      // int measureHeight = measureWidth/counts+counts*AndroidUtilities.dp(16)+yCount*verticalSpacing;
+        Log.i("宽度=====",""+measureWidth);
+       //int measureHeight=measureWidth/counts+AndroidUtilities.dp(48);
+       // int measureHeight=MeasureSpec.getSize(heightMeasureSpec);
+        if(MeasureSpec.getSize(heightMeasureSpec)!=0){
+            Log.i("item高度----",""+MeasureSpec.getSize(heightMeasureSpec)+"---"+measureHeight);
+            measureHeight=MeasureSpec.getSize(heightMeasureSpec);
+        }
         if(yCount!=0) {
             for (int index = 0; index < count; index++) {
                 final View child = getChildAt(index);
                 if (child.getVisibility() != GONE) {
-                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth -  AndroidUtilities.dp(8), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight  - AndroidUtilities.dp(8)), MeasureSpec.EXACTLY));
-
+                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth - horizontalSpacing, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight - verticalSpacing), MeasureSpec.EXACTLY));
                 }
             }
 
-            setMeasuredDimension(measureWidth,measureHeight+counts*AndroidUtilities.dp(48));
-        }else{
-            setMeasuredDimension(measureWidth, measureHeight);
+          //  setMeasuredDimension(measureWidth,measureHeight+counts*AndroidUtilities.dp(16));
+      //  }else{
+            Log.i("行数------", "" + yCount);
+         //   setMeasuredDimension(measureWidth,yCount*measureHeight+(yCount+1)*verticalSpacing);
+            setMeasuredDimension(measureWidth,yCount*(getPaddingBottom()+verticalSpacing+measureHeight));
         }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
     }
 }

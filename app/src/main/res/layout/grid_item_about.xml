@@ -5,18 +5,19 @@
     android:layout_gravity="center"
     card_view:cardBackgroundColor="@android:color/white"
     card_view:cardCornerRadius="4dp"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:padding="4dp"
     >
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="96dp"
         android:src="@drawable/ic_launcher"
         android:id="@+id/iv_medicinal"
         android:layout_gravity="top|center_horizontal"

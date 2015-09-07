@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -114,6 +113,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 updateDb(entity);
+                cancelRemind(entity);
                 Intent toRemindIntent = new Intent(AddRemindActivity.this, RemindActivity.class);
                 toRemindIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(toRemindIntent);
@@ -121,24 +121,22 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         });
         timesData = new ArrayList<>();
         timesData.add(entity.getFirstTime());
-        if (!entity.getSecondtime().equals("-1")) {
-            timesData.add(entity.getSecondtime());
-        }
-        if (!entity.getThreeTime().equals("-1")) {
-            timesData.add(entity.getThreeTime());
-        }
-        if (!entity.getFourTime().equals("-1")) {
-            timesData.add(entity.getFourTime());
-        }
-        if (!entity.getFiveTime().equals("-1")) {
-            timesData.add(entity.getFiveTime());
-        }
+        timesDateAdd(entity.getSecondtime());
+        timesDateAdd(entity.getThreeTime());
+        timesDateAdd(entity.getFourTime());
+        timesDateAdd(entity.getFiveTime());
         counts.setText(timesData.size() + "次");
         timesDataTemp.clear();
         for (int j = 0; j < timesData.size(); j++) {
             if (!timesData.get(j).equals("-1")) {
                 timesDataTemp.add(timesData.get(j));
             }
+        }
+    }
+
+    private void timesDateAdd(String timeStr) {
+        if (!timeStr.equals("-1")) {
+            timesData.add(timeStr);
         }
     }
 
@@ -253,25 +251,57 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
 
     //添加提醒到系统中
     public void setRemind(RemindEntity entity) {
-        Intent intent = new Intent(AddRemindActivity.this, RemindReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(AddRemindActivity.this, 0, intent, 0);
-
-        Calendar currentDate = Calendar.getInstance();
-
         Date startDateTemp = TransformDateUitls.getDate(Long.parseLong(entity.getStartDate()));
         String startDateStr = TransformDateUitls.getLong(startDateTemp);
+        long startDateLong = TransformDateUitls.getDate(startDateStr);
 
-        long date = TransformDateUitls.getDate(startDateStr);
-        long firstTime = TransformDateUitls.getTimeLong(entity.getFirstTime());
-        long firstLong = (date + firstTime) + currentDate.getTimeZone().getRawOffset();
+        setRemindTime(startDateLong, entity.getFirstTime());
+        setRemindTime(startDateLong, entity.getSecondtime());
+        setRemindTime(startDateLong, entity.getThreeTime());
+        setRemindTime(startDateLong, entity.getFourTime());
+        setRemindTime(startDateLong, entity.getFiveTime());
+    }
 
+    public void setRemindTime(long startDateLong, String timeStr) {
+        Calendar currentDate = Calendar.getInstance();
+        long intervalTime = 1000 * 60 * 60 * 24 * day;
+        if (!timeStr.equals("-1")) {
+            long time = TransformDateUitls.getTimeLong(timeStr);
+            long remindTime = (startDateLong + time) + currentDate.getTimeZone().getRawOffset();
+            Intent intent = new Intent(AddRemindActivity.this, RemindReceiver.class);
+            intent.putExtra("type", (int)remindTime);
+            startAlarmRemind(intent, remindTime, intervalTime, (int) remindTime);
+        }
+    }
+
+    public void startAlarmRemind(Intent intent, long startTime, long intervalTime, int type) {
+        PendingIntent sender = PendingIntent.getBroadcast(this, type, intent, 0);
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, firstLong, 50000, sender);
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, startTime, intervalTime, sender);
+    }
 
-//        String secondTime=entity.getSecondtime();
-//        if(!secondTime.equals("-1")){
-//            manager.setRepeating(AlarmManager.RTC_WAKEUP, firstLong+5000, 50000, sender);
-//        }
+    public void cancelRemind(RemindEntity entity) {
+        Date startDateTemp = TransformDateUitls.getDate(Long.parseLong(entity.getStartDate()));
+        String startDateStr = TransformDateUitls.getLong(startDateTemp);
+        long startDateLong = TransformDateUitls.getDate(startDateStr);
+
+        setCancelRemindTime(startDateLong, entity.getFirstTime());
+        setCancelRemindTime(startDateLong, entity.getSecondtime());
+        setCancelRemindTime(startDateLong, entity.getThreeTime());
+        setCancelRemindTime(startDateLong, entity.getFourTime());
+        setCancelRemindTime(startDateLong, entity.getFiveTime());
+    }
+
+    public void setCancelRemindTime(long startDateLong, String timeStr) {
+        Calendar currentDate = Calendar.getInstance();
+        if (!timeStr.equals("-1")) {
+            long time = TransformDateUitls.getTimeLong(timeStr);
+            long remindTime = (startDateLong + time) + currentDate.getTimeZone().getRawOffset();
+            Intent intent = new Intent(AddRemindActivity.this, RemindReceiver.class);
+            PendingIntent sender = PendingIntent.getBroadcast(this, (int)remindTime, intent, 0);
+            AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            manager.cancel(sender);
+        }
     }
 
     //设置标题中的内容
