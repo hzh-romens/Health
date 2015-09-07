@@ -20,9 +20,13 @@ public class RemindReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context=context;
-        showNotification();
+//        showNotification();
+        int type=intent.getIntExtra("type", -1);
+        if(type!=-1){
+            showNotification(type);
+        }
     }
-    private void showNotification() {
+    private void showNotification(int type) {
         NotificationManager fm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Notification notification = new Notification.Builder(context).setContentTitle("测试标题")// 设置通知栏标题
@@ -34,6 +38,6 @@ public class RemindReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_launcher)
                 .build();// 设置通知小ICON
 
-        fm.notify(0, notification);
+        fm.notify(type, notification);
     }
 }

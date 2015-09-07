@@ -46,17 +46,19 @@ public class AlarmActivity extends BaseActivity {
         setNotification();
     }
     private void setNotification() {
-        NotificationManager fm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        Notification notification = new Notification();
-        notification.flags = Notification.FLAG_AUTO_CANCEL;
-        notification.icon = R.drawable.ic_launcher;
-        notification.tickerText = "hello...";
+//        NotificationManager fm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//
+//        Notification notification = new Notification();
+//        notification.flags = Notification.FLAG_AUTO_CANCEL;
+//        notification.icon = R.drawable.ic_launcher;
+//        notification.tickerText = "hello...";
+//
+//        Intent notificationIntent = new Intent(this, AlarmActivity.class);
+//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+//        notification.setLatestEventInfo(this, "title", "hello", contentIntent);
+//
+//        fm.notify(1, notification);
 
-        Intent notificationIntent = new Intent(this, AlarmActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-     //   notification.setLatestEventInfo(AlarmActivity.this, "title", "hello", contentIntent);
-
-        fm.notify(1, notification);
     }
 }
