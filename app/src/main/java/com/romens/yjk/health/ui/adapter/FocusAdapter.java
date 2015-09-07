@@ -17,19 +17,21 @@ import com.romens.yjk.health.ui.controls.ADPagerControl;
 import com.romens.yjk.health.ui.controls.ADProductsControl;
 import com.romens.yjk.health.ui.controls.ControlType;
 
+import java.util.LinkedList;
+
 /**
  * Created by siery on 15/8/13.
  */
 public class FocusAdapter extends RecyclerView.Adapter<ADHolder> {
     private Context context;
 
-    private SparseArray<ADBaseControl> adControls = new SparseArray<>();
+    private LinkedList<ADBaseControl> adControls = new LinkedList<>();
 
     public FocusAdapter(Context _context) {
         this.context = _context;
     }
 
-    public void bindData(SparseArray<ADBaseControl> controls) {
+    public void bindData(LinkedList<ADBaseControl> controls) {
         adControls.clear();
         if (controls != null) {
             adControls = controls;

@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
+import android.util.SparseArray;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
@@ -8,14 +9,17 @@ import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADOnlyImageCell;
 
+import java.util.HashMap;
+
 /**
  * Created by siery on 15/8/14.
  */
 public class ADImageControl extends ADBaseControl {
-    private ADImageEntity adImageEntity;
+    private final HashMap<String, ADImageEntity> adImageEntities = new HashMap<>();
 
-    public ADImageControl bindModel(ADImageEntity entity){
-        adImageEntity=entity;
+
+    public ADImageControl bindModel(String key, ADImageEntity entity) {
+        adImageEntities.put(key, entity);
         return this;
     }
 
@@ -28,8 +32,8 @@ public class ADImageControl extends ADBaseControl {
     @Override
     public void bindViewHolder(Context context, ADHolder holder) {
         ADOnlyImageCell cell = (ADOnlyImageCell) holder.itemView;
-        String imageUrl=adImageEntity==null?null:adImageEntity.value;
-        cell.setImage(imageUrl, null, null);
+//        String imageUrl = adImageEntity == null ? null : adImageEntity.value;
+//        cell.setImage(imageUrl, null, null);
     }
 
     @Override
