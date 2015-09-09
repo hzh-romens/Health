@@ -6,6 +6,7 @@ import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
+import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 
 import java.util.Map;
 
@@ -35,6 +36,10 @@ public class DaoSession extends AbstractDaoSession {
     private final RemindDao remindDao;
     private final DaoConfig remindDaoConfig;
 
+    private final SearchHistoryDao searchHistoryDao;
+    private final  DaoConfig searchResultDaoConfig;
+
+
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
@@ -57,6 +62,10 @@ public class DaoSession extends AbstractDaoSession {
         remindDaoConfig = daoConfigMap.get(RemindDao.class).clone();
         remindDao=new RemindDao(remindDaoConfig,this);
         registerDao(RemindEntity.class,remindDao);
+
+        searchResultDaoConfig = daoConfigMap.get(SearchHistoryDao.class).clone();
+        searchHistoryDao =new SearchHistoryDao(searchResultDaoConfig,this);
+        registerDao(SearchHistoryEntity.class, searchHistoryDao);
     }
 
     public void clear() {
@@ -64,6 +73,7 @@ public class DaoSession extends AbstractDaoSession {
         drugGroupDaoConfig.getIdentityScope().clear();
         locationAddressDaoConfig.getIdentityScope().clear();
         remindDaoConfig.getIdentityScope().clear();
+        searchResultDaoConfig.getIdentityScope().clear();
     }
 
     public DiscoveryDao getDiscoveryDao() {
@@ -80,5 +90,9 @@ public class DaoSession extends AbstractDaoSession {
 
     public RemindDao getRemindDao() {
         return remindDao;
+    }
+
+    public SearchHistoryDao getSearchHistoryDao() {
+        return searchHistoryDao;
     }
 }

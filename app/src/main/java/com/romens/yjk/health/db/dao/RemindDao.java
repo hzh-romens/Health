@@ -1,16 +1,11 @@
 package com.romens.yjk.health.db.dao;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.entity.DiscoveryCollection;
-import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 
-import java.util.Calendar;
 import java.util.List;
 
 import de.greenrobot.dao.AbstractDao;
