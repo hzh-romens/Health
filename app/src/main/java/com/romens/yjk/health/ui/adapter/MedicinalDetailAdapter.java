@@ -30,10 +30,14 @@ import static android.widget.AbsListView.*;
 public class MedicinalDetailAdapter extends RecyclerView.Adapter {
     private List<TestEntity> mdatas;
     private Context mContext;
+    private List<String> urls;
 
     public MedicinalDetailAdapter(List<TestEntity> data, Context context) {
         this.mdatas = data;
         this.mContext = context;
+    }
+    public void setUrls(List<String> urls) {
+        this.urls=urls;
     }
 
     @Override
@@ -122,12 +126,11 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
                 break;
             case 8:
                 aboutHolder holders = (aboutHolder) holder;
-                List<AboutTestEntity>datas = new ArrayList<AboutTestEntity>();
-                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-            //  datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                GridViewAdapter gridViewAdapter = new GridViewAdapter(datas, mContext);
+               // List<AboutTestEntity>datas = new ArrayList<AboutTestEntity>();
+               // datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+                //datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+           //     datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+                GridViewAdapter gridViewAdapter = new GridViewAdapter(urls, mContext);
                 holders.gridView.setAdapter(gridViewAdapter);
                 break;
             default:

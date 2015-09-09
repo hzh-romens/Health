@@ -24,9 +24,10 @@ import java.util.List;
  * Created by romens007 on 2015/8/17.
  */
 public class GridViewAdapter extends BaseAdapter {
-    private List<AboutTestEntity> datas=new ArrayList<AboutTestEntity>();
+  //  private List<AboutTestEntity> datas=new ArrayList<AboutTestEntity>();
+    private List<String> datas=new ArrayList<String>();
     private Context mContext;
-    public GridViewAdapter(List<AboutTestEntity> data,Context context){
+    public GridViewAdapter(List<String> data,Context context){
         this.datas=data;
         this.mContext=context;
         notifyDataSetChanged();
@@ -63,12 +64,19 @@ public class GridViewAdapter extends BaseAdapter {
         }else{
             holder= (ViewHolder) convertView.getTag();
         }
-        String imageUrl = datas.get(position).getImageUrl();
+        int totalHeight = parent.getWidth();
+        int height = (int)(totalHeight / 2);
+        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, height - 15);
+
+        convertView.setLayoutParams(lp);
+        //String imageUrl = datas.get(position).getImageUrl();
+        String imageUrl = datas.get(position);
         holder.iv_medicinal.setImageBitmap(ImageUtils.bindLocalImage(imageUrl));
         Drawable defaultDrawable = holder.iv_medicinal.getDrawable();
         ImageManager.loadForView(mContext, holder.iv_medicinal, imageUrl, defaultDrawable, defaultDrawable);
-        holder.tv_name.setText(datas.get(position).getName());
-        holder.tv_price.setText(datas.get(position).getPrice());
+        holder.tv_name.setVisibility(View.INVISIBLE);
+        holder.tv_price.setVisibility(View.INVISIBLE);
         return convertView;
     }
     class ViewHolder{
