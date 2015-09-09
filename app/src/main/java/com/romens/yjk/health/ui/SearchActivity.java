@@ -38,6 +38,7 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
+import com.romens.yjk.health.ui.adapter.FlowlayoutAdapter;
 import com.romens.yjk.health.ui.components.FlowLayout;
 import com.romens.yjk.health.ui.utils.UIUtils;
 
@@ -57,7 +58,7 @@ public class SearchActivity extends BaseActivity {
     private ArrayList<Map<String, String>> drugList;
     private ArrayList<String> illnessList;
     private FlowLayout historyLayout;
-//    private String SearchText;
+    private FlowlayoutAdapter historyLayoutAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,35 +72,25 @@ public class SearchActivity extends BaseActivity {
         illnessList = new ArrayList<>();
 
         addFloatLayout(container);
-
         actionBarEvent(actionBar, container);
     }
 
-    private void addFloatLayout(ActionBarLayout.LinearLayoutContainer container) {
+    private void addFloatLayout(final ActionBarLayout.LinearLayoutContainer container) {
         historyLayout = new FlowLayout(this);
-        historyLayout.setHorizontalSpacing(UIUtils.dip2px(20));
-        historyLayout.setVerticalSpacing(UIUtils.dip2px(10));
-        historyLayout.setPadding(UIUtils.dip2px(10), UIUtils.dip2px(20), UIUtils.dip2px(10), UIUtils.dip2px(4));
-        historyLayout.setMaxLines(2);
-
-        List<String> keywords = readHistoryKeyword();
-
-        for (int i = 0; i < keywords.size(); i++) {
-            TextView textView = new TextView(this);
-            textView.setMaxLines(1);
-            textView.setGravity(Gravity.CENTER);
-            textView.setPadding(UIUtils.dip2px(4), UIUtils.dip2px(10), UIUtils.dip2px(4), UIUtils.dip2px(10));
-            textView.setBackgroundResource(R.drawable.btn_primary);
-            textView.setText(keywords.get(i));
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(SearchActivity.this, "-->" + v.getId(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            historyLayout.addView(textView);
-        }
-
+        final List<String> keywords = readHistoryKeyword();
+        historyLayoutAdapter=new FlowlayoutAdapter(historyLayout,this,keywords);
+        historyLayoutAdapter.andTextView();
+        historyLayoutAdapter.ItemClickListener(new FlowlayoutAdapter.FlowLayoutItemClick() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(SearchActivity.this,"-->"+position,Toast.LENGTH_SHORT).show();
+                String searchText = keywords.get(position);
+                requestDrugChanged(searchText);
+                requestIllnessChanged(searchText);
+                showSearchResult(container);
+                historyLayout.setVisibility(View.GONE);
+            }
+        });
         container.addView(historyLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
     }
 
@@ -110,17 +101,16 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public boolean canCollapseSearch() {
-                return false;
+                historyLayout.setVisibility(View.VISIBLE);
+                return true;
             }
 
             @Override
             public void onTextChanged(EditText var1) {
-//                Log.e("tag", "search->" + var1.getText());
-//                SearchText=var1.getText().toString().trim();
-                String searchStr = var1.getText().toString().trim();
-                if (!searchStr.equals("") && searchStr != null) {
-                    requestDrugChanged(searchStr);
-                    requestIllnessChanged(searchStr);
+                String searchText = var1.getText().toString().trim();
+                if (!searchText.equals("") && searchText != null) {
+                    requestDrugChanged(searchText);
+                    requestIllnessChanged(searchText);
                     showSearchResult(container);
                     historyLayout.setVisibility(View.GONE);
                 }
@@ -137,9 +127,7 @@ public class SearchActivity extends BaseActivity {
                 } else if (id == 0) {
 //                    requestDrugChanged(searchStr);
 //                    requestIllnessChanged(searchStr);
-//                    for (int i = 0; i < 8; i++) {
-//                        saveHistoryKeyword("感冒"+i);
-//                    }
+//                    saveHistoryKeyword(searchStr);
 //                    historyLayout.setVisibility(View.GONE);
 //                    showSearchResult(container);
                 }
@@ -160,9 +148,23 @@ public class SearchActivity extends BaseActivity {
 
     private void saveHistoryKeyword(String keyword) {
         SearchHistoryDao dao = DBInterface.instance().openReadableDb().getSearchHistoryDao();
-        SearchHistoryEntity entity = new SearchHistoryEntity();
-        entity.setHistoryKeyword(keyword);
-        dao.insert(entity);
+        List<SearchHistoryEntity> entities = dao.queryBuilder().orderAsc(SearchHistoryDao.Properties.Id).list();
+        boolean isCanSave = true;
+        for (int i = 0; i < entities.size(); i++) {
+            if (entities.get(i).getHistoryKeyword().equals(keyword)) {
+                isCanSave = false;
+            }
+        }
+        if (isCanSave) {
+            SearchHistoryEntity entity = new SearchHistoryEntity();
+            entity.setHistoryKeyword(keyword);
+            if (entities.size() < 10) {
+                dao.insert(entity);
+            }else{
+                dao.delete(entities.get(1));
+                dao.insert(entity);
+            }
+        }
     }
 
     private void showSearchResult(ActionBarLayout.LinearLayoutContainer container) {
@@ -170,21 +172,12 @@ public class SearchActivity extends BaseActivity {
         container.addView(listContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         adapter = new ListAdapter(this);
+        adapter.notifyDataSetChanged();
         listView = new ListView(this);
         listView.setAdapter(adapter);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0 && position < 5) {
-                    Intent intent = new Intent(SearchActivity.this, MedicinalDetailActivity.class);
-                    intent.putExtra("guid", drugList.get(position - 1).get("guid"));
-                    startActivity(intent);
-                }
-            }
-        });
         listContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
     }
 
@@ -209,7 +202,6 @@ public class SearchActivity extends BaseActivity {
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     setIllnessListData(responseProtocol.getResponse());
-
                 }
                 if (errorMsg == null) {
                 } else {
@@ -224,12 +216,14 @@ public class SearchActivity extends BaseActivity {
         if (count <= 0) {
             return;
         }
-
+        illnessList = new ArrayList<>();
         for (LinkedTreeMap<String, String> item : response) {
             illnessList.add(item.get("DISEASENAME"));
         }
+        adapter.notifyDataSetChanged();
     }
 
+    //请求相关药品
     private void requestDrugChanged(final String searchStr) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("KEY", searchStr);
@@ -251,7 +245,6 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onResult(Message msg, Message errorMsg) {
                 if (msg != null) {
-                    Log.e("tag", "msg->" + msg);
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     setDrugListData(responseProtocol.getResponse());
                     saveHistoryKeyword(searchStr);
@@ -269,13 +262,14 @@ public class SearchActivity extends BaseActivity {
         if (count <= 0) {
             return;
         }
-
+        drugList = new ArrayList<>();
         for (LinkedTreeMap<String, String> item : response) {
             Map<String, String> map = new HashMap<>();
             map.put("name", item.get("NAME"));
             map.put("guid", item.get("GUID"));
             drugList.add(map);
         }
+        adapter.notifyDataSetChanged();
     }
 
     class ListAdapter extends BaseFragmentAdapter {
@@ -358,19 +352,17 @@ public class SearchActivity extends BaseActivity {
                 }
                 TextSettingsCell cell = (TextSettingsCell) view;
                 if (drugList.size() > 1) {
-                    String name = drugList.get(position - 1).get("name");
-                    cell.setText(drugList.get(position - 1).get("name"), false);
+                    final String name = drugList.get(position - 1).get("name");
+                    cell.setText(name, false);
                     cell.setBackgroundColor(getResources().getColor(R.color.white));
-//                    view.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            requestDrugChanged();
-//                            requestIllnessChanged(searchStr);
-//                            saveHistoryKeyword("感冒" + i);
-//                            historyLayout.setVisibility(View.GONE);
-//                            showSearchResult(container);
-//                        }
-//                    });
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(SearchActivity.this, MedicinalDetailActivity.class);
+                            intent.putExtra("guid", drugList.get(position - 1).get("guid"));
+                            startActivity(intent);
+                        }
+                    });
                 }
 
             } else if (type == 2) {
