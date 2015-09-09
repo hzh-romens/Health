@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
+        android:id="@+id/ll"
         android:background="@color/background_floating_material_dark"
         android:orientation="horizontal">
         <TextView
