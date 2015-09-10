@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.mobvoi.android.common.ConnectionResult;
@@ -87,6 +86,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     startActivity(new Intent(HomeActivity.this, RemindActivity.class));
                 } else if (id == 0) {
                     startActivity(new Intent(HomeActivity.this,SearchActivity.class));
+
                 }else if(id==1){
                     startActivity(new Intent(HomeActivity.this,ShopCarActivity.class));
                 }
