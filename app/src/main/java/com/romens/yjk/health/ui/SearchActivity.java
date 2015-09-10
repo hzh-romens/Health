@@ -168,16 +168,17 @@ public class SearchActivity extends BaseActivity {
     private void showSearchResult(ActionBarLayout.LinearLayoutContainer container) {
         FrameLayout listContainer = new FrameLayout(this);
         container.addView(listContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
         adapter = new ListAdapter(this);
         listView = new ListView(this);
         listView.setAdapter(adapter);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
+        listContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("是否执行了点击事件----","2");
                 if (position > 0 && position < 5) {
                     Intent intent = new Intent(SearchActivity.this, MedicinalDetailActivity.class);
                     intent.putExtra("guid", drugList.get(position - 1).get("guid"));
@@ -185,7 +186,6 @@ public class SearchActivity extends BaseActivity {
                 }
             }
         });
-        listContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
     }
 
     private void requestIllnessChanged(String searchStr) {
@@ -344,7 +344,7 @@ public class SearchActivity extends BaseActivity {
         @Override
         public View getView(final int position, View view, ViewGroup viewGroup) {
             int type = getItemViewType(position);
-
+            viewGroup.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             if (type == 0) {
                 if (view == null) {
                     view = new HeaderCell(adapterContext);

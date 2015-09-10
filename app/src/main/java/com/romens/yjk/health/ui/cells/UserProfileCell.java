@@ -42,7 +42,6 @@ public class UserProfileCell extends FrameLayoutFixed {
         avatarDrawable.setColor(0xff5c98cd);
         avatarDrawable.setInfo(0, userEntity.userName, "", false);
         avatarImage.setImageUrl(userEntity.avatarUrl, "64_64", avatarDrawable);
-
         nameView.setText(userEntity.userName);
     }
 }

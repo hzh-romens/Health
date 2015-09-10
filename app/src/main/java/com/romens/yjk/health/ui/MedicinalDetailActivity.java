@@ -23,6 +23,7 @@ import android.view.View;
 
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.gson.Gson;
@@ -329,11 +330,11 @@ public class MedicinalDetailActivity extends BaseActivity {
     private void requestBuy() {
         int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("GOODGUID ", "0111B165-8675-4546-AD46-8F95CEB01D15");
+        args.put("GOODGUID", "06B6830C-E839-49E0-ACB6-123C6662C754");
         args.put("BUYCOUNT", "1");
         args.put("PRICE", PRICE);
         Log.i("价钱----",PRICE);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "handle", "InsertIntoCar", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
@@ -349,9 +350,18 @@ public class MedicinalDetailActivity extends BaseActivity {
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
-                    Log.i("加入购物车----", response);
+                    Log.i("加入购物车",response);
+                    if("ERROE".equals(response)){
+                        Toast.makeText(MedicinalDetailActivity.this,"加入购物车异常",Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(MedicinalDetailActivity.this,"成功加入购物车",Toast.LENGTH_SHORT).show();
+                       requestShopCarCountChanged();
+
+                    }
                 } else {
-                    Log.e("InsertIntoCar", "ERROR");
+                   // ResponseProtocol<String> responseProtocol= (ResponseProtocol<String>) errorMsg.protocol;
+                    //String response = responseProtocol.getResponse();
+                    Log.e("InsertIntoCar", errorMsg.toString()+"===="+errorMsg.msg);
                 }
             }
         });
