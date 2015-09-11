@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
+import com.romens.yjk.health.db.entity.EatDrugUserEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
@@ -39,6 +40,9 @@ public class DaoSession extends AbstractDaoSession {
     private final SearchHistoryDao searchHistoryDao;
     private final  DaoConfig searchResultDaoConfig;
 
+    private final  EatDrugUserDao eatDrugUserDao;
+    private final DaoConfig eatDrugUserDaoConfig;
+
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -66,6 +70,10 @@ public class DaoSession extends AbstractDaoSession {
         searchResultDaoConfig = daoConfigMap.get(SearchHistoryDao.class).clone();
         searchHistoryDao =new SearchHistoryDao(searchResultDaoConfig,this);
         registerDao(SearchHistoryEntity.class, searchHistoryDao);
+
+        eatDrugUserDaoConfig = daoConfigMap.get(EatDrugUserDao.class).clone();
+        eatDrugUserDao = new EatDrugUserDao(eatDrugUserDaoConfig, this);
+        registerDao(EatDrugUserEntity.class,eatDrugUserDao);
     }
 
     public void clear() {
@@ -74,6 +82,7 @@ public class DaoSession extends AbstractDaoSession {
         locationAddressDaoConfig.getIdentityScope().clear();
         remindDaoConfig.getIdentityScope().clear();
         searchResultDaoConfig.getIdentityScope().clear();
+        eatDrugUserDaoConfig.getIdentityScope().clear();
     }
 
     public DiscoveryDao getDiscoveryDao() {
@@ -94,5 +103,9 @@ public class DaoSession extends AbstractDaoSession {
 
     public SearchHistoryDao getSearchHistoryDao() {
         return searchHistoryDao;
+    }
+
+    public EatDrugUserDao getEatDrugUserDao() {
+        return eatDrugUserDao;
     }
 }

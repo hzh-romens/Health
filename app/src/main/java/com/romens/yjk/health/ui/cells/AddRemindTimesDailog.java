@@ -10,11 +10,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.AddRemindActivity;
+import com.romens.yjk.health.ui.NewAddRemindActivity;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
-import com.romens.yjk.health.ui.components.AddRemindCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,16 +24,16 @@ public class AddRemindTimesDailog {
     private Dialog timesCountDialog;
     private TimesAdapter timesAdapter;
     private List<String> timesData;
-    private int oldTimes;
-    private AddRemindCallback callback;
+    private int timesInDay;
     private AddRemindTimesDailog dailogInstace;
+    private NewAddRemindActivity addRemindActivity;
 
-    public AddRemindTimesDailog(Context context, List<String> timesData, int oldTimes) {
+    public AddRemindTimesDailog(Context context, List<String> timesData, int timesInDay) {
         dailogInstace = this;
+        addRemindActivity= (NewAddRemindActivity) context;
         this.context = context;
         this.timesData = timesData;
-        this.oldTimes = oldTimes;
-        callback = (AddRemindCallback) context;
+        this.timesInDay = timesInDay;
         timesCountDialog = new AlertDialog.Builder(context).create();
     }
 
@@ -55,8 +53,8 @@ public class AddRemindTimesDailog {
         TextView cancel = (TextView) timesCountView.findViewById(R.id.times_count_cancel);
         TextView confirm = (TextView) timesCountView.findViewById(R.id.times_count_confirm);
         final TextView timesTv = (TextView) timesCountView.findViewById(R.id.times_count_count);
-        oldTimes = timesData.size();
-        timesTv.setText(oldTimes + "次");
+        timesInDay = timesData.size();
+        timesTv.setText(timesInDay + "次");
         minusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,17 +78,16 @@ public class AddRemindTimesDailog {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.setCountsText(oldTimes);
+                addRemindActivity.setTimesInDay(timesInDay);
                 timesCountDialog.dismiss();
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.setTimesDate(timesData);
-                oldTimes = timesData.size();
-                callback.setCountsText(oldTimes);
-                callback.setTimesHintText(oldTimes);
+                timesInDay = timesData.size();
+                addRemindActivity.setTimesData(timesData);
+                addRemindActivity.setTimesInDay(timesInDay);
                 timesCountDialog.dismiss();
             }
         });
