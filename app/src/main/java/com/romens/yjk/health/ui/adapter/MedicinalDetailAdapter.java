@@ -38,6 +38,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
     }
     public void setUrls(List<String> urls) {
         this.urls=urls;
+        Log.i("是否执行了------", "setUrls ");
     }
 
     @Override

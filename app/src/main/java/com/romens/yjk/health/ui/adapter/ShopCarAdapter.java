@@ -52,19 +52,12 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     private final SparseBooleanArray itemStates = new SparseBooleanArray();
 
 
-//    public List<ShopCarTestEntity> getDatas(){
-//        List<ShopCarTestEntity> datas=new ArrayList<ShopCarTestEntity>();
-//        if(mDatas!=null) {
-//            for (int i = 0; i < mDatas.size(); i++) {
-//                mDatas.get(i).setCode("");
-//                datas.add(mDatas.get(i));
-//            }
-//            return datas;
-//        }else{
-//            return null;
-//        }
-
-    //   }
+    public List<ShopCarEntity> getDatas(){
+       if(mDatas!=null){
+           return mDatas;
+       }
+        return null;
+      }
     public boolean isAllSelected() {
         int index = itemStates.indexOfValue(false);
         return index < 0;

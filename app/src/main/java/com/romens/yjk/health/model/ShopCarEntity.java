@@ -7,6 +7,7 @@ import com.google.gson.internal.LinkedTreeMap;
  */
 public class ShopCarEntity {
     public Long id;
+
     private String USERGUID;
 
     private String GUID;
@@ -37,6 +38,25 @@ public class ShopCarEntity {
 
     public String CHECK;
 
+    public int createdTime;
+
+    public int updatedTime;
+
+    public int getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(int createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public int getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(int updatedTime) {
+        this.updatedTime = updatedTime;
+    }
 
     public Long getId() {
         return id;
