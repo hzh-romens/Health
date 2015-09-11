@@ -16,6 +16,7 @@ import com.romens.android.io.image.ImageManager;
 import com.romens.android.io.image.ImageUtils;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.AboutTestEntity;
+import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,7 @@ public class GridViewAdapter extends BaseAdapter {
         convertView.setLayoutParams(lp);
         //String imageUrl = datas.get(position).getImageUrl();
         String imageUrl = datas.get(position);
+        Log.i("图片网址----",imageUrl);
         holder.iv_medicinal.setImageBitmap(ImageUtils.bindLocalImage(imageUrl));
         Drawable defaultDrawable = holder.iv_medicinal.getDrawable();
         ImageManager.loadForView(mContext, holder.iv_medicinal, imageUrl, defaultDrawable, defaultDrawable);

@@ -52,19 +52,12 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     private final SparseBooleanArray itemStates = new SparseBooleanArray();
 
 
-//    public List<ShopCarTestEntity> getDatas(){
-//        List<ShopCarTestEntity> datas=new ArrayList<ShopCarTestEntity>();
-//        if(mDatas!=null) {
-//            for (int i = 0; i < mDatas.size(); i++) {
-//                mDatas.get(i).setCode("");
-//                datas.add(mDatas.get(i));
-//            }
-//            return datas;
-//        }else{
-//            return null;
-//        }
-
-    //   }
+    public List<ShopCarEntity> getDatas(){
+       if(mDatas!=null){
+           return mDatas;
+       }
+        return null;
+      }
     public boolean isAllSelected() {
         int index = itemStates.indexOfValue(false);
         return index < 0;
@@ -179,7 +172,7 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ShopHolder shopHolder = (ShopHolder) holder;
-        shopHolder.iv_detail.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+       // shopHolder.iv_detail.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
         String goodurl = mDatas.get(position).getGOODURL();
         shopHolder.iv_detail.setImageBitmap(ImageUtils.bindLocalImage(goodurl));
         Drawable defaultDrawables = shopHolder.iv_detail.getDrawable();

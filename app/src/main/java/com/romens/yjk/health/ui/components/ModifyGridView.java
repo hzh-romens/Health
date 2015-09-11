@@ -73,23 +73,18 @@ public class ModifyGridView extends GridView {
          //   measureHeight=MeasureSpec.getSize(heightMeasureSpec);
         //}
         measureHeight=(int)(width/2.1)+AndroidUtilities.dp(8);
+        Log.i("item高度-----",measureHeight+"");
+        Log.i("行数",yCount+"");
         if(yCount!=0) {
             for (int index = 0; index < count; index++) {
                 final View child = getChildAt(index);
                 if (child.getVisibility() != GONE) {
-                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth - horizontalSpacing, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight - verticalSpacing-getPaddingBottom()), MeasureSpec.EXACTLY));
+                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth - horizontalSpacing, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight -getPaddingBottom()), MeasureSpec.EXACTLY));
                 }
             }
-            setMeasuredDimension(measureWidth,measureHeight);
+            setMeasuredDimension(measureWidth,yCount*measureHeight);
         }else{
-           setMeasuredDimension(measureWidth,(yCount+1)+(verticalSpacing+measureHeight+getPaddingBottom()));
+            setMeasuredDimension(measureWidth,measureHeight);
         }
-    }
-
-
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
     }
 }

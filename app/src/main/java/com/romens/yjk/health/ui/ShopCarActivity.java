@@ -37,6 +37,7 @@ import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,6 @@ import java.util.Map;
 public class ShopCarActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private ShopCarAdapter shopCarAdapter;
-    private SparseArray<ShopCarTestEntity> data;
     private CheckableFrameLayout all_choice;
     private TextView tv_all1, tv_all2, tv_pay;
     private List<ShopCarEntity> datas;
@@ -101,6 +101,7 @@ public class ShopCarActivity extends BaseActivity {
                 super.getItemOffsets(outRect, view, parent, state);
             }
         });
+        recyclerView.setAdapter(shopCarAdapter);
         //获取数据
         requestShopCarDataChanged();
 
@@ -139,13 +140,12 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //向服务器发送请求，并将其存到数据库
-                // if(data)
+                //
                 Toast.makeText(ShopCarActivity.this, "功能暂未开放", Toast.LENGTH_SHORT).show();
-                // List<ShopCarTestEntity> datas = shopCarAdapter.getDatas();
+                List<ShopCarEntity> datas = shopCarAdapter.getDatas();
                 if (datas != null) {
-                    // ShopCarDao shopCarDao = DBInterface.instance().openWritableDb().getShopCarDao();
-                    //shopCarDao.insertOrReplaceInTx(datas);
-
+                    ShopCarDao shopCarDao = DBInterface.instance().openWritableDb().getShopCarDao();
+                    shopCarDao.insertOrReplaceInTx(datas);
                 }
             }
         });
@@ -156,22 +156,12 @@ public class ShopCarActivity extends BaseActivity {
         super.onResume();
 
     }
-
-    private void getData() {
-        data = new SparseArray<ShopCarTestEntity>();
-        data.append(0, new ShopCarTestEntity("1", 1, "青霉素", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "同仁药房", "true", 22.0, 1));
-        data.append(1, new ShopCarTestEntity("2", 2, "新康泰克", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "青岛药房", "false", 22.0, 2));
-        data.append(2, new ShopCarTestEntity("3", 3, "九九感冒灵", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "山东药房", "true", 22.0, 3));
-        data.append(3, new ShopCarTestEntity("4", 4, "罗素1", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "江西药房", "false", 22.0, 4));
-        data.append(4, new ShopCarTestEntity("5", 4, "罗素2", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "广州药房", "true", 22.0, 3));
-        data.append(5, new ShopCarTestEntity("6", 4, "罗素3", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "河南药房", "false", 22.0, 5));
-    }
-
     //获取购物车的信息
     private void requestShopCarDataChanged() {
-        // int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
+         int lastTime = DBInterface.instance().getShopCarDataLastTime();
+        //将更新时间加上去
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("", "").build();
+                .put("LASTTIME", lastTime).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -202,20 +192,28 @@ public class ShopCarActivity extends BaseActivity {
         if (count <= 0) {
             return;
         }
-        datas = new ArrayList<>();
+        List<ShopCarEntity> result=new ArrayList<ShopCarEntity>();
         for (LinkedTreeMap<String, String> item : ShopCarData) {
             ShopCarEntity entity = ShopCarEntity.mapToEntity(item);
             entity.setCHECK("true");
-            datas.add(entity);
+            entity.setCreatedTime((int) Calendar.getInstance().getTimeInMillis());
+            entity.setUpdatedTime((int) Calendar.getInstance().getTimeInMillis());
+            result.add(entity);
         }
         //暂且不做数据库插入操作
-        //if (needDb.size() > 0) {
-        //  DiscoveryDao userDao =DBInterface.instance().openWritableDb().getDiscoveryDao();
-        //userDao.insertOrReplaceInTx(needDb);
+        if (result.size() > 0) {
+            ShopCarDao shopCarDao =DBInterface.instance().openWritableDb().getShopCarDao();
+            shopCarDao.insertOrReplaceInTx(result);
+        }
+       bindData();
 
-        //}
-        shopCarAdapter.SetData(datas);
-        recyclerView.setAdapter(shopCarAdapter);
+    }
+
+    private void bindData() {
+        List<ShopCarEntity> result = DBInterface.instance().loadAllShopCar();
+        Log.i("数据库数量----",result.size()+"");
+        shopCarAdapter.SetData(result);
+       // recyclerView.setAdapter(shopCarAdapter);
     }
 
 
