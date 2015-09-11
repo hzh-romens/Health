@@ -90,6 +90,7 @@ public class ProductCell extends CardView {
             if (view instanceof BackupImageView) {
                 y = view.getMeasuredHeight() + AndroidUtilities.dp(8);
             } else if (view instanceof LinearLayout) {
+                //view.layout(l,t,r,b);
                 view.layout(0, y, totalWidth, totalHeight - AndroidUtilities.dp(8));
             }
         }

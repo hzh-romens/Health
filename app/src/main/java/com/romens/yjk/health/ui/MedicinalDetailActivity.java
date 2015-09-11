@@ -245,63 +245,68 @@ public class MedicinalDetailActivity extends BaseActivity {
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
+                    data = new ArrayList<TestEntity>();
                     Log.i("数据-----++","------"+response);
                     if(response!=null) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String wshop = jsonObject.getString("wshop");
-                            //JSONArray wshop = jsonObject.getJSONArray("wshop");
-                            JSONArray jsonArray = new JSONArray(wshop);
-                            JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-                            weiShopEntity = new WeiShopEntity();
-                            weiShopEntity.setBARCODE(jsonObject1.getString("BARCODE"));
-                            weiShopEntity.setCD(jsonObject1.getString("CD"));
-                            weiShopEntity.setCODE(jsonObject1.getString("CODE"));
-                            weiShopEntity.setDETAILDESCRIPTION(jsonObject1.getString("DETAILDESCRIPTION"));
-                            weiShopEntity.setGOODSSORTGUID(jsonObject1.getString("GOODSSORTGUID"));
-                            weiShopEntity.setGUID(jsonObject1.getString("GUID"));
-                            weiShopEntity.setMARKETPRICE(jsonObject1.getString("MARKETPRICE"));
-                            weiShopEntity.setNAME(jsonObject1.getString("NAME"));
-                            weiShopEntity.setPZWH(jsonObject1.getString("PZWH"));
-                            weiShopEntity.setSPEC(jsonObject1.getString("SPEC"));
-                            PRICE = jsonObject1.getString("MARKETPRICE");
-                            weiShopEntity.setUSERPRICE(jsonObject1.getString("USERPRICE"));
-                            if (jsonObject1.isNull("GOODSURL")) {
-                                weiShopEntity.setGOODSURL("");
-                            } else {
-                                weiShopEntity.setGOODSURL(jsonObject1.getString("GOODSURL"));
-                            }
-                            String goodurl = jsonObject.getString("goodurl");
-                            JSONArray jsonArray1 = new JSONArray(goodurl);
-                            urls = new ArrayList<String>();
-                            if(jsonArray1.length()!=0) {
-                                for (int i = 0; i < jsonArray1.length(); i++) {
-                                    JSONObject jsonObject2 = jsonArray1.getJSONObject(i);
-                                    String url = jsonObject2.getString("URL");
-                                    urls.add(url);
+                            if(new JSONArray(wshop).length()!=0) {
+                                //JSONArray wshop = jsonObject.getJSONArray("wshop");
+                                JSONArray jsonArray = new JSONArray(wshop);
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                                weiShopEntity = new WeiShopEntity();
+                                weiShopEntity.setBARCODE(jsonObject1.getString("BARCODE"));
+                                weiShopEntity.setCD(jsonObject1.getString("CD"));
+                                weiShopEntity.setCODE(jsonObject1.getString("CODE"));
+                                weiShopEntity.setDETAILDESCRIPTION(jsonObject1.getString("DETAILDESCRIPTION"));
+                                weiShopEntity.setGOODSSORTGUID(jsonObject1.getString("GOODSSORTGUID"));
+                                weiShopEntity.setGUID(jsonObject1.getString("GUID"));
+                                weiShopEntity.setMARKETPRICE(jsonObject1.getString("MARKETPRICE"));
+                                weiShopEntity.setNAME(jsonObject1.getString("NAME"));
+                                weiShopEntity.setPZWH(jsonObject1.getString("PZWH"));
+                                weiShopEntity.setSPEC(jsonObject1.getString("SPEC"));
+                                PRICE = jsonObject1.getString("MARKETPRICE");
+                                weiShopEntity.setUSERPRICE(jsonObject1.getString("USERPRICE"));
+                                if (jsonObject1.isNull("GOODSURL")) {
+                                    weiShopEntity.setGOODSURL("");
+                                } else {
+                                    weiShopEntity.setGOODSURL(jsonObject1.getString("GOODSURL"));
                                 }
-                            }
-                            data = new ArrayList<TestEntity>();
-                            if ("".equals(weiShopEntity.getGOODSURL())) {
-                                //data.add(new TestEntity(0, "", urls.get(0), ""));
-                            } else {
-                                data.add(new TestEntity(0, "", weiShopEntity.getGOODSURL(), ""));
-                            }
-                            data.add(new TestEntity(1, "药品名称", "", weiShopEntity.getNAME()));
-                            data.add(new TestEntity(1, "会员价", "", weiShopEntity.getMARKETPRICE()));
-                            data.add(new TestEntity(1, "用户价", "", weiShopEntity.getUSERPRICE()));
-                            data.add(new TestEntity(1, "药品描述", "", weiShopEntity.getDETAILDESCRIPTION()));
-                            //data.add(new TestEntity(2,))
-                            data.add(new TestEntity(3, "", "", ""));
-                            data.add(new TestEntity(4, "", "", ""));
-                            data.add(new TestEntity(5, "在线药店", "", ""));
-                            data.add(new TestEntity(6, "一号店", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
-                            data.add(new TestEntity(6, "二号店", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
-                            data.add(new TestEntity(7, "更多", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
-                            data.add(new TestEntity(4, "", "", ""));
-                            data.add(new TestEntity(5, "推荐药品", "", ""));
-                            if (urls.size() != 0) {
-                                data.add(new TestEntity(8, "", "true", ""));
+                                String goodurl = jsonObject.getString("goodurl");
+                                JSONArray jsonArray1 = new JSONArray(goodurl);
+                                urls = new ArrayList<String>();
+                                if (jsonArray1.length() != 0) {
+                                    for (int i = 0; i < jsonArray1.length(); i++) {
+                                        JSONObject jsonObject2 = jsonArray1.getJSONObject(i);
+                                        String url = jsonObject2.getString("URL");
+                                        urls.add(url);
+                                    }
+                                }
+
+                                if ("".equals(weiShopEntity.getGOODSURL())) {
+                                    //data.add(new TestEntity(0, "", urls.get(0), ""));
+                                } else {
+                                    data.add(new TestEntity(0, "", weiShopEntity.getGOODSURL(), ""));
+                                }
+                                data.add(new TestEntity(1, "药品名称", "", weiShopEntity.getNAME()));
+                                data.add(new TestEntity(1, "会员价", "", weiShopEntity.getMARKETPRICE()));
+                                data.add(new TestEntity(1, "用户价", "", weiShopEntity.getUSERPRICE()));
+                                data.add(new TestEntity(1, "药品描述", "", weiShopEntity.getDETAILDESCRIPTION()));
+                                //data.add(new TestEntity(2,))
+                                data.add(new TestEntity(3, "", "", ""));
+                                data.add(new TestEntity(4, "", "", ""));
+                                data.add(new TestEntity(5, "在线药店", "", ""));
+                                data.add(new TestEntity(6, "一号店", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
+                                data.add(new TestEntity(6, "二号店", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
+                                data.add(new TestEntity(7, "更多", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
+                                data.add(new TestEntity(4, "", "", ""));
+                                data.add(new TestEntity(5, "推荐药品", "", ""));
+                                if (urls.size() != 0) {
+                                    data.add(new TestEntity(8, "", "true", ""));
+                                }
+                            }else{
+                                data.add(new TestEntity(9,"","",""));
                             }
                             medicinalDetailAdapter = new MedicinalDetailAdapter(data, MedicinalDetailActivity.this);
                             medicinalDetailAdapter.setUrls(urls);

@@ -142,6 +142,7 @@ public class HomeDiscoveryFragment extends BaseFragment {
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.i("跳转-----",item.getKey()+"");
                     DiscoveryCollection.onDiscoveryItemAction(mContext, item);
                 }
             });
