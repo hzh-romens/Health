@@ -109,8 +109,8 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         deleteBtn.setVisibility(View.VISIBLE);
         editUser.setText(entity.getUser());
         editDrug.setText(entity.getDrug());
-        timesHint.setText(entity.getCount());
-        startDateView.setText(TransformDateUitls.getYearDate(Long.parseLong(entity.getStartDate())));
+//        timesHint.setText(entity.getCount());
+        startDateView.setText(entity.getStartDate());
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,10 +174,10 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
             timesData.set(i, timesDataTemp.get(i));
         }
         RemindEntity entity = new RemindEntity();
-        entity.setUserIcon(R.drawable.person_image_empty);
+//        entity.setUserIcon(R.drawable.person_image_empty);
         entity.setUser(editUser.getText().toString());
         entity.setDrug(editDrug.getText().toString());
-        entity.setCount("每" + day + "天服用" + oldTimes + "次");
+//        entity.setCount("每" + day + "天服用" + oldTimes + "次");
         entity.setStartDate(getStartDate() + "");
         int times = timesData.size();
         entity.setFirstTime(timesData.get(0));
@@ -185,7 +185,7 @@ public class AddRemindActivity extends BaseActivity implements View.OnClickListe
         entity.setThreeTime(times > 2 ? timesData.get(2) : "-1");
         entity.setFourTime(times > 3 ? timesData.get(3) : "-1");
         entity.setFiveTime(times > 4 ? timesData.get(4) : "-1");
-        entity.setTimes(times);
+//        entity.setTimes(times);
         entity.setIsRemind(isRemind);
         if (isRemind == 1) {
             setRemind(entity);

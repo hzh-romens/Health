@@ -96,26 +96,26 @@ public class SearchActivity extends BaseActivity {
 
     private void actionBarEvent(ActionBar actionBar, final ActionBarLayout.LinearLayoutContainer container) {
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        ActionBarMenuItem searchItem = actionBarMenu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
-        searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
-
-            @Override
-            public boolean canCollapseSearch() {
-                historyLayout.setVisibility(View.VISIBLE);
-                return true;
-            }
-
-            @Override
-            public void onTextChanged(EditText var1) {
-                String searchText = var1.getText().toString().trim();
-                if (!searchText.equals("") && searchText != null) {
-                    requestDrugChanged(searchText);
-                    requestIllnessChanged(searchText);
-                    showSearchResult(container);
-                    historyLayout.setVisibility(View.GONE);
-                }
-            }
-        });
+        ActionBarMenuItem searchItem = actionBarMenu.addItem(0, R.drawable.ic_ab_search);//.setIsSearchField(true, true);
+//        searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
+//
+//            @Override
+//            public boolean canCollapseSearch() {
+//                historyLayout.setVisibility(View.VISIBLE);
+//                return true;
+//            }
+//
+//            @Override
+//            public void onTextChanged(EditText var1) {
+//                String searchText = var1.getText().toString().trim();
+//                if (!searchText.equals("") && searchText != null) {
+//                    requestDrugChanged(searchText);
+//                    requestIllnessChanged(searchText);
+//                    showSearchResult(container);
+//                    historyLayout.setVisibility(View.GONE);
+//                }
+//            }
+//        });
 
         actionBar.setTitle("搜索");
         actionBar.setBackgroundResource(R.color.theme_primary);
@@ -130,6 +130,7 @@ public class SearchActivity extends BaseActivity {
 //                    saveHistoryKeyword(searchStr);
 //                    historyLayout.setVisibility(View.GONE);
 //                    showSearchResult(container);
+                    startActivity(new Intent("com.romens.yjk.health.QRSCANNER"));
                 }
             }
         });

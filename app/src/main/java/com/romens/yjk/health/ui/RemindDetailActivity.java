@@ -48,7 +48,7 @@ public class RemindDetailActivity extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 0) {
-                    Intent startEditIntent = new Intent(RemindDetailActivity.this, AddRemindActivity.class);
+                    Intent startEditIntent = new Intent(RemindDetailActivity.this, NewAddRemindActivity.class);
                     if (entity != null) {
                         startEditIntent.putExtra("editEntity", entity);
                     }
@@ -64,7 +64,7 @@ public class RemindDetailActivity extends BaseActivity {
         entity = (RemindEntity) bundle.getSerializable("detailEntity");
         user.setText(entity.getUser());
         drug.setText(entity.getDrug());
-        timesHint.setText(entity.getCount());
-        startDate.setText(TransformDateUitls.getYearDate(Long.parseLong(entity.getStartDate())));
+        timesHint.setText("每"+entity.getIntervalDay()+ "天服用" + entity.getTimesInDay() + "次");
+        startDate.setText(entity.getStartDate());
     }
 }

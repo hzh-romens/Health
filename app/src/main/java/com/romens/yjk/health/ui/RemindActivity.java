@@ -60,7 +60,7 @@ public class RemindActivity extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 1) {
-                    startActivity(new Intent(RemindActivity.this, AddRemindActivity.class));
+                    startActivity(new Intent(RemindActivity.this, NewAddRemindActivity.class));
                 }
             }
         });
@@ -140,10 +140,9 @@ public class RemindActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(RemindViewHolder holder, final int position) {
             final RemindEntity entity = data.get(position);
-            holder.userIcon.setBackgroundResource(entity.getUserIcon());
             holder.user.setText(entity.getUser());
             holder.drug.setText(entity.getDrug());
-            holder.count.setText(entity.getCount());
+            holder.intervalDay.setText(entity.getIntervalDay()+"次");
             holder.detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -167,7 +166,7 @@ public class RemindActivity extends BaseActivity {
         private ImageView userIcon;
         private TextView user;
         private TextView drug;
-        private TextView count;
+        private TextView intervalDay;
         private TextView detail;
 
         public RemindViewHolder(View itemView) {
@@ -175,7 +174,7 @@ public class RemindActivity extends BaseActivity {
             userIcon = (ImageView) itemView.findViewById(R.id.remind_item_usericon);
             user = (TextView) itemView.findViewById(R.id.remind_item_user);
             drug = (TextView) itemView.findViewById(R.id.remind_item_drug);
-            count = (TextView) itemView.findViewById(R.id.remind_item_count);
+            intervalDay = (TextView) itemView.findViewById(R.id.remind_item_count);
             detail = (TextView) itemView.findViewById(R.id.remind_item_details);
         }
     }

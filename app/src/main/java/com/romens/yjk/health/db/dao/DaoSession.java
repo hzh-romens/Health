@@ -4,10 +4,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
+import com.romens.yjk.health.db.entity.EatDrugUserEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
-import com.romens.yjk.health.model.ShopCarEntity;
 
 import java.util.Map;
 
@@ -40,8 +40,8 @@ public class DaoSession extends AbstractDaoSession {
     private final SearchHistoryDao searchHistoryDao;
     private final  DaoConfig searchResultDaoConfig;
 
-    private final ShopCarDao shopCarDao;
-    private final  DaoConfig shopCarDaoConfig;
+    private final  EatDrugUserDao eatDrugUserDao;
+    private final DaoConfig eatDrugUserDaoConfig;
 
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
@@ -71,10 +71,9 @@ public class DaoSession extends AbstractDaoSession {
         searchHistoryDao =new SearchHistoryDao(searchResultDaoConfig,this);
         registerDao(SearchHistoryEntity.class, searchHistoryDao);
 
-        shopCarDaoConfig = daoConfigMap.get(ShopCarDao.class).clone();
-        shopCarDaoConfig.initIdentityScope(type);
-        shopCarDao = new ShopCarDao(shopCarDaoConfig,this);
-        registerDao(ShopCarEntity.class, shopCarDao);
+        eatDrugUserDaoConfig = daoConfigMap.get(EatDrugUserDao.class).clone();
+        eatDrugUserDao = new EatDrugUserDao(eatDrugUserDaoConfig, this);
+        registerDao(EatDrugUserEntity.class,eatDrugUserDao);
     }
 
     public void clear() {
@@ -83,7 +82,7 @@ public class DaoSession extends AbstractDaoSession {
         locationAddressDaoConfig.getIdentityScope().clear();
         remindDaoConfig.getIdentityScope().clear();
         searchResultDaoConfig.getIdentityScope().clear();
-        shopCarDaoConfig.getIdentityScope().clear();
+        eatDrugUserDaoConfig.getIdentityScope().clear();
     }
 
     public DiscoveryDao getDiscoveryDao() {
@@ -105,9 +104,8 @@ public class DaoSession extends AbstractDaoSession {
     public SearchHistoryDao getSearchHistoryDao() {
         return searchHistoryDao;
     }
-    public  ShopCarDao getShopCarDao(){
-        return  shopCarDao;
+
+    public EatDrugUserDao getEatDrugUserDao() {
+        return eatDrugUserDao;
     }
-
 }
-
