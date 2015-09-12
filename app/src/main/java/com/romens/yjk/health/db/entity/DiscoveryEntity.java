@@ -8,7 +8,7 @@ import com.google.gson.internal.LinkedTreeMap;
 public class DiscoveryEntity {
     private long id;
     private String key;
-    private String iconRes;
+    private int iconRes;
     private String iconUrl;
     private String name;
     private int status;
@@ -35,7 +35,7 @@ public class DiscoveryEntity {
         return key;
     }
 
-    public String getIconRes() {
+    public int getIconRes() {
         return iconRes;
     }
 
@@ -85,7 +85,7 @@ public class DiscoveryEntity {
         this.key = key;
     }
 
-    public void setIconRes(String iconRes) {
+    public void setIconRes(int iconRes) {
         this.iconRes = iconRes;
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.model.HealthNewsEntity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.NewsCell;
 
@@ -11,13 +12,11 @@ import com.romens.yjk.health.ui.cells.NewsCell;
  * Created by siery on 15/8/14.
  */
 public class ADNewsControl extends ADBaseControl {
-    private String info;
-    private String iconUrl;
+    private HealthNewsEntity entity;
     private boolean needDivider=false;
 
-    public ADNewsControl bindModel(String _info, String _iconUrl,boolean divider) {
-        info = _info;
-        iconUrl = _iconUrl;
+    public ADNewsControl bindModel(HealthNewsEntity _entity,boolean divider) {
+        entity=_entity;
         needDivider=divider;
         return this;
     }
@@ -32,7 +31,7 @@ public class ADNewsControl extends ADBaseControl {
     @Override
     public void bindViewHolder(Context context, ADHolder holder) {
         NewsCell cell = (NewsCell) holder.itemView;
-        cell.setValue(info, iconUrl,needDivider);
+        cell.setValue(entity.content, entity.iconUrl,needDivider);
     }
 
     @Override

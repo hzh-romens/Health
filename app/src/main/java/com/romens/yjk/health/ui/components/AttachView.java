@@ -28,8 +28,8 @@ public class AttachView extends FrameLayout {
 
     public static class AttachButton extends FrameLayout {
 
-        private TextView textView;
-        private ImageView imageView;
+        public final TextView textView;
+        public final ImageView imageView;
 
         public AttachButton(Context context) {
             super(context);

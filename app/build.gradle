@@ -112,6 +112,7 @@ dependencies {
     compile 'com.prolificinteractive:material-calendarview:0.7.0'
     compile project(':datetimepicker')
     compile project(':MaterialDesign')
+    compile files('libs/easemobchat_2.2.2.jar')
 }
 
 

@@ -1,17 +1,15 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.util.SparseArray;
-import android.view.View;
+import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.romens.android.ui.support.widget.RecyclerView;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
 import com.romens.yjk.health.ui.controls.ADEmptyControl;
 import com.romens.yjk.health.ui.controls.ADFunctionControl;
 import com.romens.yjk.health.ui.controls.ADGroupControl;
-import com.romens.yjk.health.ui.controls.ADImageControl;
+import com.romens.yjk.health.ui.controls.ADImagesControl;
 import com.romens.yjk.health.ui.controls.ADNewsControl;
 import com.romens.yjk.health.ui.controls.ADPagerControl;
 import com.romens.yjk.health.ui.controls.ADProductsControl;
@@ -47,7 +45,7 @@ public class FocusAdapter extends RecyclerView.Adapter<ADHolder> {
         } else if (viewType == ControlType.TYPE_AD_FUNCTION) {
             return ADFunctionControl.createViewHolder(context);
         } else if (viewType == ControlType.TYPE_AD_IMAGE) {
-            return ADImageControl.createViewHolder(context);
+            return ADImagesControl.createViewHolder(context);
         } else if (viewType == ControlType.TYPE_AD_GROUP) {
             return ADGroupControl.createViewHolder(context);
         }else if(viewType==ControlType.TYPE_AD_NEWS){

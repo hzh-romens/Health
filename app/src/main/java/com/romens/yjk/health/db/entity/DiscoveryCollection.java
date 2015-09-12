@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.romens.yjk.health.R;
+
 /**
  * Created by siery on 15/5/22.
  */
@@ -26,7 +28,7 @@ public class DiscoveryCollection {
     public static final class NearbyPharmacy {
         public static final String key = "intent_nearby_pharmacy";
         public static final String value = "com.romens.yjk.health.NEARBYPHARMACY";
-        public static final String iconRes = "assets://icon/ic_discovery_map.png";
+        public static final int iconRes = R.drawable.attach_location_states;
         public static final String iconUrl = "";
         public static final String name = "附近药店";
         public static final int isCover = 1;
@@ -37,7 +39,7 @@ public class DiscoveryCollection {
     public static final class CommonDisease {
         public static final String key = "intent_common_disease";
         public static final String value = "com.romens.rhealth.COMMONDISEASE";
-        public static final String iconRes = "assets://icon/ic_discovery_map.png";
+        public static final int iconRes = R.drawable.sort;
         public static final String iconUrl = "";
         public static final String name = "常见疾病";
     }
@@ -45,7 +47,7 @@ public class DiscoveryCollection {
     public static final class PharmicCounseling {
         public static final String key = "intent_pharmic_counseling";
         public static final String value = "com.romens.rhealth.PHARMICCOUNSELING";
-        public static final String iconRes = "assets://icon/ic_discovery_map.png";
+        public static final int iconRes = R.drawable.pharmacist;
         public static final String iconUrl = "";
         public static final String name = "用药咨询";
     }
@@ -53,7 +55,7 @@ public class DiscoveryCollection {
     public static final class MedicationReminders {
         public static final String key = "intent_medication_reminders";
         public static final String value = "com.romens.rhealth.MEDICATIONREMINDERS";
-        public static final String iconRes = "assets://icon/ic_discovery_map.png";
+        public static final int iconRes = R.drawable.remind;
         public static final String iconUrl = "";
         public static final String name = "服药提醒";
     }
@@ -69,7 +71,7 @@ public class DiscoveryCollection {
     public static final class InformationNews {
         public static final String key = "intent_information_new";
         public static final String value = "com.romens.rhealth.INFORMATION_NEWS";
-        public static final String iconRes = "assets://icon/ic_discovery_map.png";
+        public static final int iconRes = R.drawable.news;
         public static final String iconUrl = "";
         public static final String name = "最新资讯";
         public static final int isCover = 0;
@@ -80,7 +82,7 @@ public class DiscoveryCollection {
     public static final class FindDrugWithScanner {
         public static final String key = "intent_find_drug_with_scanner";
         public static final String value = "com.romens.yjk.health.QRSCANNER";
-        public static final String iconRes = "assets://icon/ic_discovery_map.png";
+        public static final int iconRes = R.drawable.sort;
         public static final String iconUrl = "";
         public static final String name = "扫码识药";
         public static final int isCover = 0;

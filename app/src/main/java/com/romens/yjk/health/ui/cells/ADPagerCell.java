@@ -113,11 +113,8 @@ public class ADPagerCell extends FrameLayout {
         }
     }
 
-    public void setAdapter(PagerAdapter adapter){
+    public void setAdapter(PagerAdapter adapter) {
         viewPager.setAdapter(adapter);
         createTimer();
     }
-
-
-
 }

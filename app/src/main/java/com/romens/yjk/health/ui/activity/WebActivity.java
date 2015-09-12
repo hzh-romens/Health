@@ -30,9 +30,16 @@ public class WebActivity extends AppCompatActivity {
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         setContentView(content);
         actionBar = new ActionBar(this);
-        actionBar.setBackgroundColor(Color.WHITE);
         actionBar.setItemsBackground(R.drawable.bar_selector);
         actionBar.setBackButtonImage(R.drawable.ic_clear_grey600_24dp);
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+                if (id == -1) {
+                    finish();
+                }
+            }
+        });
 
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
@@ -41,7 +48,7 @@ public class WebActivity extends AppCompatActivity {
 
 
         mWebView = new WebView(this);
-        content.addView(mWebView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
+        frameLayout.addView(mWebView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
 
         WebSettings settings = mWebView.getSettings();
         settings.setAllowFileAccess(true);
@@ -51,8 +58,8 @@ public class WebActivity extends AppCompatActivity {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
 
-        mWebProgress = new ProgressBarDeterminate(this, null);
-        mWebProgress.setBackgroundColor(0xff1E88E5);
+        mWebProgress = new ProgressBarDeterminate(this);
+        mWebProgress.setBackgroundColor(0x800f9d58);
         mWebProgress.setMinimumHeight(AndroidUtilities.dp(2));
         mWebProgress.setMax(AndroidUtilities.dp(2));
         mWebProgress.setMax(100);

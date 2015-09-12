@@ -1,16 +1,22 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADPagerEntity;
+import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADPagerCell;
+import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +42,7 @@ public class ADPagerControl extends ADBaseControl {
     }
 
     @Override
-    public void bindViewHolder(Context context, ADHolder holder) {
+    public void bindViewHolder(final Context context, ADHolder holder) {
         ADPagerCell cell = (ADPagerCell) holder.itemView;
         ADPagerAdapter adPagerAdapter = new ADPagerAdapter(context);
         adPagerAdapter.bindData(adPagerEntities);
@@ -55,9 +61,14 @@ public class ADPagerControl extends ADBaseControl {
         private Context mContext;
         private List<ADPagerEntity> adPagerEntities = new ArrayList<>();
         private final List<BackupImageView> viewList = new ArrayList<>();
+        private ADPageCellDelegate cellDelegate;
 
         public ADPagerAdapter(Context context) {
             mContext = context;
+        }
+
+        public void setADPageCellDelegate(ADPageCellDelegate delegate) {
+            cellDelegate = delegate;
         }
 
         public void bindData(List<ADPagerEntity> entities) {
@@ -79,9 +90,16 @@ public class ADPagerControl extends ADBaseControl {
 
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            ADPagerEntity entity = adPagerEntities.get(position);
+        public Object instantiateItem(final ViewGroup container, int position) {
+            final ADPagerEntity entity = adPagerEntities.get(position);
             BackupImageView pager = viewList.get(position);
+            pager.setClickable(true);
+            pager.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handlePageCellClick(container.getContext(), entity);
+                }
+            });
             container.addView(pager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
             pager.setImage(entity.value, null, null);
             return pager;
@@ -96,5 +114,25 @@ public class ADPagerControl extends ADBaseControl {
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
+
+        private void handlePageCellClick(Context context, ADPagerEntity entity) {
+            int type = entity.getType();
+            String action = entity.getAction();
+            if (type == 0) {
+                if (!TextUtils.isEmpty(action)) {
+                    String url = createADWebUrl(action, FacadeToken.getInstance().getAuthToken(), entity.id);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, entity.name);
+                    bundle.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
+                    onActionForADWeb(context, bundle);
+                }
+            }
+        }
     }
+
+    public interface ADPageCellDelegate {
+        void onPageCellClick(int position);
+    }
+
+
 }

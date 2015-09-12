@@ -493,7 +493,7 @@ public class LocationActivity extends BaseActivity {
             if (Build.VERSION.SDK_INT >= 11) {
                 markerXImageView = new ImageView(context);
                 markerXImageView.setAlpha(0.0f);
-                markerXImageView.setImageResource(R.drawable.place_x);
+                markerXImageView.setImageResource(R.mipmap.place_x);
                 mapViewClip.addView(markerXImageView, LayoutHelper.createFrame(14, 14, Gravity.TOP | Gravity.CENTER_HORIZONTAL));
             }
 

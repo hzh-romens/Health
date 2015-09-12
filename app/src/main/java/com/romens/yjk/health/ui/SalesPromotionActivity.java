@@ -186,32 +186,32 @@ public class SalesPromotionActivity extends BaseActivity implements CollectionVi
         } else {
             ADProductEntity entity = adSalesListEntity.productList.get(indexInGroup);
             ProductCell cell = (ProductCell) view;
-            cell.setValue(entity.icon,entity.name,entity.price);
+            cell.setValue(entity.icon, entity.name, entity.oldPrice, entity.price);
         }
     }
 
     private ADSalesListEntity createDemoData() {
         ADSalesListEntity entity = new ADSalesListEntity("八月十五促销", "http://img1.imgtn.bdimg.com/it/u=3238452814,3804376663&fm=21&gp=0.jpg");
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊胃药胶囊胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
-        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊胃药胶囊胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
+        entity.addProduct(new ADProductEntity("0", "http://img.yy960.com/2013/03/20130326132534.JPG", "胃药胶囊", "", "$21.5"));
 
         return entity;
     }

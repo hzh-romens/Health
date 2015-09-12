@@ -1,8 +1,7 @@
 package com.romens.yjk.health.ui.cells;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import com.romens.android.ui.support.widget.RecyclerView;
 
 /**
  * Created by siery on 15/8/14.

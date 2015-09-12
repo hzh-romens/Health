@@ -79,9 +79,12 @@ public class UIUtils {
 		AndroidUtilities.runOnUIThread(runnable);
 	}
 
-
-
-
+	public static boolean isExitsSdcard() {
+		if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
+			return true;
+		else
+			return false;
+	}
 
 
 

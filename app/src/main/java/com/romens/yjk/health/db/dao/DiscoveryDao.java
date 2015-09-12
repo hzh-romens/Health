@@ -33,7 +33,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Key = new Property(1, String.class, "key", false, "KEY");
-        public final static Property IconRes = new Property(2, String.class, "iconRes", false, "ICON_RES");
+        public final static Property IconRes = new Property(2, int.class, "iconRes", false, "ICON_RES");
         public final static Property IconUrl = new Property(3, String.class, "iconUrl", false, "ICON_URL");
         public final static Property Name = new Property(4, String.class, "name", false, "NAME");
         public final static Property Value = new Property(5, String.class, "value", false, "VALUE");
@@ -173,7 +173,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindString(2, entity.getKey());
-        stmt.bindString(3, entity.getIconRes());
+        stmt.bindLong(3, entity.getIconRes());
         stmt.bindString(4, entity.getIconUrl());
         stmt.bindString(5, entity.getName());
         stmt.bindString(6, entity.getValue());
@@ -201,7 +201,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         DiscoveryEntity entity = new DiscoveryEntity();
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
         entity.setKey(cursor.getString(offset + 1)); // key
-        entity.setIconRes(cursor.getString(offset + 2));// iconResId
+        entity.setIconRes(cursor.getInt(offset + 2));// iconResId
         entity.setIconUrl(cursor.getString(offset + 3)); // iconUrl
         entity.setName(cursor.getString(offset + 4)); // name
         entity.setValue(cursor.getString(offset + 5)); // value
@@ -221,7 +221,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
     public void readEntity(Cursor cursor, DiscoveryEntity entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setKey(cursor.getString(offset + 1));
-        entity.setIconRes(cursor.getString(offset + 2));
+        entity.setIconRes(cursor.getInt(offset + 2));
         entity.setIconUrl(cursor.getString(offset + 3));
         entity.setName(cursor.getString(offset + 4));
         entity.setValue(cursor.getString(offset + 5));

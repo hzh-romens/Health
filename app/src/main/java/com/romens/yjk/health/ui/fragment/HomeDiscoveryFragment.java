@@ -3,28 +3,26 @@ package com.romens.yjk.health.ui.fragment;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.io.image.ImageManager;
-import com.romens.android.io.image.ImageUtils;
+import com.romens.android.ApplicationLoader;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -32,6 +30,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
+import com.romens.yjk.health.ui.cells.DiscoveryCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class HomeDiscoveryFragment extends BaseFragment {
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home_discovery, container, false);
         gridView = (RecyclerView) root.findViewById(R.id.list);
-        int count = AndroidUtilities.getRealScreenSize().x / AndroidUtilities.dp(96);
+        int count = AndroidUtilities.getRealScreenSize().x / DiscoveryCell.DEFAULT_SIZE;
         gridView.setLayoutManager(new GridLayoutManager(getActivity(), count, GridLayoutManager.VERTICAL, false));
         return root;
     }
@@ -101,7 +100,7 @@ public class HomeDiscoveryFragment extends BaseFragment {
         super.onDestroy();
     }
 
-    public class DiscoveryAdapter extends RecyclerView.Adapter<DiscoveryItemHolder> {
+    public class DiscoveryAdapter extends RecyclerView.Adapter<Holder> {
 
         private Context mContext;
         private final List<DiscoveryEntity> entities = new ArrayList<>();
@@ -126,20 +125,28 @@ public class HomeDiscoveryFragment extends BaseFragment {
         }
 
         @Override
-        public DiscoveryItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_discovery, parent, false);
-            return new DiscoveryItemHolder(view);
+        public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+            DiscoveryCell cell = new DiscoveryCell(parent.getContext());
+            cell.setBackgroundResource(R.drawable.list_selector);
+            cell.setClickable(true);
+            cell.setFocusable(true);
+            cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            return new Holder(cell);
         }
 
         @Override
-        public void onBindViewHolder(DiscoveryItemHolder holder, int position) {
+        public void onBindViewHolder(Holder holder, int position) {
+
             final DiscoveryEntity item = getItem(position);
-            holder.iconView.setImageBitmap(ImageUtils.bindLocalImage(item.getIconRes()));
-            Drawable defaultDrawable = holder.iconView.getDrawable();
-            ImageManager.loadForView(mContext,holder.iconView,item.getIconUrl(),defaultDrawable,defaultDrawable);
-            holder.iconView.setColorFilter(item.getPrimaryColor());
-            holder.nameView.setText(item.getName());
-            holder.card.setOnClickListener(new View.OnClickListener() {
+            DiscoveryCell cell = (DiscoveryCell) holder.itemView;
+            //cell.setColorFilter(true, item.getPrimaryColor());
+            String iconUrl = item.getIconUrl();
+            if (TextUtils.isEmpty(iconUrl)) {
+                cell.setValue(item.getIconRes(), item.getName());
+            } else {
+                cell.setValue(iconUrl, ApplicationLoader.applicationContext.getResources().getDrawable(item.getIconRes()), item.getName());
+            }
+            cell.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     DiscoveryCollection.onDiscoveryItemAction(mContext, item);
@@ -154,17 +161,10 @@ public class HomeDiscoveryFragment extends BaseFragment {
 
     }
 
-    static class DiscoveryItemHolder extends RecyclerView.ViewHolder {
+    static class Holder extends RecyclerView.ViewHolder {
 
-        public final View card;
-        public final ImageView iconView;
-        public final TextView nameView;
-
-        public DiscoveryItemHolder(View itemView) {
+        public Holder(View itemView) {
             super(itemView);
-            card = itemView.findViewById(R.id.card);
-            iconView = (ImageView) itemView.findViewById(R.id.icon);
-            nameView = (TextView) itemView.findViewById(R.id.name);
         }
     }
 
@@ -208,7 +208,7 @@ public class HomeDiscoveryFragment extends BaseFragment {
             needDb.add(entity);
         }
         if (needDb.size() > 0) {
-            DiscoveryDao userDao =DBInterface.instance().openWritableDb().getDiscoveryDao();
+            DiscoveryDao userDao = DBInterface.instance().openWritableDb().getDiscoveryDao();
             userDao.insertOrReplaceInTx(needDb);
         }
         bindData();
