@@ -8,6 +8,7 @@ import com.romens.yjk.health.db.entity.EatDrugUserEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
+import com.romens.yjk.health.model.ShopCarEntity;
 
 import java.util.Map;
 
@@ -43,6 +44,9 @@ public class DaoSession extends AbstractDaoSession {
     private final  EatDrugUserDao eatDrugUserDao;
     private final DaoConfig eatDrugUserDaoConfig;
 
+    private final ShopCarDao shopCarDao;
+    private final DaoConfig shopCarDaoConfig;
+
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -74,6 +78,11 @@ public class DaoSession extends AbstractDaoSession {
         eatDrugUserDaoConfig = daoConfigMap.get(EatDrugUserDao.class).clone();
         eatDrugUserDao = new EatDrugUserDao(eatDrugUserDaoConfig, this);
         registerDao(EatDrugUserEntity.class,eatDrugUserDao);
+
+        shopCarDaoConfig = daoConfigMap.get(ShopCarDao.class).clone();
+        shopCarDaoConfig.initIdentityScope(type);
+        shopCarDao = new ShopCarDao(shopCarDaoConfig, this);
+        registerDao(ShopCarEntity.class, shopCarDao);
     }
 
     public void clear() {
@@ -83,6 +92,7 @@ public class DaoSession extends AbstractDaoSession {
         remindDaoConfig.getIdentityScope().clear();
         searchResultDaoConfig.getIdentityScope().clear();
         eatDrugUserDaoConfig.getIdentityScope().clear();
+        shopCarDaoConfig.getIdentityScope().clear();
     }
 
     public DiscoveryDao getDiscoveryDao() {
@@ -107,5 +117,8 @@ public class DaoSession extends AbstractDaoSession {
 
     public EatDrugUserDao getEatDrugUserDao() {
         return eatDrugUserDao;
+    }
+    public ShopCarDao getShopCarDao(){
+        return  shopCarDao;
     }
 }
