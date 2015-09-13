@@ -12,23 +12,17 @@ import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.Image.AvatarDrawable;
 import com.romens.android.ui.Image.BackupImageView;
-import com.romens.yjk.health.model.OrderEntity;
 
 /**
- * Created by AUSU on 2015/9/11.
- * 我的订单Item
+ * Created by AUSU on 2015/9/12.
  */
-
-public class ADOrederCell extends FrameLayout{
+public class PopWindowCell extends FrameLayout{
     private BackupImageView imageView;
     private TextView textView;
-    private TextView tv_comment;
-
-    private static Paint paint;
-    private boolean needDivider = false;
-
-    public ADOrederCell(Context context) {
+    private Paint paint;
+    public PopWindowCell(Context context) {
         super(context);
         if(paint==null){
             paint=new Paint();
@@ -37,33 +31,25 @@ public class ADOrederCell extends FrameLayout{
         }
         setPadding(AndroidUtilities.dp(8),AndroidUtilities.dp(8),AndroidUtilities.dp(8),AndroidUtilities.dp(8));
         imageView=new BackupImageView(context);
-        imageView.setRoundRadius(2);
-        addView(imageView, LayoutHelper.createFrame(64,64, Gravity.TOP | Gravity.LEFT, 8, 0, 8, 0));
+        imageView.setRoundRadius(10);
+        addView(imageView, LayoutHelper.createFrame(32, 32, Gravity.CENTER_VERTICAL | Gravity.LEFT, 8, 0, 8, 0));
         //FrameLayout frameLayout=new FrameLayout(context);
         textView=new TextView(context);
-        textView.setTextColor(0xff212121);
+        textView.setTextColor(0xffffffff);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         textView.setLines(2);
         textView.setMaxLines(2);
         textView.setEllipsize(TextUtils.TruncateAt.END);
-        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP|Gravity.RIGHT, 80, 0, 8, 0));
-        tv_comment=new TextView(context);
-        tv_comment.setTextColor(0xff212121);
-        tv_comment.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        addView(tv_comment,LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT,LayoutHelper.WRAP_CONTENT,Gravity.BOTTOM|Gravity.RIGHT,8,0,8,0));
+        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL|Gravity.RIGHT, 48, 0, 8, 0));
     }
-
     @Override
     protected void onDraw(Canvas canvas) {
-      if(needDivider){
-          canvas.drawLine(AndroidUtilities.dp(16),getHeight()-1,getWidth()-AndroidUtilities.dp(16),getHeight()-1,paint);
-      }
+            canvas.drawLine(AndroidUtilities.dp(16),getHeight()-1,getWidth()-AndroidUtilities.dp(16),getHeight()-1,paint);
     }
-    public void setValue(String info, String iconUrl,String comment, boolean divider) {
+    public void setValue(String info, String iconUrl) {
         textView.setText(info);
         imageView.setImage(iconUrl, "64_64", null);
-        needDivider = divider;
-        tv_comment.setText(comment);
-        setWillNotDraw(!divider);
     }
+
+
 }

@@ -1,15 +1,25 @@
 package com.romens.yjk.health.ui;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +33,7 @@ import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -33,6 +44,7 @@ import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.model.ShopCarTestEntity;
 import com.romens.yjk.health.ui.adapter.ShopCarAdapter;
+import com.romens.yjk.health.ui.cells.PopWindowCell;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 
@@ -81,12 +93,13 @@ public class ShopCarActivity extends BaseActivity {
             public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
                 super.onDrawOver(c, parent, state);
                 Paint paint = new Paint();
+                paint.setColor(getResources().getColor(R.color.done_text_color_disabled));
                 int childCount = parent.getChildCount();
                 for (int i = 0; i < childCount; i++) {
                     View child = parent.getChildAt(i);
                     float x = child.getWidth() + child.getX();
                     float y = child.getHeight() + child.getY();
-                    c.drawRect(child.getX(),
+                    c.drawLine(child.getX(),
                             y,
                             child.getX() + child.getWidth(),
                             y,
@@ -97,7 +110,7 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 //   outRect.bottom = AndroidUtilities.dp(1);
-                outRect.set(0, 0, 0, AndroidUtilities.dp(5));
+                outRect.set(0, 0, 0, AndroidUtilities.dp(1));
                 super.getItemOffsets(outRect, view, parent, state);
             }
         });
@@ -211,10 +224,11 @@ public class ShopCarActivity extends BaseActivity {
 
     private void bindData() {
         List<ShopCarEntity> result = DBInterface.instance().loadAllShopCar();
-        Log.i("数据库数量----",result.size()+"");
         shopCarAdapter.SetData(result);
        // recyclerView.setAdapter(shopCarAdapter);
     }
+
+
 
 
 }

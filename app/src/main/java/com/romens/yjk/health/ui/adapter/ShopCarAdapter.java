@@ -186,8 +186,12 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
         });
         shopHolder.checkBox.setChecked(itemStates.get(position));
         shopHolder.tv_infor.setText(mDatas.get(position).getGOODSCLASSNAME());
-        shopHolder.tv_price.setText(mDatas.get(position).getGOODSPRICE() + "");
-        shopHolder.tv_active.setText("生产时间" + mDatas.get(position).getCREATETIME());
+        shopHolder.tv_price.setText("$"+mDatas.get(position).getGOODSPRICE());
+        if(mDatas.get(position).getCREATETIME()!=null) {
+            shopHolder.tv_active.setText("生产时间：" + mDatas.get(position).getCREATETIME());
+        }else{
+            shopHolder.tv_active.setText("生产时间：不详");
+        }
         shopHolder.tv_num.setText(mDatas.get(position).getBUYCOUNT() + "");
         shopHolder.tv_num.setOnClickListener(new View.OnClickListener() {
             @Override

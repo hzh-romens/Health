@@ -42,11 +42,12 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
+            android:typeface="monospace"
             android:text="多少分开始动画，建设的快速离开"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/background_dark"
             android:layout_marginBottom="3dip"
             android:layout_marginTop="3dip"
-            android:textSize="@dimen/text_size_large" />
+            android:textSize="@dimen/text_size_xlarge" />
 
         <TextView
             android:id="@+id/tv_store"
@@ -55,9 +56,10 @@
             android:layout_marginBottom="3dip"
             android:ellipsize="end"
             android:singleLine="true"
+            android:typeface="monospace"
             android:text="青岛药店"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_medium" />
+            android:textColor="@android:color/background_dark"
+            android:textSize="@dimen/text_size_large" />
 
         <TextView
             android:id="@+id/tv_active"
@@ -65,22 +67,23 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dip"
             android:ellipsize="end"
+            android:typeface="monospace"
             android:singleLine="true"
             android:text="今天九折"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_medium" />
+            android:textColor="@android:color/background_dark"
+            android:textSize="@dimen/text_size_large" />
 
         <TextView
             android:id="@+id/tv_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dip"
-
+            android:typeface="monospace"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="￥22"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_medium" />
+            android:textColor="@android:color/background_dark"
+            android:textSize="@dimen/text_size_large" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -102,8 +105,10 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/shopping_cart_product_num_edit"
                 android:gravity="center"
+                android:textColor="@android:color/background_dark"
                 android:text="1"
-                android:textSize="@dimen/text_size_medium" />
+                android:typeface="monospace"
+                android:textSize="@dimen/text_size_large" />
 
             <Button
                 android:id="@+id/bt_add"
