@@ -251,7 +251,7 @@ public class MedicinalDetailActivity extends BaseActivity {
     //商品列表信息数据请求
     private void requestStoreData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("GUID","0BF7C472-78C5-4C0D-84FA-A2D8643173B5").build();
+                .put("GUID",GUID).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder().withProtocol(protocol).build();
@@ -267,7 +267,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
                     data = new ArrayList<TestEntity>();
-                    Log.i("数据-----++","------"+response);
+
                     if(response!=null) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
