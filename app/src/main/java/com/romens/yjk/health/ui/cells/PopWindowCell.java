@@ -31,7 +31,7 @@ public class PopWindowCell extends FrameLayout{
         }
         setPadding(AndroidUtilities.dp(8),AndroidUtilities.dp(8),AndroidUtilities.dp(8),AndroidUtilities.dp(8));
         imageView=new BackupImageView(context);
-        imageView.setRoundRadius(10);
+        imageView.setRoundRadius(AndroidUtilities.dp(16));
         addView(imageView, LayoutHelper.createFrame(32, 32, Gravity.CENTER_VERTICAL | Gravity.LEFT, 8, 0, 8, 0));
         //FrameLayout frameLayout=new FrameLayout(context);
         textView=new TextView(context);
@@ -40,7 +40,7 @@ public class PopWindowCell extends FrameLayout{
         textView.setLines(2);
         textView.setMaxLines(2);
         textView.setEllipsize(TextUtils.TruncateAt.END);
-        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL|Gravity.RIGHT, 48, 0, 8, 0));
+        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER_VERTICAL|Gravity.RIGHT, 48, 0, 8, 0));
     }
     @Override
     protected void onDraw(Canvas canvas) {
