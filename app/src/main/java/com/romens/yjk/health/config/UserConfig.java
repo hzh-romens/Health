@@ -2,6 +2,7 @@ package com.romens.yjk.health.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -24,6 +25,7 @@ public class UserConfig {
     private final static String PREFERENCE_KEY_USER = "user";
     private final static Object sync = new Object();
 
+    private static AppChannel appChannel;
     private static Data config;
 
     public static String getOrgCode() {
@@ -245,5 +247,29 @@ public class UserConfig {
         md5Code = String.format("%s0", md5Code);
         md5Code = MD5Helper.createMD5(md5Code);
         return md5Code;
+    }
+
+    public static AppChannel loadAppChannel() {
+        if (appChannel == null) {
+            appChannel = new AppChannel();
+        }
+        return appChannel;
+    }
+
+    public static class AppChannel {
+        public final String orgCode;
+        public final String orgName;
+
+        public AppChannel() {
+            String channel = MyApplication.applicationContext.getApplicationInfo().metaData.getString("APK_CHANNEL");
+            if (TextUtils.isEmpty(channel)) {
+                orgCode = null;
+                orgName = null;
+            } else {
+                String[] temp = channel.split("\\|@");
+                orgCode = temp[0];
+                orgName = temp[1];
+            }
+        }
     }
 }

@@ -178,4 +178,12 @@ public class DBInterface {
                 .buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
+
+    public List<DrugGroupEntity> loadAllDrugGroup() {
+        DrugGroupDao dao = openReadableDb().getDrugGroupDao();
+        List<DrugGroupEntity> result = dao.queryBuilder()
+                .orderAsc(DrugGroupDao.Properties.SortIndex)
+                .list();
+        return result;
+    }
 }

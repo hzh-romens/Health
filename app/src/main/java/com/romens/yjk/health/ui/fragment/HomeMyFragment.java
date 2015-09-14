@@ -23,14 +23,13 @@ import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.model.UserEntity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
-import com.romens.yjk.health.ui.NewShippingAddressActivity;
-import com.romens.yjk.health.ui.adapter.FocusAdapter;
+import com.romens.yjk.health.ui.activity.LoginActivity;
+import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
-
-import java.util.ResourceBundle;
 
 /**
  * Created by siery on 15/8/10.
@@ -82,18 +81,26 @@ public class HomeMyFragment extends BaseFragment {
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
-        updateData(new UserEntity("0", "http://img1.imgtn.bdimg.com/it/u=2637703651,2176836148&fm=21&gp=0.jpg", "google"));
+        updateData();
     }
 
-    private void updateData(UserEntity entity) {
-        userEntity = entity;
+    private void updateData() {
+        if (UserConfig.isClientLogined()) {
+            userEntity = new UserEntity("", "", "siery");
+        } else {
+            userEntity = null;
+        }
+
         rowCount = 0;
-        if (entity != null) {
+        if (userEntity != null) {
+            loginRow = -1;
             userProfileRow = rowCount++;
             userInfoSectionRow = rowCount++;
             userInfoSectionRow1 = rowCount++;
             addressRow = rowCount++;
         } else {
+            loginRow = rowCount++;
+            userProfileRow=-1;
             userInfoSectionRow = -1;
             userInfoSectionRow1 = -1;
             addressRow = -1;
@@ -107,6 +114,7 @@ public class HomeMyFragment extends BaseFragment {
     }
 
     private int rowCount;
+    private int loginRow;
     private int userProfileRow;
 
     private int userInfoSectionRow;
@@ -166,13 +174,15 @@ public class HomeMyFragment extends BaseFragment {
                 return 3;
             } else if (i == appInfoRow) {
                 return 4;
+            } else if (i == loginRow) {
+                return 5;
             }
             return 1;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 5;
+            return 6;
         }
 
         @Override
@@ -229,6 +239,19 @@ public class HomeMyFragment extends BaseFragment {
                         } catch (Exception e) {
                             FileLog.e("YJKHealth", e);
                         }
+                    }
+                }
+            } else if (type == 5) {
+                if (view == null) {
+                    view = new LoginCell(adapterContext);
+                    if (position == loginRow) {
+                        ((LoginCell) view).setLoginCellDelegate(new LoginCell.LoginCellDelegate() {
+                            @Override
+                            public void onLoginClick() {
+                                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 }
             }

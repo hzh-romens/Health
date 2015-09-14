@@ -35,6 +35,7 @@ import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.PhoneFormat.PhoneFormat;
 import com.romens.android.log.FileLog;
@@ -65,7 +66,7 @@ import java.util.TimerTask;
  * Created by siery on 15/6/24.
  */
 public class LoginActivity extends BaseActivity {
-    private final static int PAGER_COUNT = 4;
+    private final static int PAGER_COUNT = 3;
     private int currentViewNum = 0;
     private SlideView[] views = new SlideView[PAGER_COUNT];
     private ProgressDialog progressDialog;
@@ -101,10 +102,10 @@ public class LoginActivity extends BaseActivity {
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
         frameLayout.setLayoutParams(layoutParams);
 
-        views[0] = new OrganizationCodeView(this);
-        views[1] = new PhoneView(this);
-        views[2] = new LoginActivityPasswordView(this);
-        views[3] = new LoginActivitySmsView(this);
+        //views[0] = new OrganizationCodeView(this);
+        views[0] = new PhoneView(this);
+        views[1] = new LoginActivityPasswordView(this);
+        views[2] = new LoginActivitySmsView(this);
 
         for (int a = 0; a < PAGER_COUNT; a++) {
             views[a].setVisibility(a == 0 ? View.VISIBLE : View.GONE);
@@ -1658,7 +1659,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     public class PhoneView extends SlideView {
-        private EditText phoneField;
+        private MaterialEditText phoneField;
         private TextView orgField;
         private boolean ignoreOnPhoneChange = false;
         private boolean nextPressed = false;
@@ -1679,11 +1680,13 @@ public class LoginActivity extends BaseActivity {
             layoutParams.topMargin = AndroidUtilities.dp(20);
             linearLayout.setLayoutParams(layoutParams);
 
-            phoneField = new EditText(context);
+            phoneField = new MaterialEditText(context);
+            phoneField.setBaseColor(0xff212121);
+            phoneField.setPrimaryColor(getResources().getColor(R.color.theme_primary));
+            phoneField.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+            phoneField.setFloatingLabelText("手机号码");
+            phoneField.setFloatingLabelTextSize(AndroidUtilities.dp(18));
             phoneField.setInputType(InputType.TYPE_CLASS_PHONE);
-            phoneField.setTextColor(0xff212121);
-            phoneField.setHintTextColor(0xff979797);
-            phoneField.setPadding(0, 0, 0, 0);
             AndroidUtilities.clearCursorDrawable(phoneField);
             phoneField.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             phoneField.setMaxLines(1);
@@ -1692,7 +1695,7 @@ public class LoginActivity extends BaseActivity {
             linearLayout.addView(phoneField);
             layoutParams = (LinearLayout.LayoutParams) phoneField.getLayoutParams();
             layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            layoutParams.height = AndroidUtilities.dp(36);
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
             phoneField.setLayoutParams(layoutParams);
             phoneField.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -1753,7 +1756,7 @@ public class LoginActivity extends BaseActivity {
             });
 
             TextView textView = new TextView(context);
-            textView.setText("输入在企业通讯录上注册的手机号码,以激活账户");
+            textView.setText("使用手机号码快捷登录要健康.未注册用户,赶快加入我们吧,一起开启健康之旅.");
             textView.setTextColor(0xff757575);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             textView.setGravity(Gravity.LEFT);
@@ -1790,39 +1793,6 @@ public class LoginActivity extends BaseActivity {
             layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
             linearLayout.setLayoutParams(layoutParams);
 
-            TextView wrongNumber = new TextView(context);
-            wrongNumber.setText("变更组织机构代码?");
-            wrongNumber.setGravity(Gravity.LEFT | Gravity.CENTER_HORIZONTAL);
-            wrongNumber.setTextColor(0xff4d83b3);
-            wrongNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            wrongNumber.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
-            wrongNumber.setPadding(0, AndroidUtilities.dp(24), 0, 0);
-            linearLayout.addView(wrongNumber);
-            layoutParams = (LinearLayout.LayoutParams) wrongNumber.getLayoutParams();
-            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
-            layoutParams.bottomMargin = AndroidUtilities.dp(10);
-            wrongNumber.setLayoutParams(layoutParams);
-            wrongNumber.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                    builder.setTitle(getString(R.string.app_name));
-                    builder.setMessage("是否确认变更组织机构代码?");
-                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            onBackPressed();
-                            UserConfig.clearConfig();
-                            setPage(0, true, null, true);
-                        }
-                    });
-                    builder.setNegativeButton("取消", null);
-                    showDialog(builder.create());
-                }
-            });
-
             AndroidUtilities.showKeyboard(phoneField);
             phoneField.requestFocus();
         }
@@ -1845,6 +1815,7 @@ public class LoginActivity extends BaseActivity {
             ignoreOnPhoneChange = true;
             try {
                 String codeText = "86";
+                PhoneFormat.getInstance().init("86");
                 String phone = PhoneFormat.getInstance().format("+" + codeText + phoneField.getText().toString());
                 int idx = phone.indexOf(" ");
                 if (idx != -1) {
@@ -1878,8 +1849,9 @@ public class LoginActivity extends BaseActivity {
             nextPressed = true;
             needShowProgress("验证手机号码...");
             Map<String, String> args = new HashMap<>();
+            UserConfig.AppChannel appChannel = UserConfig.loadAppChannel();
             args.put("PHONENUMBER", phone);
-            args.put("ORGGUID", orgCode);
+            args.put("ORGGUID", appChannel.orgCode);
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "unloadhandle", "CheckPhoneNumber", args);
             Message message = new Message.MessageBuilder()
                     .withProtocol(protocol)

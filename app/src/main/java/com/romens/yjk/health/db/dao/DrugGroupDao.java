@@ -29,6 +29,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         public final static Property Status = new Property(4, int.class, "status", false, "STATUS");
         public final static Property Created = new Property(5, int.class, "created", false, "CREATED");
         public final static Property Updated = new Property(6, int.class, "updated", false, "UPDATED");
+        public final static Property SortIndex = new Property(7, int.class, "sortIndex", false, "SORTINDEX");
     }
 
 
@@ -45,16 +46,17 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
-        db.execSQL("CREATE TABLE " + constraint + "'"+ TABLENAME +"' (" +
+        db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," +
                 "'KEY' TEXT NOT NULL UNIQUE ," +
                 "'NAME' TEXT NOT NULL ," +
                 "'PARENT_ID' TEXT," +
                 "'STATUS' INTEGER NOT NULL ," +
                 "'CREATED' INTEGER NOT NULL ," +
-                "'UPDATED' INTEGER NOT NULL );");
+                "'UPDATED' INTEGER NOT NULL ," +
+                "'SORTINDEX' INTEGER NOT NULL );");
         // Add Indexes
-        db.execSQL("CREATE INDEX " + constraint + "IDX_DrugGroup_KEY ON "+ TABLENAME +
+        db.execSQL("CREATE INDEX " + constraint + "IDX_DrugGroup_KEY ON " + TABLENAME +
                 " (KEY);");
 
         initCreatedTableData(db);
@@ -70,7 +72,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
      * Drops the underlying database table.
      */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
-        String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'"+ TABLENAME +"'";
+        String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'" + TABLENAME + "'";
         db.execSQL(sql);
     }
 
@@ -86,6 +88,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         stmt.bindLong(5, entity.getStatus());
         stmt.bindLong(6, entity.getCreated());
         stmt.bindLong(7, entity.getUpdated());
+        stmt.bindLong(8, entity.getSortIndex());
     }
 
     /**
@@ -108,6 +111,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         entity.setStatus(cursor.getInt(offset + 4));
         entity.setCreated(cursor.getInt(offset + 5));
         entity.setUpdated(cursor.getInt(offset + 6));
+        entity.setSortIndex(cursor.getInt(offset + 7));
         return entity;
     }
 
@@ -122,6 +126,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         entity.setStatus(cursor.getInt(offset + 4));
         entity.setCreated(cursor.getInt(offset + 5));
         entity.setUpdated(cursor.getInt(offset + 6));
+        entity.setSortIndex(cursor.getInt(offset + 7));
     }
 
     /**

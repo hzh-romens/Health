@@ -36,6 +36,9 @@ hzh
 疾病列表页面,
  */
 public class IllnessActivity extends BaseActivity {
+    public static final String ARGUMENTS_KEY_ID="key_id";
+    public static final String ARGUMENTS_KEY_NAME="key_name";
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private List<String> datas;

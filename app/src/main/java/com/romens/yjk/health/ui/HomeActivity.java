@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.mobvoi.android.common.ConnectionResult;
@@ -28,8 +27,8 @@ import com.romens.yjk.health.core.AddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
+import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
-import com.romens.yjk.health.ui.fragment.HomeStoreFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,11 +83,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 if (id == -1) {
                     startActivity(new Intent(HomeActivity.this, RemindActivity.class));
                 } else if (id == 0) {
-                    startActivity(new Intent(HomeActivity.this,SearchActivity.class));
-                }else if(id==1){
-                    startActivity(new Intent(HomeActivity.this,ShopCarActivity.class));
-                }
-                else if (id == 2) {
+                    startActivity(new Intent(HomeActivity.this, SearchActivity.class));
+                } else if (id == 1) {
+                    startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+                } else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (id == 3) {
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));
@@ -167,7 +165,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFocusFragment());
-        fragments.add(new HomeStoreFragment());
+        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
         fragments.add(new HomeMyFragment());
         return fragments;

@@ -11,9 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.romens.android.AndroidUtilities;
-import com.romens.yjk.health.ui.utils.UIUtils;
+import com.romens.android.ui.Components.LayoutHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -248,14 +247,17 @@ public class FlowLayout extends ViewGroup {
                         topOffset = 0;
                     }
                     //把剩余空间平均到每个View�?
-                    childWidth = childWidth + splitSpacing;
-                    view.getLayoutParams().width = childWidth;
-                    if (splitSpacing > 0) {//View的长度改变了，需要重新measure
-                        int widthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY);
-                        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY);
-                        view.measure(widthMeasureSpec, heightMeasureSpec);
-                    }
+                    //childWidth = childWidth + splitSpacing;
+                    //view.getLayoutParams().width = childWidth;
+//                    if (splitSpacing > 0) {//View的长度改变了，需要重新measure
+//                        int widthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY);
+//                        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY);
+//                        view.measure(widthMeasureSpec, heightMeasureSpec);
+//                    }
                     //布局View
+                    if (i == 0) {
+                        left = surplusWidth / 2;
+                    }
                     view.layout(left, top + topOffset, left + childWidth, top + topOffset + childHeight);
                     left += childWidth + mHorizontalSpacing; //为下�?个View的left赋�??
                 }
@@ -287,10 +289,11 @@ public class FlowLayout extends ViewGroup {
      * 绑定适配器后更新布局
      */
     public void updateLayout() {
+        removeAllViews();
         if (flowLayoutCallback != null) {
             int size = flowLayoutCallback.getCount();
             for (int i = 0; i < size; i++) {
-                addView(flowLayoutCallback.getView(i, this));
+                addView(flowLayoutCallback.getView(i, this), LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
             }
         }
     }

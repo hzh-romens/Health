@@ -14,4 +14,8 @@
 
     <color name="sales_item_background">@color/window_light_background</color>
 
+    <color name="btn_primary">#ff0f9d58</color>
+    <color name="btn_primary_light">#ffe5e5e5</color>
+    <color name="btn_primary_text">@color/btn_primary</color>
+
 </resources>

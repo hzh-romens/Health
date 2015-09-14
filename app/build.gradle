@@ -22,7 +22,7 @@ android {
                 output.outputFile = new File(file.parentFile, fileName)
             }
         }
-        manifestPlaceholders = [APK_CHANNEL_VALUE: "romens"]
+        manifestPlaceholders = [APK_CHANNEL_VALUE: "888888|@romens"]
     }
 
     productFlavors {
