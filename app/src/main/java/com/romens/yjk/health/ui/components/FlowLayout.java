@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 
 import com.romens.android.AndroidUtilities;
+import com.romens.yjk.health.ui.components.logger.Log;
 import com.romens.yjk.health.ui.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -156,15 +157,21 @@ public class FlowLayout extends ViewGroup {
 
         int totalWidth = MeasureSpec.getSize(widthMeasureSpec);
         int totalHeight = 0;
+
+
         final int linesCount = mLines.size();
         for (int i = 0; i < linesCount; i++) {// 加上�?有行的高�?
             totalHeight += mLines.get(i).mHeight;
+
         }
+
         totalHeight += mVerticalSpacing * (linesCount - 1);// 加上�?有间隔的高度
         totalHeight += getPaddingTop() + getPaddingBottom();// 加上padding
+
+
         // 设置布局的宽高，宽度直接采用父view传�?�过来的�?大宽度，而不用�?�虑子view是否填满宽度，因为该布局的特性就是填满一行后，再换行
         // 高度根据设置的模式来决定采用�?有子View的高度之和还是采用父view传�?�过来的高度
-        setMeasuredDimension(totalWidth, resolveSize(totalHeight, heightMeasureSpec));
+            setMeasuredDimension(totalWidth, resolveSize(totalHeight, heightMeasureSpec));
     }
 
     @Override
@@ -248,7 +255,11 @@ public class FlowLayout extends ViewGroup {
                         topOffset = 0;
                     }
                     //把剩余空间平均到每个View�?
-                    childWidth = childWidth + splitSpacing;
+                    if(count==1){
+                        childWidth=childWidth;
+                    }else {
+                        childWidth = childWidth + splitSpacing;
+                    }
                     view.getLayoutParams().width = childWidth;
                     if (splitSpacing > 0) {//View的长度改变了，需要重新measure
                         int widthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY);

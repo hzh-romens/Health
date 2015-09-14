@@ -96,7 +96,7 @@ public class HomeStoreFragment extends BaseFragment {
         mDatas.add("咳嗽");
         mDatas.add("慢性胃炎");
         mDatas.add("多少分开始");
-        mDatas.add("第三方鉴定师");
+        //mDatas.add("第三方鉴定师");
         flowlayoutAdapter=new FlowlayoutAdapter(flowLayout,getActivity(),mDatas);
         flowlayoutAdapter.andTextView();
         flowlayoutAdapter.ItemClickListener(new FlowlayoutAdapter.FlowLayoutItemClick() {
