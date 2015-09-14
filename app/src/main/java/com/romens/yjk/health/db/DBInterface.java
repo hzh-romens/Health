@@ -10,8 +10,10 @@ import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
+import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
+import com.romens.yjk.health.model.ShopCarEntity;
 
 import java.util.List;
 
@@ -116,6 +118,28 @@ public class DBInterface {
             return entity.getUpdated();
         }
     }
+    //获取购物车数据上次的加载时间
+    public int getShopCarDataLastTime() {
+        ShopCarDao dao = openReadableDb().getShopCarDao();
+        ShopCarEntity entity = dao.queryBuilder()
+                .orderDesc(ShopCarDao.Properties.UpdatedTime)
+                .limit(1)
+                .unique();
+        if (entity == null) {
+            return 0;
+        } else {
+            return entity.getUpdatedTime();
+        }
+    }
+    //查询购物车所有的数据
+    public List<ShopCarEntity> loadAllShopCar() {
+        ShopCarDao dao = openReadableDb().getShopCarDao();
+        List<ShopCarEntity> result = dao.queryBuilder()
+                .orderAsc(ShopCarDao.Properties.Id)
+                .list();
+        return result;
+    }
+
 
     public int getDrugGroupDataLastTime() {
         DrugGroupDao dao = openReadableDb().getDrugGroupDao();

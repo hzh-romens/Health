@@ -2,8 +2,10 @@ package com.romens.yjk.health.ui.components;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.GridView;
 
 import com.romens.android.AndroidUtilities;
@@ -58,33 +60,31 @@ public class ModifyGridView extends GridView {
         }else {
             yCount=(count/counts)+1;
         }
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+
+        int width = wm.getDefaultDisplay().getWidth();//屏幕宽度
+        int height = wm.getDefaultDisplay().getHeight();//屏幕高度
         int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
       // int measureHeight = measureWidth/counts+counts*AndroidUtilities.dp(16)+yCount*verticalSpacing;
-        Log.i("宽度=====",""+measureWidth);
        //int measureHeight=measureWidth/counts+AndroidUtilities.dp(48);
-       // int measureHeight=MeasureSpec.getSize(heightMeasureSpec);
-        if(MeasureSpec.getSize(heightMeasureSpec)!=0){
-            Log.i("item高度----",""+MeasureSpec.getSize(heightMeasureSpec)+"---"+measureHeight);
-            measureHeight=MeasureSpec.getSize(heightMeasureSpec);
-        }
+       // int measureHeight=MeasureSpec.getSize(heightMeasureSpec)
+       // if(MeasureSpec.getSize(heightMeasureSpec)!=0){
+         //   measureHeight=MeasureSpec.getSize(heightMeasureSpec);
+        //}
+        measureHeight=(int)(width/2.1)+AndroidUtilities.dp(8);
+        Log.i("item高度-----",measureHeight+"");
+        Log.i("行数",yCount+"");
         if(yCount!=0) {
             for (int index = 0; index < count; index++) {
                 final View child = getChildAt(index);
                 if (child.getVisibility() != GONE) {
-                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth - horizontalSpacing, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight - verticalSpacing), MeasureSpec.EXACTLY));
+                    measureChild(child, MeasureSpec.makeMeasureSpec(measureWidth - horizontalSpacing, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((measureHeight -getPaddingBottom()), MeasureSpec.EXACTLY));
                 }
             }
-
-          //  setMeasuredDimension(measureWidth,measureHeight+counts*AndroidUtilities.dp(16));
-      //  }else{
-            Log.i("行数------", "" + yCount);
-         //   setMeasuredDimension(measureWidth,yCount*measureHeight+(yCount+1)*verticalSpacing);
-            setMeasuredDimension(measureWidth,yCount*(getPaddingBottom()+verticalSpacing+measureHeight));
+            setMeasuredDimension(measureWidth,yCount*measureHeight);
+        }else{
+            setMeasuredDimension(measureWidth,measureHeight);
         }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
     }
 }

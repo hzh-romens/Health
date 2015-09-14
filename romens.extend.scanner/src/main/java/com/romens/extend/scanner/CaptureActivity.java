@@ -48,7 +48,7 @@ import java.util.EnumSet;
 import java.util.Map;
 
 /**
- * This activity opens the camera and does the actual scanning on a background thread. It draws a
+ * This activity opens the camera and does the actual scanning on a background thr ead. It draws a
  * viewfinder to help the user place the barcode correctly, shows feedback as the image processing
  * is happening, and then overlays the results when a scan is successful.
  *
@@ -264,6 +264,7 @@ public abstract class CaptureActivity extends Activity implements SurfaceHolder.
             }
             savedResultToShow = null;
         }
+
     }
 
     @Override

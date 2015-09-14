@@ -14,9 +14,11 @@ import android.widget.TextView;
 
 import com.romens.android.io.image.ImageManager;
 import com.romens.android.io.image.ImageUtils;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.AboutTestEntity;
 import com.romens.yjk.health.model.TestEntity;
+import com.romens.yjk.health.ui.cells.ADErrorDataCell;
 import com.romens.yjk.health.ui.components.ModifyGridView;
 
 import java.util.ArrayList;
@@ -30,10 +32,14 @@ import static android.widget.AbsListView.*;
 public class MedicinalDetailAdapter extends RecyclerView.Adapter {
     private List<TestEntity> mdatas;
     private Context mContext;
+    private List<String> urls;
 
     public MedicinalDetailAdapter(List<TestEntity> data, Context context) {
         this.mdatas = data;
         this.mContext = context;
+    }
+    public void setUrls(List<String> urls) {
+        this.urls=urls;
     }
 
     @Override
@@ -69,7 +75,11 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
         } else if(viewType==8){
             view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
             holder = new aboutHolder(view);
-        }else{
+        }else if(viewType==9){
+            ADErrorDataCell adErrorDataCell=new ADErrorDataCell(mContext);
+            adErrorDataCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            return new ADErrorHolder(adErrorDataCell);
+        } else{
             view=View.inflate(mContext,R.layout.list_item_empty_view,null);
             holder=new EmptyHolder(view);
         }
@@ -122,13 +132,17 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
                 break;
             case 8:
                 aboutHolder holders = (aboutHolder) holder;
-                List<AboutTestEntity>datas = new ArrayList<AboutTestEntity>();
-                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-            //  datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                GridViewAdapter gridViewAdapter = new GridViewAdapter(datas, mContext);
+               // List<AboutTestEntity>datas = new ArrayList<AboutTestEntity>();
+               // datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+                //datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+           //     datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
+                GridViewAdapter gridViewAdapter = new GridViewAdapter(urls, mContext);
                 holders.gridView.setAdapter(gridViewAdapter);
+                break;
+            case 9:
+                 ADErrorHolder adErrorHolder= (ADErrorHolder) holder;
+                ADErrorDataCell cell= (ADErrorDataCell) adErrorHolder.itemView;
+             //   cell.ima
                 break;
             default:
                 EmptyHolder emptyHolder= (EmptyHolder) holder;
@@ -217,6 +231,11 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             tv_more= (TextView) view.findViewById(R.id.tv_more);
         }
 
+    }
+    public class  ADErrorHolder extends RecyclerView.ViewHolder{
+        public  ADErrorHolder(View view){
+            super(view);
+        }
     }
 
     //获取条目的类型,用于判断footView和一般的item;

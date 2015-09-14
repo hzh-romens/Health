@@ -8,17 +8,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/action_bar"
         android:layout_gravity="top"
-        />
-   <android.support.v7.widget.RecyclerView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_marginTop="58dp"
-       android:layout_marginBottom="45dp"
-       android:id="@+id/recyclerview"/>
+        /> <android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="58dp"
+    android:layout_marginBottom="45dp"
+    android:id="@+id/recyclerview"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_gravity="bottom"
+
         android:background="@color/background_floating_material_dark"
         android:orientation="horizontal">
         <com.romens.yjk.health.ui.components.CheckableFrameLayout
@@ -53,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:text="合计：￥200"
+                android:text="合计:"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size_large"
                 android:id="@+id/tv_all1"
@@ -62,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.8"
-                android:text="总额：￥200"
+                android:text="总额:"
                 android:textSize="@dimen/text_size_medium"
                 android:id="@+id/tv_all2"
                 android:textColor="@android:color/white"

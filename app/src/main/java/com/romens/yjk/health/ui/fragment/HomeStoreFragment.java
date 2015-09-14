@@ -115,7 +115,7 @@ public class HomeStoreFragment extends BaseFragment {
         recyclerView.setHasFixedSize(true);
 
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
-
+        swipeRefreshLayout.setProgressViewOffset(false, 0, AndroidUtilities.getCurrentActionBarHeight());
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             //下拉刷新加载
             @Override
@@ -251,6 +251,7 @@ public class HomeStoreFragment extends BaseFragment {
     private Runnable run=new Runnable() {
         @Override
         public void run() {
+            swipeRefreshLayout.setRefreshing(true);
             initData();
             handler.sendMessageDelayed(handler.obtainMessage(CURRENT,datas),0);
         }

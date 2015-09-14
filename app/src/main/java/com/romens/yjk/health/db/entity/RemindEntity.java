@@ -8,10 +8,9 @@ import java.util.Date;
  */
 public class RemindEntity implements Serializable {
     private long id;
-    private int userIcon;
     private String user;
     private String drug;
-    private String count;
+    private int intervalDay;
     private String startDate;
 
     private String firstTime;
@@ -19,9 +18,12 @@ public class RemindEntity implements Serializable {
     private String threeTime;
     private String fourTime;
     private String fiveTime;
-    private int times = 1;
+    private int timesInDay = 1;
 
     private int isRemind = 0;
+
+    public RemindEntity() {
+    }
 
     public int getIsRemind() {
         return isRemind;
@@ -29,14 +31,6 @@ public class RemindEntity implements Serializable {
 
     public void setIsRemind(int isRemind) {
         this.isRemind = isRemind;
-    }
-
-    public int getTimes() {
-        return times;
-    }
-
-    public void setTimes(int times) {
-        this.times = times;
     }
 
     public String getFirstTime() {
@@ -79,11 +73,6 @@ public class RemindEntity implements Serializable {
         this.fiveTime = fiveTime;
     }
 
-    public RemindEntity() {
-    }
-
-    ;
-
     public String getStartDate() {
         return startDate;
     }
@@ -98,14 +87,6 @@ public class RemindEntity implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public int getUserIcon() {
-        return userIcon;
-    }
-
-    public void setUserIcon(int userIcon) {
-        this.userIcon = userIcon;
     }
 
     public String getUser() {
@@ -124,12 +105,19 @@ public class RemindEntity implements Serializable {
         this.drug = drug;
     }
 
-    public String getCount() {
-        return count;
+    public int getIntervalDay() {
+        return intervalDay;
     }
 
-    public void setCount(String count) {
-        this.count = count;
+    public void setIntervalDay(int intervalDay) {
+        this.intervalDay = intervalDay;
     }
 
+    public int getTimesInDay() {
+        return timesInDay;
+    }
+
+    public void setTimesInDay(int timesInDay) {
+        this.timesInDay = timesInDay;
+    }
 }

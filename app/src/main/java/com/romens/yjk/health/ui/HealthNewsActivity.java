@@ -189,19 +189,19 @@ public class HealthNewsActivity extends BaseActivity {
         if (!TextUtils.isEmpty(data)) {
             try {
                 JSONObject jsonObject = new JSONObject(data);
-                if (!jsonObject.has("data")) {
-                    return null;
-                }
-                if (!jsonObject.has("datainfo")) {
-                    return null;
-                }
-                JSONArray dataJsonArray = jsonObject.getJSONArray("data");
-                if (dataJsonArray.length() > 0) {
-                    JSONObject jsonObject1 = dataJsonArray.getJSONObject(0);
-                    String newsTime = jsonObject1.getString("time");
-                    if (TextUtils.isEmpty(newsTime)) {
+                    if (!jsonObject.has("data")) {
                         return null;
                     }
+                    if (!jsonObject.has("datainfo")) {
+                        return null;
+                    }
+                    JSONArray dataJsonArray = jsonObject.getJSONArray("data");
+                    if (dataJsonArray.length() > 0) {
+                        JSONObject jsonObject1 = dataJsonArray.getJSONObject(0);
+                        String newsTime = jsonObject1.getString("time");
+                        if (TextUtils.isEmpty(newsTime)) {
+                            return null;
+                        }
                     JSONObject dataInfoJsonObject = jsonObject.getJSONObject("datainfo");
                     if (dataInfoJsonObject.has(newsTime)) {
                         JSONArray dataInfoJsonArray = dataInfoJsonObject.getJSONArray(newsTime);

@@ -56,7 +56,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         viewPager = new ViewPager(this);
-        viewPager.setPageMargin(AndroidUtilities.dp(8));
         frameLayout.addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         setContentView(content, actionBar);
 
@@ -85,10 +84,11 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 if (id == -1) {
                     startActivity(new Intent(HomeActivity.this, RemindActivity.class));
                 } else if (id == 0) {
-                    startActivity(new Intent(HomeActivity.this, SearchActivity.class));
-                } else if (id == 1) {
-                    startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                } else if (id == 2) {
+                    startActivity(new Intent(HomeActivity.this,SearchActivity.class));
+                }else if(id==1){
+                    startActivity(new Intent(HomeActivity.this,ShopCarActivity.class));
+                }
+                else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (id == 3) {
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));

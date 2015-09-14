@@ -27,6 +27,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.io.image.ImageManager;
 import com.romens.android.io.image.ImageUtils;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.model.ShopCarTestEntity;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.utils.DialogUtils;
@@ -39,7 +40,8 @@ import java.util.List;
  * Created by romens007 on 2015/8/23.
  */
 public class ShopCarAdapter extends RecyclerView.Adapter {
-    private SparseArray<ShopCarTestEntity> mDatas;
+    //private SparseArray<ShopCarTestEntity> mDatas;
+    private List<ShopCarEntity> mDatas;
     private Context mContext;
     //商品数量
     private int num;
@@ -50,19 +52,12 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     private final SparseBooleanArray itemStates = new SparseBooleanArray();
 
 
-    public List<ShopCarTestEntity> getDatas(){
-        List<ShopCarTestEntity> datas=new ArrayList<ShopCarTestEntity>();
-        if(mDatas!=null) {
-            for (int i = 0; i < mDatas.size(); i++) {
-                mDatas.get(i).setCode("");
-                datas.add(mDatas.get(i));
-            }
-            return datas;
-        }else{
-            return null;
-        }
-
-    }
+    public List<ShopCarEntity> getDatas(){
+       if(mDatas!=null){
+           return mDatas;
+       }
+        return null;
+      }
     public boolean isAllSelected() {
         int index = itemStates.indexOfValue(false);
         return index < 0;
@@ -82,36 +77,51 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     }
 
 
-    public ShopCarAdapter(Context context, SparseArray<ShopCarTestEntity> datas) {
-        this.mDatas = datas;
+    public ShopCarAdapter(Context context) {
+        //  this.mDatas = datas;
         this.mContext = context;
-        itemStates.clear();
-        int size = datas == null ? 0 : datas.size();
-        for (int i = 0; i < size; i++) {
+//        itemStates.clear();
+//        int size = datas == null ? 0 : datas.size();
+//        for (int i = 0; i < size; i++) {
+//
+//            itemStates.put(i,Boolean.parseBoolean(datas.get(i).getCheck()));
+//            if (Boolean.parseBoolean(datas.get(i).getCheck())) {
+//                allMoney = allMoney + datas.get(i).getPrice() * datas.get(i).getNum();
+//            }
+//        }
 
-            itemStates.put(i,Boolean.parseBoolean(datas.get(i).getCheck()));
-            if (Boolean.parseBoolean(datas.get(i).getCheck())) {
-                allMoney = allMoney + datas.get(i).getPrice() * datas.get(i).getNum();
+        //switchAllSelect(false);
+    }
+
+    public void SetData(List<ShopCarEntity> data) {
+        this.mDatas = data;
+        itemStates.clear();
+        int size = data == null ? 0 : data.size();
+        for (int i = 0; i < size; i++) {
+            itemStates.put(i, Boolean.parseBoolean(data.get(i).getCHECK()));
+            if (Boolean.parseBoolean(data.get(i).getCHECK())) {
+                allMoney = allMoney + data.get(i).getGOODSPRICE() * data.get(i).getBUYCOUNT();
             }
         }
-
+        updateData();
+        updateMoney(allMoney + "");
         //switchAllSelect(false);
     }
 
     public void switchAllSelect(boolean value) {
         int size = mDatas == null ? 0 : mDatas.size();
-         double all = 0;
+        double all = 0;
         for (int i = 0; i < size; i++) {
             itemStates.append(i, value);
             if (value) {
-                double price = mDatas.get(i).getPrice();
-                double prices = price * mDatas.get(i).getNum();
+                double price = mDatas.get(i).getGOODSPRICE();
+                double prices = price * mDatas.get(i).getBUYCOUNT();
                 all = all + prices;
 
             }
-            mDatas.get(i).setCheck(value+"");
+            mDatas.get(i).setCHECK(value + "");
         }
-        allMoney=all;
+        allMoney = all;
         updateData();
         String s = all + "";
         updateMoney(s);
@@ -123,19 +133,19 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
         updateData();
         String s = null;
         if (value) {
-            double price = mDatas.get(position).getPrice();
-            double prices = price * mDatas.get(position).getNum();
+            double price = mDatas.get(position).getGOODSPRICE();
+            double prices = price * mDatas.get(position).getBUYCOUNT();
             allMoney = allMoney + prices;
         } else {
-            double price = mDatas.get(position).getPrice();
-            double prices = price * mDatas.get(position).getNum();
+            double price = mDatas.get(position).getGOODSPRICE();
+            double prices = price * mDatas.get(position).getBUYCOUNT();
             allMoney = allMoney - prices;
         }
         s = allMoney + "";
         updateMoney(s);
-        mDatas.get(position).setCheck(value + "");
+        mDatas.get(position).setCHECK(value + "");
     }
-
+//刷新
     private void updateMoney(String s) {
         if (adapterCallback != null) {
             adapterCallback.sumMoneyChange(s);
@@ -162,11 +172,12 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ShopHolder shopHolder = (ShopHolder) holder;
-        shopHolder.iv_detail.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
-        shopHolder.iv_detail.setImageBitmap(ImageUtils.bindLocalImage("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg"));
+       // shopHolder.iv_detail.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+        String goodurl = mDatas.get(position).getGOODURL();
+        shopHolder.iv_detail.setImageBitmap(ImageUtils.bindLocalImage(goodurl));
         Drawable defaultDrawables = shopHolder.iv_detail.getDrawable();
-        ImageManager.loadForView(mContext, shopHolder.iv_detail, "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg", defaultDrawables, defaultDrawables);
-        shopHolder.tv_num.setText(mDatas.get(position).getNum() + "");
+        ImageManager.loadForView(mContext, shopHolder.iv_detail, goodurl, defaultDrawables, defaultDrawables);
+        shopHolder.tv_num.setText(mDatas.get(position).getBUYCOUNT() + "");
         shopHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,37 +185,37 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
             }
         });
         shopHolder.checkBox.setChecked(itemStates.get(position));
-        shopHolder.tv_infor.setText(mDatas.get(position).getName());
-        shopHolder.tv_price.setText(mDatas.get(position).getPrice() + "");
-        shopHolder.tv_active.setText("8月24日活动，药品八折");
-        shopHolder.tv_num.setText(mDatas.get(position).getNum() + "");
+        shopHolder.tv_infor.setText(mDatas.get(position).getGOODSCLASSNAME());
+        shopHolder.tv_price.setText(mDatas.get(position).getGOODSPRICE() + "");
+        shopHolder.tv_active.setText("生产时间" + mDatas.get(position).getCREATETIME());
+        shopHolder.tv_num.setText(mDatas.get(position).getBUYCOUNT() + "");
         shopHolder.tv_num.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //弹出一个dialog
-                DialogUtils dialogUtils=new DialogUtils();
+                DialogUtils dialogUtils = new DialogUtils();
                 dialogUtils.show(shopHolder.tv_num.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
                     @Override
                     public void getGoodsNum(int num) {
 
-                        if(itemStates.get(position)){
-                            int startNum = mDatas.get(position).getNum();
-                            if(num>startNum){
+                        if (itemStates.get(position)) {
+                            int startNum = mDatas.get(position).getBUYCOUNT();
+                            if (num > startNum) {
                                 int add = num - startNum;
-                                double addMoney = add * mDatas.get(position).getPrice();
+                                double addMoney = add * mDatas.get(position).getGOODSPRICE();
                                 allMoney = allMoney + addMoney;
                                 updateMoney((allMoney + ""));
-                            }else{
-                                int reduce= startNum - num;
-                                double reduceMoney = reduce * mDatas.get(position).getPrice();
+                            } else {
+                                int reduce = startNum - num;
+                                double reduceMoney = reduce * mDatas.get(position).getGOODSPRICE();
                                 allMoney = allMoney - reduceMoney;
                                 updateMoney((allMoney + ""));
                             }
-                             mDatas.get(position).setNum(num);
-                            shopHolder.tv_num.setText(num+"");
-                        }else{
-                             mDatas.get(position).setNum(num);
-                            shopHolder.tv_num.setText(num+"");
+                            mDatas.get(position).setBUYCOUNT(num);
+                            shopHolder.tv_num.setText(num + "");
+                        } else {
+                            mDatas.get(position).setBUYCOUNT(num);
+                            shopHolder.tv_num.setText(num + "");
                         }
                     }
                 });
@@ -212,7 +223,7 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
         });
     }
 
-    public SparseArray<ShopCarTestEntity> getLastData() {
+    public List<ShopCarEntity> getLastData() {
         return mDatas;
     }
 
@@ -248,36 +259,40 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View v) {
             num = Integer.parseInt(tv_num.getText().toString());
-            startNum=num;
+            startNum = num;
             switch (v.getId()) {
                 case R.id.bt_reduce:
                     if (num > 1) {
                         num--;
                         tv_num.setText(num + "");
-                        if(itemStates.get(getPosition())) {
+                        if (itemStates.get(getPosition())) {
 
-                            mDatas.get(getPosition()).setNum(num);
+                            mDatas.get(getPosition()).setBUYCOUNT(num);
                             int reduceNum = startNum - num;
-                            double reduceMoney = reduceNum * mDatas.get(getPosition()).getPrice();
+                            double reduceMoney = reduceNum * mDatas.get(getPosition()).getGOODSPRICE();
                             allMoney = allMoney - reduceMoney;
                             updateMoney((allMoney + ""));
+                        } else {
+                            mDatas.get(getPosition()).setBUYCOUNT(num);
                         }
 
                     } else {
                         tv_num.setText(num + "");
-                        mDatas.get(getPosition()).setNum(num);
+                        mDatas.get(getPosition()).setBUYCOUNT(num);
                     }
                     break;
                 case R.id.bt_add:
                     num++;
                     tv_num.setText(num + "");
 
-                    if(itemStates.get(getPosition())) {
-                        mDatas.get(getPosition()).setNum(num);
+                    if (itemStates.get(getPosition())) {
+                        mDatas.get(getPosition()).setBUYCOUNT(num);
                         int addNum = num - startNum;
-                        double addMoney = addNum * mDatas.get(getPosition()).getPrice();
+                        double addMoney = addNum * mDatas.get(getPosition()).getGOODSPRICE();
                         allMoney = allMoney + addMoney;
                         updateMoney((allMoney + ""));
+                    } else {
+                        mDatas.get(getPosition()).setBUYCOUNT(num);
                     }
                     break;
                 case R.id.et_num:
@@ -288,9 +303,9 @@ public class ShopCarAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return mDatas.get(position).getType();
+        //return mDatas.get(position).getType();
+        return position;
     }
-
 
 
 }

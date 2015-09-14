@@ -152,6 +152,7 @@ public class ProductCell extends CardView {
                 y = view.getMeasuredHeight() + AndroidUtilities.dp(8);
                 view.layout(AndroidUtilities.dp(4), AndroidUtilities.dp(4), totalWidth - AndroidUtilities.dp(4), y);
             } else if (view instanceof LinearLayout) {
+                //view.layout(l,t,r,b);
                 view.layout(0, y, totalWidth, totalHeight - AndroidUtilities.dp(8));
             }
         }
