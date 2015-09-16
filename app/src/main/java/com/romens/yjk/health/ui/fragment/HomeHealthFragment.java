@@ -7,9 +7,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -301,7 +303,7 @@ public class HomeHealthFragment extends BaseFragment {
             if (type == 0) {
                 if (convertView == null) {
                     convertView = new DrugGroupCell(getActivity());
-                    convertView.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                  //  convertView.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 }
                 DrugGroupEntity groupNode = getGroup(currGroupPosition);
                 DrugGroupCell cell = (DrugGroupCell) convertView;
@@ -310,11 +312,14 @@ public class HomeHealthFragment extends BaseFragment {
             } else if (type == 1) {
                 if (convertView == null) {
                     convertView = new ADDiseaseCell(getActivity());
-                    convertView.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                   // convertView.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 }
                 ADDiseaseCell cell = (ADDiseaseCell) convertView;
                 cell.setValue(adDiseaseTitle, adDiseaseSubTitle, adDiseaseList);
             }
+            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            convertView.setLayoutParams(lp);
             return convertView;
         }
 
@@ -322,11 +327,14 @@ public class HomeHealthFragment extends BaseFragment {
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = new DrugChildCell(getActivity());
-                convertView.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+               // convertView.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             }
             final int currGroupPosition = getCurrentGroupPosition(groupPosition);
             DrugGroupEntity childNode = getChild(currGroupPosition, childPosition);
             ((DrugChildCell) convertView).setValue(childNode.getName(), !isLastChild);
+            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            convertView.setLayoutParams(lp);
             return convertView;
         }
 

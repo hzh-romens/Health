@@ -28,6 +28,8 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
+import com.romens.yjk.health.model.OrderEntity;
+import com.romens.yjk.health.ui.adapter.CompleteAdapter;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
 import com.romens.yjk.health.ui.components.OnRecyclerViewScrollListener;
 import com.romens.yjk.health.ui.components.OnRecyclerViewScrollLocationListener;
@@ -39,10 +41,14 @@ import java.util.Map;
 /**
  * Created by AUSU on 2015/9/9.
  */
+/**
+ * Created by AUSU on 2015/9/9.
+ * 订单待评价页面
+ */
 public class WaittingHandleFragment extends BaseFragment{
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+    private CompleteAdapter completeAdapter;
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_order, container, false);
@@ -56,11 +62,11 @@ public class WaittingHandleFragment extends BaseFragment{
             //下拉刷新加载
             @Override
             public void onRefresh() {
-
+                requestCompleteDataChanged();
             }
         });
 
-        final ABaseLinearLayoutManager layoutManager=new ABaseLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
+        final ABaseLinearLayoutManager layoutManager=new ABaseLinearLayoutManager(getActivity(), android.support.v7.widget.LinearLayoutManager.VERTICAL,false);
 
 
         layoutManager.setOnRecyclerViewScrollLocationListener(recyclerView, new OnRecyclerViewScrollLocationListener() {
@@ -122,57 +128,115 @@ public class WaittingHandleFragment extends BaseFragment{
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.bottom= AndroidUtilities.dp(1);
+                outRect.bottom = AndroidUtilities.dp(1);
                 super.getItemOffsets(outRect, view, parent, state);
             }
         });
-
+        swipeRefreshLayout.setRefreshing(true);
+        // requestCompleteDataChanged();
+        List<OrderEntity> datas=new ArrayList<OrderEntity>();
+        OrderEntity orderEntity=new OrderEntity();
+        orderEntity.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity.setComment("评价");
+        orderEntity.setName("四季感冒药");
+        datas.add(orderEntity);
+        OrderEntity orderEntity1=new OrderEntity();
+        orderEntity1.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity1.setComment("评价");
+        orderEntity1.setName("四季感冒药");
+        datas.add(orderEntity1);
+        OrderEntity orderEntity2=new OrderEntity();
+        orderEntity2.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity2.setComment("评价");
+        orderEntity2.setName("四季感冒药");
+        datas.add(orderEntity2);
+        OrderEntity orderEntity3=new OrderEntity();
+        orderEntity3.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity3.setComment("评价");
+        orderEntity3.setName("四季感冒药");
+        datas.add(orderEntity3);
+        completeAdapter=new CompleteAdapter(getActivity());
+        completeAdapter.BindValue(datas);
+        recyclerView.setAdapter(completeAdapter);
         return root;
     }
     //加载数据
     private void requestCompleteDataChanged() {
         int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("LASTTIME", lastTime).put("STATE", "").put("TYPE","").put("PAGE","").put("COUNT","").build();
+                .put("LASTTIME", lastTime).put("STATE", "16").put("TYPE","").put("PAGE","").put("COUNT","").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "handle", "GetUserOrderListInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
+        final Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
                 .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
                 }))
                 .build();
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
+
             @Override
             public void onTokenTimeout(Message msg) {
-                Log.e("GetDiscoveryData", "ERROR");
+                Log.e("GetUserOrderListInfo", "ERROR");
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                swipeRefreshLayout.setRefreshing(false);
                 if (errorMsg == null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    onResponseAllDiscovery(responseProtocol.getResponse());
+                    onResponseOrderData(responseProtocol.getResponse());
                 } else {
-                    Log.e("reqGetAllUsers", "ERROR");
+                    Log.e("GetUserOrderListInfo", "ERROR");
                 }
             }
         });
     }
 
-    public void onResponseAllDiscovery(List<LinkedTreeMap<String, String>> discoveryData) {
-        int count = discoveryData == null ? 0 : discoveryData.size();
+    public void onResponseOrderData(List<LinkedTreeMap<String, String>> OrderData) {
+        int count = OrderData == null ? 0 : OrderData.size();
         if (count <= 0) {
             return;
         }
-        ArrayList<DiscoveryEntity> needDb = new ArrayList<>();
-        for (LinkedTreeMap<String, String> item : discoveryData) {
-            DiscoveryEntity entity = DiscoveryEntity.mapToEntity(item);
+        // for (int )
+        // Iterator  iterator = hashMap.keySet().iterator();
+        //while (iterator.hasNext()) {
+        //2、拼接字符串
+        //   str += hashMap.get(iterator.next()).toString()+",";
+        //}
+        ArrayList<OrderEntity> needDb = new ArrayList<>();
+        for (LinkedTreeMap<String, String> item : OrderData) {
+            OrderEntity entity = OrderEntity.mapToEntity(item);
             needDb.add(entity);
         }
-        if (needDb.size() > 0) {
-            DiscoveryDao userDao =DBInterface.instance().openWritableDb().getDiscoveryDao();
-            userDao.insertOrReplaceInTx(needDb);
-        }
+        //if (needDb.size() > 0) {
+        //  DiscoveryDao userDao =DBInterface.instance().openWritableDb().getDiscoveryDao();
+        //userDao.insertOrReplaceInTx(needDb);
+        //}
+        List<OrderEntity> datas=new ArrayList<OrderEntity>();
+        OrderEntity orderEntity=new OrderEntity();
+        orderEntity.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity.setComment("评价");
+        orderEntity.setName("四季感冒药");
+        datas.add(orderEntity);
+        OrderEntity orderEntity1=new OrderEntity();
+        orderEntity1.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity1.setComment("评价");
+        orderEntity1.setName("四季感冒药");
+        datas.add(orderEntity1);
+        OrderEntity orderEntity2=new OrderEntity();
+        orderEntity2.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity2.setComment("评价");
+        orderEntity2.setName("四季感冒药");
+        datas.add(orderEntity2);
+        OrderEntity orderEntity3=new OrderEntity();
+        orderEntity3.setImageUrl("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
+        orderEntity3.setComment("评价");
+        orderEntity3.setName("四季感冒药");
+        datas.add(orderEntity3);
+        completeAdapter=new CompleteAdapter(getActivity());
+        completeAdapter.BindValue(datas);
+        recyclerView.setAdapter(completeAdapter);
+
     }
 
 

@@ -56,7 +56,7 @@ public class ShopCarActivity extends BaseActivity {
         initView();
         shopCarAdapter = new ShopCarAdapter(this);
         ActionBar actionBar = getMyActionBar();
-        actionBar.setTitle("某某药品");
+        actionBar.setTitle("购物车");
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
