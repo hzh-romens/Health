@@ -2,6 +2,7 @@ package com.romens.yjk.health.db.entity;
 
 /**
  * Created by anlc on 2015/9/11.
+ * 用药提醒的实体
  */
 public class EatDrugUserEntity {
 

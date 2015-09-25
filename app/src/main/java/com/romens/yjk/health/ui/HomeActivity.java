@@ -77,7 +77,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
         debugMenu.addSubItem(2, "测试促销详情", 0);
         debugMenu.addSubItem(3, "测试附近药店", 0);
-        debugMenu.addSubItem(4,"我的订单",0);
+        debugMenu.addSubItem(4,"新的我的订单",0);
+        debugMenu.addSubItem(5,"我的订单",0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -92,6 +93,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 } else if (id == 3) {
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));
                 }else if(id==4){
+                    startActivity(new Intent(HomeActivity.this,MyOrderActivity.class));
+                }else if(id==5){
                     startActivity(new Intent(HomeActivity.this,MyOrderActivity.class));
                 }
             }
@@ -168,7 +171,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFocusFragment());
-        fragments.add(new HomeHealthFragment());
+        fragments.add(new HomeFocusFragment());
+//        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
         fragments.add(new HomeMyFragment());
         return fragments;

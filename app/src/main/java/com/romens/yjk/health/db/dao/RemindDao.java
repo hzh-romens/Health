@@ -14,6 +14,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 
 /**
  * Created by anlc on 2015/8/26.
+ * 保存用药提醒的dao
  */
 public class RemindDao extends AbstractDao<RemindEntity, Long> {
 

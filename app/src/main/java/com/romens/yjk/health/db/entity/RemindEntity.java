@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * Created by anlc on 2015/8/23.
+ * 用药提醒中保存所有信息的实体
  */
 public class RemindEntity implements Serializable {
     private long id;

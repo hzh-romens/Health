@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/order_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:padding="20dp">
+
+    <com.romens.android.ui.Image.BackupImageView
+        android:id="@+id/order_img"
+        android:layout_width="60dp"
+        android:layout_height="60dp"/>
+
+    <TextView
+        android:id="@+id/order_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@id/order_img"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:text="aaaaaaaaaaaaaaaaa"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/body_size"/>
+
+    <TextView
+        android:id="@+id/order_spec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/order_title"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@id/order_img"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:text="aaaaaaaaaaaaaaaaa"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/body_size"/>
+
+    <TextView
+        android:id="@+id/order_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:text="bbbbbbbb"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/body_size"/>
+
+    <TextView
+        android:id="@+id/order_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/order_money"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:text="bb"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/body_size"/>
+
+    <TextView
+        android:id="@+id/order_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_toRightOf="@id/order_img"
+        android:text="bbbbbbbb"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/body_size"/>
+
+</RelativeLayout>

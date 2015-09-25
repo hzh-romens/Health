@@ -12,6 +12,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 
 /**
  * Created by anlc on 2015/9/8.
+ * 保存历史信息的dao
  */
 public class SearchHistoryDao extends AbstractDao<SearchHistoryEntity, Long> {
 

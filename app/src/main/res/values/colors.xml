@@ -18,4 +18,8 @@
     <color name="btn_primary_light">#ffe5e5e5</color>
     <color name="btn_primary_text">@color/btn_primary</color>
 
+    <color name="theme_title">#333333</color>
+    <color name="theme_sub_title">#666666</color>
+    <color name="line_color">#99cccccc</color>
+
 </resources>

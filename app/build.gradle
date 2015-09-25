@@ -114,6 +114,7 @@ dependencies {
     compile project(':datetimepicker')
     compile project(':MaterialDesign')
     compile files('libs/easemobchat_2.2.2.jar')
+    compile project(':citys')
 }
 
 

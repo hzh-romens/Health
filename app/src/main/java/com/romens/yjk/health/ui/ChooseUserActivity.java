@@ -17,10 +17,7 @@ import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.EatDrugUserDao;
-import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.EatDrugUserEntity;
-import com.romens.yjk.health.db.entity.RemindEntity;
-import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.ui.cells.AvatarEditTextCell;
 
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ import java.util.List;
 
 /**
  * Created by anlc on 2015/9/11.
+ * 添加用药提醒中的选择用户页面
  */
 public class ChooseUserActivity extends BaseActivity {
 
@@ -57,7 +55,7 @@ public class ChooseUserActivity extends BaseActivity {
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ChooseUserActivity.this, NewAddRemindActivity.class);
+                Intent intent = new Intent(ChooseUserActivity.this, AddRemindActivity.class);
                 intent.putExtra("userName", userEntities.get(position).getName());
                 setResult(11, intent);
                 finish();

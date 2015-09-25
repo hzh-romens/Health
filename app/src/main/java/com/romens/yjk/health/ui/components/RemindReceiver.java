@@ -6,12 +6,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.RemindEntity;
-import com.romens.yjk.health.ui.AddRemindActivity;
-import com.romens.yjk.health.ui.AlarmActivity;
 
 /**
  * Created by anlc on 2015/8/25.

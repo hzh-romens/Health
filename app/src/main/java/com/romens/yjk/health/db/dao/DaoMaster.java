@@ -26,6 +26,7 @@ public class DaoMaster extends AbstractDaoMaster {
         SearchHistoryDao.createTable(db, ifNotExists);
         EatDrugUserDao.createTable(db, ifNotExists);
         ShopCarDao.createTable(db,ifNotExists);
+        CitysDao.createTable(db,ifNotExists);
     }
     
     /** Drops underlying database table using DAOs. */
@@ -37,6 +38,7 @@ public class DaoMaster extends AbstractDaoMaster {
         SearchHistoryDao.dropTable(db, ifExists);
         EatDrugUserDao.dropTable(db, ifExists);
         ShopCarDao.dropTable(db,ifExists);
+        CitysDao.dropTable(db,ifExists);
     }
 
     public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion){
@@ -47,6 +49,7 @@ public class DaoMaster extends AbstractDaoMaster {
         SearchHistoryDao.upgradeTable(db, oldVersion, newVersion);
         EatDrugUserDao.upgradeTable(db, oldVersion, newVersion);
         ShopCarDao.upgradeTable(db,oldVersion,newVersion);
+        CitysDao.upgradeTable(db,oldVersion,newVersion);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -84,6 +87,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(SearchHistoryDao.class);
         registerDaoClass(EatDrugUserDao.class);
         registerDaoClass(ShopCarDao.class);
+        registerDaoClass(CitysDao.class);
     }
     
     public DaoSession newSession() {

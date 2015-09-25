@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.romens.android.library.datetimepicker.time.RadialPickerLayout;
 import com.romens.android.library.datetimepicker.time.TimePickerDialog;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.NewAddRemindActivity;
+import com.romens.yjk.health.ui.AddRemindActivity;
 import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
 
 import java.util.Calendar;
@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by anlc on 2015/8/27.
+ * 用药提醒中显示次数的adapter
  */
 public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTimeSetListener {
     //设置1天的提醒次数的适配器
@@ -68,7 +69,7 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
                 TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(TimesAdapter.this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
                 timePickerDialog.setVibrate(true);
                 timePickerDialog.setCloseOnSingleTapMinute(false);
-                timePickerDialog.show(((NewAddRemindActivity) context).getSupportFragmentManager(), TIMEPICKER_TAG);
+                timePickerDialog.show(((AddRemindActivity) context).getSupportFragmentManager(), TIMEPICKER_TAG);
                 index = position;
                 Toast.makeText(context, "-->" + position, Toast.LENGTH_SHORT).show();
             }
