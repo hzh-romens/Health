@@ -2,19 +2,17 @@ package com.romens.yjk.health.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.RemindEntity;
-import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
 /**
  * Created by anlc on 2015/8/24.
+ * 用药提醒中，单条信息的详情页面
  */
 public class RemindDetailActivity extends BaseActivity {
 
@@ -48,7 +46,7 @@ public class RemindDetailActivity extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 0) {
-                    Intent startEditIntent = new Intent(RemindDetailActivity.this, NewAddRemindActivity.class);
+                    Intent startEditIntent = new Intent(RemindDetailActivity.this, AddRemindActivity.class);
                     if (entity != null) {
                         startEditIntent.putExtra("editEntity", entity);
                     }

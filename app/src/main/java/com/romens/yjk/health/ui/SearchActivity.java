@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -40,7 +37,6 @@ import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.ui.adapter.FlowlayoutAdapter;
 import com.romens.yjk.health.ui.components.FlowLayout;
-import com.romens.yjk.health.ui.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,12 +74,12 @@ public class SearchActivity extends BaseActivity {
     private void addFloatLayout(final ActionBarLayout.LinearLayoutContainer container) {
         historyLayout = new FlowLayout(this);
         final List<String> keywords = readHistoryKeyword();
-        historyLayoutAdapter=new FlowlayoutAdapter(historyLayout,this,keywords);
+        historyLayoutAdapter = new FlowlayoutAdapter(historyLayout, this, keywords);
         historyLayoutAdapter.andTextView();
         historyLayoutAdapter.ItemClickListener(new FlowlayoutAdapter.FlowLayoutItemClick() {
             @Override
             public void onItemClick(int position) {
-                Toast.makeText(SearchActivity.this,"-->"+position,Toast.LENGTH_SHORT).show();
+                Toast.makeText(SearchActivity.this, "-->" + position, Toast.LENGTH_SHORT).show();
                 String searchText = keywords.get(position);
                 requestDrugChanged(searchText);
                 requestIllnessChanged(searchText);
@@ -96,27 +92,27 @@ public class SearchActivity extends BaseActivity {
 
     private void actionBarEvent(ActionBar actionBar, final ActionBarLayout.LinearLayoutContainer container) {
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        ActionBarMenuItem searchItem = actionBarMenu.addItem(0, R.drawable.ic_ab_search);//.setIsSearchField(true, true);
-//        searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
-//
-//            @Override
-//            public boolean canCollapseSearch() {
-//                historyLayout.setVisibility(View.VISIBLE);
-//                return true;
-//            }
-//
-//            @Override
-//            public void onTextChanged(EditText var1) {
-//                String searchText = var1.getText().toString().trim();
-//                if (!searchText.equals("") && searchText != null) {
-//                    requestDrugChanged(searchText);
-//                    requestIllnessChanged(searchText);
-//                    showSearchResult(container);
-//                    historyLayout.setVisibility(View.GONE);
-//                }
-//            }
-//        });
+        ActionBarMenuItem searchItem = actionBarMenu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
+        searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
 
+            @Override
+            public boolean canCollapseSearch() {
+                historyLayout.setVisibility(View.VISIBLE);
+                return true;
+            }
+
+            @Override
+            public void onTextChanged(EditText var1) {
+                String searchText = var1.getText().toString().trim();
+                if (!searchText.equals("") && searchText != null) {
+                    requestDrugChanged(searchText);
+                    requestIllnessChanged(searchText);
+                    showSearchResult(container);
+                    historyLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+        actionBarMenu.addItem(1, R.drawable.search_zxing_extend_36);
         actionBar.setTitle("搜索");
         actionBar.setBackgroundResource(R.color.theme_primary);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -124,7 +120,7 @@ public class SearchActivity extends BaseActivity {
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
-                } else if (id == 0) {
+                } else if (id == 1) {
 //                    requestDrugChanged(searchStr);
 //                    requestIllnessChanged(searchStr);
 //                    saveHistoryKeyword(searchStr);
@@ -161,7 +157,7 @@ public class SearchActivity extends BaseActivity {
             entity.setHistoryKeyword(keyword);
             if (entities.size() < 10) {
                 dao.insert(entity);
-            }else{
+            } else {
                 dao.delete(entities.get(1));
                 dao.insert(entity);
             }

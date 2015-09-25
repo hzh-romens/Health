@@ -68,6 +68,7 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:hint="请输入手机号码"
+            android:inputType="phone"
             android:textColor="@color/theme_title"
             android:textSize="@dimen/abc_text_size_body_1_material"/>
     </LinearLayout>
@@ -151,56 +152,4 @@
         android:layout_height="0.5dp"
         android:background="@color/theme_sub_title"/>
 
-    <LinearLayout
-        android:id="@+id/shopping_address_wheel_view_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="30dip"
-        android:background="@color/white"
-        android:gravity="bottom"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal">
-
-            <widget.WheelView
-                android:id="@+id/id_province"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white">
-            </widget.WheelView>
-
-            <widget.WheelView
-                android:id="@+id/id_city"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white">
-            </widget.WheelView>
-
-            <widget.WheelView
-                android:id="@+id/id_district"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white">
-            </widget.WheelView>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/shopping_address_choose_address_save"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_white"
-            android:gravity="center"
-            android:paddingBottom="3dp"
-            android:paddingTop="3dp"
-            android:text="@string/save"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-    </LinearLayout>
 </LinearLayout>

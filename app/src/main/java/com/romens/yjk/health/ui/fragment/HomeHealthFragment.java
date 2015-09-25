@@ -149,7 +149,7 @@ public class HomeHealthFragment extends BaseFragment {
             @Override
             public void onTokenTimeout(Message msg) {
                 changeRefreshUI(false);
-                bindData(null);
+//                bindData(null);
             }
 
             @Override
@@ -159,7 +159,7 @@ public class HomeHealthFragment extends BaseFragment {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     bindData(responseProtocol.getResponse());
                 } else {
-                    bindData(null);
+//                    bindData(null);
                 }
             }
         });

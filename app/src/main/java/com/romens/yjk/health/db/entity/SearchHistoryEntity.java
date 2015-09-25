@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * Created by anlc on 2015/9/8.
+ * 搜索页面的历史搜索实体
  */
 public class SearchHistoryEntity implements Serializable {
 

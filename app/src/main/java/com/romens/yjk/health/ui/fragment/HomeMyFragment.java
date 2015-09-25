@@ -26,6 +26,7 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.model.UserEntity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
+import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
@@ -37,9 +38,6 @@ import com.romens.yjk.health.ui.utils.UIHelper;
 public class HomeMyFragment extends BaseFragment {
     private ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
-
-
-    //
     private UserEntity userEntity;
     private ListAdapter adapter;
 
@@ -74,6 +72,8 @@ public class HomeMyFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == addressRow) {
                     startActivity(new Intent(getActivity(), ControlAddressActivity.class));
+                } else if (position == myOrderRow) {
+                    startActivity(new Intent(getActivity(), MyOrderActivity.class));
                 }
             }
         });
@@ -100,10 +100,12 @@ public class HomeMyFragment extends BaseFragment {
             addressRow = rowCount++;
         } else {
             loginRow = rowCount++;
-            userProfileRow=-1;
+            userProfileRow = -1;
             userInfoSectionRow = -1;
             userInfoSectionRow1 = -1;
-            addressRow = -1;
+//            addressRow = -1;
+            addressRow = rowCount++;
+            myOrderRow = rowCount++;
         }
 
         otherInfoSectionRow = rowCount++;
@@ -126,6 +128,8 @@ public class HomeMyFragment extends BaseFragment {
     private int otherInfoSectionRow1;
     private int checkUpdateRow;
     private int appInfoRow;
+
+    private int myOrderRow;
 
     class ListAdapter extends BaseFragmentAdapter {
         private Context adapterContext;
@@ -170,7 +174,7 @@ public class HomeMyFragment extends BaseFragment {
                 return 0;
             } else if (i == userInfoSectionRow1 || i == otherInfoSectionRow1) {
                 return 2;
-            } else if (i == addressRow | i == checkUpdateRow) {
+            } else if (i == addressRow | i == checkUpdateRow || i == myOrderRow) {
                 return 3;
             } else if (i == appInfoRow) {
                 return 4;
@@ -228,6 +232,8 @@ public class HomeMyFragment extends BaseFragment {
                     } catch (PackageManager.NameNotFoundException e) {
                         cell.setText("检查更新", true);
                     }
+                } else if (position == myOrderRow) {
+                    cell.setText("我的订单", true);
                 }
             } else if (type == 4) {
                 if (view == null) {

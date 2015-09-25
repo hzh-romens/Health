@@ -28,17 +28,6 @@
                 android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <Button
-            android:id="@+id/control_address_add_newaddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="center_horizontal"
-            android:background="@drawable/bg_white"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/add_new_address"
-            android:textSize="@dimen/text_size_title" />
     </LinearLayout>
 
     <LinearLayout

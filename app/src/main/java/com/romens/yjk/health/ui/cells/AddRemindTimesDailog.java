@@ -10,13 +10,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.NewAddRemindActivity;
+import com.romens.yjk.health.ui.AddRemindActivity;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
 
 import java.util.List;
 
 /**
  * Created by anlc on 2015/9/1.
+ * 添加新的用药提醒中的选择时间的dialog
  */
 public class AddRemindTimesDailog {
 
@@ -26,11 +27,11 @@ public class AddRemindTimesDailog {
     private List<String> timesData;
     private int timesInDay;
     private AddRemindTimesDailog dailogInstace;
-    private NewAddRemindActivity addRemindActivity;
+    private AddRemindActivity addRemindActivity;
 
     public AddRemindTimesDailog(Context context, List<String> timesData, int timesInDay) {
         dailogInstace = this;
-        addRemindActivity= (NewAddRemindActivity) context;
+        addRemindActivity= (AddRemindActivity) context;
         this.context = context;
         this.timesData = timesData;
         this.timesInDay = timesInDay;
