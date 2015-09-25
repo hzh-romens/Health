@@ -16,6 +16,8 @@
 
     <color name="btn_primary">#ff0f9d58</color>
     <color name="btn_primary_light">#ffe5e5e5</color>
-    <color name="btn_primary_text">@color/btn_primary</color>
+    <color name="btn_primary_text">@color/text_primary</color>
+
+    <color name="text_primary">#0f9d58</color>
 
 </resources>

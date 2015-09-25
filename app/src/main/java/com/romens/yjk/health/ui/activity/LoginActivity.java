@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -50,7 +49,9 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.im.IMHXSDKHelper;
 import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.components.SlideView;
@@ -61,6 +62,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by siery on 15/6/24.
@@ -75,16 +78,8 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserConfig.loadConfig();
-        // 如果用户名密码都有，直接进入主页面
-        if (UserConfig.isClientLogined()) {
-            super.onCreate(savedInstanceState);
-            MyApplication.initEMChat();
-            onLoginCallback(true);
-            return;
-        }
         super.onCreate(savedInstanceState);
-
+        UserConfig.loadConfig();
         ActionBarLayout.LinearLayoutContainer contentView = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
         contentView.addView(actionBar);
@@ -120,19 +115,6 @@ public class LoginActivity extends BaseActivity {
             views[a].setLayoutParams(layoutParams1);
         }
 
-        currentViewNum = 0;
-        actionBar.setTitle(views[currentViewNum].getHeaderName());
-        for (int a = 0; a < views.length; a++) {
-            if (currentViewNum == a) {
-                actionBar.setBackButtonImage(views[a].needBackButton() ? R.drawable.ic_ab_back : 0);
-                views[a].setVisibility(View.VISIBLE);
-                views[a].onShow();
-            } else {
-                views[a].setVisibility(View.GONE);
-            }
-        }
-
-
         setContentView(contentView, actionBar);
         actionBar = getMyActionBar();
         actionBar.setTitle(getString(R.string.app_name));
@@ -150,14 +132,25 @@ public class LoginActivity extends BaseActivity {
         ActionBarMenu menu = actionBar.createMenu();
         menu.addItemWithWidth(done_button, R.drawable.ic_done, AndroidUtilities.dp(56));
 
+        currentViewNum = 0;
+        actionBar.setTitle(views[currentViewNum].getHeaderName());
+        for (int a = 0; a < views.length; a++) {
+            if (currentViewNum == a) {
+                actionBar.setBackButtonImage(views[a].needBackButton() ? R.drawable.ic_ab_back : 0);
+                views[a].setVisibility(View.VISIBLE);
+                views[a].onShow();
+            } else {
+                views[a].setVisibility(View.GONE);
+            }
+        }
+
         if (UserConfig.isClientActivated()) {
             //登出后,不初始化会报异常
-            MyApplication.initEMChat();
             Bundle params = new Bundle();
             params.putString(OrganizationCodeView.PARAM_ORGAN_CODE, UserConfig.getOrgCode());
             params.putString(OrganizationCodeView.PARAM_ORGAN_NAME, UserConfig.getOrgName());
             params.putString(PhoneView.PARAM_PHONE, UserConfig.getClientUserPhone());
-            setPage(1, true, params, false);
+            setPage(0, true, params, false);
         }
     }
 
@@ -210,18 +203,15 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         boolean isFinish = false;
-        if (currentViewNum == 0 || currentViewNum == 1) {
+        if (currentViewNum == 0 || currentViewNum == 2) {
             for (SlideView v : views) {
                 if (v != null) {
                     v.onDestroyActivity();
                 }
             }
             isFinish = true;
-        } else if (currentViewNum == 2) {
+        } else if (currentViewNum == 1) {
             views[currentViewNum].onBackPressed();
-        } else if (currentViewNum == 4) {
-            views[currentViewNum].onBackPressed();
-            setPage(3, true, null, true);
         }
         if (isFinish) {
             needFinishActivity();
@@ -323,7 +313,7 @@ public class LoginActivity extends BaseActivity {
             putBundleToEditor(bundle, editor, null);
             editor.commit();
         } catch (Exception e) {
-            FileLog.e("tmessages", e);
+            FileLog.e("romens", e);
         }
     }
 
@@ -331,10 +321,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     protected void onLoginCallback(boolean isSuccess) {
-        Intent data = new Intent();
-        Bundle result = new Bundle();
-        data.putExtras(result);
-        setResult(isSuccess ? RESULT_OK : RESULT_CANCELED, data);
+        if (isSuccess) {
+            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.loginSuccess);
+        }
         finish();
     }
 
@@ -444,7 +433,6 @@ public class LoginActivity extends BaseActivity {
                                 String orgName = result.get("COMNAME");
                                 String appKey = result.get("appkey");
                                 UserConfig.setHXAppId(appKey);
-                                MyApplication.initEMChat();
                                 params.putString(PARAM_ORGAN_NAME, orgName);
                                 setPage(1, true, params, false);
                             } else {
@@ -497,7 +485,7 @@ public class LoginActivity extends BaseActivity {
 
         private String requestPhone;
         private String requestFlag;
-        private EditText codeField;
+        private MaterialEditText codeField;
         private TextView confirmTextView;
         private TextView timeText;
         private TextView problemText;
@@ -528,20 +516,21 @@ public class LoginActivity extends BaseActivity {
             layoutParams.gravity = Gravity.LEFT;
             confirmTextView.setLayoutParams(layoutParams);
 
-            codeField = new EditText(context);
-            codeField.setTextColor(0xff212121);
+            codeField = new MaterialEditText(context);
+            codeField.setBaseColor(0xff212121);
+            codeField.setPrimaryColor(ResourcesConfig.textPrimary);
             codeField.setHint("随机密码");
+
             AndroidUtilities.clearCursorDrawable(codeField);
             codeField.setHintTextColor(0xff979797);
             codeField.setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
             codeField.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             codeField.setInputType(InputType.TYPE_CLASS_PHONE);
             codeField.setMaxLines(1);
-            codeField.setPadding(0, 0, 0, 0);
             addView(codeField);
             layoutParams = (LinearLayout.LayoutParams) codeField.getLayoutParams();
             layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            layoutParams.height = AndroidUtilities.dp(36);
+            layoutParams.height = LayoutParams.WRAP_CONTENT;
             layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
             layoutParams.topMargin = AndroidUtilities.dp(20);
             codeField.setLayoutParams(layoutParams);
@@ -574,7 +563,7 @@ public class LoginActivity extends BaseActivity {
             problemText.setVisibility(time < 1000 ? VISIBLE : GONE);
             problemText.setGravity(Gravity.LEFT);
             problemText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            problemText.setTextColor(0xff4d83b3);
+            problemText.setTextColor(getResources().getColor(R.color.text_primary));
             problemText.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             problemText.setPadding(0, AndroidUtilities.dp(2), 0, AndroidUtilities.dp(12));
             addView(problemText);
@@ -601,7 +590,7 @@ public class LoginActivity extends BaseActivity {
 
             TextView wrongNumber = new TextView(context);
             wrongNumber.setGravity(Gravity.LEFT | Gravity.CENTER_HORIZONTAL);
-            wrongNumber.setTextColor(0xff4d83b3);
+            wrongNumber.setTextColor(getResources().getColor(R.color.text_primary));
             wrongNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             wrongNumber.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             wrongNumber.setPadding(0, AndroidUtilities.dp(24), 0, 0);
@@ -617,7 +606,7 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void onClick(View view) {
                     onBackPressed();
-                    setPage(1, true, currentParams, true);
+                    setPage(0, true, currentParams, true);
                 }
             });
         }
@@ -690,7 +679,7 @@ public class LoginActivity extends BaseActivity {
             args.put("PHONENUMBER", requestPhone);
             args.put("FLAG", requestFlag);
 
-            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "unloadhandle", "sendsms", args);
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "sendsms", args);
             Message message = new Message.MessageBuilder()
                     .withProtocol(protocol)
                     .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
@@ -727,7 +716,7 @@ public class LoginActivity extends BaseActivity {
                     } else {
                         error = "内部错误";
                     }
-                    needShowAlert(getString(R.string.app_name), String.format("请求发送随机密码发生未知问题,请稍候再试\n[%s]", error));
+                    Toast.makeText(getContext(), String.format("请求发送随机密码发生未知问题,请稍候再试\n[%s]", error), Toast.LENGTH_SHORT).show();
                     clearTimeText();
                     destroyTimer();
                     problemText.setVisibility(View.VISIBLE);
@@ -914,7 +903,7 @@ public class LoginActivity extends BaseActivity {
 
     public class LoginActivityPasswordView extends SlideView {
 
-        private EditText codeField;
+        private MaterialEditText codeField;
         private TextView confirmTextView;
         private TextView resetAccountButton;
         private TextView resetAccountText;
@@ -939,22 +928,20 @@ public class LoginActivity extends BaseActivity {
             layoutParams.gravity = Gravity.LEFT;
             confirmTextView.setLayoutParams(layoutParams);
 
-            codeField = new EditText(context);
-            codeField.setTextColor(0xff212121);
-            AndroidUtilities.clearCursorDrawable(codeField);
-            codeField.setHintTextColor(0xff979797);
+            codeField = new MaterialEditText(context);
+            codeField.setBaseColor(0xff212121);
+            codeField.setPrimaryColor(ResourcesConfig.textPrimary);
             codeField.setHint("密码");
             codeField.setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
             codeField.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             codeField.setMaxLines(1);
-            codeField.setPadding(0, 0, 0, 0);
             codeField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             codeField.setTransformationMethod(PasswordTransformationMethod.getInstance());
             codeField.setTypeface(Typeface.DEFAULT);
             addView(codeField);
             layoutParams = (LinearLayout.LayoutParams) codeField.getLayoutParams();
             layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            layoutParams.height = AndroidUtilities.dp(36);
+            layoutParams.height = LayoutParams.WRAP_CONTENT;
             layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
             layoutParams.topMargin = AndroidUtilities.dp(20);
             codeField.setLayoutParams(layoutParams);
@@ -968,10 +955,11 @@ public class LoginActivity extends BaseActivity {
                     return false;
                 }
             });
+            AndroidUtilities.clearCursorDrawable(codeField);
 
             TextView cancelButton = new TextView(context);
             cancelButton.setGravity(Gravity.LEFT | Gravity.TOP);
-            cancelButton.setTextColor(0xff4d83b3);
+            cancelButton.setTextColor(getResources().getColor(R.color.text_primary));
             cancelButton.setText("忘记密码?");
             cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             cancelButton.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
@@ -993,7 +981,7 @@ public class LoginActivity extends BaseActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Bundle params = currentParams;
                             params.putString(LoginActivitySmsView.PARAM_REQUEST_FLAG, "1");
-                            setPage(3, true, params, true);
+                            setPage(2, true, params, true);
                         }
                     });
                     builder.setNegativeButton("取消", null);
@@ -1035,12 +1023,11 @@ public class LoginActivity extends BaseActivity {
                     showDialog(builder.create());
                 }
             });
-
             resetAccountText = new TextView(context);
             resetAccountText.setGravity(Gravity.LEFT | Gravity.TOP);
             resetAccountText.setVisibility(GONE);
             resetAccountText.setTextColor(0xff757575);
-            resetAccountText.setText("为什么出现激活账户?用户首次登录雨诺工作圈,账户状态未未激活状态.需要激活才可以正常使用工作圈功能.");
+            resetAccountText.setText(String.format("为什么出现激活账户?用户首次登录%s,账户状态未未激活状态.需要激活才可以正常使用某些功能.", getString(R.string.app_name)));
             resetAccountText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             resetAccountText.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             addView(resetAccountText);
@@ -1160,7 +1147,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void onBackPressed() {
-            setPage(1, true, currentParams, false);
+            setPage(0, true, currentParams, false);
             currentParams = null;
         }
 
@@ -1664,8 +1651,6 @@ public class LoginActivity extends BaseActivity {
         private boolean ignoreOnPhoneChange = false;
         private boolean nextPressed = false;
 
-        private Bundle currentParams;
-
         public PhoneView(Context context) {
             super(context);
 
@@ -1682,10 +1667,8 @@ public class LoginActivity extends BaseActivity {
 
             phoneField = new MaterialEditText(context);
             phoneField.setBaseColor(0xff212121);
-            phoneField.setPrimaryColor(getResources().getColor(R.color.theme_primary));
-            phoneField.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
-            phoneField.setFloatingLabelText("手机号码");
-            phoneField.setFloatingLabelTextSize(AndroidUtilities.dp(18));
+            phoneField.setPrimaryColor(ResourcesConfig.textPrimary);
+            phoneField.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NONE);
             phoneField.setInputType(InputType.TYPE_CLASS_PHONE);
             AndroidUtilities.clearCursorDrawable(phoneField);
             phoneField.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
@@ -1807,8 +1790,6 @@ public class LoginActivity extends BaseActivity {
                 phone = params.getString(PhoneView.PARAM_PHONE);
             }
             phoneField.setText(phone);
-            orgField.setText(String.format("所属组织机构:%s", params.getString(OrganizationCodeView.PARAM_ORGAN_NAME)));
-            currentParams = params;
         }
 
         private void updatePhoneField() {
@@ -1825,7 +1806,7 @@ public class LoginActivity extends BaseActivity {
                     phoneField.setSelection(phoneField.length());
                 }
             } catch (Exception e) {
-                FileLog.e("tmessages", e);
+                FileLog.e("romens", e);
             }
             ignoreOnPhoneChange = false;
         }
@@ -1842,17 +1823,27 @@ public class LoginActivity extends BaseActivity {
                 needShowAlert(getString(R.string.app_name), "请输入手机号码");
                 return;
             }
-            String orgCode = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
+            String regExp = "^[1]([3][0-9]{1}|59|58|88|89)[0-9]{8}$";
+            Pattern p = Pattern.compile(regExp);
             String phone = PhoneFormat.stripExceptNumbers(PhoneFormat.stripExceptNumbers(phoneField.getText().toString()));
-            final Bundle params = currentParams;
+            Matcher m = p.matcher(phone);
+            if (!m.find()) {
+                needShowAlert(getString(R.string.app_name), "手机号码格式错误");
+                return;
+            }
+
+            final Bundle params = new Bundle();
+            UserConfig.AppChannel appChannel = UserConfig.loadAppChannel();
+            params.putString(OrganizationCodeView.PARAM_ORGAN_CODE, appChannel.orgCode);
+            params.putString(OrganizationCodeView.PARAM_ORGAN_NAME, appChannel.orgName);
             params.putString(PARAM_PHONE, phone);
             nextPressed = true;
             needShowProgress("验证手机号码...");
             Map<String, String> args = new HashMap<>();
-            UserConfig.AppChannel appChannel = UserConfig.loadAppChannel();
+
             args.put("PHONENUMBER", phone);
             args.put("ORGGUID", appChannel.orgCode);
-            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "unloadhandle", "CheckPhoneNumber", args);
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "CheckPhoneNumber", args);
             Message message = new Message.MessageBuilder()
                     .withProtocol(protocol)
                     .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
@@ -1867,6 +1858,7 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void onResult(Message msg, Message errorMsg) {
                     nextPressed = false;
+                    needHideProgress();
                     if (errorMsg == null) {
                         ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
                         LinkedTreeMap<String, String> result = response.getResponse();
@@ -1876,9 +1868,9 @@ public class LoginActivity extends BaseActivity {
                                 boolean value = TextUtils.equals("2", isValidity);
                                 params.putBoolean("IsValidityUser", value);
                                 params.putString(PARAM_HX_ID, result.get("NAME"));
-                                setPage(value ? 2 : 3, true, params, false);
+                                setPage(value ? 1 : 2, true, params, false);
                             } else {
-                                needShowAlert(getString(R.string.app_name), "手机号码未注册");
+                                needShowAlert(getString(R.string.app_name), "手机号码异常");
                             }
                         }
                     } else {
@@ -1886,7 +1878,6 @@ public class LoginActivity extends BaseActivity {
                             needShowAlert(getString(R.string.app_name), errorMsg.msg);
                         }
                     }
-                    needHideProgress();
                 }
             });
         }
@@ -1907,7 +1898,6 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void onBackPressed() {
-            currentParams = null;
         }
 
         @Override
@@ -1916,18 +1906,10 @@ public class LoginActivity extends BaseActivity {
             if (phone != null && phone.length() != 0) {
                 bundle.putString("phoneview_phone", phone);
             }
-
-            if (currentParams != null) {
-                bundle.putBundle("sign_in_params", currentParams);
-            }
         }
 
         @Override
         public void restoreStateParams(Bundle bundle) {
-            currentParams = bundle.getBundle("sign_in_params");
-            if (currentParams != null) {
-                setParams(currentParams);
-            }
             String phone = bundle.getString("phoneview_phone");
             if (phone != null) {
                 phoneField.setText(phone);

@@ -22,12 +22,12 @@ android {
                 output.outputFile = new File(file.parentFile, fileName)
             }
         }
-        manifestPlaceholders = [APK_CHANNEL_VALUE: "888888|@romens"]
+        manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens"]
     }
 
     productFlavors {
         channel_yjk {
-            manifestPlaceholders = [APK_CHANNEL_VALUE: "yjk"]
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens"]
         }
         channel_nj_xszk {
             manifestPlaceholders = [APK_CHANNEL_VALUE: "nj_xszk"]
@@ -60,7 +60,7 @@ android {
     }
 
     sourceSets.main {
-        //jniLibs.srcDir 'libs'
+        jniLibs.srcDir 'libs'
         jni.srcDirs = [] //disable automatic ndk-build call
     }
 

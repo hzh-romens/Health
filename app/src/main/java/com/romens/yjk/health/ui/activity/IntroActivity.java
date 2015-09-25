@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,10 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
+import com.romens.android.core.NotificationCenter.NotificationCenterDelegate;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.AppConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.HomeActivity;
 
-public class IntroActivity extends Activity {
+public class IntroActivity extends Activity implements NotificationCenterDelegate {
     private ViewPager viewPager;
     private ImageView topImage1;
     private ImageView topImage2;
@@ -35,13 +39,15 @@ public class IntroActivity extends Activity {
     private int[] titles;
     private int[] messages;
 
+    private TextView startMessagingButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.intro_layout);
-
+        findViewById(R.id.page_cover).setBackgroundColor(Color.WHITE);
         icons = new int[]{
                 R.drawable.intro1,
                 R.drawable.intro2,
@@ -70,7 +76,7 @@ public class IntroActivity extends Activity {
                 R.string.Page7Message
         };
         viewPager = (ViewPager) findViewById(R.id.intro_view_pager);
-        TextView startMessagingButton = (TextView) findViewById(R.id.start_messaging_button);
+        startMessagingButton = (TextView) findViewById(R.id.start_messaging_button);
         startMessagingButton.setText(getString(R.string.StartMessaging).toUpperCase());
         if (Build.VERSION.SDK_INT >= 21) {
             StateListAnimator animator = new StateListAnimator();
@@ -174,8 +180,11 @@ public class IntroActivity extends Activity {
                 finish();
             }
         });
-
+        startMessagingButton.setEnabled(false);
         justCreated = true;
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.appConfigLoaded);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.appConfigChanged);
+        AppConfig.loadConfig();
     }
 
     @Override
@@ -189,8 +198,22 @@ public class IntroActivity extends Activity {
     }
 
     @Override
+    protected void onDestroy() {
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.appConfigLoaded);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.appConfigChanged);
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
         finish();
+    }
+
+    @Override
+    public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.appConfigLoaded || i == AppNotificationCenter.appConfigChanged) {
+            startMessagingButton.setEnabled(true);
+        }
     }
 
     private class IntroAdapter extends PagerAdapter {
@@ -224,9 +247,9 @@ public class IntroActivity extends Activity {
             for (int a = 0; a < count; a++) {
                 View child = bottomPages.getChildAt(a);
                 if (a == position) {
-                    child.setBackgroundColor(0xffffffff);
+                    child.setBackgroundColor(0xff0f9d58);
                 } else {
-                    child.setBackgroundColor(0x80ffffff);
+                    child.setBackgroundColor(0x800f9d58);
                 }
             }
         }

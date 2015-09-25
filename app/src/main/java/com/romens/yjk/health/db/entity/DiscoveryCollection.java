@@ -50,6 +50,9 @@ public class DiscoveryCollection {
         public static final int iconRes = R.drawable.pharmacist;
         public static final String iconUrl = "";
         public static final String name = "用药咨询";
+        public static final int isCover = 0;
+        public static final int sortIndex=4;
+        public static final int primaryColor=0xFFA1887F;
     }
 
     public static final class MedicationReminders {
@@ -58,6 +61,9 @@ public class DiscoveryCollection {
         public static final int iconRes = R.drawable.remind;
         public static final String iconUrl = "";
         public static final String name = "服药提醒";
+        public static final int isCover = 0;
+        public static final int sortIndex=5;
+        public static final int primaryColor=0xFFA1887F;
     }
 
     public static final class OrderSheet {

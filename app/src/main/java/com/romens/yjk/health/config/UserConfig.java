@@ -3,12 +3,14 @@ package com.romens.yjk.health.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Base64;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.romens.yjk.health.MyApplication;
+import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.Base64Helper;
 import com.romens.yjk.health.helper.MD5Helper;
 
@@ -212,6 +214,14 @@ public class UserConfig {
         }
     }
 
+    public static UserEntity getClientUserEntity() {
+        UserEntity userEntity = null;
+        if (isClientLogined()) {
+            userEntity = new UserEntity(0, "", config.userName, "", config.phoneNumber, "", "", 0);
+        }
+        return userEntity;
+    }
+
     public static class Data {
         protected String orgCode;
         protected String orgName;
@@ -259,16 +269,29 @@ public class UserConfig {
     public static class AppChannel {
         public final String orgCode;
         public final String orgName;
+        public final String hxAppKey;
 
         public AppChannel() {
-            String channel = MyApplication.applicationContext.getApplicationInfo().metaData.getString("APK_CHANNEL");
+            ApplicationInfo appInfo = null;
+            try {
+                appInfo = MyApplication.applicationContext.getPackageManager()
+                        .getApplicationInfo(MyApplication.applicationContext.getPackageName(), PackageManager.GET_META_DATA);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            String channel = null;
+            if (appInfo != null) {
+                channel = appInfo.metaData.getString("APK_CHANNEL");
+            }
             if (TextUtils.isEmpty(channel)) {
                 orgCode = null;
                 orgName = null;
+                hxAppKey = null;
             } else {
-                String[] temp = channel.split("\\|@");
+                String[] temp = channel.split(";");
                 orgCode = temp[0];
                 orgName = temp[1];
+                hxAppKey = "romens#yjkim" + orgCode;
             }
         }
     }

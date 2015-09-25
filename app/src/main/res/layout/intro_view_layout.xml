@@ -11,7 +11,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="224dp"
         android:gravity="center"
-        android:textColor="#ffffffff"
+        android:textColor="#ff000000"
         android:textSize="26dp" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="266dp"
         android:gravity="center"
-        android:textColor="#90ffffff"
+        android:textColor="#808080"
         android:textSize="15dp" />
 
 </FrameLayout>

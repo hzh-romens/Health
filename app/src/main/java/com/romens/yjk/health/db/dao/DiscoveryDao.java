@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteStatement;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.NearbyPharmacy;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.InformationNews;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.FindDrugWithScanner;
+import com.romens.yjk.health.db.entity.DiscoveryCollection.MedicationReminders;
+import com.romens.yjk.health.db.entity.DiscoveryCollection.PharmicCounseling;
+
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 
 import java.util.Calendar;
@@ -79,26 +82,9 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         initCreatedTableData(db);
     }
 
-    public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion){
-        if(newVersion==15){
-            ContentValues values = new ContentValues();
-            //附近药店
-            ContentValues value = new ContentValues();
-            value.put("KEY", FindDrugWithScanner.key);
-            value.put("ICON_RES", FindDrugWithScanner.iconRes);
-            value.put("ICON_URL", FindDrugWithScanner.iconUrl);
-            value.put("NAME", FindDrugWithScanner.name);
-            value.put("VALUE", FindDrugWithScanner.value);
-            value.put("STATUS", 0);
-            int time = (int) Calendar.getInstance().getTimeInMillis();
-            value.put("CREATED", time);
-            value.put("UPDATED", time);
-            value.put("IS_COVER", FindDrugWithScanner.isCover);
-            value.put("SORT_INDEX", FindDrugWithScanner.sortIndex);
-            value.put("PRIMARY_COLOR", FindDrugWithScanner.primaryColor);
-            values.putAll(value);
-            db.insert(TABLENAME, null, values);
-        }
+    public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion) {
+        dropTable(db, true);
+        createTable(db, true);
     }
 
     public static void initCreatedTableData(SQLiteDatabase db) {
@@ -149,6 +135,39 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         value.put("IS_COVER", FindDrugWithScanner.isCover);
         value.put("SORT_INDEX", FindDrugWithScanner.sortIndex);
         value.put("PRIMARY_COLOR", FindDrugWithScanner.primaryColor);
+        values.putAll(value);
+        db.insert(TABLENAME, null, values);
+        //用药提醒
+        value = new ContentValues();
+        value.put("KEY", MedicationReminders.key);
+        value.put("ICON_RES", MedicationReminders.iconRes);
+        value.put("ICON_URL", MedicationReminders.iconUrl);
+        value.put("NAME", MedicationReminders.name);
+        value.put("VALUE", MedicationReminders.value);
+        value.put("STATUS", 0);
+        time = (int) Calendar.getInstance().getTimeInMillis();
+        value.put("CREATED", time);
+        value.put("UPDATED", time);
+        value.put("IS_COVER", MedicationReminders.isCover);
+        value.put("SORT_INDEX", MedicationReminders.sortIndex);
+        value.put("PRIMARY_COLOR", MedicationReminders.primaryColor);
+        values.putAll(value);
+        db.insert(TABLENAME, null, values);
+
+        //用药咨询
+        value = new ContentValues();
+        value.put("KEY", PharmicCounseling.key);
+        value.put("ICON_RES", PharmicCounseling.iconRes);
+        value.put("ICON_URL", PharmicCounseling.iconUrl);
+        value.put("NAME", PharmicCounseling.name);
+        value.put("VALUE", PharmicCounseling.value);
+        value.put("STATUS", 0);
+        time = (int) Calendar.getInstance().getTimeInMillis();
+        value.put("CREATED", time);
+        value.put("UPDATED", time);
+        value.put("IS_COVER", PharmicCounseling.isCover);
+        value.put("SORT_INDEX", PharmicCounseling.sortIndex);
+        value.put("PRIMARY_COLOR", PharmicCounseling.primaryColor);
         values.putAll(value);
         db.insert(TABLENAME, null, values);
     }

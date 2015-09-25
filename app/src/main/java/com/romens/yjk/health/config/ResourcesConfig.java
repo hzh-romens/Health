@@ -8,8 +8,10 @@ import com.romens.yjk.health.R;
  */
 public class ResourcesConfig {
     public static int primaryColor;
+    public static final int textPrimary;
 
     static{
         primaryColor= MyApplication.applicationContext.getResources().getColor(R.color.theme_primary);
+        textPrimary = MyApplication.applicationContext.getResources().getColor(R.color.text_primary);
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
@@ -12,7 +11,8 @@ import com.romens.android.ui.Components.FrameLayoutFixed;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.AvatarDrawable;
 import com.romens.android.ui.Image.BackupImageView;
-import com.romens.yjk.health.model.UserEntity;
+import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.db.entity.UserEntity;
 
 /**
  * Created by siery on 15/8/17.
@@ -39,9 +39,9 @@ public class UserProfileCell extends FrameLayoutFixed {
 
     public void setUser(UserEntity userEntity) {
         AvatarDrawable avatarDrawable = new AvatarDrawable(true);
-        avatarDrawable.setColor(0xff5c98cd);
-        avatarDrawable.setInfo(0, userEntity.userName, "", false);
-        avatarImage.setImageUrl(userEntity.avatarUrl, "64_64", avatarDrawable);
-        nameView.setText(userEntity.userName);
+        avatarDrawable.setInfo(0, userEntity.getName(), "", false);
+        avatarDrawable.setColor(ResourcesConfig.primaryColor);
+        avatarImage.setImageUrl(userEntity.getAvatar(), "64_64", avatarDrawable);
+        nameView.setText(userEntity.getName());
     }
 }
