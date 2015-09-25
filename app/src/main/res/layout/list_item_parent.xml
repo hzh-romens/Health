@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="horizontal" android:layout_width="match_parent"
+android:background="@color/white"
+android:layout_height="53dp">
+<View
+    android:layout_width="match_parent"
+    android:layout_height="5dp"
+    android:background="#f9f9f9"
+    android:visibility="visible"
+    android:id="@+id/empty_view"/>
+<LinearLayout
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:padding="@dimen/padding_inner"
+    android:layout_marginTop="5dp"
+    android:background="@color/white"
+    android:layout_height="48dp">
+    <com.romens.yjk.health.ui.components.CheckableFrameLayout
+        android:id="@+id/checkbox"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_allcheck_selector"
+        android:gravity="center"
+        android:layout_margin="@dimen/margin_small"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="药店名"
+        android:gravity="center"
+        android:id="@+id/name"
+        android:typeface="normal"
+        android:textSize="@dimen/title_head_size"
+        android:textColor="#333333"/>
+</LinearLayout>
+</FrameLayout>

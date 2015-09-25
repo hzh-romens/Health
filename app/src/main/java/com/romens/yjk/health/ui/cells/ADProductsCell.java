@@ -28,6 +28,7 @@ import com.romens.yjk.health.ui.components.MoreButton;
 /**
  * Created by siery on 15/8/14.
  */
+
 public class ADProductsCell extends LinearLayout {
     private static final int DEFAULT_BG = 0xffefefef;
     private int count = 3;
@@ -58,6 +59,7 @@ public class ADProductsCell extends LinearLayout {
                 }
             }
         });
+        //用来装载带有更多Button的那一行布局
         addView(top, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 56));
         nameView = new TextView(context);
         nameView.setTextColor(0xff212121);
@@ -100,6 +102,7 @@ public class ADProductsCell extends LinearLayout {
         backupImageView = new BackupImageView(context);
         content.addView(backupImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
+        //recyclerView的GridView样式的布局
         recyclerView = new RecyclerView(context);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), count));
         recyclerView.setHasFixedSize(true);
@@ -108,14 +111,23 @@ public class ADProductsCell extends LinearLayout {
         recyclerView.addItemDecoration(itemDecoration);
         content.addView(recyclerView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.BOTTOM, 8, 8, 8, 8));
     }
-
+    /**
+     * 多种风格的RecyclerView
+     * cellStyle的值:0,1,2。
+     * 1、0:默认的3个CardView
+     * 2、1:两个CardView
+     * 3、2：
+     */
     public void setValue(ADProductListEntity entity) {
+
         cellStyle = 0;
         count = 3;
         final int size = entity.size();
         final String layoutStyle = entity.getLayoutStyle();
         if (!TextUtils.isEmpty(layoutStyle)) {
+
             if (size == 2 && TextUtils.equals(layoutStyle, "LARGE")) {
+                //只有两张图片
                 cellStyle = 1;
                 count = 2;
             } else if (size < 3 && TextUtils.equals(layoutStyle, "RIGHT")) {

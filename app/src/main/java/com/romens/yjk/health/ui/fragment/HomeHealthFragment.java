@@ -28,6 +28,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.ui.IllnessActivity;
+import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.cells.ADDiseaseCell;
 import com.romens.yjk.health.ui.cells.ADDiseaseCell.ADDisease;
 import com.romens.yjk.health.ui.cells.DrugChildCell;
@@ -99,7 +100,8 @@ public class HomeHealthFragment extends BaseFragment {
         final int currGroupPosition = adapter.getCurrentGroupPosition(groupPosition);
         DrugGroupEntity childNode = adapter.getChild(currGroupPosition, childPosition);
         if (childNode != null) {
-            Intent intent = new Intent(getActivity(), IllnessActivity.class);
+            //Intent intent = new Intent(getActivity(), IllnessActivity.class);
+            Intent intent = new Intent(getActivity(), MedicinalDetailActivity.class);
             Bundle arguments = new Bundle();
             arguments.putString(IllnessActivity.ARGUMENTS_KEY_ID, childNode.getId());
             arguments.putString(IllnessActivity.ARGUMENTS_KEY_NAME, childNode.getName());

@@ -2,45 +2,150 @@ package com.romens.yjk.health.model;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.Serializable;
+
 /**
  * Created by AUSU on 2015/9/8.
  */
-public class ShopCarEntity {
+public class ShopCarEntity implements Serializable {
+
+    private int BUYCOUNT;//数量
+    private Double GOODSPRICE;// 商品价格
+    private String CREATETIME;// 日期
+    private String NAME; //商品名称
+    private String GOODSCLASSNAME; //商品分类名称
+    private String GOODURL; //商品图片url
+    private String CODE;// 商品code
+    private String DETAILDESCRIPTION;// 商品描述
+    private String SPEC;// 商品规格
+    private String SHOPID;// 药店id
+    private String SHOPNAME;//药店名称
+    private String CHECK;
     public Long id;
-
+    private String GOODSGUID;//药品ID
     private String USERGUID;
-
-    private String GUID;
-
-    private String GOODSGUID;
-
-    private int BUYCOUNT;
-
-    private Double GOODSPRICE;
-
-    private String CREATETIME;
-
-    private String NAME;
-
-    private String GOODSCLASSNAME;
-
-    private String CODE;
-
-    private String GOODURL;
-
-    private String DETAILDESCRIPTION;
-
-    private String SPEC;
-
-    private String GOODSSORTGUID;
-
-    private int NUM;
-
-    public String CHECK;
-
     public int createdTime;
-
     public int updatedTime;
+
+    public String getUSERGUID() {
+        return USERGUID;
+    }
+
+    public void setUSERGUID(String USERGUID) {
+        this.USERGUID = USERGUID;
+    }
+
+    public String getGOODSGUID() {
+        return GOODSGUID;
+    }
+
+    public void setGOODSGUID(String GOODSGUID) {
+        this.GOODSGUID = GOODSGUID;
+    }
+
+    public String getCHECK() {
+        return CHECK;
+    }
+
+    public void setCHECK(String CHECK) {
+        this.CHECK = CHECK;
+    }
+
+    public int getBUYCOUNT() {
+        return BUYCOUNT;
+    }
+
+    public void setBUYCOUNT(int BUYCOUNT) {
+        this.BUYCOUNT = BUYCOUNT;
+    }
+
+    public Double getGOODSPRICE() {
+        return GOODSPRICE;
+    }
+
+    public void setGOODSPRICE(Double GOODSPRICE) {
+        this.GOODSPRICE = GOODSPRICE;
+    }
+
+    public String getCREATETIME() {
+        return CREATETIME;
+    }
+
+    public void setCREATETIME(String CREATETIME) {
+        this.CREATETIME = CREATETIME;
+    }
+
+    public String getNAME() {
+        return NAME;
+    }
+
+    public void setNAME(String NAME) {
+        this.NAME = NAME;
+    }
+
+    public String getGOODSCLASSNAME() {
+        return GOODSCLASSNAME;
+    }
+
+    public void setGOODSCLASSNAME(String GOODSCLASSNAME) {
+        this.GOODSCLASSNAME = GOODSCLASSNAME;
+    }
+
+    public String getGOODURL() {
+        return GOODURL;
+    }
+
+    public void setGOODURL(String GOODURL) {
+        this.GOODURL = GOODURL;
+    }
+
+    public String getCODE() {
+        return CODE;
+    }
+
+    public void setCODE(String CODE) {
+        this.CODE = CODE;
+    }
+
+    public String getDETAILDESCRIPTION() {
+        return DETAILDESCRIPTION;
+    }
+
+    public void setDETAILDESCRIPTION(String DETAILDESCRIPTION) {
+        this.DETAILDESCRIPTION = DETAILDESCRIPTION;
+    }
+
+    public String getSPEC() {
+        return SPEC;
+    }
+
+    public void setSPEC(String SPEC) {
+        this.SPEC = SPEC;
+    }
+
+    public String getSHOPID() {
+        return SHOPID;
+    }
+
+    public void setSHOPID(String SHOPID) {
+        this.SHOPID = SHOPID;
+    }
+
+    public String getSHOPNAME() {
+        return SHOPNAME;
+    }
+
+    public void setSHOPNAME(String SHOPNAME) {
+        this.SHOPNAME = SHOPNAME;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public int getCreatedTime() {
         return createdTime;
@@ -58,108 +163,8 @@ public class ShopCarEntity {
         this.updatedTime = updatedTime;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCHECK() {
-        return CHECK;
-    }
-
-    public void setCHECK(String CHECK) {
-        this.CHECK = CHECK;
-    }
-
-    public void setUSERGUID(String USERGUID){
-        this.USERGUID = USERGUID;
-    }
-    public String getUSERGUID(){
-        return this.USERGUID;
-    }
-    public void setGUID(String GUID){
-        this.GUID = GUID;
-    }
-    public String getGUID(){
-        return this.GUID;
-    }
-    public void setGOODSGUID(String GOODSGUID){
-        this.GOODSGUID = GOODSGUID;
-    }
-    public String getGOODSGUID(){
-        return this.GOODSGUID;
-    }
-    public void setBUYCOUNT(int BUYCOUNT){
-        this.BUYCOUNT = BUYCOUNT;
-    }
-    public int getBUYCOUNT(){
-        return this.BUYCOUNT;
-    }
-    public void setGOODSPRICE(Double GOODSPRICE){
-        this.GOODSPRICE = GOODSPRICE;
-    }
-    public Double getGOODSPRICE(){
-        return this.GOODSPRICE;
-    }
-    public void setCREATETIME(String CREATETIME){
-        this.CREATETIME = CREATETIME;
-    }
-    public String getCREATETIME(){
-        return this.CREATETIME;
-    }
-    public void setNAME(String NAME){
-        this.NAME = NAME;
-    }
-    public String getNAME(){
-        return this.NAME;
-    }
-    public void setGOODSCLASSNAME(String GOODSCLASSNAME){
-        this.GOODSCLASSNAME = GOODSCLASSNAME;
-    }
-    public String getGOODSCLASSNAME(){
-        return this.GOODSCLASSNAME;
-    }
-    public void setCODE(String CODE){
-        this.CODE = CODE;
-    }
-    public String getCODE(){
-        return this.CODE;
-    }
-    public void setGOODURL(String GOODURL){
-        this.GOODURL = GOODURL;
-    }
-    public String getGOODURL(){
-        return this.GOODURL;
-    }
-    public void setDETAILDESCRIPTION(String DETAILDESCRIPTION){
-        this.DETAILDESCRIPTION = DETAILDESCRIPTION;
-    }
-    public String getDETAILDESCRIPTION(){
-        return this.DETAILDESCRIPTION;
-    }
-    public void setSPEC(String SPEC){
-        this.SPEC = SPEC;
-    }
-    public String getSPEC(){
-        return this.SPEC;
-    }
-    public void setGOODSSORTGUID(String GOODSSORTGUID){
-        this.GOODSSORTGUID = GOODSSORTGUID;
-    }
-    public String getGOODSSORTGUID(){
-        return this.GOODSSORTGUID;
-    }
-    public void setNUM(int NUM){
-        this.NUM = NUM;
-    }
-    public int getNUM(){
-        return this.NUM;
-    }
-    public static ShopCarEntity mapToEntity(LinkedTreeMap<String, String> map){
-        ShopCarEntity entity=new ShopCarEntity();
+    public static ShopCarEntity mapToEntity(LinkedTreeMap<String, String> map) {
+        ShopCarEntity entity = new ShopCarEntity();
         entity.setSPEC(map.get("SPEC"));
         entity.setNAME(map.get("NAME"));
         entity.setBUYCOUNT(Integer.parseInt(map.get("BUYCOUNT")));
@@ -169,15 +174,10 @@ public class ShopCarEntity {
         entity.setGOODSCLASSNAME(map.get("GOODSCLASSNAME"));
         entity.setGOODSGUID(map.get("GOODSGUID"));
         entity.setGOODSPRICE(Double.parseDouble(map.get("GOODSPRICE")));
-        entity.setGOODSSORTGUID(map.get("GOODSSORTGUID"));
         entity.setGOODURL(map.get("GOODURL"));
+        entity.setSHOPID(map.get("SHOPID"));
+        entity.setSHOPNAME(map.get("SHOPNAME"));
         entity.setUSERGUID(map.get("USERGUID"));
-        if("".equals(map.get("NUM"))||map.get("NUM")==null){
-            entity.setNUM(0);
-        }else {
-            entity.setNUM(Integer.parseInt(map.get("NUM")));
-        }
-
         return entity;
     }
 

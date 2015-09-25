@@ -8,4 +8,8 @@
     <item name="action_bar" type="id">false</item>
     <item name="favorite" type="id">false</item>
     <item name="shopcar" type="id">false</item>
+    <item name="realPrice" type="id">false</item>
+    <item name="discountPrice" type="id">false</item>
+    <item name="edit" type="id">false</item>
+    <item name="title_background" type="id">false</item>
 </resources>

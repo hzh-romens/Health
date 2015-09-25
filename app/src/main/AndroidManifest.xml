@@ -226,6 +226,14 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.NewAddRemindActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.ChooseUserActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
 
     </application>
 
