@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/standard_dlg_bg"
+    android:orientation="vertical"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip" >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="fill_parent"
+        android:layout_height="38dp"
+        android:gravity="center"
+        android:text="提示"
+        android:textColor="#3B3B3B"
+        android:textSize="20sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/tv_tips"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:layout_marginTop="18dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#3B3B3B"
+        android:textSize="14sp" >
+    </TextView>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48dp" >
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="102dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/dlg_btn"
+            android:text="确定"
+            android:textColor="#3B3B3B"
+            android:textSize="17sp" >
+        </Button>
+    </RelativeLayout>
+
+</LinearLayout>

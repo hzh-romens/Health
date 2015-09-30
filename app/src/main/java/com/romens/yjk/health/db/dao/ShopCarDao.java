@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.romens.yjk.health.model.ShopCarEntity;
-import com.romens.yjk.health.model.ShopCarTestEntity;
 
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
@@ -96,8 +95,8 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
     protected ShopCarEntity readEntity(Cursor cursor, int offset) {
         ShopCarEntity entity = new ShopCarEntity();
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
-        entity.setUSERGUID(cursor.getString(offset + 1));
-        entity.setGUID(cursor.getString(offset + 2));
+       // entity.setUSERGUID(cursor.getString(offset + 1));
+        //entity.setGUID(cursor.getString(offset + 2));
         entity.setGOODSGUID(cursor.getString(offset + 3));
         entity.setBUYCOUNT(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setGOODSPRICE(cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5)); // Price
@@ -108,8 +107,8 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
         entity.setGOODURL(cursor.getString(offset + 10));
         entity.setDETAILDESCRIPTION(cursor.getString(offset + 11));
         entity.setSPEC(cursor.getString(offset + 12));
-        entity.setGOODSSORTGUID(cursor.getString(offset + 13));
-        entity.setNUM(cursor.getInt(offset + 14));
+      //  entity.setGOODSSORTGUID(cursor.getString(offset + 13));
+       // entity.setNUM(cursor.getInt(offset + 14));
         entity.setCHECK(cursor.getString(offset + 15));
         entity.setCreatedTime(cursor.getInt(offset + 16));
         entity.setUpdatedTime(cursor.getInt(offset + 17));
@@ -124,8 +123,8 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
     @Override
     protected void readEntity(Cursor cursor, ShopCarEntity entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
-        entity.setUSERGUID(cursor.getString(offset + 1));
-        entity.setGUID(cursor.getString(offset + 2));
+   //     entity.setUSERGUID(cursor.getString(offset + 1));
+     //   entity.setGUID(cursor.getString(offset + 2));
         entity.setGOODSGUID(cursor.getString(offset + 3));
         entity.setBUYCOUNT(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setGOODSPRICE(cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5)); // Price
@@ -136,8 +135,8 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
         entity.setGOODURL(cursor.getString(offset + 10));
         entity.setDETAILDESCRIPTION(cursor.getString(offset + 11));
         entity.setSPEC(cursor.getString(offset + 12));
-        entity.setGOODSSORTGUID(cursor.getString(offset + 13));
-        entity.setNUM(cursor.getInt(offset + 14));
+      //  entity.setGOODSSORTGUID(cursor.getString(offset + 13));
+        //entity.setNUM(cursor.getInt(offset + 14));
         entity.setCHECK(cursor.getString(offset + 15));
         entity.setCreatedTime(cursor.getInt(offset + 16));
         entity.setUpdatedTime(cursor.getInt(offset + 17));
@@ -151,10 +150,10 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
             stmt.bindLong(1, id);
         }
 
-        stmt.bindString(2, entity.getUSERGUID());
-       if(entity.getGUID()!=null) {
-            stmt.bindString(3, entity.getGUID());
-        }
+      //  stmt.bindString(2, entity.getUSERGUID());
+       //if(entity.getGUID()!=null) {
+         //   stmt.bindString(3, entity.getGUID());
+        //}
         stmt.bindString(4, entity.getGOODSGUID());
         stmt.bindLong(5, entity.getBUYCOUNT());
         stmt.bindDouble(6, entity.getGOODSPRICE());
@@ -170,8 +169,8 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
             //stmt.bindString(13, entity.getSPEC());
             stmt.bindString(13,"2");
         }
-        stmt.bindString(14, entity.getGOODSSORTGUID());
-        stmt.bindLong(15, entity.getNUM());
+       // stmt.bindString(14, entity.getGOODSSORTGUID());
+        //stmt.bindLong(15, entity.getNUM());
         stmt.bindString(16, entity.getCHECK());
         stmt.bindLong(17, entity.createdTime);
         stmt.bindLong(18, entity.updatedTime);

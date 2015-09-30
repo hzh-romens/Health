@@ -1,13 +1,11 @@
 package com.romens.yjk.health.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +24,7 @@ import java.util.List;
 
 /**
  * Created by anlc on 2015/8/21.
+ * 用药提醒列表页面
  */
 public class RemindActivity extends BaseActivity {
 
@@ -60,7 +59,7 @@ public class RemindActivity extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 1) {
-                    startActivity(new Intent(RemindActivity.this, NewAddRemindActivity.class));
+                    startActivity(new Intent(RemindActivity.this, AddRemindActivity.class));
                 }
             }
         });

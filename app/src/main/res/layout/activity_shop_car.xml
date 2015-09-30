@@ -1,85 +1,95 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.romens.yjk.health.ui.ShopCarActivity">
 
-    <com.romens.android.ui.ActionBar.ActionBar
+    <RelativeLayout style="@style/titleStytle">
+
+        <FrameLayout style="@style/framelayou_back_style">
+
+            <ImageView style="@style/iv_back_style" />
+        </FrameLayout>
+
+        <TextView
+            style="@style/title_textview_style"
+            android:text="购物车" />
+
+        <TextView
+            android:id="@id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_outter"
+            android:layout_marginRight="@dimen/padding_outter"
+            android:gravity="center"
+            android:text="编辑"
+            android:textColor="@color/transparent_black"
+            android:textSize="@dimen/title_text_size" />
+    </RelativeLayout>
+
+    <ExpandableListView
+        android:id="@+id/ev"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/action_bar"
-        android:layout_gravity="top"
-        /> <android.support.v7.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="58dp"
-    android:layout_marginBottom="45dp"
-    android:id="@+id/recyclerview"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="45dp"
+        android:layout_marginTop="48dp"
+        android:groupIndicator="@null" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_gravity="bottom"
-
         android:background="@color/background_floating_material_dark"
         android:orientation="horizontal">
+
         <com.romens.yjk.health.ui.components.CheckableFrameLayout
+            android:id="@+id/all_choice"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:textColor="@android:color/white"
-           android:layout_gravity="center_vertical"
-            android:button="@drawable/btn_check"
-            android:layout_marginTop="8dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginBottom="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginLeft="16dp"
-            android:padding="8dp"
-            android:id="@+id/all_choice"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/btn_allcheck_selector"
-           />
+            android:button="@drawable/btn_check"
+            android:padding="8dp"
+            android:textColor="@android:color/white" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="4dip"
             android:text="全选"
             android:textColor="@color/md_white_1000"
-            android:layout_marginRight="4dip"
-            android:textSize="@dimen/text_size_small"/>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginBottom="2dip"
-            >
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:text="合计:"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_large"
-                android:id="@+id/tv_all1"
-                android:gravity="center_vertical"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.8"
-                android:text="总额:"
-                android:textSize="@dimen/text_size_medium"
-                android:id="@+id/tv_all2"
-                android:textColor="@android:color/white"
-                android:gravity="top"/>
-            </LinearLayout>
+            android:textSize="@dimen/text_size_small" />
+
         <TextView
+            android:id="@+id/tv_all1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="2dip"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="合计:"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_large" />
+
+
+        <TextView
+            android:id="@+id/accounts"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:id="@+id/tv_pay"
-            android:text="去结算"
-            android:textSize="@dimen/text_size_large"
-            android:textColor="@color/md_white_1000"
-            android:background="@color/md_red_500"
+            android:layout_gravity="center_vertical"
+            android:background="#66cc00"
+            android:gravity="center"
             android:singleLine="true"
-            android:gravity="center"/>
-        </LinearLayout>
-
+            android:text="结算"
+            android:textColor="@color/md_white_1000"
+            android:textSize="@dimen/text_size_large" />
+    </LinearLayout>
 
 </FrameLayout>

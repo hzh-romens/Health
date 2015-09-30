@@ -34,7 +34,7 @@ public class IllnessAdapter extends RecyclerView.Adapter{
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view=View.inflate(mContext, R.layout.list_item_medicinal_store, null);
+        View view=View.inflate(mContext, R.layout.list_item_ill, null);
            RecyclerView.ViewHolder holder=new itemViewholder(view);
 //        不知道为什么在xml设置的“android:layout_width="match_parent"”无效了，需要在这里重新设置
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

@@ -21,6 +21,7 @@ import com.romens.yjk.health.R;
 
 /**
  * Created by anlc on 2015/9/10.
+ * 用药提醒中选择用户和药品的cell
  */
 public class AvatarEditTextCell extends LinearLayout {
     private static Paint paint;

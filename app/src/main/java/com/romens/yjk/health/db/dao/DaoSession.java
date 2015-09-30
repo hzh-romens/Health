@@ -2,6 +2,7 @@ package com.romens.yjk.health.db.dao;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import com.romens.yjk.health.db.entity.CitysEntity;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.EatDrugUserEntity;
@@ -39,14 +40,16 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig remindDaoConfig;
 
     private final SearchHistoryDao searchHistoryDao;
-    private final  DaoConfig searchResultDaoConfig;
+    private final DaoConfig searchResultDaoConfig;
 
-    private final  EatDrugUserDao eatDrugUserDao;
+    private final EatDrugUserDao eatDrugUserDao;
     private final DaoConfig eatDrugUserDaoConfig;
 
     private final ShopCarDao shopCarDao;
     private final DaoConfig shopCarDaoConfig;
 
+    private final CitysDao citysDao;
+    private final DaoConfig cityDaoConfig;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -68,21 +71,25 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(LocationAddressEntity.class, locationAddressDao);
 
         remindDaoConfig = daoConfigMap.get(RemindDao.class).clone();
-        remindDao=new RemindDao(remindDaoConfig,this);
-        registerDao(RemindEntity.class,remindDao);
+        remindDao = new RemindDao(remindDaoConfig, this);
+        registerDao(RemindEntity.class, remindDao);
 
         searchResultDaoConfig = daoConfigMap.get(SearchHistoryDao.class).clone();
-        searchHistoryDao =new SearchHistoryDao(searchResultDaoConfig,this);
+        searchHistoryDao = new SearchHistoryDao(searchResultDaoConfig, this);
         registerDao(SearchHistoryEntity.class, searchHistoryDao);
 
         eatDrugUserDaoConfig = daoConfigMap.get(EatDrugUserDao.class).clone();
         eatDrugUserDao = new EatDrugUserDao(eatDrugUserDaoConfig, this);
-        registerDao(EatDrugUserEntity.class,eatDrugUserDao);
+        registerDao(EatDrugUserEntity.class, eatDrugUserDao);
 
         shopCarDaoConfig = daoConfigMap.get(ShopCarDao.class).clone();
         shopCarDaoConfig.initIdentityScope(type);
         shopCarDao = new ShopCarDao(shopCarDaoConfig, this);
         registerDao(ShopCarEntity.class, shopCarDao);
+
+        cityDaoConfig = daoConfigMap.get(CitysDao.class).clone();
+        citysDao = new CitysDao(cityDaoConfig, this);
+        registerDao(CitysEntity.class, citysDao);
     }
 
     public void clear() {
@@ -93,6 +100,7 @@ public class DaoSession extends AbstractDaoSession {
         searchResultDaoConfig.getIdentityScope().clear();
         eatDrugUserDaoConfig.getIdentityScope().clear();
         shopCarDaoConfig.getIdentityScope().clear();
+        cityDaoConfig.getIdentityScope().clear();
     }
 
     public DiscoveryDao getDiscoveryDao() {
@@ -118,7 +126,12 @@ public class DaoSession extends AbstractDaoSession {
     public EatDrugUserDao getEatDrugUserDao() {
         return eatDrugUserDao;
     }
-    public ShopCarDao getShopCarDao(){
-        return  shopCarDao;
+
+    public ShopCarDao getShopCarDao() {
+        return shopCarDao;
+    }
+
+    public CitysDao getCitysDao() {
+        return citysDao;
     }
 }

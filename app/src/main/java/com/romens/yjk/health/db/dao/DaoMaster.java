@@ -13,46 +13,42 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
 
 /**
  * Master of DAO (schema version 12): knows all DAOs.
- */
+*/
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 16;
+    public static final int SCHEMA_VERSION = 15;
 
-    /**
-     * Creates underlying database table using DAOs.
-     */
+    /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
         DiscoveryDao.createTable(db, ifNotExists);
-        DrugGroupDao.createTable(db, ifNotExists);
-        LocationAddressDao.createTable(db, ifNotExists);
-        RemindDao.createTable(db, ifNotExists);
+        DrugGroupDao.createTable(db,ifNotExists);
+        LocationAddressDao.createTable(db,ifNotExists);
+        RemindDao.createTable(db,ifNotExists);
         SearchHistoryDao.createTable(db, ifNotExists);
         EatDrugUserDao.createTable(db, ifNotExists);
-        ShopCarDao.createTable(db, ifNotExists);
+        ShopCarDao.createTable(db,ifNotExists);
     }
-
-    /**
-     * Drops underlying database table using DAOs.
-     */
+    
+    /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         DiscoveryDao.dropTable(db, ifExists);
-        DrugGroupDao.dropTable(db, ifExists);
-        LocationAddressDao.dropTable(db, ifExists);
-        RemindDao.dropTable(db, ifExists);
+        DrugGroupDao.dropTable(db,ifExists);
+        LocationAddressDao.dropTable(db,ifExists);
+        RemindDao.dropTable(db,ifExists);
         SearchHistoryDao.dropTable(db, ifExists);
         EatDrugUserDao.dropTable(db, ifExists);
-        ShopCarDao.dropTable(db, ifExists);
+        ShopCarDao.dropTable(db,ifExists);
     }
 
-    public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion){
         DiscoveryDao.upgradeTable(db, oldVersion, newVersion);
-        DrugGroupDao.upgradeTable(db, oldVersion, newVersion);
-        LocationAddressDao.upgradeTable(db, oldVersion, newVersion);
-        RemindDao.upgradeTable(db, oldVersion, newVersion);
+        DrugGroupDao.upgradeTable(db,oldVersion,newVersion);
+        LocationAddressDao.upgradeTable(db,oldVersion,newVersion);
+        RemindDao.upgradeTable(db,oldVersion,newVersion);
         SearchHistoryDao.upgradeTable(db, oldVersion, newVersion);
         EatDrugUserDao.upgradeTable(db, oldVersion, newVersion);
-        ShopCarDao.upgradeTable(db, oldVersion, newVersion);
+        ShopCarDao.upgradeTable(db,oldVersion,newVersion);
     }
-
+    
     public static abstract class OpenHelper extends SQLiteOpenHelper {
 
         public OpenHelper(Context context, String name, CursorFactory factory) {
@@ -66,24 +62,16 @@ public class DaoMaster extends AbstractDaoMaster {
         }
     }
 
-    /**
-     * WARNING: Drops all table on Upgrade! Use only during development.
-     */
+    /** WARNING: Drops all table on Upgrade! Use only during development. */
     public static class DevOpenHelper extends OpenHelper {
         public DevOpenHelper(Context context, String name, CursorFactory factory) {
             super(context, name, factory);
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db) {
-            super.onCreate(db);
-            Log.i("greenDAO", "Creating tables for schema version " + SCHEMA_VERSION);
-        }
-
-        @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
-            upgradeAllTables(db, oldVersion, newVersion);
+            upgradeAllTables(db, oldVersion,newVersion);
         }
     }
 
@@ -97,13 +85,13 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(EatDrugUserDao.class);
         registerDaoClass(ShopCarDao.class);
     }
-
+    
     public DaoSession newSession() {
         return new DaoSession(db, IdentityScopeType.Session, daoConfigMap);
     }
-
+    
     public DaoSession newSession(IdentityScopeType type) {
         return new DaoSession(db, type, daoConfigMap);
     }
-
+    
 }

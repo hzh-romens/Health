@@ -27,4 +27,20 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="title_size">18sp</dimen>
+    <dimen name="top_title_size">16sp</dimen>
+    <dimen name="body_size">14sp</dimen>
+    <dimen name="smail_size">10sp</dimen>
+
+    <dimen name="padding_inner">8dp</dimen>
+    <dimen name="padding_outter">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+
+    <dimen name="title_text_size">16sp</dimen>
+    <dimen name="title_head_size">18sp</dimen>
+    <dimen name="title_sub_size">14sp</dimen>
+    <dimen name="title_small_size">10sp</dimen>
+
+
 </resources>

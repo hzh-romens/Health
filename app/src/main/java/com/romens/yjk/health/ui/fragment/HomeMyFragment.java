@@ -24,8 +24,7 @@ import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.db.entity.UserEntity;
+import com.romens.yjk.health.model.UserEntity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
@@ -35,7 +34,7 @@ import com.romens.yjk.health.ui.utils.UIHelper;
 /**
  * Created by siery on 15/8/10.
  */
-public class HomeMyFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class HomeMyFragment extends BaseFragment {
     private ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -82,19 +81,12 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
         updateData();
-    }
-
-    @Override
-    public void onDestroy() {
-        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
-        super.onDestroy();
     }
 
     private void updateData() {
         if (UserConfig.isClientLogined()) {
-            userEntity = UserConfig.getClientUserEntity();
+            userEntity = new UserEntity("", "", "siery");
         } else {
             userEntity = null;
         }
@@ -108,7 +100,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             addressRow = rowCount++;
         } else {
             loginRow = rowCount++;
-            userProfileRow = -1;
+            userProfileRow=-1;
             userInfoSectionRow = -1;
             userInfoSectionRow1 = -1;
             addressRow = -1;
@@ -135,13 +127,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
     private int checkUpdateRow;
     private int appInfoRow;
 
-    @Override
-    public void didReceivedNotification(int i, Object... objects) {
-        if (i == AppNotificationCenter.loginSuccess) {
-            updateData();
-        }
-    }
-
     class ListAdapter extends BaseFragmentAdapter {
         private Context adapterContext;
 
@@ -156,7 +141,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
         @Override
         public boolean isEnabled(int i) {
-            return i == userProfileRow || i == addressRow||i==checkUpdateRow;
+            return i == userProfileRow || i == addressRow;
         }
 
         @Override
@@ -234,7 +219,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     view = new TextSettingsCell(adapterContext);
                 }
                 TextSettingsCell cell = (TextSettingsCell) view;
-                cell.setValueTextColor(ResourcesConfig.textPrimary);
                 if (position == addressRow) {
                     cell.setText("收货地址管理", true);
                 } else if (position == checkUpdateRow) {

@@ -15,6 +15,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 
 /**
  * Created by anlc on 2015/9/11.
+ * 保存用药提醒用户的dao
  */
 public class EatDrugUserDao  extends AbstractDao<EatDrugUserEntity, Long> {
 

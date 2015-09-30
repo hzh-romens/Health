@@ -5,86 +5,106 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.widget.FrameLayout;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.ActionBar.ActionBarLayout;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.fragment.CompleteFragment;
-import com.romens.yjk.health.ui.fragment.WaittingEvaluateFragment;
-import com.romens.yjk.health.ui.fragment.WaittingHandleFragment;
+import com.romens.yjk.health.ui.fragment.OrderAllFragment;
+import com.romens.yjk.health.ui.fragment.OrderAlreadyCompleteFragment;
+import com.romens.yjk.health.ui.fragment.OrderAlreadyEvaluateFragment;
+import com.romens.yjk.health.ui.fragment.OrderBeingFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by AUSU on 2015/9/9.
- * 订单管理页面
+ * Created by anlc on 2015/9/18.
+ * 我的订单页面
  */
-public class MyOrderActivity extends BaseActivity{
+public class MyOrderActivity extends BaseActivity {
+
     private SlidingFixTabLayout slidingFixTabLayout;
     private ViewPager viewPager;
-    private OrderAdapter orderAdapter;
-    private ActionBar actionBar;
+    private OrderPagerAdapter viewPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order, R.id.action_bar);
-        initView();
-    }
-
-    private void initView() {
-        slidingFixTabLayout= (SlidingFixTabLayout) findViewById(R.id.sliding_tabs);
-        viewPager= (ViewPager) findViewById(R.id.viewpager);
+        ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
+        ActionBar actionBar = actionBarEvent();
+        container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        slidingFixTabLayout = new SlidingFixTabLayout(this);
         slidingFixTabLayout.setBackgroundResource(R.color.theme_primary);
+        container.addView(slidingFixTabLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        FrameLayout frameLayout = new FrameLayout(this);
+        viewPager = new ViewPager(this);
+        frameLayout.addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        container.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        setContentView(container, actionBar);
+
+        viewPagerAdapter=new OrderPagerAdapter(getSupportFragmentManager(),initPagerTitle(),initFragment());
+        viewPager.setAdapter(viewPagerAdapter);
+
         slidingFixTabLayout.setCustomTabView(R.layout.widget_tab_indicator, android.R.id.text1);
         slidingFixTabLayout.setTabStripBottomBorderThicknessPadding(AndroidUtilities.dp(2));
         slidingFixTabLayout.setSelectedIndicatorColors(Color.WHITE);
         slidingFixTabLayout.setDistributeEvenly(true);
-        orderAdapter=new OrderAdapter(getSupportFragmentManager(),initFragment(),initPagerTitle());
-        viewPager.setAdapter(orderAdapter);
         slidingFixTabLayout.setViewPager(viewPager);
 
-        actionBar = getMyActionBar();
-        actionBar.setTitle("我的订单");
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-            @Override
-            public void onItemClick(int id) {
-                if (id == -1) {
-                    finish();
-                } else if (id == 0) {
-                }
-            }
-        });
-    }
-
-    private List<String> initPagerTitle() {
-        List<String> titles = new ArrayList<>();
-        titles.add("已完成");
-        titles.add("待处理");
-        titles.add("待评价");
-        return titles;
     }
 
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new CompleteFragment());
-        fragments.add(new WaittingHandleFragment());
-        fragments.add(new WaittingEvaluateFragment());
+        fragments.add(new OrderAllFragment());
+        fragments.add(new OrderBeingFragment());
+        fragments.add(new OrderAlreadyCompleteFragment());
+        fragments.add(new OrderAlreadyEvaluateFragment());
         return fragments;
     }
 
-     class OrderAdapter extends FragmentViewPagerAdapter {
-      private List<String> mPageTitles=new ArrayList<String>();
+    private List<String> initPagerTitle() {
+        List<String> titles = new ArrayList<>();
+        titles.add("全部");
+        titles.add("处理中");
+        titles.add("已完成");
+        titles.add("已评价");
+        return titles;
+    }
 
-        public OrderAdapter(FragmentManager fragmentManager, List<Fragment> list,List<String> pageTitles) {
-            super(fragmentManager, list);
-            mPageTitles.clear();
-            mPageTitles.addAll(pageTitles);
+    private ActionBar actionBarEvent() {
+        ActionBar actionBar = new ActionBar(this);
+        actionBar.setTitle("我的订单");
+        actionBar.setBackgroundResource(R.color.theme_primary);
+        actionBar.setMinimumHeight(AndroidUtilities.dp(100));
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int i) {
+                if (i == -1) {
+                    finish();
+                }
+            }
+        });
+        return actionBar;
+    }
+
+    class OrderPagerAdapter extends FragmentViewPagerAdapter {
+        private final List<String> mPageTitle = new ArrayList<>();
+
+        public OrderPagerAdapter(FragmentManager fragmentManager, List<String> pageTitles, List<Fragment> fragments) {
+            super(fragmentManager, fragments);
+            mPageTitle.clear();
+            mPageTitle.addAll(pageTitles);
         }
-        public String getPageTitle(int position){
-            return mPageTitles.get(position);
+
+        @Override
+        public String getPageTitle(int position) {
+            return mPageTitle.get(position);
         }
     }
 }

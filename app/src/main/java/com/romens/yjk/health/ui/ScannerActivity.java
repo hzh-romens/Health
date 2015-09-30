@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -56,5 +57,13 @@ public class ScannerActivity extends CaptureActivity {
         ActionBarMenu menu = actionBar.createMenu();
         ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_other);
         item.addSubItem(1, "帮助", 0);
+    }
+
+    @Override
+    public void startIntentActivity(String guid) {
+        Intent intent=new Intent(ScannerActivity.this,MedicinalDetailActivity.class);
+        intent.putExtra("guid", guid);
+        startActivity(intent);
+        this.finish();
     }
 }

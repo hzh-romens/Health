@@ -254,7 +254,7 @@ public class FlowLayout extends ViewGroup {
 //                        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY);
 //                        view.measure(widthMeasureSpec, heightMeasureSpec);
 //                    }
-                    //布局View
+                    //布局View，将剩余的宽度平分到两边的距离
                     if (i == 0) {
                         left = surplusWidth / 2;
                     }

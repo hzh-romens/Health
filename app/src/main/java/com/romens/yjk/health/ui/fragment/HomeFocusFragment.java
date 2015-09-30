@@ -79,10 +79,14 @@ public class HomeFocusFragment extends BaseFragment {
             recyclerListView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         }
         content.addView(recyclerListView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context){
+            @Override
+            public boolean supportsPredictiveItemAnimations() {
+                return false;
+            }
+        };
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerListView.setLayoutManager(layoutManager);
-
         return content;
     }
 

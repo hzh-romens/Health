@@ -66,4 +66,24 @@
     <string name="file">[文件]</string>
     <string name="voice_call">[语音通话]</string>
     <string name="voice">声音</string>
+
+    <!--anlc-->
+    <string name="no_address_hint">您还没有收获地址</string>
+    <string name="add">添 加</string>
+    <string name="add_new_address">新增收获地址</string>
+    <string name="set_default_hint">是否设置默认</string>
+    <string name="save">保 存</string>
+    <string name="choose_address_ok">确认选择</string>
+
+    <!--anlc-->
+    <string name="no_address_hint">您还没有收获地址</string>
+    <string name="add">添 加</string>
+    <string name="add_new_address">新增收获地址</string>
+    <string name="set_default_hint">是否设置默认</string>
+    <string name="save">保 存</string>
+    <string name="choose_address_ok">确认选择</string>
+    <string name="evaluate_quality">药品质量</string>
+    <string name="evaluate_speed">送货速度</string>
+    <string name="close">关闭</string>
+    <string name="finish">完成</string>
 </resources>

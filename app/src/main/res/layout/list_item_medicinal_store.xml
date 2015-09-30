@@ -13,8 +13,9 @@
         android:layout_height="64dp"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:padding="8dp"
         android:id="@+id/iv_store"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,14 +28,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_store_name"
             android:text="1号店"
-            android:textSize="@dimen/text_size_large"
+            android:typeface="monospace"
+            android:textColor="@color/primary_dark_material_dark"
+            android:textSize="@dimen/text_size_xlarge"
             android:padding="5dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_store_infor"
             android:text="主要经营感冒药等等"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/text_size_large"
+            android:typeface="monospace"
+            android:textColor="@color/primary_dark_material_dark"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"/>

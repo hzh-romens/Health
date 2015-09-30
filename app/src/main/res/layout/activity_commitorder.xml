@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_gravity="top"
+        style="@style/titleStytle">
+    <FrameLayout
+        style="@style/framelayou_back_style">
+        <ImageView
+            style="@style/iv_back_style" />
+    </FrameLayout>
+    <TextView
+        style="@style/title_textview_style"
+        android:text="订单"
+        /></RelativeLayout>
+    <ExpandableListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:groupIndicator="@null"
+        android:layout_marginBottom="48dp"
+        android:layout_marginTop="48dp"
+        android:id="@+id/ev" />
+    <RelativeLayout
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/padding_inner"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/tv_content"
+            android:text="共2件 总金额¥100"
+           />
+        <TextView
+            android:id="@+id/accounts"
+            android:layout_width="96dp"
+            android:layout_height="match_parent"
+            android:background="#66cc00"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="结算"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/md_white_1000"
+            android:textSize="@dimen/text_size_large" />
+        </RelativeLayout>
+
+</FrameLayout>

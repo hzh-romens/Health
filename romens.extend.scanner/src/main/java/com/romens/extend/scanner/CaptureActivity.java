@@ -299,6 +299,10 @@ public abstract class CaptureActivity extends Activity implements SurfaceHolder.
         inactivityTimer.onActivity();
         lastResult = rawResult;
 
+        if (!rawResult.equals("") && rawResult != null) {
+            startIntentActivity(rawResult.getText());
+        }
+
         boolean fromLiveScan = barcode != null;
         if (fromLiveScan) {
             // Then not from history, so beep/vibrate and we have an image to draw on
@@ -307,6 +311,8 @@ public abstract class CaptureActivity extends Activity implements SurfaceHolder.
         }
         handleDecodeExternally(rawResult, barcode);
     }
+
+    public abstract void startIntentActivity(String guid);
 
     /**
      * Superimpose a line for 1D or dots for 2D to highlight the key features of the barcode.
