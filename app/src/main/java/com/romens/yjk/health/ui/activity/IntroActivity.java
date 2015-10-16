@@ -180,7 +180,8 @@ public class IntroActivity extends Activity implements NotificationCenterDelegat
                 finish();
             }
         });
-        startMessagingButton.setEnabled(false);
+//        startMessagingButton.setEnabled(false);
+        startMessagingButton.setEnabled(true);
         justCreated = true;
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.appConfigLoaded);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.appConfigChanged);
@@ -211,9 +212,9 @@ public class IntroActivity extends Activity implements NotificationCenterDelegat
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
-        if (i == AppNotificationCenter.appConfigLoaded || i == AppNotificationCenter.appConfigChanged) {
-            startMessagingButton.setEnabled(true);
-        }
+//        if (i == AppNotificationCenter.appConfigLoaded || i == AppNotificationCenter.appConfigChanged) {
+//            startMessagingButton.setEnabled(true);
+//        }
     }
 
     private class IntroAdapter extends PagerAdapter {

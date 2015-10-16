@@ -1,7 +1,11 @@
 package com.romens.yjk.health.ui.adapter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +14,29 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anlc on 2015/9/24.
@@ -29,23 +48,23 @@ public class OrderExpandableBeingAdapter extends BaseExpandableListAdapter {
     private List<String> typeList;
     private Context adapterContext;
 
-//    private int leftButtonBackGround;
-//    private int rightButtonBackGround;
-//    private Class intentActivity;
+    private String userGuid = "3333";
+
+    public void setOrderEntities(List<AllOrderEntity> orderEntities) {
+        classifyEntity(orderEntities);
+    }
 
     public OrderExpandableBeingAdapter(Context context, List<AllOrderEntity> orderEntities) {
         this.adapterContext = context;
-//        this.leftButtonBackGround = leftButtonBackGround;
-//        this.rightButtonBackGround = rightButtonBackGround;
-//        this.intentActivity = intentActivity;
         classifyEntity(orderEntities);
     }
+
 
     private void classifyEntity(List<AllOrderEntity> orderEntities) {
         typeList = new ArrayList<>();
         for (int i = 0; i < orderEntities.size(); i++) {
             boolean flag = true;
-            String drugStroe = orderEntities.get(i).getDrugStroe();
+            String drugStroe = orderEntities.get(i).getOrderNo();
             for (int j = 0; j < typeList.size(); j++) {
                 if (drugStroe.equals(typeList.get(j))) {
                     flag = false;
@@ -59,7 +78,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableListAdapter {
         for (String drugStroe : typeList) {
             List<AllOrderEntity> tempList = new ArrayList<>();
             for (int i = 0; i < orderEntities.size(); i++) {
-                if (drugStroe.equals(orderEntities.get(i).getDrugStroe())) {
+                if (drugStroe.equals(orderEntities.get(i).getOrderNo())) {
                     tempList.add(orderEntities.get(i));
                 }
             }
@@ -103,35 +122,39 @@ public class OrderExpandableBeingAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    public int getGroupType(int groupPosition) {
+        return groupPosition;
+    }
+
+    @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = new TextSettingsCell(adapterContext);
         }
         TextSettingsCell cell = (TextSettingsCell) convertView;
-        cell.setTextAndValue(typeList.get(groupPosition), "待评价", true);
-        return cell;
+        cell.setTextAndValue("订单编号：" + typeList.get(groupPosition), "待评价", true);
+
+        return convertView;
     }
 
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         View view = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
-        BackupImageView leftImageView = (BackupImageView) view.findViewById(R.id.order_img);
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
-        TextView specTextView = (TextView) view.findViewById(R.id.order_spec);
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
-        TextView countTextView = (TextView) view.findViewById(R.id.order_count);
+//        TextView countTextView = (TextView) view.findViewById(R.id.order_count);
 
         Button buyAgainBtn = (Button) view.findViewById(R.id.order_all_buy_again);
         Button evaluateBtn = (Button) view.findViewById(R.id.order_all_evaluate_btn);
+        Button cancelBtn = (Button) view.findViewById(R.id.order_all_buy_cancel);
+        cancelBtn.setVisibility(View.VISIBLE);
 
-        String url = "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg";
-        leftImageView.setImageUrl(url, "64_64", null);
-        titleTextView.setText(typeEntitiesList.get(groupPosition).get(childPosition).getGoodsName());
-        specTextView.setText("12g*10袋");
-        countTextView.setText("x2");
-        moneyTextView.setText(typeEntitiesList.get(groupPosition).get(childPosition).getOrderPrice());
-        dateTextView.setText("2015-12-15 08:09");
+        final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
+        titleTextView.setText(entity.getGoodsName());
+//        countTextView.setText("x" + entity.getMerCount());
+        moneyTextView.setText("￥" + entity.getOrderPrice());
+        dateTextView.setText(entity.getCreateDate());
         evaluateBtn.setBackgroundResource(R.drawable.order_complete);
         evaluateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,11 +169,74 @@ public class OrderExpandableBeingAdapter extends BaseExpandableListAdapter {
                 Toast.makeText(adapterContext, "click-->订单跟踪", Toast.LENGTH_SHORT).show();
             }
         });
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCancelDialog(userGuid, entity.getOrderId());
+            }
+        });
         return view;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    private void requestCancelOrderList(String userGuid, String orderId) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("ORDERID", orderId);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "CancelOrder", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol).build();
+        FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String requestCode = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                        requestCode = jsonObject.getString("success");
+                        Log.e("tag", "--requestCode--->" + requestCode);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (requestCode.equals("yes")) {
+                        Toast.makeText(adapterContext, "取消成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(adapterContext, "取消失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (errorMsg == null) {
+                } else {
+                    Log.e("reqGetAllUsers", "ERROR");
+                }
+            }
+        });
+    }
+
+    public void showCancelDialog(final String userGuid, final String orderId) {
+        new AlertDialog.Builder(adapterContext).setTitle("确定删除订单吗？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestCancelOrderList(userGuid, orderId);
+                    }
+                }).create();
+
     }
 }

@@ -23,7 +23,6 @@ import java.util.Map;
  */
 public class UserConfig {
     private final static String PREFERENCE_NAME = "user_cache";
-    private final static String PREFERENCE_KEY_HXAPPID = "hxappid";
     private final static String PREFERENCE_KEY_USER = "user";
     private final static Object sync = new Object();
 
@@ -56,9 +55,6 @@ public class UserConfig {
     public static boolean isClientActivated() {
         synchronized (sync) {
             SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-            if (TextUtils.isEmpty(preferences.getString(PREFERENCE_KEY_HXAPPID, ""))) {
-                return false;
-            }
             if (config == null) {
                 return false;
             }
@@ -79,9 +75,6 @@ public class UserConfig {
     public static boolean isClientLogined() {
         synchronized (sync) {
             SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-            if (TextUtils.isEmpty(preferences.getString(PREFERENCE_KEY_HXAPPID, ""))) {
-                return false;
-            }
             if (config == null) {
                 return false;
             }
@@ -121,7 +114,6 @@ public class UserConfig {
             config = null;
             SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.remove(PREFERENCE_KEY_HXAPPID);
             editor.remove(PREFERENCE_KEY_USER);
             boolean isCommit = editor.commit();
             if (isCommit) {
@@ -148,23 +140,6 @@ public class UserConfig {
             FacadeToken.getInstance().expired();
         }
     }
-
-    public static void setHXAppId(String id) {
-        synchronized (sync) {
-            SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(PREFERENCE_KEY_HXAPPID, id);
-            editor.commit();
-        }
-    }
-
-    public static String getHXAppId() {
-        synchronized (sync) {
-            SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-            return preferences.getString(PREFERENCE_KEY_HXAPPID, null);
-        }
-    }
-
 
     public static boolean saveConfig(Data data) {
         synchronized (sync) {
@@ -269,7 +244,6 @@ public class UserConfig {
     public static class AppChannel {
         public final String orgCode;
         public final String orgName;
-        public final String hxAppKey;
 
         public AppChannel() {
             ApplicationInfo appInfo = null;
@@ -286,12 +260,10 @@ public class UserConfig {
             if (TextUtils.isEmpty(channel)) {
                 orgCode = null;
                 orgName = null;
-                hxAppKey = null;
             } else {
                 String[] temp = channel.split(";");
                 orgCode = temp[0];
                 orgName = temp[1];
-                hxAppKey = "romens#yjkim" + orgCode;
             }
         }
     }

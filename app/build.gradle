@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'com.ticwear.application'
 
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -12,32 +16,29 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
-
         multiDexEnabled true
+        manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens",IM_SDK_APPKEY: "romens#yjkim888888"]
+    }
 
-        applicationVariants.all { variant ->
-            variant.outputs.each { output ->
-                def file = output.outputFile
-                def fileName = file.name.replace(".apk", "-v" + versionName + "-c" + versionCode + ".apk")
-                output.outputFile = new File(file.parentFile, fileName)
-            }
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+            jni.srcDirs = [] //disable automatic ndk-build call
         }
-        manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens"]
+        release {
+            manifest.srcFile 'config/release/AndroidManifest.xml'
+        }
     }
 
     productFlavors {
         channel_yjk {
-            manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens"]
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens",IM_SDK_APPKEY: "romens#yjkim888888"]
+
         }
         channel_nj_xszk {
-            manifestPlaceholders = [APK_CHANNEL_VALUE: "nj_xszk"]
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "0;nj_xszk",IM_SDK_APPKEY: "romens#yjkim888888"]
         }
     }
-
-    sourceSets.release {
-        manifest.srcFile 'config/release/AndroidManifest.xml'
-    }
-
     signingConfigs {
         debug {
             storeFile file("config/debug/debug.keystore")
@@ -55,13 +56,19 @@ android {
         }
         release {
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def file = output.outputFile
+                    if (file != null && file.name.endsWith('.apk')) {
+                        //def fileName = file.name.replace(".apk", "-v" + versionName + "-c" + versionCode +"_t"+releaseTime()+".apk")
+                        def fileName = file.name.replace(".apk", "_v${defaultConfig.versionName}_c${defaultConfig.versionCode}_${releaseTime()}.apk")
+                        output.outputFile = new File(file.parentFile, fileName)
+                    }
+                }
+            }
         }
-    }
-
-    sourceSets.main {
-        jniLibs.srcDir 'libs'
-        jni.srcDirs = [] //disable automatic ndk-build call
     }
 
     packagingOptions {
@@ -80,7 +87,17 @@ android {
     aaptOptions {
         noCompress 'apk'
     }
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
 }
+
+configurations {
+    all*.exclude group: 'android.support.v4', module: 'support-v4'
+    all*.exclude group: 'android.support.v7', module: 'support-v7'
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:multidex:1.0.0'
@@ -113,8 +130,9 @@ dependencies {
     compile project(':romens.extend.scanner')
     compile project(':datetimepicker')
     compile project(':MaterialDesign')
-    compile files('libs/easemobchat_2.2.2.jar')
     compile project(':citys')
+    compile files('libs/easemobchat_2.2.3.jar')
+    compile 'com.commit451:PhotoView:1.2.4'
 }
 
 

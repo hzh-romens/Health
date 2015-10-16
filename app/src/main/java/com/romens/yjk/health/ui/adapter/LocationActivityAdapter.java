@@ -9,6 +9,7 @@ import com.romens.android.ui.cells.EmptyCell;
 import com.romens.yjk.health.model.LocationEntity;
 import com.romens.yjk.health.ui.cells.GreySectionCell;
 import com.romens.yjk.health.ui.cells.LocationCell;
+import com.romens.yjk.health.ui.cells.LocationItemCell;
 import com.romens.yjk.health.ui.cells.LocationLoadingCell;
 import com.romens.yjk.health.ui.cells.SendLocationCell;
 
@@ -90,10 +91,15 @@ public class LocationActivityAdapter extends BaseLocationAdapter {
             }
             ((LocationLoadingCell) view).setLoading(searching);
         } else {
+            //                view = new LocationCell(mContext);
+//            }
+//            ((LocationCell) view).setLocation(places.get(i - 3), true);
             if (view == null) {
-                view = new LocationCell(mContext);
+                view = new LocationItemCell(mContext);
             }
-            ((LocationCell) view).setLocation(places.get(i - 3), true);
+            LocationItemCell cell = (LocationItemCell) view;
+            LocationEntity entity = places.get(i - 3);
+            cell.setNameTextView(entity.name, entity.address, entity.distance, true, entity.typeDesc);
         }
         return view;
     }

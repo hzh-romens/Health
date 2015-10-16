@@ -34,45 +34,28 @@ import java.util.Map;
 
 /**
  * Created by anlc on 2015/9/23.
- * 我的订单中的已评价页面
+ * 我的订单中的已评价tab页面
  */
 public class OrderAlreadyEvaluateFragment extends BaseFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<AllOrderEntity> mOrderEntities;
+    private ExpandableListView expandableListView;
 
     private OrderExpandableAdapter adapter;
+    private String userGuid = "3333";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        requestOrderList();
+
         initData();
         adapter = new OrderExpandableAdapter(getActivity(), mOrderEntities);
     }
 
     public void initData() {
         mOrderEntities = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            AllOrderEntity entit = new AllOrderEntity();
-            entit.setDrugStroe("AA药店");
-            entit.setOrderStatuster("待评价" + i);
-            entit.setOrderStatus("1");
-            entit.setGoodsName("感冒胶囊");
-            entit.setOrderPrice("￥20");
-            entit.setOrderId("2000288844448020291");
-            mOrderEntities.add(entit);
-        }
-        for (int i = 0; i < 5; i++) {
-            AllOrderEntity entit = new AllOrderEntity();
-            entit.setDrugStroe("BB药店");
-            entit.setOrderStatuster("待评价" + i);
-            entit.setOrderStatus("1");
-            entit.setGoodsName("感冒胶囊");
-            entit.setOrderPrice("￥20");
-            entit.setOrderId("2000288844448020291");
-            mOrderEntities.add(entit);
-        }
+        requestOrderList(userGuid);
     }
 
     @Override
@@ -88,15 +71,12 @@ public class OrderAlreadyEvaluateFragment extends BaseFragment {
                 new AllOrderAsynTask().execute();
             }
         });
+        swipeRefreshLayout.setRefreshing(true);
 
-        ExpandableListView expandableListView = new ExpandableListView(context);
+        expandableListView = new ExpandableListView(context);
         swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         expandableListView.setAdapter(adapter);
         expandableListView.setGroupIndicator(null);
-        int count = expandableListView.getCount();
-        for (int i = 0; i < count; i++) {
-            expandableListView.expandGroup(i);
-        }
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -108,6 +88,18 @@ public class OrderAlreadyEvaluateFragment extends BaseFragment {
             }
         });
         return content;
+    }
+
+    //刷新View
+    private void refreshView() {
+        swipeRefreshLayout.setRefreshing(false);
+        adapter.setOrderEntities(mOrderEntities);
+        adapter.notifyDataSetChanged();
+
+        int count = expandableListView.getCount();
+        for (int i = 0; i < count; i++) {
+            expandableListView.expandGroup(i);
+        }
     }
 
     @Override
@@ -139,10 +131,10 @@ public class OrderAlreadyEvaluateFragment extends BaseFragment {
         }
     }
 
-    private void requestOrderList() {
+    private void requestOrderList(String userGuid) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", "3333");
-        args.put("ORDER_STATUS", "2");
+        args.put("USERGUID", userGuid);
+        args.put("ORDERSTATUS", "4");
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrders", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -180,6 +172,8 @@ public class OrderAlreadyEvaluateFragment extends BaseFragment {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
-        adapter.notifyDataSetChanged();
+//        adapter.setOrderEntities(mOrderEntities);
+//        adapter.notifyDataSetChanged();
+        refreshView();
     }
 }

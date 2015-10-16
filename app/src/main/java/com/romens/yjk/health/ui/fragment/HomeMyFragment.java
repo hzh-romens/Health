@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
@@ -24,8 +25,13 @@ import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.model.UserEntity;
+import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.db.entity.UserEntity;
+import com.romens.yjk.health.ui.CollectActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
+import com.romens.yjk.health.ui.FeedBackActivity;
+import com.romens.yjk.health.ui.HistoryActivity;
+import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
@@ -34,12 +40,10 @@ import com.romens.yjk.health.ui.utils.UIHelper;
 /**
  * Created by siery on 15/8/10.
  */
-public class HomeMyFragment extends BaseFragment {
+public class HomeMyFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
     private ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-
-    //
     private UserEntity userEntity;
     private ListAdapter adapter;
 
@@ -68,15 +72,43 @@ public class HomeMyFragment extends BaseFragment {
 
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
+//        listView.setAdapter(adapter);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (position == addressRow) {
+//                    startActivity(new Intent(getActivity(), ControlAddressActivity.class));
+//                }
+//            }
+//        });
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == addressRow) {
                     startActivity(new Intent(getActivity(), ControlAddressActivity.class));
+                } else if (position == myOrderRow) {
+                    startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                } else if (position == collectRow) {
+                    startActivity(new Intent(getActivity(), CollectActivity.class));
+                } else if (position == historyRow) {
+                    startActivity(new Intent(getActivity(), HistoryActivity.class));
+                } else if (position == feedbackRow) {
+                    startActivity(new Intent(getActivity(), FeedBackActivity.class));
+                } else if (position == helpRow) {
+                    Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
+                } else if (position == accountRow) {
+                    Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
+        super.onDestroy();
     }
 
     @Override
@@ -85,8 +117,18 @@ public class HomeMyFragment extends BaseFragment {
     }
 
     private void updateData() {
+//        userEntity = new UserEntity();
+//        userEntity.setName("anlc");
+//        userEntity.setAvatar("anlc");
+//        userEntity.setEmail("1235@yaojk.com");
+//        userEntity.setGuid("111111111");
+//        userEntity.setPhone("13323232323");
+//        userEntity.setStatus(0);
+//        userEntity.setDepartmentId("22222");
         if (UserConfig.isClientLogined()) {
-            userEntity = new UserEntity("", "", "siery");
+            userEntity = new UserEntity(0, "", "siery", "", "", "", "", 0);
+//            userEntity = new UserEntity();
+//            userEntity.setName("siery");
         } else {
             userEntity = null;
         }
@@ -97,17 +139,34 @@ public class HomeMyFragment extends BaseFragment {
             userProfileRow = rowCount++;
             userInfoSectionRow = rowCount++;
             userInfoSectionRow1 = rowCount++;
+            accountRow = rowCount++;
+            myOrderRow = rowCount++;
+            collectRow = rowCount++;
+            historyRow = rowCount++;
             addressRow = rowCount++;
         } else {
             loginRow = rowCount++;
-            userProfileRow=-1;
+            userProfileRow = -1;
             userInfoSectionRow = -1;
             userInfoSectionRow1 = -1;
             addressRow = -1;
+            myOrderRow = -1;
+            collectRow = -1;
+            historyRow = -1;
+            accountRow = -1;
+            helpRow = -1;
+            feedbackRow = -1;
         }
 
         otherInfoSectionRow = rowCount++;
         otherInfoSectionRow1 = rowCount++;
+        if (userEntity != null) {
+            helpRow = rowCount++;
+            feedbackRow = rowCount++;
+        } else {
+            helpRow = -1;
+            feedbackRow = -1;
+        }
         checkUpdateRow = rowCount++;
         appInfoRow = rowCount++;
         adapter.notifyDataSetChanged();
@@ -120,12 +179,25 @@ public class HomeMyFragment extends BaseFragment {
     private int userInfoSectionRow;
     private int userInfoSectionRow1;
     private int addressRow;
-
+    private int myOrderRow;
 
     private int otherInfoSectionRow;
     private int otherInfoSectionRow1;
     private int checkUpdateRow;
     private int appInfoRow;
+
+    private int collectRow;
+    private int historyRow;
+    private int accountRow;
+    private int helpRow;
+    private int feedbackRow;
+
+    @Override
+    public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.loginSuccess) {
+            updateData();
+        }
+    }
 
     class ListAdapter extends BaseFragmentAdapter {
         private Context adapterContext;
@@ -141,7 +213,8 @@ public class HomeMyFragment extends BaseFragment {
 
         @Override
         public boolean isEnabled(int i) {
-            return i == userProfileRow || i == addressRow;
+            return i != userInfoSectionRow || i != userInfoSectionRow1 || i != otherInfoSectionRow || i != otherInfoSectionRow1;
+//            return i == userProfileRow || i == addressRow || i == myOrderRow;
         }
 
         @Override
@@ -170,7 +243,9 @@ public class HomeMyFragment extends BaseFragment {
                 return 0;
             } else if (i == userInfoSectionRow1 || i == otherInfoSectionRow1) {
                 return 2;
-            } else if (i == addressRow | i == checkUpdateRow) {
+            } else if (i == addressRow || i == checkUpdateRow || i == myOrderRow || i == helpRow) {
+                return 3;
+            } else if (i == collectRow || i == historyRow || i == accountRow || i == feedbackRow) {
                 return 3;
             } else if (i == appInfoRow) {
                 return 4;
@@ -228,6 +303,18 @@ public class HomeMyFragment extends BaseFragment {
                     } catch (PackageManager.NameNotFoundException e) {
                         cell.setText("检查更新", true);
                     }
+                } else if (position == myOrderRow) {
+                    cell.setText("我的订单", false);
+                } else if (position == collectRow) {
+                    cell.setText("我的收藏", false);
+                } else if (position == historyRow) {
+                    cell.setText("历史游览", false);
+                } else if (position == feedbackRow) {
+                    cell.setText("意见反馈", false);
+                } else if (position == helpRow) {
+                    cell.setText("帮助", false);
+                } else if (position == accountRow) {
+                    cell.setText("账户管理", false);
                 }
             } else if (type == 4) {
                 if (view == null) {

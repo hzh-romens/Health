@@ -24,8 +24,6 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAdapter;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAlreadyCompleteAdapter;
 import com.romens.yjk.health.ui.adapter.OrderExpandableBeingAdapter;
 
 import java.util.ArrayList;
@@ -34,45 +32,27 @@ import java.util.Map;
 
 /**
  * Created by anlc on 2015/9/22.
- * 我的订单中的订单处理中页面
+ * 我的订单中的处理中tab页面
  */
 public class OrderBeingFragment extends BaseFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<AllOrderEntity> mOrderEntities;
+    private ExpandableListView expandableListView;
 
     private OrderExpandableBeingAdapter adapter;
+    private String userGuid = "3333";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        requestOrderList();
         initData();
         adapter = new OrderExpandableBeingAdapter(getActivity(), mOrderEntities);
     }
 
     public void initData() {
         mOrderEntities = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            AllOrderEntity entit = new AllOrderEntity();
-            entit.setDrugStroe("AA药店");
-            entit.setOrderStatuster("待评价" + i);
-            entit.setOrderStatus("1");
-            entit.setGoodsName("感冒胶囊");
-            entit.setOrderPrice("￥20");
-            entit.setOrderId("2000288844448020291");
-            mOrderEntities.add(entit);
-        }
-        for (int i = 0; i < 5; i++) {
-            AllOrderEntity entit = new AllOrderEntity();
-            entit.setDrugStroe("BB药店");
-            entit.setOrderStatuster("待评价" + i);
-            entit.setOrderStatus("1");
-            entit.setGoodsName("感冒胶囊");
-            entit.setOrderPrice("￥20");
-            entit.setOrderId("2000288844448020291");
-            mOrderEntities.add(entit);
-        }
+        requestOrderList(userGuid);
     }
 
     @Override
@@ -88,14 +68,11 @@ public class OrderBeingFragment extends BaseFragment {
                 new AllOrderAsynTask().execute();
             }
         });
-        ExpandableListView  expandableListView = new ExpandableListView(context);
+        swipeRefreshLayout.setRefreshing(true);
+        expandableListView = new ExpandableListView(context);
+        swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         expandableListView.setAdapter(adapter);
         expandableListView.setGroupIndicator(null);
-        int count=expandableListView.getCount();
-        for (int i = 0; i < count; i++) {
-            expandableListView.expandGroup(i);
-        }
-        swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         return content;
     }
 
@@ -105,7 +82,18 @@ public class OrderBeingFragment extends BaseFragment {
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
+    }
 
+    //刷新View
+    private void refreshView() {
+        swipeRefreshLayout.setRefreshing(false);
+        adapter.setOrderEntities(mOrderEntities);
+        adapter.notifyDataSetChanged();
+
+        int count = expandableListView.getCount();
+        for (int i = 0; i < count; i++) {
+            expandableListView.expandGroup(i);
+        }
     }
 
     //刷新时，去获取新数据
@@ -119,6 +107,7 @@ public class OrderBeingFragment extends BaseFragment {
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -126,10 +115,10 @@ public class OrderBeingFragment extends BaseFragment {
         }
     }
 
-    private void requestOrderList() {
+    private void requestOrderList(String userGuid) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", "3333");
-        args.put("ORDER_STATUS", "2");
+        args.put("USERGUID", userGuid);
+        args.put("ORDERSTATUS", "2");
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrders", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -156,6 +145,7 @@ public class OrderBeingFragment extends BaseFragment {
             }
         });
     }
+
     public void setOrderData(List<LinkedTreeMap<String, String>> response) {
         int count = response == null ? 0 : response.size();
         if (count <= 0) {
@@ -166,6 +156,6 @@ public class OrderBeingFragment extends BaseFragment {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
-        adapter.notifyDataSetChanged();
+        refreshView();
     }
 }

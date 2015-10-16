@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
-import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 
@@ -21,9 +20,9 @@ import com.romens.yjk.health.db.entity.AllOrderEntity;
  */
 public class OrderEvaluateActivity extends BaseActivity {
 
-    private BackupImageView leftImageView;
+//    private BackupImageView leftImageView;
     private TextView titleTextView;
-    private TextView specTextView;
+//    private TextView specTextView;
     private TextView moneyTextView;
     private TextView dateTextView;
     private TextView countTextView;
@@ -50,20 +49,16 @@ public class OrderEvaluateActivity extends BaseActivity {
         Intent intent = getIntent();
         AllOrderEntity entity = (AllOrderEntity) intent.getSerializableExtra("orderEntity");
         if (null != entity) {
-            String url = "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg";
-            leftImageView.setImageUrl(url, "64_64", null);
             titleTextView.setText(entity.getGoodsName());
-            specTextView.setText("12g*10袋");
-            moneyTextView.setText("x2");
+            moneyTextView.setText("x" + entity.getMerCount());
             dateTextView.setText(entity.getOrderPrice());
-            countTextView.setText("2015-12-15 08:09");
+//            countTextView.setText("2015-12-15 08:09");
+            countTextView.setText(entity.getCreateDate());
         }
     }
 
     private void initView() {
-        leftImageView = (BackupImageView) findViewById(R.id.order_img);
         titleTextView = (TextView) findViewById(R.id.order_title);
-        specTextView = (TextView) findViewById(R.id.order_spec);
         moneyTextView = (TextView) findViewById(R.id.order_money);
         dateTextView = (TextView) findViewById(R.id.order_date);
         countTextView = (TextView) findViewById(R.id.order_count);
@@ -82,14 +77,14 @@ public class OrderEvaluateActivity extends BaseActivity {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 qualityEvaluateLevel = (int) rating;
-                Toast.makeText(OrderEvaluateActivity.this,"click-quality->"+rating,Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderEvaluateActivity.this, "click-quality->" + rating, Toast.LENGTH_SHORT).show();
             }
         });
         speedRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 speedEvaluateLevel = (int) rating;
-                Toast.makeText(OrderEvaluateActivity.this,"click-speed->"+rating,Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderEvaluateActivity.this, "click-speed->" + rating, Toast.LENGTH_SHORT).show();
             }
         });
     }

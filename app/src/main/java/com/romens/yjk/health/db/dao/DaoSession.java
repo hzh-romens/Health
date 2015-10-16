@@ -71,14 +71,17 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(LocationAddressEntity.class, locationAddressDao);
 
         remindDaoConfig = daoConfigMap.get(RemindDao.class).clone();
+        remindDaoConfig.initIdentityScope(type);
         remindDao = new RemindDao(remindDaoConfig, this);
         registerDao(RemindEntity.class, remindDao);
 
         searchResultDaoConfig = daoConfigMap.get(SearchHistoryDao.class).clone();
+        searchResultDaoConfig.initIdentityScope(type);
         searchHistoryDao = new SearchHistoryDao(searchResultDaoConfig, this);
         registerDao(SearchHistoryEntity.class, searchHistoryDao);
 
         eatDrugUserDaoConfig = daoConfigMap.get(EatDrugUserDao.class).clone();
+        eatDrugUserDaoConfig.initIdentityScope(type);
         eatDrugUserDao = new EatDrugUserDao(eatDrugUserDaoConfig, this);
         registerDao(EatDrugUserEntity.class, eatDrugUserDao);
 
@@ -88,6 +91,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ShopCarEntity.class, shopCarDao);
 
         cityDaoConfig = daoConfigMap.get(CitysDao.class).clone();
+        cityDaoConfig.initIdentityScope(type);
         citysDao = new CitysDao(cityDaoConfig, this);
         registerDao(CitysEntity.class, citysDao);
     }

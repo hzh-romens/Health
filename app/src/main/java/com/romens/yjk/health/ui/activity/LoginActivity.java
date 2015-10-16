@@ -432,7 +432,7 @@ public class LoginActivity extends BaseActivity {
                             if (TextUtils.equals("1", isValidity)) {
                                 String orgName = result.get("COMNAME");
                                 String appKey = result.get("appkey");
-                                UserConfig.setHXAppId(appKey);
+                                //UserConfig.setHXAppId(appKey);
                                 params.putString(PARAM_ORGAN_NAME, orgName);
                                 setPage(1, true, params, false);
                             } else {

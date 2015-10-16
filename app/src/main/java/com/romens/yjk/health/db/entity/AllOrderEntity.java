@@ -12,18 +12,35 @@ public class AllOrderEntity implements Serializable {
 
     private String orderId;
     private String orderStatus;
+    private String orderStatuster;
     private String goodsName;
     private String orderPrice;
-    private String orderStatuster;
+    private String createDate;
+    private String merCount;
+    private String orderNo;
 
-    private String drugStroe;
-
-    public String getDrugStroe() {
-        return drugStroe;
+    public String getCreateDate() {
+        return createDate;
     }
 
-    public void setDrugStroe(String drugStroe) {
-        this.drugStroe = drugStroe;
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getMerCount() {
+        return merCount;
+    }
+
+    public void setMerCount(String merCount) {
+        this.merCount = merCount;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
     public String getOrderStatuster() {
@@ -69,10 +86,13 @@ public class AllOrderEntity implements Serializable {
     public static AllOrderEntity mapToEntity(LinkedTreeMap<String, String> item) {
         AllOrderEntity entity = new AllOrderEntity();
         entity.setOrderId(item.get("ORDERID"));
-        entity.setGoodsName(item.get("GOODSNAME"));
-        entity.setOrderPrice(item.get("ORDERPRICE"));
         entity.setOrderStatus(item.get("ORDERSTATUS"));
         entity.setOrderStatuster(item.get("ORDERSTATUSSTR"));
+        entity.setGoodsName(item.get("MEDICINENAME"));
+        entity.setOrderPrice(item.get("ORDERPRICE"));
+        entity.setCreateDate(item.get("CREATEDATE"));
+        entity.setMerCount(item.get("MERCOUNT"));
+        entity.setOrderNo(item.get("ORDERNO"));
         return entity;
     }
 }

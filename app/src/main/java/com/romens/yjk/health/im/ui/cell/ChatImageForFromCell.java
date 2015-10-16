@@ -38,7 +38,7 @@ public class ChatImageForFromCell extends ChatImageCell {
         iconView.setRoundRadius(AndroidUtilities.dp(21));
         iconView.setFocusable(true);
         iconView.setClickable(true);
-        iconView.setOnClickListener(new View.OnClickListener() {
+        iconView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (chatDelegate != null) {

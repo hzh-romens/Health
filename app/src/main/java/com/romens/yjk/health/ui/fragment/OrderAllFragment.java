@@ -26,7 +26,6 @@ import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -51,6 +50,8 @@ public class OrderAllFragment extends BaseFragment {
     private AllOrderViewAdapter adapter;
     private List<AllOrderEntity> mOrderEntities;
 
+    private String userGuid = "3333";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +61,7 @@ public class OrderAllFragment extends BaseFragment {
 
     public void initData() {
         mOrderEntities = new ArrayList<>();
-        requestOrderList();
-        for (int i = 0; i < 10; i++) {
-            AllOrderEntity entit = new AllOrderEntity();
-            entit.setOrderStatuster("待评价" + i);
-            entit.setOrderStatus("1");
-            entit.setGoodsName("");
-            entit.setOrderPrice("￥20");
-            entit.setOrderId("2000288844448020291");
-            mOrderEntities.add(entit);
-        }
+        requestOrderList(userGuid);
     }
 
     @Override
@@ -92,9 +84,9 @@ public class OrderAllFragment extends BaseFragment {
         return content;
     }
 
-    private void requestOrderList() {
+    private void requestOrderList(String userGuid) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", "3333");
+        args.put("USERGUID", userGuid);
         args.put("ORDERSTATUS", "1");
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrders", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
@@ -133,6 +125,7 @@ public class OrderAllFragment extends BaseFragment {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
+        adapter.setOrderEntities(mOrderEntities);
         adapter.notifyDataSetChanged();
     }
 
@@ -143,11 +136,9 @@ public class OrderAllFragment extends BaseFragment {
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
-
     }
 
     class AllOrderAsynTask extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected String doInBackground(String... params) {
@@ -176,6 +167,10 @@ public class OrderAllFragment extends BaseFragment {
             this.orderEntities = orderEntities;
         }
 
+        public void setOrderEntities(List<AllOrderEntity> orderEntities) {
+            this.orderEntities = orderEntities;
+        }
+
         @Override
         public ADHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if (viewType == 0) {
@@ -189,25 +184,23 @@ public class OrderAllFragment extends BaseFragment {
         public void onBindViewHolder(ADHolder holder, int position) {
             int type = getItemViewType(position);
             if (type == 0) {
-                int index = position / 2;
-                String url = "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg";
+                final int index = position / 2;
                 ItemViewHolder viewHolder = (ItemViewHolder) holder;
-                viewHolder.titleView.setText("订单编号：" + orderEntities.get(index).getOrderId());
+                viewHolder.titleView.setText("订单编号：" + orderEntities.get(index).getOrderNo());
                 viewHolder.evaluateState.setText(orderEntities.get(index).getOrderStatuster());
-                viewHolder.firstImageView.setImageUrl(url, "64_64", null);
-                viewHolder.secondImageView.setImageUrl(url, "64_64", null);
-                viewHolder.threeImageView.setImageUrl(url, "64_64", null);
-                viewHolder.fourImageView.setImageUrl(url, "64_64", null);
-                viewHolder.dateView.setText("2015-12-15 08:09");
-                viewHolder.countView.setText("个包裹");
-                viewHolder.moneyView.setText(orderEntities.get(index).getOrderPrice());
+                viewHolder.dateView.setText(orderEntities.get(index).getCreateDate());
+                viewHolder.moneyView.setText("￥" + orderEntities.get(index).getOrderPrice());
 
                 viewHolder.cardViewLayout.setOnClickListener(new View.OnClickListener() {
+
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(getActivity(), OrderDetailActivity.class));
+                        Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
+                        intent.putExtra("orderId", orderEntities.get(index).getOrderId());
+                        startActivity(intent);
                     }
                 });
+                viewHolder.goodsName.setText(orderEntities.get(index).getGoodsName());
             }
         }
 
@@ -226,28 +219,18 @@ public class OrderAllFragment extends BaseFragment {
 
         private TextView titleView;
         private TextView evaluateState;
-        private BackupImageView firstImageView;
-        private BackupImageView secondImageView;
-        private BackupImageView threeImageView;
-        private BackupImageView fourImageView;
         private TextView dateView;
-        private TextView countView;
         private TextView moneyView;
-
+        private TextView goodsName;
         private RelativeLayout cardViewLayout;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             titleView = (TextView) itemView.findViewById(R.id.order_all_title);
+            goodsName = (TextView) itemView.findViewById(R.id.order_all_goods_name);
             evaluateState = (TextView) itemView.findViewById(R.id.order_all_evaluate);
-            firstImageView = (BackupImageView) itemView.findViewById(R.id.order_all_fist_img);
-            secondImageView = (BackupImageView) itemView.findViewById(R.id.order_all_second_img);
-            threeImageView = (BackupImageView) itemView.findViewById(R.id.order_all_three_img);
-            fourImageView = (BackupImageView) itemView.findViewById(R.id.order_all_four_img);
             dateView = (TextView) itemView.findViewById(R.id.order_all_date);
-            countView = (TextView) itemView.findViewById(R.id.order_all_count);
             moneyView = (TextView) itemView.findViewById(R.id.order_all_money);
-
             cardViewLayout = (RelativeLayout) itemView.findViewById(R.id.order_total_layout);
         }
     }

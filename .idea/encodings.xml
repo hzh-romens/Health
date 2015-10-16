@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/easemob" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/romens/yjk/health/MyApplication.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/romens/yjk/health/im" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/romens/yjk/health/ui/activity/LoginActivity.java" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

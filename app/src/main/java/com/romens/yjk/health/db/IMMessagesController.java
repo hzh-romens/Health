@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.easemob.applib.controller.HXSDKHelper;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.core.ImageLoader;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.db.entity.UserEntity;
+import com.romens.yjk.health.im.IMHXSDKHelper;
 
 /**
  * Created by siery on 15/6/18.
@@ -50,7 +52,7 @@ public class IMMessagesController {
      */
     public void onLoadLocalData(Context context) {
         cleanUp();
-        String appKey = UserConfig.getHXAppId();
+        String appKey = "romens";
         String userName = UserConfig.getClientUserId();
         IMMessagesStorage.getInstance().setupDb(context, appKey, userName);
     }

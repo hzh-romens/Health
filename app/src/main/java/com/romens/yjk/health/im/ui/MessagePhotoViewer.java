@@ -458,10 +458,10 @@ public class MessagePhotoViewer implements NotificationCenter.NotificationCenter
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
-            int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
-            int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);
-            int heightSize = View.MeasureSpec.getSize(heightMeasureSpec);
+            int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+            int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+            int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+            int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
             setMeasuredDimension(widthSize, heightSize);
 
@@ -486,7 +486,7 @@ public class MessagePhotoViewer implements NotificationCenter.NotificationCenter
                 if (child.getVisibility() == GONE) {
                     continue;
                 }
-                final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) child.getLayoutParams();
+                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
                 final int width = child.getMeasuredWidth();
                 final int height = child.getMeasuredHeight();

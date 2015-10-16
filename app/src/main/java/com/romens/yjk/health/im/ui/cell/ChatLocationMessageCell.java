@@ -37,7 +37,7 @@ public abstract class ChatLocationMessageCell extends ChatCell {
 
     protected void registerLocationClickListener(View locationView) {
         if (locationView != null) {
-            locationView.setOnClickListener(new View.OnClickListener() {
+            locationView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (chatLocationDelegate != null) {

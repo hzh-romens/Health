@@ -11,18 +11,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -67,7 +64,7 @@ public class ControlAddressActivity extends BaseActivity {
     private LinearLayout havaAddressLayout;
     private LinearLayout noHaveAddressLayout;
 
-    private String userGuid = "2222";
+    private String userGuid = "3333";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,7 +191,7 @@ public class ControlAddressActivity extends BaseActivity {
 //        textView.setText("新增");
 //        textView.setGravity(Gravity.CENTER);
 //        actionBarMenu.addView(textView, 0);
-        actionBarMenu.addItem(0, R.drawable.addcontact_blue);
+        actionBarMenu.addItem(0, R.drawable.add_address_btn_bg);
 
         actionBar.setTitle("收货地址管理");
         actionBar.setBackgroundResource(R.color.theme_primary);
@@ -306,8 +303,6 @@ public class ControlAddressActivity extends BaseActivity {
                 holder.isDefault.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        Toast.makeText(context, "click-->" + data.get(index).getADDRESSID(), Toast.LENGTH_SHORT).show();
                         requestDefaultChanged(userGuid, data.get(index).getADDRESSID(), index);
                     }
                 });

@@ -65,7 +65,7 @@ public class ChatVoiceMessageForFromCell extends ChatVoiceCell {
 
         playView = new ImageView(context);
         playView.setClickable(true);
-        playView.setOnClickListener(new View.OnClickListener() {
+        playView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 didPressedButton();

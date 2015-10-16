@@ -7,25 +7,27 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.romens.android.ui.Image.BackupImageView;
+import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
-import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by anlc on 2015/9/24.
- *  订单页面中可扩展的listview的Adapter
+ * 订单页面中可扩展的listview的Adapter
  */
 public class OrderExpandableAdapter extends BaseExpandableListAdapter {
 
     private List<List<AllOrderEntity>> typeEntitiesList;
     private List<String> typeList;
     private Context adapterContext;
+
+    public void setOrderEntities(List<AllOrderEntity> orderEntities) {
+        classifyEntity(orderEntities);
+    }
 
     public OrderExpandableAdapter(Context context, List<AllOrderEntity> orderEntities) {
         this.adapterContext = context;
@@ -36,7 +38,7 @@ public class OrderExpandableAdapter extends BaseExpandableListAdapter {
         typeList = new ArrayList<>();
         for (int i = 0; i < orderEntities.size(); i++) {
             boolean flag = true;
-            String drugStroe = orderEntities.get(i).getDrugStroe();
+            String drugStroe = orderEntities.get(i).getOrderNo();
             for (int j = 0; j < typeList.size(); j++) {
                 if (drugStroe.equals(typeList.get(j))) {
                     flag = false;
@@ -50,7 +52,7 @@ public class OrderExpandableAdapter extends BaseExpandableListAdapter {
         for (String drugStroe : typeList) {
             List<AllOrderEntity> tempList = new ArrayList<>();
             for (int i = 0; i < orderEntities.size(); i++) {
-                if (drugStroe.equals(orderEntities.get(i).getDrugStroe())) {
+                if (drugStroe.equals(orderEntities.get(i).getOrderNo())) {
                     tempList.add(orderEntities.get(i));
                 }
             }
@@ -94,32 +96,35 @@ public class OrderExpandableAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    public int getGroupType(int groupPosition) {
+        return groupPosition;
+    }
+
+    @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+
         if (convertView == null) {
             convertView = new TextSettingsCell(adapterContext);
         }
         TextSettingsCell cell = (TextSettingsCell) convertView;
-        cell.setTextAndValue(typeList.get(groupPosition), "待评价", true);
-        return cell;
+        cell.setText("订单编号：" + typeList.get(groupPosition), true);
+
+        return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         View view = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order, null);
-        BackupImageView leftImageView = (BackupImageView) view.findViewById(R.id.order_img);
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
-        TextView specTextView = (TextView) view.findViewById(R.id.order_spec);
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
-        TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
-        TextView countTextView = (TextView) view.findViewById(R.id.order_count);
+        TextView specTextView = (TextView) view.findViewById(R.id.order_date);
+//        TextView countTextView = (TextView) view.findViewById(R.id.order_count);
 
-        String url = "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg";
-        leftImageView.setImageUrl(url, "64_64", null);
-        titleTextView.setText(typeEntitiesList.get(groupPosition).get(childPosition).getGoodsName());
-        specTextView.setText("12g*10袋");
-        countTextView.setText("x2");
-        moneyTextView.setText(typeEntitiesList.get(groupPosition).get(childPosition).getOrderPrice());
-        dateTextView.setText("2015-12-15 08:09");
+        AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
+        titleTextView.setText(entity.getGoodsName());
+//        countTextView.setText("x" + entity.getMerCount());
+        moneyTextView.setText("￥" + entity.getOrderPrice());
+        specTextView.setText(entity.getCreateDate());
         return view;
     }
 

@@ -16,7 +16,7 @@
 package com.romens.yjk.health.ui.components.logger;
 
 /**
- * Simple {@link LogNode} filter, removes everything except the message.
+ * Simple {@link LogNode} filter_right_img, removes everything except the message.
  * Useful for situations like on-screen log output where you don't want a lot of metadata displayed,
  * just easy-to-read message updates as they're happening.
  */

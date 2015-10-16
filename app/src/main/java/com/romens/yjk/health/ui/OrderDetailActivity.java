@@ -1,9 +1,11 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,21 +14,36 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
-import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.db.entity.AllOrderEntity;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAdapter;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.model.GoodsListEntity;
+import com.romens.yjk.health.model.OrderListEntity;
+import com.romens.yjk.health.ui.adapter.OrderExpandableDetailAdapter;
+import com.romens.yjk.health.ui.cells.KeyAndValueCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anlc on 2015/9/24.
@@ -37,8 +54,11 @@ public class OrderDetailActivity extends BaseActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
     private OrderDetailAdapter adapter;
-    private List<AllOrderEntity> mOrderEntities;
-    private OrderExpandableAdapter subExpandableadapter;
+    private OrderListEntity orderListEntity;
+    private List<GoodsListEntity> goodsListEntities;
+    private OrderExpandableDetailAdapter subExpandableadapter;
+
+    private String userGuid = "3333";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,30 +86,10 @@ public class OrderDetailActivity extends BaseActivity {
         listView.setVerticalScrollBarEnabled(false);
         listContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         setContentView(container);
-
         initData();
-        setRow();
-
         adapter = new OrderDetailAdapter(this);
-        listView.setAdapter(adapter);
-    }
-
-    class refreshTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            swipeRefreshLayout.setRefreshing(false);
-        }
+        subExpandableadapter = new OrderExpandableDetailAdapter(this);
+//        listView.setAdapter(adapter);
     }
 
     private ActionBar actionBarEvent() {
@@ -110,28 +110,10 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     public void initData() {
-        mOrderEntities = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            AllOrderEntity entit = new AllOrderEntity();
-            entit.setDrugStroe("AA药店");
-            entit.setOrderStatuster("待评价" + i);
-            entit.setOrderStatus("1");
-            entit.setGoodsName("感冒胶囊");
-            entit.setOrderPrice("￥20");
-            entit.setOrderId("2000288844448020291");
-            mOrderEntities.add(entit);
-        }
-        for (int i = 0; i < 5; i++) {
-            AllOrderEntity entit = new AllOrderEntity();
-            entit.setDrugStroe("BB药店");
-            entit.setOrderStatuster("待评价" + i);
-            entit.setOrderStatus("1");
-            entit.setGoodsName("感冒胶囊");
-            entit.setOrderPrice("￥20");
-            entit.setOrderId("2000288844448020291");
-            mOrderEntities.add(entit);
-        }
-        subExpandableadapter = new OrderExpandableAdapter(this, mOrderEntities);
+        setRow();
+        Intent intent = getIntent();
+        String orderId = intent.getStringExtra("orderId");
+        requestOrderDetailList(userGuid, orderId);
     }
 
     private int rowCount;
@@ -164,9 +146,15 @@ public class OrderDetailActivity extends BaseActivity {
     class OrderDetailAdapter extends BaseAdapter {
 
         private Context context;
+        private OrderListEntity orderListEntity;
+
+        public void setOrderListEntity(OrderListEntity orderListEntity) {
+            this.orderListEntity = orderListEntity;
+        }
 
         public OrderDetailAdapter(Context context) {
             this.context = context;
+            this.orderListEntity = new OrderListEntity();
         }
 
         @Override
@@ -186,9 +174,9 @@ public class OrderDetailActivity extends BaseActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == orderNumRow || position == dataRow || position == totalPriceRow || position == payWayRow) {
+            if (position == dataRow || position == totalPriceRow || position == payWayRow) {
                 return 0;
-            } else if (position == consigneeTitleRow) {
+            } else if (position == consigneeTitleRow || position == orderNumRow) {
                 return 2;
             } else if (position == consigneeNameRow || position == consigneePhoneRow || position == consignessAddressRow) {
                 return 0;
@@ -202,23 +190,27 @@ public class OrderDetailActivity extends BaseActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             int type = getItemViewType(position);
             if (type == 0) {
-                TextSettingsCell cell = new TextSettingsCell(context);
-                if (position == orderNumRow) {
-                    cell.setTextAndValue("订单：000000", "2个包裹", false);
-                } else if (position == dataRow) {
-                    cell.setTextAndValue("2015-2-2 2:20  下单", "正在处理", true);
+                KeyAndValueCell cell = new KeyAndValueCell(context);
+                if (position == dataRow) {
+                    cell.setKeyAndValue(orderListEntity.getCreateTime() + "  下单", orderListEntity.getOrderStatusStr(), true);
+                    cell.setValueTextColor(0xfff06292);
                 } else if (position == totalPriceRow) {
-                    cell.setTextAndValue("总计", "￥20", false);
+                    cell.setKeyAndValue("总计", "￥" + orderListEntity.getOrderPrice(), false);
+                    cell.setValueTextColor(0xfff06292);
                 } else if (position == payWayRow) {
-                    cell.setTextAndValue("支付方式", "货到付款", true);
-                } else if (position == totalPriceRow) {
-                    cell.setTextAndValue("总计", "￥20", false);
+                    String result = "";
+                    if (orderListEntity.getDeliverType().equals("1")) {
+                        result = "药店派送";
+                    } else if (orderListEntity.getDeliverType().equals("2")) {
+                        result = "到店自取";
+                    }
+                    cell.setKeyAndValue("支付方式", result, true);
                 } else if (position == consigneeNameRow) {
-                    cell.setTextAndValue("收获人姓名", "xxx", false);
+                    cell.setKeyAndValue("收获人姓名", orderListEntity.getReceiver(), false);
                 } else if (position == consigneePhoneRow) {
-                    cell.setTextAndValue("联系方式", "133333333333", false);
+                    cell.setKeyAndValue("联系方式", orderListEntity.getTelephone(), false);
                 } else if (position == consignessAddressRow) {
-                    cell.setTextAndValue("地址", "北京朝阳区", false);
+                    cell.setKeyAndValue("地址", orderListEntity.getAddress(), false);
                 }
                 return cell;
             } else if (type == 1) {
@@ -228,6 +220,9 @@ public class OrderDetailActivity extends BaseActivity {
                 cell.setTextColor(getResources().getColor(R.color.theme_title));
                 if (position == consigneeTitleRow) {
                     cell.setText("收货人信息");
+                }
+                if (position == orderNumRow) {
+                    cell.setText("订单编号：" + orderListEntity.getOrderNo());
                 }
                 return cell;
             } else if (type == 3) {
@@ -246,7 +241,7 @@ public class OrderDetailActivity extends BaseActivity {
                     @Override
                     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                         setListViewHeight(subListView);
-                        return false;
+                        return true;
                     }
                 });
                 return linearLayout;
@@ -271,4 +266,99 @@ public class OrderDetailActivity extends BaseActivity {
         listView.setLayoutParams(params);
         listView.requestLayout();
     }
+
+    private void requestOrderDetailList(String userGuid, String orderId) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("ORDERID", orderId);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrderDetail", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(OrderDetailActivity.this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(OrderDetailActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
+
+                    setOrderData(responseEntity.getResponse());
+                }
+                if (errorMsg != null) {
+                    Log.e("reqGetAllUsers", "ERROR");
+                }
+            }
+        });
+    }
+
+    public void setOrderData(String jsonData) {
+        if (jsonData == null) {
+            return;
+        }
+        goodsListEntities = new ArrayList<>();
+        orderListEntity = new OrderListEntity();
+        try {
+            JSONObject object = new JSONObject(jsonData);
+            orderListEntity.setOrderId(object.getString("ORDER_ID"));
+            orderListEntity.setOrderNo(object.getString("ORDERNO"));
+            orderListEntity.setCreateTime(object.getString("CREATETIME"));
+            orderListEntity.setOrderPrice(object.getString("ORDERPRICE"));
+            orderListEntity.setReceiver(object.getString("RECEIVER"));
+            orderListEntity.setAddress(object.getString("ADDRESS"));
+            orderListEntity.setDeliverType(object.getString("deliveryType"));
+            orderListEntity.setOrderStatus(object.getString("ORDER_STATUS"));
+            orderListEntity.setOrderStatusStr(object.getString("ORDERSTATUSSTR"));
+            JSONArray array = object.getJSONArray("GOODSLIST");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject subObjcet = array.getJSONObject(i);
+                GoodsListEntity goodsEntity = new GoodsListEntity();
+                goodsEntity.setGoodsGuid(subObjcet.getString("GOODSGUID"));
+                goodsEntity.setBuyCount(subObjcet.getString("BUYCOUNT"));
+                goodsEntity.setGoodsPrice(subObjcet.getString("GOODSPRICE"));
+                goodsEntity.setName(subObjcet.getString("NAME"));
+                goodsEntity.setCode(subObjcet.getString("CODE"));
+                goodsEntity.setGoodsUrl(subObjcet.getString("GOODURL"));
+                //GOODSBIGURL
+                goodsEntity.setDetailDescitption(subObjcet.getString("DETAILDESCRIPTION"));
+                goodsEntity.setSpec(subObjcet.getString("SPEC"));
+                goodsEntity.setGoodsSortGuid(subObjcet.getString("GOODSSORTGUID"));
+                goodsEntity.setShopId(subObjcet.getString("SHOPID"));
+                goodsEntity.setShopName(subObjcet.getString("SHOPNAME"));
+                goodsListEntities.add(goodsEntity);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        subExpandableadapter.setOrderEntities(goodsListEntities);
+        subExpandableadapter.notifyDataSetChanged();
+
+        adapter.setOrderListEntity(orderListEntity);
+        adapter.notifyDataSetChanged();
+        listView.setAdapter(adapter);
+    }
+
+    class refreshTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
 }
