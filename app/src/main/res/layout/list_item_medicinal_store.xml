@@ -1,51 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
     android:id="@+id/rl_container"
+    android:background="@color/white"
     >
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rl"
-        android:layout_marginBottom="3dp">
     <ImageView
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:padding="8dp"
-        android:id="@+id/iv_store"/>
+        android:layout_gravity="left"
+        android:scaleType="fitXY"
+        android:layout_marginLeft="12dp"
+        android:padding="4dp"
+        android:id="@+id/iv"
+        android:src="@drawable/picture_fail"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="vertical"
-        android:layout_toRightOf="@+id/iv_store">
-        <TextView
+        android:layout_height="match_parent"
+        android:id="@+id/ll_main"
+        android:layout_marginLeft="64dp"
+        android:orientation="vertical">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_store_name"
-            android:text="1号店"
-            android:typeface="monospace"
-            android:textColor="@color/primary_dark_material_dark"
-            android:textSize="@dimen/text_size_xlarge"
-            android:padding="5dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_store_infor"
-            android:text="主要经营感冒药等等"
-            android:textSize="@dimen/text_size_large"
-            android:typeface="monospace"
-            android:textColor="@color/primary_dark_material_dark"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"/>
-
-        </LinearLayout>
+            android:layout_margin="@dimen/padding_inner"
+            android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               android:layout_alignParentLeft="true"
+                android:textSize="@dimen/text_size_medium"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:textColor="@color/md_black_1000"
+                android:ellipsize="end"
+                android:id="@+id/pharmacy_name"
+                android:includeFontPadding="false"
+                android:layout_marginLeft="@dimen/padding_inner"
+                android:text="某某药房"/>
+            <TextView  android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/md_black_1000"
+                android:ellipsize="end"
+                android:id="@+id/price"
+                android:includeFontPadding="false"
+                android:text="¥19"/>
         </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_medium"
+            android:text="安定门外大街京宝大厦418"
+            android:layout_marginBottom="@dimen/padding_inner"
+            android:layout_marginLeft="@dimen/padding_outter"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:id="@+id/address"
+            android:textColor="@color/md_black_1000"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_outter"
+            android:layout_marginBottom="@dimen/padding_inner"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:drawableLeft="@drawable/ic_area"
+            android:text="533米"
+            android:textColor="@color/md_black_1000"
+            android:includeFontPadding="false"
+            android:id="@+id/distance"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:ellipsize="end"
+            />
+
+    </LinearLayout>
+    <ImageView android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/ic_list_shopcaricon"
+        android:layout_gravity="right|bottom"
+        android:id="@+id/pharmacy_buy"
+        android:layout_margin="@dimen/padding_inner"
+        />
     <View
         android:layout_marginTop="5dp"
         android:layout_below="@+id/rl"
@@ -54,4 +94,4 @@
         android:layout_height="0.75dip"
         android:background="#e5e5e5"/>
 
-</RelativeLayout>
+</FrameLayout>

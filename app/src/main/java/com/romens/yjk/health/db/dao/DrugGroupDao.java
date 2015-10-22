@@ -25,7 +25,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         public final static Property Id = new Property(0, String.class, "id", true, "_id");
         public final static Property Key = new Property(1, String.class, "key", false, "KEY");
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
-        public final static Property ParentId = new Property(3, String.class, "parentId", false, "PARENT_ID");
+        public final static Property PID = new Property(3, String.class, "parentId", false, "PID");
         public final static Property Status = new Property(4, int.class, "status", false, "STATUS");
         public final static Property Created = new Property(5, int.class, "created", false, "CREATED");
         public final static Property Updated = new Property(6, int.class, "updated", false, "UPDATED");
@@ -48,9 +48,9 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," +
-                "'KEY' TEXT NOT NULL UNIQUE ," +
+                "'KEY' TEXT UNIQUE ," +     //  "'KEY' TEXT NOT NULL UNIQUE ," +
                 "'NAME' TEXT NOT NULL ," +
-                "'PARENT_ID' TEXT," +
+                "'PID' TEXT," +
                 "'STATUS' INTEGER NOT NULL ," +
                 "'CREATED' INTEGER NOT NULL ," +
                 "'UPDATED' INTEGER NOT NULL ," +
@@ -82,9 +82,13 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
     @Override
     protected void bindValues(SQLiteStatement stmt, DrugGroupEntity entity) {
         stmt.clearBindings();
-        stmt.bindString(2, entity.getId());
+        if(entity.getId()!=null) {
+            stmt.bindString(2, entity.getId());
+        }
         stmt.bindString(3, entity.getName());
-        stmt.bindString(4, entity.getParentId());
+        if(entity.getPID()!=null) {
+            stmt.bindString(4, entity.getPID());
+        }
         stmt.bindLong(5, entity.getStatus());
         stmt.bindLong(6, entity.getCreated());
         stmt.bindLong(7, entity.getUpdated());
@@ -107,7 +111,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         DrugGroupEntity entity = new DrugGroupEntity();
         entity.setId(cursor.getString(offset + 1));
         entity.setName(cursor.getString(offset + 2));
-        entity.setParentId(cursor.getString(offset + 3));
+        entity.setPID(cursor.getString(offset + 3));
         entity.setStatus(cursor.getInt(offset + 4));
         entity.setCreated(cursor.getInt(offset + 5));
         entity.setUpdated(cursor.getInt(offset + 6));
@@ -122,7 +126,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
     public void readEntity(Cursor cursor, DrugGroupEntity entity, int offset) {
         entity.setId(cursor.getString(offset + 1));
         entity.setName(cursor.getString(offset + 2));
-        entity.setParentId(cursor.getString(offset + 3));
+        entity.setPID(cursor.getString(offset + 3));
         entity.setStatus(cursor.getInt(offset + 4));
         entity.setCreated(cursor.getInt(offset + 5));
         entity.setUpdated(cursor.getInt(offset + 6));

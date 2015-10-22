@@ -24,7 +24,7 @@
             android:layout_marginLeft="@dimen/padding_outter"
             android:layout_marginRight="@dimen/padding_outter"
             android:gravity="center"
-            android:text="编辑"
+            android:text="删除"
             android:textColor="@color/transparent_black"
             android:textSize="@dimen/title_text_size" />
     </RelativeLayout>
@@ -46,8 +46,8 @@
 
         <com.romens.yjk.health.ui.components.CheckableFrameLayout
             android:id="@+id/all_choice"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"

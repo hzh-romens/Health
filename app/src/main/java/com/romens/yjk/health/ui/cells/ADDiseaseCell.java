@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.components.FlowCell;
 import com.romens.yjk.health.ui.components.FlowLayout;
 import com.romens.yjk.health.ui.components.FlowLayoutCallback;
@@ -50,7 +52,6 @@ public class ADDiseaseCell extends LinearLayout {
         titleView.setGravity(Gravity.CENTER);
         titleView.setEllipsize(TextUtils.TruncateAt.END);
         addView(titleView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 8, 0, 8, 0));
-
         subTitleView = new TextView(context);
         subTitleView.setTextColor(0xff9e9e9e);
         subTitleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
@@ -82,7 +83,8 @@ public class ADDiseaseCell extends LinearLayout {
                 cell.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        Intent i=new Intent(getContext(), MedicinalDetailActivity.class);
+                        getContext().startActivity(i);
                     }
                 });
                 return cell;

@@ -1,16 +1,22 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.romens.android.io.image.ImageManager;
+import com.romens.android.io.image.ImageUtils;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.ui.cells.IsSelectCell;
 
@@ -22,20 +28,20 @@ import java.util.List;
  */
 public class HistoryAdapter extends BaseExpandableListAdapter {
 
-    private List<List<GoodsListEntity>> typeEntitiesList;
+    private List<List<HistoryEntity>> typeEntitiesList;
     private List<String> typeList;
     private Context adapterContext;
 
-    public void setOrderEntities(List<GoodsListEntity> orderEntities) {
+    public void setOrderEntities(List<HistoryEntity> orderEntities) {
         classifyEntity(orderEntities);
     }
 
     public HistoryAdapter(Context context) {
         this.adapterContext = context;
-        classifyEntity(new ArrayList<GoodsListEntity>());
+        classifyEntity(new ArrayList<HistoryEntity>());
     }
 
-    private void classifyEntity(List<GoodsListEntity> orderEntities) {
+    private void classifyEntity(List<HistoryEntity> orderEntities) {
         typeList = new ArrayList<>();
         for (int i = 0; i < orderEntities.size(); i++) {
             boolean flag = true;
@@ -51,7 +57,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         }
         typeEntitiesList = new ArrayList<>();
         for (String drugStroe : typeList) {
-            List<GoodsListEntity> tempList = new ArrayList<>();
+            List<HistoryEntity> tempList = new ArrayList<>();
             for (int i = 0; i < orderEntities.size(); i++) {
                 if (drugStroe.equals(orderEntities.get(i).getShopName())) {
                     tempList.add(orderEntities.get(i));
@@ -98,64 +104,69 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        ParentHolder parentHolder=null;
         if (convertView == null) {
-            convertView = new IsSelectCell(adapterContext);
+            convertView=LayoutInflater.from(adapterContext).inflate(R.layout.list_item_group,null);
+            parentHolder=new ParentHolder();
+            parentHolder.name= (TextView) convertView.findViewById(R.id.name);
+            parentHolder.empty_view=convertView.findViewById(R.id.empty_view);
+            convertView.setTag(parentHolder);
+        }else{
+            parentHolder= (ParentHolder) convertView.getTag();
         }
-        final IsSelectCell cell = (IsSelectCell) convertView;
-        cell.setInfo(typeList.get(groupPosition), true);
-        cell.setClick(new IsSelectCell.SelectClick() {
-            @Override
-            public void onClick() {
-                boolean isSelect = cell.changeSelect();
-                List<GoodsListEntity> list = typeEntitiesList.get(groupPosition);
-                for (GoodsListEntity entity : list) {
-                    entity.setIsSelect(isSelect);
-                }
-                notifyDataSetChanged();
-            }
-        });
+        if(groupPosition==0){
+            parentHolder.empty_view.setVisibility(View.GONE);
+        }else{
+            parentHolder.empty_view.setVisibility(View.VISIBLE);
+        }
+        parentHolder.name.setText(typeList.get(groupPosition));
         return convertView;
     }
 
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        ChildHolder childHolder=null;
         if (convertView == null) {
+            childHolder=new ChildHolder();
             LayoutInflater inflater = LayoutInflater.from(adapterContext);
-            convertView = inflater.inflate(R.layout.list_item_order_deatil, null);
+            convertView = inflater.inflate(R.layout.list_item_shop_list_history, null);
+            childHolder.iv= (ImageView) convertView.findViewById(R.id.iv);
+            childHolder.shop= (ImageView) convertView.findViewById(R.id.shop);
+            childHolder.name= (TextView) convertView.findViewById(R.id.name);
+            childHolder.discountPrice= (TextView) convertView.findViewById(R.id.discountPrice);
+            childHolder.realPrice= (TextView) convertView.findViewById(R.id.realPrice);
+            childHolder.comment= (TextView) convertView.findViewById(R.id.comment);
+            childHolder.linear_item= (LinearLayout) convertView.findViewById(R.id.linear_item);
+            childHolder.saleCount= (TextView) convertView.findViewById(R.id.saleCount);
+            convertView.setTag(childHolder);
+        }else{
+            childHolder= (ChildHolder) convertView.getTag();
         }
-        final ImageView isSelectImg = (ImageView) convertView.findViewById(R.id.order_select_img);
-        BackupImageView leftImg = (BackupImageView) convertView.findViewById(R.id.order_img);
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.order_title);
-        TextView moneyTextView = (TextView) convertView.findViewById(R.id.order_money);
-        TextView specTextView = (TextView) convertView.findViewById(R.id.order_spec);
-        TextView countTextView = (TextView) convertView.findViewById(R.id.order_count);
 
-        final GoodsListEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
-        if (entity != null) {
-            titleTextView.setText(entity.getShopName());
-            countTextView.setText("x" + entity.getBuyCount());
-            moneyTextView.setText(entity.getGoodsPrice());
-            specTextView.setText(entity.getSpec());
-            leftImg.setImageUrl(entity.getGoodsUrl(), "64_64", null);
-        }
-        isSelectImg.setVisibility(View.VISIBLE);
-        isSelectImg.setImageResource(R.drawable.control_address_undeafult);
-        if (entity.isSelect()) {
-            isSelectImg.setImageResource(R.drawable.control_address_deafult);
-        }
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (entity.isSelect()) {
-                    isSelectImg.setImageResource(R.drawable.control_address_undeafult);
-                    entity.setIsSelect(false);
-                    return;
-                }
-                isSelectImg.setImageResource(R.drawable.control_address_deafult);
-                entity.setIsSelect(true);
-            }
-        });
+
+        final HistoryEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
+
+        Drawable defaultDrawables =  childHolder.iv.getDrawable();
+        ImageManager.loadForView(adapterContext, childHolder.iv, entity.getImgUrl(), defaultDrawables, defaultDrawables);
+        childHolder.name.setText(entity.getMedicinalName());
+        childHolder.realPrice.setTextColor(adapterContext.getResources().getColor(R.color.md_red_400));
+        childHolder.realPrice.setText("¥" + entity.getCurrentPrice());
+        childHolder.realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        childHolder.discountPrice.setText("¥" + entity.getDiscountPrice());
+        childHolder.shop.setImageDrawable(adapterContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
+        childHolder.shop.setVisibility(View.GONE);
+        childHolder.comment.setText(entity.getCommentCount()+"条评论");
+        childHolder.saleCount.setText(entity.getSaleCount()+"件已售");
         return convertView;
+    }
+    class ChildHolder{
+        private ImageView iv,shop;
+        private TextView name,discountPrice,realPrice,comment,saleCount;
+        private LinearLayout linear_item;
+    }
+    class ParentHolder{
+        private TextView name;
+        private View empty_view;
     }
 
     @Override
@@ -163,10 +174,10 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public List<GoodsListEntity> getSelectEntities() {
-        List<GoodsListEntity> entities = new ArrayList<>();
-        for (List<GoodsListEntity> list : typeEntitiesList) {
-            for (GoodsListEntity entity : list) {
+    public List<HistoryEntity> getSelectEntities() {
+        List<HistoryEntity> entities = new ArrayList<>();
+        for (List<HistoryEntity> list : typeEntitiesList) {
+            for (HistoryEntity entity : list) {
                 if (entity.isSelect()) {
                     entities.add(entity);
                 }

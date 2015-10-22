@@ -1,22 +1,39 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.romens.android.AndroidUtilities;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
+import com.romens.yjk.health.ui.ShopCarActivity;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.List;
+
+import static android.view.ViewGroup.*;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Created by AUSU on 2015/9/20.
@@ -85,98 +102,77 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
-        TextView tv = (TextView) convertView.findViewById(R.id.name);
-        if ("-1".equals(mFatherData.get(groupPosition).getShopID())) {
-            tv.setText("派送方式");
+
+        int groupType = getGroupType(groupPosition);
+        // switch (groupType){
+        //   case 1:
+        if (groupType == 1) {
+            SendHolder sendHolder = null;
+            if (convertView == null) {
+                sendHolder = new SendHolder();
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
+                sendHolder.tv_groupname = (TextView) convertView.findViewById(R.id.name);
+                sendHolder.rg = (RadioGroup) convertView.findViewById(R.id.rg);
+                sendHolder.rb1 = (RadioButton) convertView.findViewById(R.id.rb1);
+                sendHolder.rb2 = (RadioButton) convertView.findViewById(R.id.rb2);
+                convertView.setTag(sendHolder);
+            } else {
+                sendHolder = (SendHolder) convertView.getTag();
+            }
+            sendHolder.tv_groupname.setText("派送方式");
+            sendHolder.tv_groupname.setClickable(true);
+            sendHolder.rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    //写一个回调
+                    int checkedRadioButtonId = group.getCheckedRadioButtonId();
+                    if (checkedRadioButtonId == R.id.rb1) {
+                        checkDataCallBack.getCheckData("药店派送");
+                    } else if (checkedRadioButtonId == R.id.rb2) {
+                        checkDataCallBack.getCheckData("到店自取");
+                    }
+                }
+            });
+            //break;
+            // case 0:
         } else {
-            tv.setText(mFatherData.get(groupPosition).getShopName());
-            tv.setClickable(true);
+            ParentHolder parentHolder = null;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
+                parentHolder = new ParentHolder();
+                parentHolder.tv_groupname = (TextView) convertView.findViewById(R.id.name);
+                convertView.setTag(parentHolder);
+            } else {
+                parentHolder = (ParentHolder) convertView.getTag();
+            }
+            parentHolder.tv_groupname.setText(mFatherData.get(groupPosition).getShopName());
+            parentHolder.tv_groupname.setClickable(true);
         }
+        //  break;
+        //   }
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ChildHolder childHolder = null;
-        SendHolder sendHolder = null;
-        int childType = getChildType(groupPosition, childPosition);
-        Log.i("类型---", childType + "");
         if (convertView == null) {
-            switch (childType) {
-                case 1:
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
-                    sendHolder = new SendHolder();
-                    sendHolder.rg = (RadioGroup) convertView.findViewById(R.id.rg);
-                    sendHolder.rb1 = (RadioButton) convertView.findViewById(R.id.rb1);
-                    sendHolder.rb2 = (RadioButton) convertView.findViewById(R.id.rb2);
-                    convertView.setTag(sendHolder);
-                    break;
-                case 0:
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
-                    childHolder = new ChildHolder();
-                    childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
-                    childHolder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
-                    childHolder.tv_infor = (TextView) convertView.findViewById(R.id.tv_infor);
-                    childHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-                    childHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
-                    convertView.setTag(childHolder);
-                    break;
-
-            }
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
+            childHolder = new ChildHolder();
+            childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
+            childHolder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
+            childHolder.tv_infor = (TextView) convertView.findViewById(R.id.tv_infor);
+            childHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            childHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
+            convertView.setTag(childHolder);
         } else {
-            switch (childType) {
-                case 1:
-                    sendHolder = (SendHolder) convertView.getTag();
-                    break;
-                case 0:
-                    childHolder = (ChildHolder) convertView.getTag();
-                    break;
-            }
+            childHolder = (ChildHolder) convertView.getTag();
         }
-        //数据添加:小于0,添加派送方式的数据。大于0，添加正常数据
-        switch (childType){
-            case 1:
-                sendHolder.rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        //写一个回调
-                        int checkedRadioButtonId = group.getCheckedRadioButtonId();
-                        if (checkedRadioButtonId == R.id.rb1) {
-                            checkDataCallBack.getCheckData("药店派送");
-                        } else if (checkedRadioButtonId == R.id.rb2) {
-                            checkDataCallBack.getCheckData("到店自取");
-                        }
-                    }
-                });
-            break;
-            case 0:
-                ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-                childHolder.tv_price.setText(shopCarEntity.getGOODSPRICE() + "");
-                childHolder.tv_name.setText(shopCarEntity.getNAME());
-                childHolder.tv_infor.setText(shopCarEntity.getSPEC());
-                childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
-            break;
-        }
-//        if (!("-1".equals(mFatherData.get(groupPosition).getShopID()))) {
-//
-//        }
-//        if (("-1".equals(mFatherData.get(groupPosition).getShopID()))) {
-//            if (sendHolder != null) {
-//                sendHolder.rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//                    @Override
-//                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                        //写一个回调
-//                        int checkedRadioButtonId = group.getCheckedRadioButtonId();
-//                        if (checkedRadioButtonId == R.id.rb1) {
-//                            checkDataCallBack.getCheckData("药店派送");
-//                        } else if (checkedRadioButtonId == R.id.rb2) {
-//                            checkDataCallBack.getCheckData("到店自取");
-//                        }
-//                    }
-//                });
-//            }
-      //  }
+        ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+        childHolder.tv_price.setText(shopCarEntity.getGOODSPRICE() + "");
+        childHolder.tv_name.setText(shopCarEntity.getNAME());
+        childHolder.tv_infor.setText(shopCarEntity.getSPEC());
+        childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
         return convertView;
     }
 
@@ -186,8 +182,13 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     }
 
     class SendHolder {
+        private TextView tv_groupname;
         private RadioGroup rg;
         private RadioButton rb1, rb2;
+    }
+
+    class ParentHolder {
+        private TextView tv_groupname;
     }
 
 
@@ -203,4 +204,13 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         }
         return 0;
     }
+
+    @Override
+    public int getGroupType(int groupPosition) {
+        if ("-1".equals(mFatherData.get(groupPosition).getShopID())) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

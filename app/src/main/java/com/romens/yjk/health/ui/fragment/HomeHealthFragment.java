@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -29,10 +31,12 @@ import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.ui.IllnessActivity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
+import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.cells.ADDiseaseCell;
 import com.romens.yjk.health.ui.cells.ADDiseaseCell.ADDisease;
 import com.romens.yjk.health.ui.cells.DrugChildCell;
 import com.romens.yjk.health.ui.cells.DrugGroupCell;
+
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,7 +105,7 @@ public class HomeHealthFragment extends BaseFragment {
         DrugGroupEntity childNode = adapter.getChild(currGroupPosition, childPosition);
         if (childNode != null) {
             //Intent intent = new Intent(getActivity(), IllnessActivity.class);
-            Intent intent = new Intent(getActivity(), MedicinalDetailActivity.class);
+            Intent intent = new Intent(getActivity(), ShopListActivity.class);
             Bundle arguments = new Bundle();
             arguments.putString(IllnessActivity.ARGUMENTS_KEY_ID, childNode.getId());
             arguments.putString(IllnessActivity.ARGUMENTS_KEY_NAME, childNode.getName());
@@ -137,8 +141,9 @@ public class HomeHealthFragment extends BaseFragment {
         changeRefreshUI(true);
         Map<String, Object> args = new HashMap<>();
         int lastTime = DBInterface.instance().getDrugGroupDataLastTime();
-        args.put("LASTTIME", lastTime);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsClass", args);
+       // args.put("LASTTIME", lastTime);
+       // args.put("GUID","");
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetMedicineKind", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
@@ -148,8 +153,9 @@ public class HomeHealthFragment extends BaseFragment {
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                Log.i("超时信息---",msg.msg);
                 changeRefreshUI(false);
-//                bindData(null);
+                bindData(null);
             }
 
             @Override
@@ -159,7 +165,7 @@ public class HomeHealthFragment extends BaseFragment {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     bindData(responseProtocol.getResponse());
                 } else {
-//                    bindData(null);
+                    Log.i("错误----",errorMsg.msg);
                 }
             }
         });
@@ -170,9 +176,9 @@ public class HomeHealthFragment extends BaseFragment {
         DrugGroupEntity entityTemp;
         for (LinkedTreeMap<String, String> item : nodes) {
             entityTemp = new DrugGroupEntity();
-            entityTemp.setId(item.get("GUID"));
+            entityTemp.setId(item.get("ID"));
             entityTemp.setName(item.get("NAME"));
-            entityTemp.setParentId(item.get("PARENTGUID"));
+            entityTemp.setPID(item.get("PID"));
             entityTemp.setSortIndex(item.get("ORDERINDEX"));
             entityTemp.setCreated((int) Calendar.getInstance().getTimeInMillis());
             entityTemp.setUpdated((int) Calendar.getInstance().getTimeInMillis());
@@ -191,16 +197,16 @@ public class HomeHealthFragment extends BaseFragment {
         HashMap<String, List<DrugGroupEntity>> childNodes = new HashMap<>();
         for (DrugGroupEntity entity :
                 entities) {
-            if (TextUtils.isEmpty(entity.getParentId())) {
+            if (TextUtils.isEmpty(entity.getPID())) {
                 groupNodes.add(entity);
                 if (!childNodes.containsKey(entity.getId())) {
                     childNodes.put(entity.getId(), new ArrayList<DrugGroupEntity>());
                 }
             } else {
-                if (!childNodes.containsKey(entity.getParentId())) {
-                    childNodes.put(entity.getParentId(), new ArrayList<DrugGroupEntity>());
+                if (!childNodes.containsKey(entity.getPID())) {
+                    childNodes.put(entity.getPID(), new ArrayList<DrugGroupEntity>());
                 }
-                childNodes.get(entity.getParentId()).add(entity);
+                childNodes.get(entity.getPID()).add(entity);
             }
         }
         adapter.bindData(groupNodes, childNodes);

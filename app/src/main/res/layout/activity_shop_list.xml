@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
     <RelativeLayout
         style="@style/titleStytle"
         android:orientation="horizontal"
-        android:background="#ffbbba">
+        android:background="@color/theme_primary">
         <ImageView
             style="@style/iv_back_style"
             android:layout_centerVertical="true"
@@ -22,9 +23,11 @@
             android:hint="请输入关键字"
             android:id="@+id/et_search"
             android:gravity="center_vertical"
-           android:paddingLeft="8dp"
+            android:paddingLeft="8dp"
+            android:inputType="textPhonetic"
+            android:imeOptions="actionSearch"
             android:drawablePadding="8dp"
-            android:textColorHint="@color/title_background_grey"
+            android:textColorHint="@color/md_grey_500"
             android:layout_height="match_parent"
             android:background="@drawable/edittext_background_radiu"
             android:drawableLeft="@drawable/ic_search_grey600_24dp"
@@ -36,39 +39,60 @@
                 android:background="@drawable/ic_ab_other"
                 android:layout_alignParentRight="true"/>
     </RelativeLayout>
-    <LinearLayout
+    <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal">
-        <TextView
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:id="@+id/radiogroup"
+        android:layout_marginBottom="@dimen/padding_inner"
+        android:layout_marginTop="@dimen/padding_inner"
+        android:layout_marginRight="@dimen/padding_outter"
+        android:layout_marginLeft="@dimen/padding_outter">
+        <RadioButton
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="分类"
-            android:id="@+id/classify"
-            android:gravity="center"/>
-        <TextView
+            android:layout_height="match_parent"
+            android:text="综合"
+            android:id="@+id/rb_all"
+            android:button="@null"
+            android:textColor="@color/radio_text_states"
+            android:background="@drawable/radio_check_states"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_margin="2dp"
+            />
+        <RadioButton
             android:layout_width="0dp"
-            android:id="@+id/sort"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="综合排序"
-            android:gravity="center"/>
-        <TextView
+            android:layout_height="match_parent"
+            android:text="按价格"
+            android:button="@null"
+            android:id="@+id/rb_price"
+            android:textColor="@color/radio_text_states"
+            android:background="@drawable/radio_check_states"
+            android:textSize="@dimen/text_size_medium"
+            android:gravity="center"
+            android:layout_margin="2dp"
+            />
+        <RadioButton
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="显示方式"
-            android:id="@+id/show"
-            android:gravity="center"/>
-        <TextView
-            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="刷选"
-            android:id="@+id/filter"
-            android:gravity="center"/>
-    </LinearLayout>
+            android:text="按销量"
+            android:button="@null"
+            android:id="@+id/rb_sale"
+            android:textColor="@color/radio_text_states"
+            android:background="@drawable/radio_check_states"
+            android:textSize="@dimen/text_size_medium"
+            android:gravity="center"
+            android:layout_margin="2dp"
+            />
+    </RadioGroup>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.75dp"
+        android:background="@color/md_grey_300"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:id="@+id/refreshLayout"

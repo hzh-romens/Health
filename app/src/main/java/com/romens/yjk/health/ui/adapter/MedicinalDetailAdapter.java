@@ -1,247 +1,76 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
+import android.util.SparseArray;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.romens.android.io.image.ImageManager;
-import com.romens.android.io.image.ImageUtils;
-import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.yjk.health.R;
-import com.romens.yjk.health.model.AboutTestEntity;
-import com.romens.yjk.health.model.TestEntity;
-import com.romens.yjk.health.ui.cells.ADErrorDataCell;
-import com.romens.yjk.health.ui.components.ModifyGridView;
+import com.romens.yjk.health.ui.cells.ADHolder;
+import com.romens.yjk.health.ui.controls.ADBaseControl;
+import com.romens.yjk.health.ui.controls.ADEmptyControl;
+import com.romens.yjk.health.ui.controls.ADGroupControl;
+import com.romens.yjk.health.ui.controls.ADGroupNameControls;
+import com.romens.yjk.health.ui.controls.ADHorizontalScrollControl;
+import com.romens.yjk.health.ui.controls.ADIllustrationControl;
+import com.romens.yjk.health.ui.controls.ADMedicinalDetailControl;
+import com.romens.yjk.health.ui.controls.ADMoreControl;
+import com.romens.yjk.health.ui.controls.ADPagerControl;
+import com.romens.yjk.health.ui.controls.ADStoreControls;
+import com.romens.yjk.health.ui.controls.ControlType;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.widget.AbsListView.*;
+import java.util.LinkedList;
 
 /**
- * Created by romens007 on 2015/8/17.
+ * Created by AUSU on 2015/10/14.
  */
-public class MedicinalDetailAdapter extends RecyclerView.Adapter {
-    private List<TestEntity> mdatas;
+public class MedicinalDetailAdapter extends RecyclerView.Adapter<ADHolder>{
     private Context mContext;
-    private List<String> urls;
-
-    public MedicinalDetailAdapter(List<TestEntity> data, Context context) {
-        this.mdatas = data;
-        this.mContext = context;
-    }
-    public void setUrls(List<String> urls) {
-        this.urls=urls;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        RecyclerView.ViewHolder holder = null;
-        if (viewType == 0) {
-            view = View.inflate(mContext, R.layout.list_item_medicinal_information3, null);
-            holder = new ImageHolder(view);
-        } else if (viewType == 1) {
-            view = View.inflate(mContext, R.layout.list_item_medicinal_info, null);
-            holder = new informationHolder(view);
+   private SparseArray<ADBaseControl> adBaseControls =new SparseArray<ADBaseControl>();
+   public MedicinalDetailAdapter(Context context){
+       this.mContext=context;
+   }
+    public void bindData(SparseArray<ADBaseControl> mAdBaseControls){
+        adBaseControls.clear();
+        if(mAdBaseControls!=null){
+            this.adBaseControls=mAdBaseControls;
         }
-        //else if (viewType == 2) {
-           // view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
-            //holder = new aboutHolder(view);
-      //  } else if (viewType == 3) {
-          //  view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
-            //holder = new aboutHolder(view);
-       // }
-        else if (viewType == 4) {
-            view = View.inflate(mContext, R.layout.list_shadow_item, null);
-            holder = new ShadowHolder(view);
-        } else if (viewType == 5) {
-            view = View.inflate(mContext, R.layout.list_item_group_name, null);
-            holder = new GroupNameHolder(view);
-        } else if (viewType == 6) {
-            view = View.inflate(mContext, R.layout.list_item_medicinal_store, null);
-            holder = new StoreHolder(view);
-        } else if (viewType == 7) {
-            view = View.inflate(mContext, R.layout.list_item_medicinal_more, null);
-            holder = new MoreHolder(view);
-        } else if(viewType==8){
-            view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
-            holder = new aboutHolder(view);
+        notifyDataSetChanged();
+    }
+    @Override
+    public ADHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType== ControlType.TYPE_AD_PAGER){
+            return ADPagerControl.createViewHolder(mContext);
+        }else if(viewType==6){
+            return ADMedicinalDetailControl.createViewHolder(mContext);
+        }else if(viewType==11){
+          return ADIllustrationControl.createViewHolder(mContext);
+        } else if(viewType==2){
+            return ADGroupControl.createViewHolder(mContext);
+        }else if(viewType==7){
+            return ADStoreControls.createViewHolder(mContext);
         }else if(viewType==9){
-            ADErrorDataCell adErrorDataCell=new ADErrorDataCell(mContext);
-            adErrorDataCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-            return new ADErrorHolder(adErrorDataCell);
-        } else{
-            view=View.inflate(mContext,R.layout.list_item_empty_view,null);
-            holder=new EmptyHolder(view);
+            return ADMoreControl.createViewHolder(mContext);
+        }else if(viewType==12){
+            return ADGroupNameControls.createViewHolder(mContext);
+        }else if(viewType==13){
+            return ADHorizontalScrollControl.createViewHolder(mContext);
         }
-        //        不知道为什么在xml设置的“android:layout_width="match_parent"”无效了，需要在这里重新设置
-       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        view.setLayoutParams(lp);
-        return holder;
+        return ADEmptyControl.createViewHolder(mContext);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        TestEntity testEntity = mdatas.get(position);
-        switch (getItemViewType(position)) {
-            case 0:
-                ImageHolder imageHolder = (ImageHolder) holder;
-                String imageUrl = mdatas.get(position).getImageUrl();
-                imageHolder.iv.setImageBitmap(ImageUtils.bindLocalImage(imageUrl));
-                Drawable defaultDrawable = imageHolder.iv.getDrawable();
-                ImageManager.loadForView(mContext, imageHolder.iv,imageUrl, defaultDrawable, defaultDrawable);
-                break;
-            case 1:
-                informationHolder inforHolder = (informationHolder) holder;
-                inforHolder.tv_name.setText(testEntity.getJson());
-                inforHolder.tv_information.setText(testEntity.getInfor());
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                ShadowHolder shadowHolder= (ShadowHolder) holder;
-                break;
-            case 5:
-                GroupNameHolder groupNameHolder= (GroupNameHolder) holder;
-                groupNameHolder.tv_group_name.setText(testEntity.getJson());
-                if("在线药店".equals(testEntity.getJson())){
-                    groupNameHolder.more.setVisibility(View.GONE);
-                }
-                break;
-            case 6:
-                StoreHolder storeHolder= (StoreHolder) holder;
-                storeHolder.iv_store.setImageBitmap(ImageUtils.bindLocalImage(testEntity.getImageUrl()));
-                Drawable defaultDrawables =  storeHolder.iv_store.getDrawable();
-                ImageManager.loadForView(mContext,  storeHolder.iv_store,testEntity.getImageUrl(), defaultDrawables, defaultDrawables);
-                storeHolder.tv_store_name.setText(testEntity.getJson());
-                storeHolder.tv_store_infor.setText(testEntity.getInfor());
-                break;
-            case 7:
-                MoreHolder moreHolder= (MoreHolder) holder;
-                break;
-            case 8:
-                aboutHolder holders = (aboutHolder) holder;
-               // List<AboutTestEntity>datas = new ArrayList<AboutTestEntity>();
-               // datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                //datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-           //     datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                GridViewAdapter gridViewAdapter = new GridViewAdapter(urls, mContext);
-                holders.gridView.setAdapter(gridViewAdapter);
-                break;
-            case 9:
-                 ADErrorHolder adErrorHolder= (ADErrorHolder) holder;
-                ADErrorDataCell cell= (ADErrorDataCell) adErrorHolder.itemView;
-             //   cell.ima
-                break;
-            default:
-                EmptyHolder emptyHolder= (EmptyHolder) holder;
-                break;
-        }
+    public void onBindViewHolder(ADHolder holder, int position) {
+        adBaseControls.get(position).bindViewHolder(mContext,holder);
     }
-
 
     @Override
     public int getItemCount() {
-        if (mdatas != null) {
-            return mdatas.size();
-        }
-        return 0;
-    }
-    public class EmptyHolder extends RecyclerView.ViewHolder{
-        public EmptyHolder(View view){
-            super(view);
-        }
-    }
-    //医药信息的holder
-    public class informationHolder extends RecyclerView.ViewHolder {
-        private TextView tv_name;
-        private TextView tv_information;
-
-        public informationHolder(View view) {
-            super(view);
-            tv_name = (TextView) view.findViewById(R.id.tv_medicinal_name);
-            tv_information = (TextView) view.findViewById(R.id.tv_medicinal_information);
-            //这里设置监听事件
-        }
-    }
-    //相关医药的holder
-    public class aboutHolder extends RecyclerView.ViewHolder {
-        private ModifyGridView gridView;
-
-        public aboutHolder(View view) {
-            super(view);
-            gridView = (ModifyGridView) view.findViewById(R.id.gridView);
-            //这里设置监听事件
-        }
-    }
-    //药品图片的holder
-    public class ImageHolder extends RecyclerView.ViewHolder {
-        private ImageView iv;
-
-        public ImageHolder(View view) {
-            super(view);
-            iv = (ImageView) view.findViewById(R.id.iv_detail);
-        }
-    }
-    //在线药店的holder
-    public class StoreHolder extends RecyclerView.ViewHolder{
-        private  ImageView iv_store;
-        private  TextView tv_store_name,tv_store_infor;
-        public StoreHolder(View view){
-            super(view);
-            iv_store= (ImageView) view.findViewById(R.id.iv_store);
-            tv_store_name= (TextView) view.findViewById(R.id.tv_store_name);
-            tv_store_infor= (TextView) view.findViewById(R.id.tv_store_infor);
-        }
-    }
-    //group的holder
-    public class GroupNameHolder extends RecyclerView.ViewHolder{
-        private TextView tv_group_name;
-        private Button more;
-        public GroupNameHolder(View view){
-            super(view);
-            tv_group_name= (TextView) view.findViewById(R.id.group_name);
-            more= (Button) view.findViewById(R.id.moreButton);
-        }
-    }
-    //Shadow的holder
-    public class ShadowHolder extends RecyclerView.ViewHolder{
-        private View empty_view;
-        public ShadowHolder(View view){
-            super(view);
-            empty_view=view.findViewById(R.id.empty_view);
-        }
-    }
-    //更多的holder
-    public class MoreHolder extends  RecyclerView.ViewHolder{
-        private TextView tv_more;
-        public MoreHolder(View view){
-            super(view);
-            tv_more= (TextView) view.findViewById(R.id.tv_more);
-        }
-
-    }
-    public class  ADErrorHolder extends RecyclerView.ViewHolder{
-        public  ADErrorHolder(View view){
-            super(view);
-        }
+        return adBaseControls.size()==0?0:adBaseControls.size();
     }
 
-    //获取条目的类型,用于判断footView和一般的item;
     @Override
     public int getItemViewType(int position) {
-        return mdatas.get(position).getType();
+        return adBaseControls.get(position).getType();
     }
-
 }

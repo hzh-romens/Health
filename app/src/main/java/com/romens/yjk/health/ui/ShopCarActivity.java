@@ -1,9 +1,13 @@
 package com.romens.yjk.health.ui;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
@@ -19,15 +23,18 @@ import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.extend.scanner.FinishListener;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.model.DeleteEntity;
 import com.romens.yjk.health.model.GoodsEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
+import com.romens.yjk.health.ui.components.CustomDialog;
 import com.romens.yjk.health.ui.utils.DialogUtils;
 
 import org.json.JSONArray;
@@ -44,14 +51,15 @@ import java.util.Map;
 
 
 public class ShopCarActivity extends BaseActivity {
-    private ExpandableListView ev;
+    private ExpandableListView expandableListView;
     private CheckableFrameLayout all_choice;
     private TextView tv_all1;
     private TextView iv_accounts;
     private List<ShopCarEntity> datas;
     private ShopAdapter myAdapter;
     private FrameLayout btn_back;
-    private TextView edit;
+    private TextView delete;
+    private CustomDialog.Builder ibuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +69,67 @@ public class ShopCarActivity extends BaseActivity {
         //获取数据
         needShowProgress("正在加载...");
         myAdapter = new ShopAdapter(this);
-        ev.setAdapter(myAdapter);
+        expandableListView.setAdapter(myAdapter);
         requestShopCarDataChanged();
-
+        //向服务器提交购物车信息并跳转到订单页面
+        iv_accounts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //向服务器发送请求
+                HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
+                ArrayList<ParentEntity> parentData = (ArrayList<ParentEntity>) myAdapter.getParentData();
+                if (myAdapter.isAllNotSelected()) {
+                    Toast.makeText(ShopCarActivity.this, "请选择一样商品", Toast.LENGTH_SHORT).show();
+                } else {
+                    ArrayList<ParentEntity> mFilterParentData = new ArrayList<ParentEntity>();
+                    if (childData != null && parentData != null) {
+                        needShowProgress("正在提交");
+                        ArrayList<ParentEntity> filterParentData = new ArrayList<ParentEntity>();
+                        HashMap<String, List<ShopCarEntity>> filterChildData = new HashMap<String, List<ShopCarEntity>>();
+                        ArrayList<GoodsEntity> JSON_DATA = new ArrayList<GoodsEntity>();
+                        SparseBooleanArray parentStatus = myAdapter.getParentStatus();
+                        if (parentData != null) {
+                            for (int i = 0; i < parentData.size(); i++) {
+                                //  if ("true".equals(parentData.get(i).getCheck())) {
+                                if (parentStatus.get(i)) {
+                                    filterParentData.add(parentData.get(i));
+                                }
+                                //}
+                            }
+                            Iterator iter = childData.entrySet().iterator();
+                            while (iter.hasNext()) {
+                                ParentEntity fatherEntity = new ParentEntity();
+                                Map.Entry entry = (Map.Entry) iter.next();
+                                String key = (String) entry.getKey();
+                                List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+                                List<ShopCarEntity> mChild = new ArrayList<ShopCarEntity>();
+                                for (int i = 0; i < child.size(); i++) {
+                                    if ("true".equals(child.get(i).getCHECK())) {
+                                        mChild.add(child.get(i));
+                                    }
+                                    GoodsEntity goodsEntity = new GoodsEntity();
+                                    goodsEntity.setBUYCOUNT(child.get(i).getBUYCOUNT() + "");
+                                    goodsEntity.setGOODSGUID(child.get(i).getGOODSGUID() + "");
+                                    JSON_DATA.add(goodsEntity);
+                                }
+                                if (mChild != null) {
+                                    filterChildData.put(key, mChild);
+                                }
+                                ParentEntity filterParentEntity = new ParentEntity();
+                                filterParentEntity.setShopID(key);
+                                filterParentEntity.setShopName(child.get(0).getSHOPNAME());
+                                mFilterParentData.add(filterParentEntity);
+                            }
+                            Gson gson = new Gson();
+                            String s = gson.toJson(JSON_DATA);
+                            CommitData(s, filterChildData, filterParentData);
+                        }
+                    } else {
+                        Toast.makeText(ShopCarActivity.this, "购物车为空", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
 
     }
 
@@ -71,60 +137,61 @@ public class ShopCarActivity extends BaseActivity {
         all_choice = (CheckableFrameLayout) findViewById(R.id.all_choice);
         tv_all1 = (TextView) findViewById(R.id.tv_all1);
         iv_accounts = (TextView) findViewById(R.id.accounts);
-        ev = (ExpandableListView) findViewById(R.id.ev);
+        expandableListView = (ExpandableListView) findViewById(R.id.ev);
         btn_back = (FrameLayout) findViewById(R.id.btn_back);
-        edit = (TextView) findViewById(R.id.edit);
+        delete = (TextView) findViewById(R.id.edit);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        //向服务器提交购物车信息并跳转到订单页面
-        iv_accounts.setOnClickListener(new View.OnClickListener() {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //向服务器发送请求
-                needShowProgress("正在提交");
-                HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
-                ArrayList<ParentEntity> parentData = (ArrayList<ParentEntity>) myAdapter.getParentData();
-                ArrayList<ParentEntity> filterParentData = new ArrayList<ParentEntity>();
-                HashMap<String, List<ShopCarEntity>> filterChildData = new HashMap<String, List<ShopCarEntity>>();
-                ArrayList<GoodsEntity> JSON_DATA = new ArrayList<GoodsEntity>();
-                if (parentData != null) {
-                    for (int i = 0; i < parentData.size(); i++) {
-                        if ("true".equals(parentData.get(i).getCheck())) {
-                            filterParentData.add(parentData.get(i));
-                        }
-                    }
-
-                    Iterator iter = childData.entrySet().iterator();
-                    while (iter.hasNext()) {
-                        ParentEntity fatherEntity = new ParentEntity();
-                        Map.Entry entry = (Map.Entry) iter.next();
-                        String key = (String) entry.getKey();
-                        List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
-                        List<ShopCarEntity> mChild = new ArrayList<ShopCarEntity>();
-                        for (int i = 0; i < child.size(); i++) {
-                            if ("true".equals(child.get(i).getCHECK())) {
-                                mChild.add(child.get(i));
+                //myAdapter.getChildData();
+                ibuilder = new CustomDialog.Builder(ShopCarActivity.this);
+                ibuilder.setTitle(R.string.prompt);
+                ibuilder.setMessage("是否删除？");
+                ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
+                        if (childData != null) {
+                            Iterator iter = childData.entrySet().iterator();
+                            List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
+                            while (iter.hasNext()) {
+                                ParentEntity fatherEntity = new ParentEntity();
+                                Map.Entry entry = (Map.Entry) iter.next();
+                                String key = (String) entry.getKey();
+                                List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+                                for (int i = 0; i < child.size(); i++) {
+                                    if ("true".equals(child.get(i).getCHECK())) {
+                                        filterData.add(child.get(i));
+                                    }
+                                }
                             }
-                            GoodsEntity goodsEntity = new GoodsEntity();
-                            goodsEntity.setBUYCOUNT(child.get(i).getBUYCOUNT() + "");
-                            goodsEntity.setGOODSGUID(child.get(i).getGOODSGUID() + "");
-                            JSON_DATA.add(goodsEntity);
+                            List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
+                            for (int i = 0; i < filterData.size(); i++) {
+                                DeleteEntity deleteEntity = new DeleteEntity();
+                                deleteEntity.setMERCHANDISEID(filterData.get(i).getGOODSGUID());
+                                deleteData.add(deleteEntity);
+                            }
+                            Gson gson = new Gson();
+                            String s = gson.toJson(deleteData);
+                            DeleteData(s);
+                        } else {
+                            Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
                         }
-                        if (mChild != null) {
-                            filterChildData.put(key, mChild);
-                        }
-                    }
-                    Gson gson = new Gson();
-                    String s = gson.toJson(JSON_DATA);
-                    CommitData(s, filterChildData, filterParentData);
 
-                }
+                    }
+                });
+                ibuilder.setNegativeButton(R.string.cancel, null);
+                ibuilder.create().show();
             }
         });
+
+
     }
 
     @Override
@@ -173,6 +240,19 @@ public class ShopCarActivity extends BaseActivity {
     public void onResponseShopCarData(List<LinkedTreeMap<String, String>> ShopCarData) {
         int count = ShopCarData == null ? 0 : ShopCarData.size();
         if (count <= 0) {
+            List<ParentEntity> parentResult=new ArrayList<ParentEntity>();
+            HashMap<String, List<ShopCarEntity>> childResult=new HashMap<String, List<ShopCarEntity>>();
+            myAdapter.bindData(parentResult, childResult, new ShopAdapter.AdapterCallBack() {
+                @Override
+                public void UpdateData() {
+
+                }
+
+                @Override
+                public void UpdateMoney(String money) {
+
+                }
+            });
             return;
         }
         List<ShopCarEntity> result = new ArrayList<ShopCarEntity>();
@@ -181,11 +261,6 @@ public class ShopCarActivity extends BaseActivity {
             entity.setCHECK("true");
             result.add(entity);
         }
-        //暂且不做数据库插入操作
-        //  if (result.size() > 0) {
-        //    ShopCarDao shopCarDao =DBInterface.instance().openWritableDb().getShopCarDao();
-        //  shopCarDao.insertOrReplaceInTx(result);
-        // }
         fatherEntities = new ArrayList<ParentEntity>();
         childData = new HashMap<String, List<ShopCarEntity>>();
         for (int i = 0; i < result.size(); i++) {
@@ -223,6 +298,7 @@ public class ShopCarActivity extends BaseActivity {
             public void UpdateMoney(String money) {
                 tv_all1.setText("总计：" + money);
             }
+
         });
 
 
@@ -237,7 +313,7 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void run() {
                 for (int i = 0; i < fatherEntities.size(); i++) {
-                    ev.expandGroup(i);
+                    expandableListView.expandGroup(i);
                 }
             }
         });
@@ -277,6 +353,7 @@ public class ShopCarActivity extends BaseActivity {
                             i.putExtra("childData", filterChildData);
                             i.putExtra("parentData", filterParentData);
                             startActivity(i);
+                            finish();
                         } else {
                             Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();
                         }
@@ -291,5 +368,50 @@ public class ShopCarActivity extends BaseActivity {
         });
     }
 
+    //删除商品
+    private void DeleteData(String deletedata) {
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("USERGUID", "2222").put("JSONDATA", deletedata).build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelCartItem", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol).build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Log.e("CommitData", "ERROR");
+                needHideProgress();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    if(responseProtocol.getResponse()==null||"".equals(responseProtocol.getResponse())) {
+                        try {
+                            Log.i("删除数据返回数据----", responseProtocol.getResponse());
+                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                            String success = jsonObject.getString("success");
+                            if (success.equals("yes")) {
+                                requestShopCarDataChanged();
+                            } else {
+                                Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        //暂时这样做
+                        Log.i("删除后加载数据----","是");
+                        requestShopCarDataChanged();
+                    }
+                } else {
+                    Log.i("ERROR", errorMsg.msg);
+                }
+
+            }
+        });
+    }
 
 }

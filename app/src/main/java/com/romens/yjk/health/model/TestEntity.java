@@ -2,7 +2,7 @@ package com.romens.yjk.health.model;
 
 /**
  * Created by romens007 on 2015/8/19.
- * 用于测试的bean
+ *
  */
 public class TestEntity {
     private int Type;
