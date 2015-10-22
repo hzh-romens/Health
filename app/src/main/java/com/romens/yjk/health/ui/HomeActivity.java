@@ -154,7 +154,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     @Override
     protected void onStop() {
         if (!mResolvingError) {
-            mobvoiApiClient.disconnect();
+        //    mobvoiApiClient.disconnect();
         }
         super.onStop();
     }
