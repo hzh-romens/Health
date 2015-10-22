@@ -64,6 +64,7 @@ import com.romens.yjk.health.ui.adapter.MedicinalDetailAdapter;
 import com.romens.yjk.health.ui.cells.PopWindowCell;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
+import com.romens.yjk.health.ui.controls.ADErrorControl;
 import com.romens.yjk.health.ui.controls.ADGroupNameControls;
 import com.romens.yjk.health.ui.controls.ADHorizontalScrollControl;
 import com.romens.yjk.health.ui.controls.ADIllustrationControl;
@@ -100,14 +101,15 @@ public class MedicinalDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicinal_detail, R.id.action_bar);
+        //测试数据
         String s = getIntent().getStringExtra("guid");
         if (s != null) {
             GUID = s;
+            Log.i("guid=====",GUID);
         } else {
             GUID = "";
+            GUID = "851823b0-75fc-4795-8c2f-4554ec5402cf";
         }
-        //测试数据
-        GUID = "851823b0-75fc-4795-8c2f-4554ec5402cf";
         initView();
         //  requestShopCarCountChanged();
         requestNearbyData();
@@ -310,7 +312,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
-                    Log.i("数据---", response);
                     data = new ArrayList<TestEntity>();
                     if (response != null) {
                         try {
@@ -348,9 +349,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                             }
 
                             //   controls.append(4, new ADEmptyControl());
-                            MedicinalDetailAdapter medicinalDetailAdapter2 = new MedicinalDetailAdapter(MedicinalDetailActivity.this);
-                            medicinalDetailAdapter2.bindData(controls);
-                            recyclerView.setAdapter(medicinalDetailAdapter2);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -360,7 +359,13 @@ public class MedicinalDetailActivity extends BaseActivity {
 
                 } else {
                     Log.e("GetStoreData2", errorMsg.msg);
+                    //错误页面
+                    controls.append(0,new ADErrorControl());
+
                 }
+                MedicinalDetailAdapter medicinalDetailAdapter2 = new MedicinalDetailAdapter(MedicinalDetailActivity.this);
+                medicinalDetailAdapter2.bindData(controls);
+                recyclerView.setAdapter(medicinalDetailAdapter2);
             }
         });
     }

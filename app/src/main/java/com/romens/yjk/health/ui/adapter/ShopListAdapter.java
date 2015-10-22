@@ -68,7 +68,7 @@ public class ShopListAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ItemHolder itemHolder= (ItemHolder) holder;
-        GoodListEntity goodListEntity = mResult.get(position);
+        final GoodListEntity goodListEntity = mResult.get(position);
         if(goodListEntity.getPICBIG()!=null){
             itemHolder.iv.setImageBitmap(ImageUtils.bindLocalImage(goodListEntity.getPICBIG()));
         }
@@ -100,6 +100,7 @@ public class ShopListAdapter extends RecyclerView.Adapter{
             @Override
             public void onClick(View v) {
                 Intent i=new Intent(mContext, MedicinalDetailActivity.class);
+                i.putExtra("guid",goodListEntity.getMERCHANDISEID());
                 mContext.startActivity(i);
             }
         });

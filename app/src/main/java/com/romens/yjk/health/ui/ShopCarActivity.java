@@ -27,6 +27,7 @@ import com.romens.extend.scanner.FinishListener;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.DeleteEntity;
 import com.romens.yjk.health.model.GoodsEntity;
@@ -179,7 +180,7 @@ public class ShopCarActivity extends BaseActivity {
                             }
                             Gson gson = new Gson();
                             String s = gson.toJson(deleteData);
-                            DeleteData(s);
+                            DeleteData(s,deleteData.size());
                         } else {
                             Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
                         }
@@ -369,7 +370,7 @@ public class ShopCarActivity extends BaseActivity {
     }
 
     //删除商品
-    private void DeleteData(String deletedata) {
+    private void DeleteData(String deletedata, final int reduceCount) {
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", "2222").put("JSONDATA", deletedata).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelCartItem", args);
@@ -395,6 +396,8 @@ public class ShopCarActivity extends BaseActivity {
                             String success = jsonObject.getString("success");
                             if (success.equals("yes")) {
                                 requestShopCarDataChanged();
+
+
                             } else {
                                 Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();
                             }
@@ -403,7 +406,7 @@ public class ShopCarActivity extends BaseActivity {
                         }
                     }else{
                         //暂时这样做
-                        Log.i("删除后加载数据----","是");
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -reduceCount);
                         requestShopCarDataChanged();
                     }
                 } else {

@@ -21,6 +21,7 @@ public class ADErrorDataCell extends FrameLayout{
         setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
         imageView=new ImageView(context);
         imageView.setBackground(getResources().getDrawable(R.drawable.error));
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         addView(imageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
     }
 }

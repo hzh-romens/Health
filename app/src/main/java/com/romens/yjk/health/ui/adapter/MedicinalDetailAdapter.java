@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
 import com.romens.yjk.health.ui.controls.ADEmptyControl;
+import com.romens.yjk.health.ui.controls.ADErrorControl;
 import com.romens.yjk.health.ui.controls.ADGroupControl;
 import com.romens.yjk.health.ui.controls.ADGroupNameControls;
 import com.romens.yjk.health.ui.controls.ADHorizontalScrollControl;
@@ -55,6 +56,8 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter<ADHolder>{
             return ADGroupNameControls.createViewHolder(mContext);
         }else if(viewType==13){
             return ADHorizontalScrollControl.createViewHolder(mContext);
+        }else if(viewType==-2){
+            return ADErrorControl.createViewHolder(mContext);
         }
         return ADEmptyControl.createViewHolder(mContext);
     }
