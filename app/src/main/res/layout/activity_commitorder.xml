@@ -25,6 +25,7 @@
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:background="@color/md_grey_100"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
@@ -34,6 +35,8 @@
             android:layout_alignParentLeft="true"
             android:id="@+id/tv_content"
             android:text="共2件 总金额¥100"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/text_size_medium"
            />
         <TextView
             android:id="@+id/accounts"
@@ -43,9 +46,10 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="结算"
+            android:includeFontPadding="false"
             android:layout_alignParentRight="true"
             android:textColor="@color/md_white_1000"
-            android:textSize="@dimen/text_size_large" />
+            android:textSize="@dimen/text_size_xlarge" />
         </RelativeLayout>
 
 </FrameLayout>

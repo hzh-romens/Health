@@ -3,11 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="8dp">
+    >
+    <!--android:padding="8dp">-->
 
     <LinearLayout
         android:layout_width="115dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/padding_inner"
         android:orientation="horizontal">
 
         <com.romens.yjk.health.ui.components.CheckableFrameLayout
@@ -25,75 +27,88 @@
             android:layout_height="96dp"
             android:layout_gravity="center"
             android:layout_margin="8dp"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:src="@drawable/picture_fail" />
     </LinearLayout>
+    <!--android:layout_margin="8dp"-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
         android:gravity="center_vertical"
-        android:orientation="vertical">
-        <RelativeLayout
+        android:orientation="vertical"
+        >
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_inner"
+            android:layout_marginLeft="@dimen/padding_inner"
+            android:layout_marginRight="@dimen/padding_inner"
             >
+            <!--android:padding="@dimen/padding_inner"-->
         <TextView
-            android:padding="@dimen/padding_inner"
             android:id="@+id/tv_shop_infor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
+            android:layout_marginRight="48dp"
+            android:includeFontPadding="false"
            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_gravity="left|center_vertical"
             android:text="多少分开始动画，建设的快速离开ssdsakdsa"
             android:textColor="@android:color/background_dark"
             android:textSize="@dimen/title_sub_size"
+            android:gravity="center"
             android:typeface="monospace" />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:textColor="@android:color/background_dark"
+                android:includeFontPadding="false"
                 android:id="@id/discountPrice"
                 android:textSize="@dimen/title_sub_size"
-                android:padding="@dimen/padding_inner"
+                android:layout_gravity="right|center_vertical"
+                android:gravity="center"
                 android:text="¥15.1"/>
-            </RelativeLayout>
-        <RelativeLayout
+            </FrameLayout>
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/padding_inner"
+            android:layout_marginLeft="@dimen/padding_inner"
+            android:layout_marginTop="@dimen/padding_inner"
             >
 
         <TextView
             android:id="@+id/tv_store"
             android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
+            android:layout_gravity="left"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
+            android:layout_marginRight="48dp"
             android:text="青岛药店"
-            android:layout_marginLeft="@dimen/padding_inner"
+            android:includeFontPadding="false"
             android:gravity="center_vertical"
             android:textColor="@android:color/background_dark"
             android:textSize="@dimen/title_sub_size"
             android:typeface="normal" />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:id="@id/realPrice"
                 android:text="¥16"
+                android:layout_gravity="right"
+                android:includeFontPadding="false"
                 android:textSize="@dimen/title_small_size"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/padding_inner"
+                android:gravity="center"
                 android:textColor="@color/md_grey_400"
                 />
-            </RelativeLayout>
+            </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -118,6 +133,7 @@
                 android:background="@drawable/shopping_cart_product_num_edit"
                 android:gravity="center"
                 android:text="1"
+                android:includeFontPadding="false"
                 android:textColor="@color/md_grey_400"
                 android:textSize="@dimen/title_sub_size"
                 android:typeface="normal" />

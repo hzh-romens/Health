@@ -4,40 +4,43 @@
     android:background="@color/white"
     android:layout_height="match_parent">
     <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/padding_outter"
+        android:scaleType="centerInside"
         android:src="@drawable/address"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="64dp"
+        android:layout_marginLeft="56dp"
         android:layout_marginRight="48dp"
         android:layout_gravity="center_vertical">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="收货人: 李四 15811331144"
+            android:includeFontPadding="false"
             android:singleLine="true"
             android:ellipsize="end"
-            android:textSize="@dimen/title_sub_size"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="@color/md_black_1000"
             android:id="@+id/person"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="北京市东城区..."
+            android:includeFontPadding="false"
             android:singleLine="true"
             android:ellipsize="end"
-            android:textSize="@dimen/title_sub_size"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="@color/md_black_1000"
             android:id="@+id/address"/>
         </LinearLayout>
     <ImageView
-       android:layout_width="32dp"
-        android:layout_height="32dp"
+       android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center_vertical|right"
         android:src="@drawable/go"/>
 </FrameLayout>

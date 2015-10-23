@@ -29,6 +29,7 @@
             android:drawablePadding="8dp"
             android:textColorHint="@color/md_grey_500"
             android:layout_height="match_parent"
+            android:textSize="@dimen/text_size_xlarge"
             android:background="@drawable/edittext_background_radiu"
             android:drawableLeft="@drawable/ic_search_grey600_24dp"
             />
@@ -44,8 +45,8 @@
         android:layout_height="32dp"
         android:orientation="horizontal"
         android:id="@+id/radiogroup"
-        android:layout_marginBottom="@dimen/padding_inner"
-        android:layout_marginTop="@dimen/padding_inner"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="@dimen/padding_outter"
         android:layout_marginLeft="@dimen/padding_outter">
         <RadioButton
@@ -59,7 +60,6 @@
             android:background="@drawable/radio_check_states"
             android:gravity="center"
             android:textSize="@dimen/text_size_medium"
-            android:layout_margin="2dp"
             />
         <RadioButton
             android:layout_width="0dp"
@@ -72,7 +72,6 @@
             android:background="@drawable/radio_check_states"
             android:textSize="@dimen/text_size_medium"
             android:gravity="center"
-            android:layout_margin="2dp"
             />
         <RadioButton
             android:layout_width="0dp"
@@ -85,7 +84,6 @@
             android:background="@drawable/radio_check_states"
             android:textSize="@dimen/text_size_medium"
             android:gravity="center"
-            android:layout_margin="2dp"
             />
     </RadioGroup>
     <View

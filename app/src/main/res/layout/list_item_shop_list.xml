@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     >
     <ImageView
         android:layout_width="96dp"
-        android:layout_height="128dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:layout_height="112dp"
+      android:layout_gravity="center_vertical"
         android:id="@+id/iv"
         style="@style/ImageStyle"
-        android:src="@drawable/succees"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/succees"/> <!--android:layout_marginTop="@dimen/padding_inner"-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="128dp"
-        android:layout_centerVertical="true"
+       android:layout_gravity="center_vertical"
         android:layout_marginRight="80dp"
         android:gravity="center_vertical"
         android:layout_marginBottom="4dp"
-        android:layout_marginTop="@dimen/padding_inner"
+
         android:id="@+id/linear_item"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/title_sub_size"
+            android:textSize="@dimen/title_text_size"
             android:id="@+id/name"
             android:textColor="@color/md_black_1000"
             android:typeface="normal"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padding_inner"
             android:layout_marginRight="@dimen/padding_inner"
-            android:layout_marginBottom="@dimen/padding_inner"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="@color/md_grey_400"
             android:text="999评论"
             android:layout_marginLeft="@dimen/padding_inner"
@@ -71,12 +71,12 @@
     <ImageView
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentRight="true"
+       android:layout_gravity="center_vertical|right|bottom"
         android:src="@drawable/succees"
        android:layout_marginRight="@dimen/padding_inner"
         android:layout_marginBottom="@dimen/padding_outter"
-        android:layout_alignParentBottom="true"
+
         android:id="@+id/shop"
         android:scaleType="centerInside"/>
 
-</RelativeLayout>
+</FrameLayout>

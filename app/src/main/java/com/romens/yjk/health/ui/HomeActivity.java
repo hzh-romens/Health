@@ -108,13 +108,14 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));
                 } else if (id == 4) {
                     startActivity(new Intent(HomeActivity.this, MyOrderActivity.class));
-                }else if (id == 5) {
+                } else if (id == 5) {
                     startActivity(new Intent(HomeActivity.this, ControlAddressActivity.class));
                 }
             }
         });
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
+        requestShopCarCountData();
 
         mobvoiApiClient = new MobvoiApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -220,6 +221,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             return mPageTitle.get(position);
         }
     }
+
     //获取购物车数量
     private void requestShopCarCountData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
@@ -245,7 +247,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String buycount = jsonObject.getString("BUYCOUNT");
                         //shoppingCartItem.setIcon(Integer.parseInt(buycount));
-                        sumCount = Integer.parseInt(buycount);
+                        sumCount=Integer.parseInt(buycount);
                         updateShoppingCartCount(sumCount);
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -75,6 +75,7 @@ import com.romens.yjk.health.ui.controls.ADStoreControls;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,32 +112,7 @@ public class MedicinalDetailActivity extends BaseActivity {
             GUID = "851823b0-75fc-4795-8c2f-4554ec5402cf";
         }
         initView();
-        //  requestShopCarCountChanged();
         requestNearbyData();
-        float translationY = recyclerView.getTranslationY();
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                //newState:0 1 2
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                //向下滑动
-                if (dy > 0) {
-
-                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-
-                } else {
-                    int top = recyclerView.getChildAt(0).getTop();
-                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-
-                }
-            }
-        });
-        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
     }
 
@@ -158,6 +134,13 @@ public class MedicinalDetailActivity extends BaseActivity {
         initLayoutManager();
 
         tv_favorite = (TextView) findViewById(R.id.favorite);
+        tv_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addtoFavorite();
+            }
+        });
+
         tv_buy = (TextView) findViewById(R.id.tv_buy);
         tv_buy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +186,49 @@ public class MedicinalDetailActivity extends BaseActivity {
             }
         });
     }
+    //添加收藏夹
+    private void addtoFavorite() {
+
+        int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("MERCHANDISEID",GUID);
+        args.put("USERGUID", "2222");
+
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "AddMyFavour", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Log.e("addtofarvite", "ERROR");
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String response = responseProtocol.getResponse();
+                    try {
+                        JSONObject jsonObject=new JSONObject(response);
+                        String returnMsg = jsonObject.getString("success");
+                        if("yes".equals(returnMsg)){
+                            Toast.makeText(MedicinalDetailActivity.this,"加入收藏夹成功",Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(MedicinalDetailActivity.this,"加入收藏夹失败",Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(MedicinalDetailActivity.this,"加入收藏夹失败",Toast.LENGTH_SHORT).show();
+                    Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
+                }
+            }
+        });
+
+    }
 
     private void initLayoutManager() {
         layoutManager = new ABaseLinearLayoutManager(MedicinalDetailActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -242,53 +268,6 @@ public class MedicinalDetailActivity extends BaseActivity {
 
     }
 
-    //更新购物车数量
-    private void updateShoppingCartCount(int count) {
-        Bitmap shoppingCartCount = ShoppingCartUtils.createShoppingCartIcon(this, R.drawable.ic_shopping_cart_white_24dp, count);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        shoppingCartCount.setDensity(dm.densityDpi);
-        final BitmapDrawable bd = new BitmapDrawable(this.getResources(), shoppingCartCount);
-        bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
-        shopcar.setCompoundDrawables(null, bd, null, null);
-    }
-
-    //购物车数据请求
-    private void requestShopCarCountChanged() {
-        // int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
-        Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("", "").build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("GetBuyCarCount", "ERROR");
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (errorMsg == null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
-                    LinkedTreeMap<String, String> stringStringLinkedTreeMap = response.get(0);
-                    final String buycount = stringStringLinkedTreeMap.get("BUYCOUNT");
-                    AndroidUtilities.runOnUIThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateShoppingCartCount(Integer.parseInt(buycount));
-                        }
-                    });
-                } else {
-                    Log.e("GetBuyCarCount", "ERROR");
-                }
-            }
-        });
-    }
 
     private List<WeiShopEntity> result;
 
@@ -400,7 +379,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                     } else {
                         Toast.makeText(MedicinalDetailActivity.this, "成功加入购物车", Toast.LENGTH_SHORT).show();
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
-                        requestShopCarCountChanged();
                     }
                 } else {
                     Log.e("InsertIntoCar", errorMsg.toString() + "====" + errorMsg.msg);
@@ -530,7 +508,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                         if (aMapLocation != null) {
                             AMapLocException exception = aMapLocation.getAMapException();
                             if (exception == null || exception.getErrorCode() == 0) {
-                                Log.i("经纬度---", aMapLocation.getLongitude() + "==" + aMapLocation.getLatitude());
                                 Map<String, String> args = new FacadeArgs.MapBuilder()
                                         .put("MERCHANDISEID", GUID)
                                         .put("LONGITUDE", aMapLocation.getLongitude() + "")

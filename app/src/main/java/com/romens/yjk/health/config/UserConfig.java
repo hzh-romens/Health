@@ -242,6 +242,7 @@ public class UserConfig {
     }
 
     public static class AppChannel {
+        //packageName and appName
         public final String orgCode;
         public final String orgName;
 

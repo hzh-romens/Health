@@ -37,9 +37,10 @@
     <style name="title_textview_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textSize">@dimen/text_size_xlarge</item>
         <item name="android:textColor">@color/transparent_black</item>
         <item name="android:layout_centerInParent">true</item>
+        <item name="android:includeFontPadding">false</item>
         <item name="android:gravity">center</item>
     </style>
     <style name="ImageStyle">
