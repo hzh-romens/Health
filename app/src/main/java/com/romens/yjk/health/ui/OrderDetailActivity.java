@@ -31,6 +31,8 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.ui.adapter.OrderExpandableDetailAdapter;
@@ -63,6 +65,7 @@ public class OrderDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userGuid = UserGuidConfig.USER_GUID;
         ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = actionBarEvent();
         container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
@@ -73,7 +76,7 @@ public class OrderDetailActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new refreshTask().execute();
+                requestOrderDetailList(userGuid, orderId);
             }
         });
 
@@ -109,10 +112,12 @@ public class OrderDetailActivity extends BaseActivity {
         return actionBar;
     }
 
+    private String orderId;
+
     public void initData() {
         setRow();
         Intent intent = getIntent();
-        String orderId = intent.getStringExtra("orderId");
+        orderId = intent.getStringExtra("orderId");
         requestOrderDetailList(userGuid, orderId);
     }
 
@@ -198,13 +203,14 @@ public class OrderDetailActivity extends BaseActivity {
                     cell.setKeyAndValue("总计", "￥" + orderListEntity.getOrderPrice(), false);
                     cell.setValueTextColor(0xfff06292);
                 } else if (position == payWayRow) {
-                    String result = "";
-                    if (orderListEntity.getDeliverType().equals("1")) {
-                        result = "药店派送";
-                    } else if (orderListEntity.getDeliverType().equals("2")) {
-                        result = "到店自取";
-                    }
-                    cell.setKeyAndValue("支付方式", result, true);
+//                    String result = "";
+//                    if (orderListEntity.getDeliverType().equals("1")) {
+//                        result = "药店派送";
+//                    } else if (orderListEntity.getDeliverType().equals("2")) {
+//                        result = "到店自取";
+//                    }
+//                    cell.setKeyAndValue("支付方式", result, true);
+                    cell.setKeyAndValue("支付方式", orderListEntity.getDeliverType(), true);
                 } else if (position == consigneeNameRow) {
                     cell.setKeyAndValue("收获人姓名", orderListEntity.getReceiver(), false);
                 } else if (position == consigneePhoneRow) {
@@ -220,6 +226,7 @@ public class OrderDetailActivity extends BaseActivity {
                 cell.setTextColor(getResources().getColor(R.color.theme_title));
                 if (position == consigneeTitleRow) {
                     cell.setText("收货人信息");
+                    cell.setTextColor(ResourcesConfig.primaryColor);
                 }
                 if (position == orderNumRow) {
                     cell.setText("订单编号：" + orderListEntity.getOrderNo());
@@ -311,7 +318,7 @@ public class OrderDetailActivity extends BaseActivity {
             orderListEntity.setOrderPrice(object.getString("ORDERPRICE"));
             orderListEntity.setReceiver(object.getString("RECEIVER"));
             orderListEntity.setAddress(object.getString("ADDRESS"));
-            orderListEntity.setDeliverType(object.getString("deliveryType"));
+            orderListEntity.setDeliverType(object.getString("DELIVERYTYPE"));
             orderListEntity.setOrderStatus(object.getString("ORDER_STATUS"));
             orderListEntity.setOrderStatusStr(object.getString("ORDERSTATUSSTR"));
             JSONArray array = object.getJSONArray("GOODSLIST");
@@ -343,22 +350,4 @@ public class OrderDetailActivity extends BaseActivity {
         adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
     }
-
-    class refreshTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
 }

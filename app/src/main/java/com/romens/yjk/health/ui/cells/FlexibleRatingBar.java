@@ -30,8 +30,11 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.widget.RatingBar;
 
-import anlc.drawlayout.R;
+import com.romens.yjk.health.R;
 
+/**
+ * github找的一个自定义的RatingBar
+ */
 public class FlexibleRatingBar extends RatingBar {
 
     private int colorOutlineOn = Color.rgb(0x11, 0x11, 0x11);

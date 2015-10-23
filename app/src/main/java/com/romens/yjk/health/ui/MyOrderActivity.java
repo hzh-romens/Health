@@ -15,9 +15,7 @@ import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.fragment.OrderAllFragment;
-import com.romens.yjk.health.ui.fragment.OrderAlreadyCompleteFragment;
-import com.romens.yjk.health.ui.fragment.OrderAlreadyEvaluateFragment;
-import com.romens.yjk.health.ui.fragment.OrderBeingFragment;
+import com.romens.yjk.health.ui.fragment.OrderFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +29,12 @@ public class MyOrderActivity extends BaseActivity {
     private SlidingFixTabLayout slidingFixTabLayout;
     private ViewPager viewPager;
     private OrderPagerAdapter viewPagerAdapter;
+
+    public final static int ORDER_TYPE_ALL = 1;
+    public final static int ORDER_TYPE_BEING = 2;
+    public final static int ORDER_TYPE_COMPLETE = 3;
+    public final static int ORDER_TYPE_EVALUATE = 4;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class MyOrderActivity extends BaseActivity {
         container.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         setContentView(container, actionBar);
 
-        viewPagerAdapter=new OrderPagerAdapter(getSupportFragmentManager(),initPagerTitle(),initFragment());
+        viewPagerAdapter = new OrderPagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
         viewPager.setAdapter(viewPagerAdapter);
 
         slidingFixTabLayout.setCustomTabView(R.layout.widget_tab_indicator, android.R.id.text1);
@@ -56,15 +60,14 @@ public class MyOrderActivity extends BaseActivity {
         slidingFixTabLayout.setSelectedIndicatorColors(Color.WHITE);
         slidingFixTabLayout.setDistributeEvenly(true);
         slidingFixTabLayout.setViewPager(viewPager);
-
     }
 
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new OrderAllFragment());
-        fragments.add(new OrderBeingFragment());
-        fragments.add(new OrderAlreadyCompleteFragment());
-        fragments.add(new OrderAlreadyEvaluateFragment());
+        fragments.add(new OrderFragment(ORDER_TYPE_BEING));
+        fragments.add(new OrderFragment(ORDER_TYPE_COMPLETE));
+        fragments.add(new OrderFragment(ORDER_TYPE_EVALUATE));
         return fragments;
     }
 

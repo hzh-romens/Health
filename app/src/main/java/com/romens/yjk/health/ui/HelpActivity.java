@@ -1,10 +1,13 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -14,10 +17,12 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.HelpQuestionConfig;
 import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.cells.KeyAndImgCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,19 +49,40 @@ public class HelpActivity extends BaseActivity {
 
         refreshLayout = new SwipeRefreshLayout(this);
         UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
+        refreshLayout.setBackgroundResource(R.drawable.bg_light_gray);
         container.addView(refreshLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
         listView = new ListView(this);
+        listView.setDivider(null);
+        listView.setDividerHeight(0);
+        listView.setVerticalScrollBarEnabled(false);
         refreshLayout.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         adapter = new HelpAdapter(this, data);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(HelpActivity.this, HelpAnswerActivity.class);
+                intent.putExtra("question", position + 1);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initData() {
         data = new ArrayList<>();
-        data.add(getResources().getString(R.string.question1));
-        data.add(getResources().getString(R.string.question2));
-        data.add(getResources().getString(R.string.question3));
+        String key = "";
+        for (int i = 1; i < 4; i++) {
+            key = "question" + i;
+            data.add(HelpQuestionConfig.getData(key));
+        }
     }
 
     private void actionBarEvent(ActionBar actionBar) {
@@ -86,6 +112,11 @@ public class HelpActivity extends BaseActivity {
         }
 
         @Override
+        public boolean isEnabled(int position) {
+            return position < data.size();
+        }
+
+        @Override
         public int getCount() {
             return data.size() + 3;
         }
@@ -102,7 +133,7 @@ public class HelpActivity extends BaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (position == data.size() + 1) {
+            if (position == data.size()) {
                 if (convertView == null) {
                     convertView = new ShadowSectionCell(context);
                 }
@@ -111,15 +142,15 @@ public class HelpActivity extends BaseActivity {
                     convertView = new KeyAndImgCell(context);
                 }
                 KeyAndImgCell cell = (KeyAndImgCell) convertView;
-                if (position <= data.size()) {
-                    cell.setInfo(data.get(position), false, false);
-                } else if (position == data.size() + 2) {
+                cell.setCellBackgroudColor(Color.WHITE);
+                if (position < data.size()) {
+                    cell.setInfo(data.get(position), false, true);
+                } else if (position == data.size() + 1) {
                     cell.setInfo("没有您的问题？", true, true);
                     cell.setDivider(true, AndroidUtilities.dp(16), AndroidUtilities.dp(16));
-                } else if (position == data.size() + 3) {
+                } else if (position == data.size() + 2) {
                     cell.setInfo("联系客服电话", false, true);
                 }
-
             }
 
             return convertView;

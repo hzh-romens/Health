@@ -9,16 +9,19 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
+import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -30,9 +33,11 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
+import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +56,13 @@ public class OrderAllFragment extends BaseFragment {
     private List<AllOrderEntity> mOrderEntities;
 
     private String userGuid = "3333";
+    private ImageAndTextCell attachView;
+    private FrameLayout content;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userGuid = UserGuidConfig.USER_GUID;
         initData();
         adapter = new AllOrderViewAdapter(getActivity(), mOrderEntities);
     }
@@ -67,22 +75,48 @@ public class OrderAllFragment extends BaseFragment {
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context context = getActivity();
-        FrameLayout content = new FrameLayout(context);
+        content = new FrameLayout(context);
         swipeRefreshLayout = new SwipeRefreshLayout(context);
         content.addView(swipeRefreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new AllOrderAsynTask().execute();
-            }
-        });
+        swipeRefreshLayout.setRefreshing(true);
 
         recyclerView = new RecyclerView(context);
         swipeRefreshLayout.addView(recyclerView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mOrderEntities = new ArrayList<>();
+                requestOrderList(userGuid);
+            }
+        });
+        addCellView(content);
+        refershContentView();
         return content;
     }
+
+    public void refershContentView() {
+        if (mOrderEntities != null && mOrderEntities.size() > 0) {
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+            attachView.setVisibility(View.GONE);
+        } else {
+            swipeRefreshLayout.setVisibility(View.GONE);
+            attachView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void addCellView(FrameLayout container) {
+        attachView = new ImageAndTextCell(getActivity());
+        attachView.setImageAndText(R.drawable.no_order_img, "您还没有相关订单");
+        LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+        layoutParams.gravity = Gravity.CENTER;
+        attachView.setPadding(AndroidUtilities.dp(0), AndroidUtilities.dp(100), AndroidUtilities.dp(0), AndroidUtilities.dp(0));
+        attachView.setLayoutParams(layoutParams);
+        container.addView(attachView);
+    }
+
 
     private void requestOrderList(String userGuid) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
@@ -125,6 +159,8 @@ public class OrderAllFragment extends BaseFragment {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
+        refershContentView();
+        swipeRefreshLayout.setRefreshing(false);
         adapter.setOrderEntities(mOrderEntities);
         adapter.notifyDataSetChanged();
     }
@@ -136,25 +172,6 @@ public class OrderAllFragment extends BaseFragment {
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
-    }
-
-    class AllOrderAsynTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            swipeRefreshLayout.setRefreshing(false);
-        }
     }
 
     class AllOrderViewAdapter extends RecyclerView.Adapter<ADHolder> {

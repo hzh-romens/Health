@@ -27,6 +27,7 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
@@ -69,10 +70,12 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
     private List<CitysEntity> districtList;
 
     private boolean isExecutInitList = false;
+    private String userGuid = "3333";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_shopping_address, R.id.action_bar);
         actionBarEven();
 
@@ -133,7 +136,7 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
 
         Gson gson = new Gson();
         String result = gson.toJson(entity);
-        requestSaveControlAddress("2222", result);
+        requestSaveControlAddress(userGuid, result);
     }
 
     public void requestSaveControlAddress(String userGuid, final String jsonData) {
