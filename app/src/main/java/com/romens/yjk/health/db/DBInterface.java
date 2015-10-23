@@ -10,9 +10,11 @@ import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
+import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
+import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 
 import java.util.List;
@@ -183,6 +185,14 @@ public class DBInterface {
         DrugGroupDao dao = openReadableDb().getDrugGroupDao();
         List<DrugGroupEntity> result = dao.queryBuilder()
                 .orderAsc(DrugGroupDao.Properties.SortIndex)
+                .list();
+        return result;
+    }
+    //查询浏览历史里面的所有的数据
+    public List<HistoryEntity> loadAllHistory() {
+        HistoryDao dao = openReadableDb().getHistoryDao();
+        List<HistoryEntity> result = dao.queryBuilder()
+                .orderAsc(HistoryDao.Properties.Id)
                 .list();
         return result;
     }

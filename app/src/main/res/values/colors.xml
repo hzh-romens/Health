@@ -28,4 +28,5 @@
     <color name="title_background_grey">#f9f9f9</color>
     <color name="accouns_color">#66cc00</color>
     <color name="reset_btn_bg">#f38202</color>
+    <color name="btntextcolor">#66cc00</color><!--dialog中按钮字体颜色 -->
 </resources>

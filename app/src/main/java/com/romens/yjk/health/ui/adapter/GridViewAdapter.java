@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.romens.android.io.image.ImageManager;
 import com.romens.android.io.image.ImageUtils;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.model.AboutTestEntity;
 import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
@@ -25,7 +23,6 @@ import java.util.List;
  * Created by romens007 on 2015/8/17.
  */
 public class GridViewAdapter extends BaseAdapter {
-  //  private List<AboutTestEntity> datas=new ArrayList<AboutTestEntity>();
     private List<String> datas=new ArrayList<String>();
     private Context mContext;
     public GridViewAdapter(List<String> data,Context context){

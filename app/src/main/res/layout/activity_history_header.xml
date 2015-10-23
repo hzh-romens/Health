@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        style="@style/titleStytle"
+        android:orientation="horizontal"
+        android:background="@color/md_grey_200">
+        <ImageView
+            style="@style/iv_back_style"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_outter"
+            android:id="@+id/back"
+            android:layout_alignParentLeft="true"/>
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textColor="@color/md_black_1000"
+           android:includeFontPadding="false"
+           android:text="历史浏览"
+           android:id="@+id/title"
+           android:textSize="@dimen/text_size_xlarge"
+           android:layout_centerInParent="true"
+           />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:layout_marginRight="@dimen/padding_outter"
+            android:layout_centerVertical="true"
+            android:id="@+id/clear"
+            android:text="清空"
+            android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/md_black_1000"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:id="@+id/refreshLayout"
+        android:layout_height="match_parent">
+        <ExpandableListView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/listView"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

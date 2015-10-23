@@ -9,12 +9,18 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.mobvoi.android.common.ConnectionResult;
 import com.mobvoi.android.common.api.MobvoiApiClient;
 import com.mobvoi.android.wearable.Wearable;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -24,6 +30,8 @@ import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
@@ -32,8 +40,12 @@ import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HomeActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
@@ -44,6 +56,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
     private boolean mResolvingError = false;
     MobvoiApiClient mobvoiApiClient;
+    private int sumCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +116,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 99);
-            }
-        }, 3000);
-
         mobvoiApiClient = new MobvoiApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(new MobvoiApiClient.ConnectionCallbacks() {
@@ -154,7 +160,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     @Override
     protected void onStop() {
         if (!mResolvingError) {
-            mobvoiApiClient.disconnect();
+        //    mobvoiApiClient.disconnect();
         }
         super.onStop();
     }
@@ -183,7 +189,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.shoppingCartCountChanged) {
             int count = (int) args[0];
-            updateShoppingCartCount(count);
+            sumCount=sumCount+count;
+            //updateShoppingCartCount(count);
+            updateShoppingCartCount(sumCount);
         }
     }
 
@@ -211,5 +219,41 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         public String getPageTitle(int position) {
             return mPageTitle.get(position);
         }
+    }
+    //获取购物车数量
+    private void requestShopCarCountData() {
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("USERGUID", "2222").build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol).build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+
+            @Override
+            public void onTokenTimeout(Message msg) {
+                needHideProgress();
+                Log.e("GetBuyCarCount", "ERROR");
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                        String buycount = jsonObject.getString("BUYCOUNT");
+                        //shoppingCartItem.setIcon(Integer.parseInt(buycount));
+                        sumCount = Integer.parseInt(buycount);
+                        updateShoppingCartCount(sumCount);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("GetBuyCarCount", "ERROR");
+                }
+            }
+        });
     }
 }

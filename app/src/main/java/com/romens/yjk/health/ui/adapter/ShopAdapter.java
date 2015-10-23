@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.romens.android.io.image.ImageManager;
+import com.romens.android.io.image.ImageUtils;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
@@ -65,11 +68,15 @@ public class ShopAdapter extends BaseExpandableListAdapter {
     public List<ParentEntity> getParentData() {
         return mFatherData;
     }
+    public SparseBooleanArray getParentStatus(){
+        return fatherStatus;
+    }
 
     public void bindData(List<ParentEntity> fatherData, HashMap<String, List<ShopCarEntity>> childData, AdapterCallBack adapterCallBack) {
         this.mFatherData = fatherData;
         this.mChildData = childData;
         this.mAdapterCallBack = adapterCallBack;
+        sumMoney=0;
         for (int i = 0; i < mFatherData.size(); i++) {
             fatherStatus.append(i, true);
         }
@@ -154,6 +161,20 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         int index = fatherStatus.indexOfValue(false);
         int i = provisional.indexOfValue(false);
         return index < 0 && i < 0;
+    }
+    public boolean isAllNotSelected(){
+        if(mFatherData!=null) {
+            SparseBooleanArray provisional = new SparseBooleanArray();
+            for (int i = 0; i < mFatherData.size(); i++) {
+                boolean b = childItemIsAllSelected(mFatherData.get(i).getShopID());
+                provisional.append(i, b);
+            }
+            int index = fatherStatus.indexOfValue(true);
+            int i = provisional.indexOfValue(true);
+            return index < 0 && i < 0;
+        }else {
+            return true;
+        }
     }
 
     //某一个parent下面的childItem是否全选
@@ -287,11 +308,15 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             holder = (ChildHolder) convertView.getTag();
         }
         final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-         holder.tv_num.setText(entity.getBUYCOUNT()+"");
+        holder.tv_num.setText(entity.getBUYCOUNT()+"");
         holder.tv_discountPrice.setText("¥" + entity.getGOODSPRICE());
         holder.tv_realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         holder.tv_infor.setText(entity.getNAME());
         holder.tv_store.setText(entity.getSPEC());
+
+      //  holder.iv_detail.setImageBitmap(ImageUtils.bindLocalImage("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg"));
+        Drawable defaultDrawables =  holder.iv_detail.getDrawable();
+        ImageManager.loadForView(mContext, holder.iv_detail,entity.getGOODURL(), defaultDrawables, defaultDrawables);
 
         holder.checkBox.setChecked(ch.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
 

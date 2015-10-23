@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
@@ -45,7 +46,7 @@ import java.util.Map;
  * 订单提交
  */
 public class CommitOrderActivity extends BaseActivity {
-    private ExpandableListView ev;
+    private ExpandableListView expandableListView;
     private FrameLayout back;
     private HashMap<String, List<ShopCarEntity>> childData;
     private List<ParentEntity> parentData;
@@ -74,23 +75,17 @@ public class CommitOrderActivity extends BaseActivity {
         parentEntity.setShopID("-1");
         parentEntity.setShopName("1");
         parentData.add(parentEntity);
-        List<ShopCarEntity> shopCarEntities = new ArrayList<ShopCarEntity>();
-        ShopCarEntity shopCarEntity = new ShopCarEntity();
-        shopCarEntity.setCHECK("false");
-        shopCarEntity.setSHOPID("-1");
-        shopCarEntities.add(shopCarEntity);
-        childData.put("-1", shopCarEntities);
         adapter = new CommitOrderAdapter(this);
-        ev.setAdapter(adapter);
+        expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
         //获取派送方式
         adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
             @Override
             public void getCheckData(String flag) {
-                if("药店派送".equals(flag)){
-                    DELIVERYTYPE="1";
-                }else{
-                    DELIVERYTYPE="2";
+                if ("药店派送".equals(flag)) {
+                    DELIVERYTYPE = "1";
+                } else {
+                    DELIVERYTYPE = "2";
                 }
             }
         });
@@ -98,8 +93,8 @@ public class CommitOrderActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < parentData.size() - 1; i++) {
-                    ev.expandGroup(i);
+                for (int i = 0; i < parentData.size(); i++) {
+                    expandableListView.expandGroup(i);
                 }
             }
         });
@@ -109,7 +104,7 @@ public class CommitOrderActivity extends BaseActivity {
 
     public void getAll(HashMap<String, List<ShopCarEntity>> childData) {
         Iterator iter = childData.entrySet().iterator();
-        final List<FilterChildEntity> filteData=new ArrayList<FilterChildEntity>();
+        final List<FilterChildEntity> filteData = new ArrayList<FilterChildEntity>();
         while (iter.hasNext()) {
             ParentEntity fatherEntity = new ParentEntity();
             Map.Entry entry = (Map.Entry) iter.next();
@@ -118,7 +113,7 @@ public class CommitOrderActivity extends BaseActivity {
             for (int i = 0; i < child.size(); i++) {
                 sumCount = sumCount + child.get(i).getBUYCOUNT();
                 sumMoney = sumMoney + child.get(i).getBUYCOUNT() * child.get(i).getGOODSPRICE();
-                FilterChildEntity filterChildEntity=new FilterChildEntity();
+                FilterChildEntity filterChildEntity = new FilterChildEntity();
                 filterChildEntity.setSHOPID(child.get(i).getSHOPID());
                 filterChildEntity.setBUYCOUNT(child.get(i).getBUYCOUNT() + "");
                 filterChildEntity.setGOODSGUID(child.get(i).getGOODSGUID());
@@ -147,13 +142,12 @@ public class CommitOrderActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 needShowProgress("正在提交..");
-                Log.i("DELIVERYTYPE","======"+DELIVERYTYPE);
-                if(DELIVERYTYPE!=null&&!("".equals(DELIVERYTYPE))){
+                if (DELIVERYTYPE != null && !("".equals(DELIVERYTYPE))) {
                     commitOrder(filteData);
-                }else{
+                } else {
                     needHideProgress();
-                    DialogUtils dialogUtils=new DialogUtils();
-                    dialogUtils.show_infor("请选择派送方式",CommitOrderActivity.this,"提示");
+                    DialogUtils dialogUtils = new DialogUtils();
+                    dialogUtils.show_infor("请选择派送方式", CommitOrderActivity.this, "提示");
                 }
 
             }
@@ -161,7 +155,7 @@ public class CommitOrderActivity extends BaseActivity {
     }
 
     private void initView() {
-        ev = (ExpandableListView) findViewById(R.id.ev);
+        expandableListView = (ExpandableListView) findViewById(R.id.ev);
         back = (FrameLayout) findViewById(R.id.btn_back);
         tv_content = (TextView) findViewById(R.id.tv_content);
         accounts = (TextView) findViewById(R.id.accounts);
@@ -169,19 +163,21 @@ public class CommitOrderActivity extends BaseActivity {
         View view = getLayoutInflater().inflate(R.layout.list_item_address, null);
         person = (TextView) view.findViewById(R.id.person);
         address = (TextView) view.findViewById(R.id.address);
-        ev.addHeaderView(view);
+        expandableListView.addHeaderView(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               Intent i = new Intent(CommitOrderActivity.this, ControlAddressActivity.class);
-              startActivityForResult(i, 2);
-
+                Intent i = new Intent(CommitOrderActivity.this, ControlAddressActivity.class);
+                startActivityForResult(i, 2);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(CommitOrderActivity.this, ShopCarActivity.class);
+                startActivity(i);
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
@@ -198,15 +194,15 @@ public class CommitOrderActivity extends BaseActivity {
 
     //向服务器提交订单
     private void commitOrder(List<FilterChildEntity> data) {
-        Gson gson=new Gson();
-        CommitOrderEntity commitOrderEntity=new CommitOrderEntity();
+        Gson gson = new Gson();
+        CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
         commitOrderEntity.setDELIVERYTYPE(DELIVERYTYPE);
         commitOrderEntity.setADDRESSID(ADDRESSID);
         commitOrderEntity.setGOODSLIST(data);
         String JSON_DATA = gson.toJson(commitOrderEntity);
         Log.i("DELIVERYTYPE-ADDRESSID+", DELIVERYTYPE + "=" + ADDRESSID);
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").put("JSONDATA",JSON_DATA).build();
+                .put("USERGUID", "2222").put("JSONDATA", JSON_DATA).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -223,7 +219,6 @@ public class CommitOrderActivity extends BaseActivity {
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.i("提交订单返回数据",responseProtocol.getResponse());
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String success = jsonObject.getString("success");
@@ -249,10 +244,11 @@ public class CommitOrderActivity extends BaseActivity {
             }
         });
     }
+
     //获取默认的收货地址信息
-    public void getAdressData(){
+    public void getAdressData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").put("DEFAULT_FLAG", "1").build();
+                .put("USERGUID", "2222").put("DEFAULTFLAG", "1").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAddressList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -269,17 +265,17 @@ public class CommitOrderActivity extends BaseActivity {
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.i("收货地址-----",responseProtocol.getResponse());
+                    Log.i("收货地址-----", responseProtocol.getResponse());
                     //判空处理
-                    if(responseProtocol.getResponse()==null||"".equals(responseProtocol.getResponse())){
+                    if (responseProtocol.getResponse() == null || "".equals(responseProtocol.getResponse())) {
                         //如果为空
-                    }else {
+                    } else {
                         try {
                             JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
                             Gson gson = new Gson();
                             JSONObject jsonObject = jsonArray.getJSONObject(0);
                             String addressid = jsonObject.getString("ADDRESSID");
-                            person.setText("收货人："+jsonObject.getString("RECEIVER")+" "+jsonObject.getString("CONTACTPHONE"));
+                            person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
                             address.setText(jsonObject.getString("ADDRESS"));
                             ADDRESSID = addressid;
                         } catch (JSONException e) {
@@ -291,5 +287,16 @@ public class CommitOrderActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent i = new Intent(this, ShopCarActivity.class);
+            startActivity(i);
+            finish();
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

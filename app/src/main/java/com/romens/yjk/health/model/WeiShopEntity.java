@@ -1,143 +1,126 @@
 package com.romens.yjk.health.model;
 
+import java.util.List;
+
 /**
- * Created by AUSU on 2015/9/8.
+ * Created by AUSU on 2015/10/13.
+ * 药品详情Entity
  */
 public class WeiShopEntity {
-//    NAME 商品名称
-//    ，MARKETPRICE，会员价
-//    ，USERPRICE用户价
-//    ，DETAILDESCRIPTION商品详细介绍
-//    ，SHORTDESCRIPTION 商品描述
-//    ，SPEC商品规格
-//    ，GOODSURL商品图片url
-//    ，PZWH国药准字信息，
     private String GUID;
 
     private String GOODSSORTGUID;
 
-    private String MARKETPRICE;
+    private String NAME;
 
     private String USERPRICE;
 
-    private String CODE;
+    private String MARKETPRICE;
 
-    private String BARCODE;
-
-    private String NAME;
-
-    private String DETAILDESCRIPTION;
+    private String SHORTDESCRIPTION;
 
     private String SPEC;
 
-    private String CD;
-
     private String PZWH;
 
-    private String SHORTDESCRIPTION;
-    private String GOODSURL;
+    private String URL;
 
-    public String getGOODSURL() {
-        return GOODSURL;
+    private String CD;
+    private String SHOPID;
+    private String SHOPNAME;
+    private String SHOPADDRESS;
+
+    public String getSHOPADDRESS() {
+        return SHOPADDRESS;
     }
 
-    public void setGOODSURL(String GOODSURL) {
-        this.GOODSURL = GOODSURL;
+    public void setSHOPADDRESS(String SHOPADDRESS) {
+        this.SHOPADDRESS = SHOPADDRESS;
     }
 
-    public String getGUID() {
-        return GUID;
+    public String getSHOPID() {
+        return SHOPID;
     }
 
-    public void setGUID(String GUID) {
+    public void setSHOPID(String SHOPID) {
+        this.SHOPID = SHOPID;
+    }
+
+    public String getSHOPNAME() {
+        return SHOPNAME;
+    }
+
+    public void setSHOPNAME(String SHOPNAME) {
+        this.SHOPNAME = SHOPNAME;
+    }
+
+    private List<GoodSpicsEntity> GOODSPICS ;
+    public void setGUID(String GUID){
         this.GUID = GUID;
     }
-
-    public String getGOODSSORTGUID() {
-        return GOODSSORTGUID;
+    public String getGUID(){
+        return this.GUID;
     }
-
-    public void setGOODSSORTGUID(String GOODSSORTGUID) {
+    public void setGOODSSORTGUID(String GOODSSORTGUID){
         this.GOODSSORTGUID = GOODSSORTGUID;
     }
-
-    public String getMARKETPRICE() {
-        return MARKETPRICE;
+    public String getGOODSSORTGUID(){
+        return this.GOODSSORTGUID;
     }
-
-    public void setMARKETPRICE(String MARKETPRICE) {
-        this.MARKETPRICE = MARKETPRICE;
-    }
-
-    public String getUSERPRICE() {
-        return USERPRICE;
-    }
-
-    public void setUSERPRICE(String USERPRICE) {
-        this.USERPRICE = USERPRICE;
-    }
-
-    public String getCODE() {
-        return CODE;
-    }
-
-    public void setCODE(String CODE) {
-        this.CODE = CODE;
-    }
-
-    public String getBARCODE() {
-        return BARCODE;
-    }
-
-    public void setBARCODE(String BARCODE) {
-        this.BARCODE = BARCODE;
-    }
-
-    public String getNAME() {
-        return NAME;
-    }
-
-    public void setNAME(String NAME) {
+    public void setNAME(String NAME){
         this.NAME = NAME;
     }
-
-    public String getDETAILDESCRIPTION() {
-        return DETAILDESCRIPTION;
+    public String getNAME(){
+        return this.NAME;
     }
-
-    public void setDETAILDESCRIPTION(String DETAILDESCRIPTION) {
-        this.DETAILDESCRIPTION = DETAILDESCRIPTION;
+    public void setUSERPRICE(String USERPRICE){
+        this.USERPRICE = USERPRICE;
     }
-
-    public String getSPEC() {
-        return SPEC;
+    public String getUSERPRICE(){
+        return this.USERPRICE;
     }
-
-    public void setSPEC(String SPEC) {
-        this.SPEC = SPEC;
+    public void setMARKETPRICE(String MARKETPRICE){
+        this.MARKETPRICE = MARKETPRICE;
     }
-
-    public String getCD() {
-        return CD;
+    public String getMARKETPRICE(){
+        return this.MARKETPRICE;
     }
-
-    public void setCD(String CD) {
-        this.CD = CD;
-    }
-
-    public String getPZWH() {
-        return PZWH;
-    }
-
-    public void setPZWH(String PZWH) {
-        this.PZWH = PZWH;
-    }
-
-    public String getSHORTDESCRIPTION() {
-        return SHORTDESCRIPTION;
-    }
-
-    public void setSHORTDESCRIPTION(String SHORTDESCRIPTION) {
+    public void setSHORTDESCRIPTION(String SHORTDESCRIPTION){
         this.SHORTDESCRIPTION = SHORTDESCRIPTION;
     }
+    public String getSHORTDESCRIPTION(){
+        return this.SHORTDESCRIPTION;
+    }
+    public void setSPEC(String SPEC){
+        this.SPEC = SPEC;
+    }
+    public String getSPEC(){
+        return this.SPEC;
+    }
+    public void setPZWH(String PZWH){
+        this.PZWH = PZWH;
+    }
+    public String getPZWH(){
+        return this.PZWH;
+    }
+    public void setURL(String URL){
+        this.URL = URL;
+    }
+    public String getURL(){
+        return this.URL;
+    }
+    public void setCD(String CD){
+        this.CD = CD;
+    }
+    public String getCD(){
+        return this.CD;
+    }
+    public void setGOODSPICS(List<GoodSpicsEntity> GOODSPICS){
+        this.GOODSPICS = GOODSPICS;
+    }
+    public List<GoodSpicsEntity> getGOODSPICS(){
+        return this.GOODSPICS;
+    }
+
+
 }

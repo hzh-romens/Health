@@ -262,8 +262,8 @@ public class SearchActivity extends BaseActivity {
         drugList = new ArrayList<>();
         for (LinkedTreeMap<String, String> item : response) {
             Map<String, String> map = new HashMap<>();
-            map.put("name", item.get("MEDICINENAME"));
-            map.put("guid", item.get("MERCHANDISEID"));
+            map.put("name", item.get("NAME"));
+            map.put("guid", item.get("GUID"));
             drugList.add(map);
         }
         adapter.notifyDataSetChanged();

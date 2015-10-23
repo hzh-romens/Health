@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+   >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/theme_primary">
+
+        <!--android:layout_gravity="top"-->
+        <!--android:layout_marginTop="88dp"-->
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+           >
+
+            <ImageView
+                android:id="@+id/icon_image1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/welcome_first" />
+
+            <ImageView
+                android:id="@+id/icon_image2"
+                android:scaleType="fitXY"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+              />
+
+        </FrameLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/intro_view_pager"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <TextView
+            android:id="@+id/start_messaging_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/start_btn_states"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="#000000"
+            android:text="hkjshf"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:id="@+id/bottom_pages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="26dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:background="#80ffffff" />
+
+            <FrameLayout
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_marginLeft="7dp"
+                android:background="#80ffffff" />
+
+            <FrameLayout
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_marginLeft="7dp"
+                android:background="#80ffffff" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

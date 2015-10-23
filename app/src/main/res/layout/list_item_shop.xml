@@ -12,8 +12,8 @@
 
         <com.romens.yjk.health.ui.components.CheckableFrameLayout
             android:id="@+id/checkbox"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
             android:layout_gravity="center"
             android:layout_margin="8dp"
             android:background="@drawable/btn_allcheck_selector"
@@ -26,7 +26,7 @@
             android:layout_gravity="center"
             android:layout_margin="8dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/picture_fail" />
     </LinearLayout>
 
     <LinearLayout

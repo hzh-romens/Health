@@ -1,17 +1,19 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.location.LocationManagerProxy;
+import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.location.core.AMapLocException;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -36,20 +44,37 @@ import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.extend.scanner.Intents;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.DaoMaster;
+import com.romens.yjk.health.db.dao.HistoryDao;
+import com.romens.yjk.health.db.entity.HistoryEntity;
+import com.romens.yjk.health.model.ADPagerEntity;
+import com.romens.yjk.health.model.GoodSpicsEntity;
+import com.romens.yjk.health.model.NearByOnSaleEntity;
 import com.romens.yjk.health.model.TestEntity;
 import com.romens.yjk.health.model.WeiShopEntity;
-import com.romens.yjk.health.ui.adapter.MedicinalDetailAdapter;
 
+import com.romens.yjk.health.ui.adapter.MedicinalDetailAdapter;
 import com.romens.yjk.health.ui.cells.PopWindowCell;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
+import com.romens.yjk.health.ui.controls.ADBaseControl;
+import com.romens.yjk.health.ui.controls.ADErrorControl;
+import com.romens.yjk.health.ui.controls.ADGroupNameControls;
+import com.romens.yjk.health.ui.controls.ADHorizontalScrollControl;
+import com.romens.yjk.health.ui.controls.ADIllustrationControl;
+import com.romens.yjk.health.ui.controls.ADMedicinalDetailControl;
+import com.romens.yjk.health.ui.controls.ADMoreControl;
+import com.romens.yjk.health.ui.controls.ADPagerControl;
+import com.romens.yjk.health.ui.controls.ADStoreControls;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,26 +86,33 @@ public class MedicinalDetailActivity extends BaseActivity {
     private TextView shopcar;
     private LinearLayout menu_bottom;
     private ABaseLinearLayoutManager layoutManager;
-    private MedicinalDetailAdapter medicinalDetailAdapter;
     private List<TestEntity> data;
     private WeiShopEntity weiShopEntity;
     private List<String> urls;
     private static String PRICE = "";
     private String GUID;
+    private LocationManagerProxy mAMapLocationManager;
+    private Location myLocation;
+    private double LONGITUDE;
+    private double LATITUDE;
+    private List<NearByOnSaleEntity> nearResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicinal_detail, R.id.action_bar);
+        //测试数据
         String s = getIntent().getStringExtra("guid");
         if (s != null) {
             GUID = s;
+            Log.i("guid=====",GUID);
         } else {
             GUID = "";
+            GUID = "851823b0-75fc-4795-8c2f-4554ec5402cf";
         }
         initView();
-        requestShopCarCountChanged();
-        requestStoreData();
+        //  requestShopCarCountChanged();
+        requestNearbyData();
         float translationY = recyclerView.getTranslationY();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -97,21 +129,20 @@ public class MedicinalDetailActivity extends BaseActivity {
 
                     int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-                    Log.i("出现在屏幕上的第一个Item的id-----2", firstVisibleItemPosition + "");
                 } else {
                     int top = recyclerView.getChildAt(0).getTop();
                     int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                    // if( recyclerView.getChildAt(firstVisibleItemPosition).getTop()!=0) {
-                    //   int top1 = recyclerView.getChildAt(firstVisibleItemPosition).getTop();
-                    // Log.i("出现在屏幕上的第一个Item的id-----3",firstVisibleItemPosition+"-----top"+top+"--------top1"+top1);
-                    //}
 
                 }
             }
         });
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-        Log.i("出现在屏幕上的第一个Item的id1-----", firstVisibleItemPosition + "");
 
+    }
+
+    //获取附近有售数据
+    private void requestNearbyData() {
+        initMyLocation();
     }
 
     ActionBar actionBar;
@@ -120,8 +151,11 @@ public class MedicinalDetailActivity extends BaseActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
+        if (Build.VERSION.SDK_INT >= 9) {
+            recyclerView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        }
+        recyclerView.setClipToPadding(false);
         initLayoutManager();
-
 
         tv_favorite = (TextView) findViewById(R.id.favorite);
         tv_buy = (TextView) findViewById(R.id.tv_buy);
@@ -150,9 +184,9 @@ public class MedicinalDetailActivity extends BaseActivity {
                 int[] location = new int[2];
                 v.getLocationInWindow(location);
                 WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                Rect rect=new Rect();
+                Rect rect = new Rect();
                 getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                mPopupWindow.showAtLocation(v, Gravity.LEFT | Gravity.BOTTOM, location[0],v.getHeight()+getWindow().getDecorView().getHeight()- wm.getDefaultDisplay().getHeight());
+                mPopupWindow.showAtLocation(v, Gravity.LEFT | Gravity.BOTTOM, location[0], v.getHeight() + getWindow().getDecorView().getHeight() - wm.getDefaultDisplay().getHeight());
             }
         });
 
@@ -256,12 +290,14 @@ public class MedicinalDetailActivity extends BaseActivity {
         });
     }
 
-    //商品列表信息数据请求
+    private List<WeiShopEntity> result;
+
+    //药品详情信息数据请求
     private void requestStoreData() {
-        GUID = "cfbb188b-7f86-4e32-ae0b-b360245bec46";
+
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("GUID", GUID).build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodInfo", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder().withProtocol(protocol).build();
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
@@ -272,76 +308,48 @@ public class MedicinalDetailActivity extends BaseActivity {
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                SparseArray<ADBaseControl> controls = new SparseArray<ADBaseControl>();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
                     data = new ArrayList<TestEntity>();
-
                     if (response != null) {
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String wshop = jsonObject.getString("wshop");
-                            if (new JSONArray(wshop).length() != 0) {
-                                //JSONArray wshop = jsonObject.getJSONArray("wshop");
-                                JSONArray jsonArray = new JSONArray(wshop);
-                                JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-                                weiShopEntity = new WeiShopEntity();
-                                weiShopEntity.setBARCODE(jsonObject1.getString("BARCODE"));
-                                weiShopEntity.setCD(jsonObject1.getString("CD"));
-                                weiShopEntity.setCODE(jsonObject1.getString("CODE"));
-                                weiShopEntity.setDETAILDESCRIPTION(jsonObject1.getString("DETAILDESCRIPTION"));
-                                weiShopEntity.setGOODSSORTGUID(jsonObject1.getString("GOODSSORTGUID"));
-                                weiShopEntity.setGUID(jsonObject1.getString("GUID"));
-                                weiShopEntity.setMARKETPRICE(jsonObject1.getString("MARKETPRICE"));
-                                weiShopEntity.setNAME(jsonObject1.getString("NAME"));
-                                weiShopEntity.setPZWH(jsonObject1.getString("PZWH"));
-                                weiShopEntity.setSPEC(jsonObject1.getString("SPEC"));
-                                PRICE = jsonObject1.getString("MARKETPRICE");
-                                weiShopEntity.setUSERPRICE(jsonObject1.getString("USERPRICE"));
-                                if (jsonObject1.isNull("GOODSURL")) {
-                                    weiShopEntity.setGOODSURL("");
-                                } else {
-                                    weiShopEntity.setGOODSURL(jsonObject1.getString("GOODSURL"));
+                            JSONArray jsonArray2 = new JSONArray(response);
+                            if (jsonArray2.length() != 0) {
+                                Gson gson = new Gson();
+                                result = gson.fromJson(response, new TypeToken<List<WeiShopEntity>>() {
+                                }.getType());
+                                WeiShopEntity weiShopEntity = result.get(0);
+                                List<GoodSpicsEntity> goodspics = weiShopEntity.getGOODSPICS();
+                                List<ADPagerEntity> adPagerEntities = new ArrayList<ADPagerEntity>();
+                                for (int i = 0; i < goodspics.size(); i++) {
+                                    adPagerEntities.add(new ADPagerEntity("", "", goodspics.get(i).getURL()));
                                 }
-                                String goodurl = jsonObject.getString("goodurl");
-                                JSONArray jsonArray1 = new JSONArray(goodurl);
-                                urls = new ArrayList<String>();
-                                if (jsonArray1.length() != 0) {
-                                    for (int i = 0; i < jsonArray1.length(); i++) {
-                                        JSONObject jsonObject2 = jsonArray1.getJSONObject(i);
-                                        String url = jsonObject2.getString("URL");
-                                        urls.add(url);
+                                int count = 0;
+                                controls.append(count, new ADPagerControl().bindModel(adPagerEntities));
+                                count++;
+                                controls.append(count, new ADMedicinalDetailControl().bindModle("10", weiShopEntity.getSHORTDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
+                                count++;
+                                controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
+                                count++;
+                                controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
+                                count++;
+                                if (nearResult != null && !("".equals(nearResult))) {
+                                    for (int i = 0; i < nearResult.size(); i++) {
+                                        controls.append(count, new ADStoreControls().bindModel("20", nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNO(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getID()));
+                                        count++;
                                     }
                                 }
-
-                                if ("".equals(weiShopEntity.getGOODSURL())) {
-                                    //data.add(new TestEntity(0, "", urls.get(0), ""));
-                                } else {
-                                    data.add(new TestEntity(0, "", weiShopEntity.getGOODSURL(), ""));
-                                }
-                                data.add(new TestEntity(1, "药品名称", "", weiShopEntity.getNAME()));
-                                data.add(new TestEntity(2, "用户价:", "", "$" + weiShopEntity.getMARKETPRICE()));
-                                data.add(new TestEntity(2, "会员价:", "", "$" + weiShopEntity.getUSERPRICE()));
-                                data.add(new TestEntity(1, "药品描述", "", weiShopEntity.getCD() + "制药有限公司生产" +
-                                        "" + weiShopEntity.getPZWH()));
-                                //data.add(new TestEntity(2,))
-                                data.add(new TestEntity(3, "", "", ""));
-                                data.add(new TestEntity(4, "", "", ""));
-                                data.add(new TestEntity(5, "在线药店", "", ""));
-                                data.add(new TestEntity(6, "一号店", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
-                                data.add(new TestEntity(6, "二号店", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
-                                data.add(new TestEntity(7, "更多", "http://img3.imgtn.bdimg.com/it/u=3336547744,2633972301&fm=21&gp=0.jpg", "主要经营感冒药等"));
-                                data.add(new TestEntity(4, "", "", ""));
-                                data.add(new TestEntity(5, "推荐药品", "", ""));
-                                if (urls.size() != 0) {
-                                    data.add(new TestEntity(8, "", "true", ""));
-                                }
+                                controls.append(count, new ADMoreControl());
+                                //count++;
+                                // controls.append(count, new ADHorizontalScrollControl().bindModle(goodspics));
+                                AddToHistory(weiShopEntity);
                             } else {
-                                data.add(new TestEntity(9, "", "", ""));
                             }
-                            medicinalDetailAdapter = new MedicinalDetailAdapter(data, MedicinalDetailActivity.this);
-                            medicinalDetailAdapter.setUrls(urls);
-                            recyclerView.setAdapter(medicinalDetailAdapter);
+
+                            //   controls.append(4, new ADEmptyControl());
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -350,8 +358,14 @@ public class MedicinalDetailActivity extends BaseActivity {
                     }
 
                 } else {
-                    Log.e("GetStoreData2", "ERROR");
+                    Log.e("GetStoreData2", errorMsg.msg);
+                    //错误页面
+                    controls.append(0,new ADErrorControl());
+
                 }
+                MedicinalDetailAdapter medicinalDetailAdapter2 = new MedicinalDetailAdapter(MedicinalDetailActivity.this);
+                medicinalDetailAdapter2.bindData(controls);
+                recyclerView.setAdapter(medicinalDetailAdapter2);
             }
         });
     }
@@ -385,6 +399,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                         Toast.makeText(MedicinalDetailActivity.this, "加入购物车异常", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(MedicinalDetailActivity.this, "成功加入购物车", Toast.LENGTH_SHORT).show();
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
                         requestShopCarCountChanged();
                     }
                 } else {
@@ -393,6 +408,22 @@ public class MedicinalDetailActivity extends BaseActivity {
             }
         });
     }
+    public void AddToHistory(WeiShopEntity weiShopEntity) {
+        HistoryEntity historyEntity = new HistoryEntity();
+        historyEntity.setShopName(weiShopEntity.getSHOPNAME());
+        historyEntity.setImgUrl(weiShopEntity.getURL());
+        historyEntity.setIsSelect(true);
+        historyEntity.setMedicinalName(weiShopEntity.getNAME());
+        historyEntity.setCurrentPrice(weiShopEntity.getUSERPRICE());
+        historyEntity.setDiscountPrice(weiShopEntity.getMARKETPRICE());
+        historyEntity.setSaleCount("22");
+        historyEntity.setCommentCount("23");
+        historyEntity.setGuid(weiShopEntity.getGUID());
+        historyEntity.setShopIp(weiShopEntity.getSHOPID());
+        HistoryDao historyDao = DBInterface.instance().openReadableDb().getHistoryDao();
+        historyDao.insert(historyEntity);
+    }
+
 
     // 获取PopWindow实例 保持一个实例
     private void getPopWindowInstance() {
@@ -474,14 +505,87 @@ public class MedicinalDetailActivity extends BaseActivity {
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View
+        getView(final int position, View convertView, ViewGroup parent) {
             PopWindowCell popWindowCell = new PopWindowCell(mContext);
-
             popWindowCell.setValue(mDdatas.get(position), "http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg");
             return popWindowCell;
         }
-
-
     }
 
+    //获取当前位置的经纬度
+    private void initMyLocation() {
+        mAMapLocationManager = LocationManagerProxy.getInstance(this);
+        mAMapLocationManager.setGpsEnable(true);
+            /*
+             * mAMapLocManager.setGpsEnable(false);//
+			 * 1.0.2版本新增方法，设置true表示混合定位中包含gps定位，false表示纯网络定位，默认是true
+			 */
+        // Location API定位采用GPS和网络混合定位方式，时间最短是2000毫秒
+        mAMapLocationManager.requestLocationData(
+                LocationProviderProxy.AMapNetwork, -1, 50, new AMapLocationListener() {
+                    @Override
+                    public void onLocationChanged(AMapLocation aMapLocation) {
+                        myLocation = null;
+                        if (aMapLocation != null) {
+                            AMapLocException exception = aMapLocation.getAMapException();
+                            if (exception == null || exception.getErrorCode() == 0) {
+                                Log.i("经纬度---", aMapLocation.getLongitude() + "==" + aMapLocation.getLatitude());
+                                Map<String, String> args = new FacadeArgs.MapBuilder()
+                                        .put("MERCHANDISEID", GUID)
+                                        .put("LONGITUDE", aMapLocation.getLongitude() + "")
+                                        .put("LATITUDE", aMapLocation.getLatitude() + "")
+                                        .put("PAGE", "1")
+                                        .put("COUNT", "5")
+                                        .build();
+                                FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "SaleInShop", args);
+                                protocol.withToken(FacadeToken.getInstance().getAuthToken());
+                                Message message = new Message.MessageBuilder()
+                                        .withProtocol(protocol)
+                                        .build();
+                                FacadeClient.request(MedicinalDetailActivity.this, message, new FacadeClient.FacadeCallback() {
+                                    @Override
+                                    public void onTokenTimeout(Message msg) {
+                                        Log.e("附近有售数据", "ERROR");
+                                    }
+
+                                    @Override
+                                    public void onResult(Message msg, Message errorMsg) {
+                                        if (errorMsg == null) {
+                                            ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                                            String response = responseProtocol.getResponse();
+                                            Gson gson = new Gson();
+                                            nearResult = gson.fromJson(response, new TypeToken<List<NearByOnSaleEntity>>() {
+                                            }.getType());
+                                            requestStoreData();
+                                        } else {
+                                            Log.e("附近有售数据", errorMsg.msg);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onLocationChanged(Location location) {
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
+    }
 }

@@ -8,7 +8,7 @@ import android.text.TextUtils;
 public class DrugGroupEntity {
     private String id;
     private String name;
-    private String parentId;
+    private String PID;
     private int status;
     private int created;
     private int updated;
@@ -26,8 +26,8 @@ public class DrugGroupEntity {
         this.name = _name;
     }
 
-    public void setParentId(String _parentId) {
-        this.parentId = _parentId;
+    public void setPID(String _PID) {
+        this.PID = _PID;
     }
 
     public void setStatus(int _status) {
@@ -66,8 +66,8 @@ public class DrugGroupEntity {
         return this.name;
     }
 
-    public String getParentId() {
-        return this.parentId;
+    public String getPID() {
+        return this.PID;
     }
 
     public int getStatus() {
