@@ -24,96 +24,27 @@ import java.util.List;
  * Created by anlc on 2015/9/24.
  * 订单页面中可扩展的listview的Adapter
  */
-public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableListAdapter {
+public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter {
 
-    private List<List<AllOrderEntity>> typeEntitiesList;
-    private List<String> typeList;
-    private Context adapterContext;
-
-    public void setOrderEntities(List<AllOrderEntity> orderEntities) {
-        classifyEntity(orderEntities);
-    }
-
-    public OrderExpandableAlreadyCompleteAdapter(Context context, List<AllOrderEntity> orderEntities) {
-        this.adapterContext = context;
-        classifyEntity(orderEntities);
-    }
-
-    private void classifyEntity(List<AllOrderEntity> orderEntities) {
-        typeList = new ArrayList<>();
-        for (int i = 0; i < orderEntities.size(); i++) {
-            boolean flag = true;
-            String drugStroe = orderEntities.get(i).getOrderNo();
-            for (int j = 0; j < typeList.size(); j++) {
-                if (drugStroe.equals(typeList.get(j))) {
-                    flag = false;
-                }
-            }
-            if (flag) {
-                typeList.add(drugStroe);
-            }
-        }
-        typeEntitiesList = new ArrayList<>();
-        for (String drugStroe : typeList) {
-            List<AllOrderEntity> tempList = new ArrayList<>();
-            for (int i = 0; i < orderEntities.size(); i++) {
-                if (drugStroe.equals(orderEntities.get(i).getOrderNo())) {
-                    tempList.add(orderEntities.get(i));
-                }
-            }
-            typeEntitiesList.add(tempList);
-        }
-    }
-
-    @Override
-    public int getGroupCount() {
-        return typeEntitiesList.size();
-    }
-
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        return typeEntitiesList.get(groupPosition).size();
-    }
-
-    @Override
-    public Object getGroup(int groupPosition) {
-        return typeEntitiesList.get(groupPosition);
-    }
-
-    @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return typeEntitiesList.get(groupPosition).get(childPosition);
-    }
-
-    @Override
-    public long getGroupId(int groupPosition) {
-        return groupPosition;
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
-    @Override
-    public int getGroupType(int groupPosition) {
-        return groupPosition;
+    public OrderExpandableAlreadyCompleteAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
+        super(adapterContext, orderEntities);
     }
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-
-        if (convertView == null) {
-            convertView = new KeyAndValueCell(adapterContext);
+        int type = getGroupType(groupPosition);
+        if (type == 0) {
+            if (convertView == null) {
+                convertView = new KeyAndValueCell(adapterContext);
+            }
+            KeyAndValueCell cell = (KeyAndValueCell) convertView;
+            cell.setKeyAndValue("订单编号：" + typeList.get(groupPosition / 2), "交易完成", true);
+            cell.setValueTextColor(0xfff06292);
+        } else if (type == 1) {
+            if (convertView == null) {
+                convertView = new ShadowSectionCell(adapterContext);
+            }
         }
-        KeyAndValueCell cell = (KeyAndValueCell) convertView;
-        cell.setKeyAndValue("订单编号：" + typeList.get(groupPosition), "交易完成", true);
-        cell.setValueTextColor(0xfff06292);
         return convertView;
     }
 
@@ -127,7 +58,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableListAda
 
         Button buyAgainBtn = (Button) view.findViewById(R.id.order_all_buy_again);
         Button evaluateBtn = (Button) view.findViewById(R.id.order_all_evaluate_btn);
-        AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
+        AllOrderEntity entity = typeEntitiesList.get(groupPosition / 2).get(childPosition);
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
@@ -139,7 +70,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableListAda
             public void onClick(View v) {
                 Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
 //              Intent intent = new Intent(adapterContext, intentActivity);
-                intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
+                intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition / 2).get(childPosition));
                 adapterContext.startActivity(intent);
             }
         });
@@ -150,10 +81,5 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableListAda
             }
         });
         return view;
-    }
-
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return true;
     }
 }

@@ -49,6 +49,7 @@ public class MenuBarCell extends LinearLayout implements View.OnClickListener {
         firstView.setBackgroundColor(Color.TRANSPARENT);
         firstView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         firstView.setSingleLine(true);
+        firstView.setGravity(Gravity.CENTER);
         firstView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         LayoutParams firstViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
         firstViewParams.weight = 1;
@@ -59,6 +60,7 @@ public class MenuBarCell extends LinearLayout implements View.OnClickListener {
         secondView.setBackgroundColor(Color.TRANSPARENT);
         secondView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         secondView.setSingleLine(true);
+        secondView.setGravity(Gravity.CENTER);
         secondView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         LayoutParams secondViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
         secondViewParams.weight = 1;
@@ -69,6 +71,7 @@ public class MenuBarCell extends LinearLayout implements View.OnClickListener {
         threeView.setBackgroundColor(Color.TRANSPARENT);
         threeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         threeView.setSingleLine(true);
+        threeView.setGravity(Gravity.CENTER);
         threeView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         LayoutParams threeViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
         threeViewParams.weight = 1;
@@ -90,6 +93,7 @@ public class MenuBarCell extends LinearLayout implements View.OnClickListener {
         LayoutParams subleftViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
         subleftViewParams.gravity = Gravity.CENTER | Gravity.LEFT;
         fourView.addView(subleftView, subleftViewParams);
+        fourView.setVisibility(GONE);
 
         ImageView subRightImgView = new ImageView(context);
         subRightImgView.setImageResource(R.drawable.check_blue);
@@ -106,6 +110,16 @@ public class MenuBarCell extends LinearLayout implements View.OnClickListener {
         threeView.setText(threeInfo);
         subleftView.setText(fourInfo);
         setWillNotDraw(!needDivider);
+    }
+
+    public void setMenuItemBackground(int resourImg) {
+        firstView.setBackgroundResource(resourImg);
+        secondView.setBackgroundResource(resourImg);
+        threeView.setBackgroundResource(resourImg);
+    }
+
+    public void hideFourView() {
+        fourView.setVisibility(GONE);
     }
 
     @Override

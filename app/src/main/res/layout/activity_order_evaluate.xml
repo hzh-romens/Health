@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -12,13 +13,13 @@
         android:id="@+id/order_evaluate_top"
         layout="@layout/list_item_order"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/action_bar"/>
 
     <TextView
         android:id="@+id/order_evaluate_quality"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="30dp"
         android:layout_below="@id/order_evaluate_top"
         android:layout_marginLeft="20dp"
         android:gravity="center_vertical"
@@ -26,19 +27,22 @@
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
-    <RatingBar
+    <com.romens.yjk.health.ui.cells.FlexibleRatingBar
         android:id="@+id/order_evaluate_quality_ratingbar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_below="@id/order_evaluate_top"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/order_evaluate_quality"
-        android:numStars="5"/>
+        android:numStars="5"
+        android:stepSize="1"
+        app:colorFillOff="@color/window_background"
+        app:colorOutlineOn="@color/window_background"/>
 
     <TextView
         android:id="@+id/order_evaluate_speed"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="30dp"
         android:layout_below="@id/order_evaluate_quality"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
@@ -47,15 +51,18 @@
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
-    <RatingBar
+    <com.romens.yjk.health.ui.cells.FlexibleRatingBar
         android:id="@+id/order_evaluate_speed_ratingbar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_below="@id/order_evaluate_quality"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/order_evaluate_speed"
-        android:numStars="5"/>
+        android:numStars="5"
+        android:stepSize="1"
+        app:colorFillOff="@color/window_background"
+        app:colorOutlineOn="@color/window_background"/>
 
     <EditText
         android:id="@+id/order_evaluate_edit_opinion"

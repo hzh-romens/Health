@@ -93,6 +93,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         debugMenu.addSubItem(3, "测试附近药店", 0);
         debugMenu.addSubItem(4, "我的订单", 0);
         debugMenu.addSubItem(5, "地址管理", 0);
+        debugMenu.addSubItem(6, "药店详情", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -110,6 +111,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     startActivity(new Intent(HomeActivity.this, MyOrderActivity.class));
                 } else if (id == 5) {
                     startActivity(new Intent(HomeActivity.this, ControlAddressActivity.class));
+                } else if (id == 6) {
+                    startActivity(new Intent(HomeActivity.this, DrugStoryDetailActivity.class));
                 }
             }
         });

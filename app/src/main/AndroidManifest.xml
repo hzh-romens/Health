@@ -308,14 +308,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.ShopListActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.CommitResultActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"/>
 
     </application>
 

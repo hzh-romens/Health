@@ -2,13 +2,37 @@ package com.romens.yjk.health.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
+import com.romens.yjk.health.db.entity.CitysEntity;
+import com.romens.yjk.health.model.EvaluateDatailsEntity;
+import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anlc on 2015/9/23.
@@ -16,39 +40,89 @@ import com.romens.yjk.health.db.entity.AllOrderEntity;
  */
 public class OrderEvaluateDetailActivity extends BaseActivity {
 
-//    private BackupImageView leftImageView;
+    //    private BackupImageView leftImageView;
     private TextView titleTextView;
-//    private TextView specTextView;
+    //    private TextView specTextView;
     private TextView moneyTextView;
     private TextView dateTextView;
     private TextView countTextView;
 
-    private RatingBar qualityRatingBar;
-    private RatingBar speedRatingBar;
+    private FlexibleRatingBar qualityRatingBar;
+    private FlexibleRatingBar speedRatingBar;
     private TextView opinionTextView;
+
+    private String orderPrice;
+
+    private String userGuid = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_order_evaluate_detail, R.id.action_bar);
         actionBarEvent();
         initView();
-        viewSetData();
+        initData();
     }
 
-    private void viewSetData() {
+    private void initData() {
         Intent intent = getIntent();
         AllOrderEntity entity = (AllOrderEntity) intent.getSerializableExtra("evaluateDetailEntity");
         if (null != entity) {
-            titleTextView.setText(entity.getGoodsName());
-            moneyTextView.setText("x"+entity.getMerCount());
-            dateTextView.setText(entity.getOrderPrice());
-//            countTextView.setText("2015-12-15 08:09");
-            countTextView.setText(entity.getCreateDate());
-            qualityRatingBar.setRating(3);
-            speedRatingBar.setRating(4);
-            opinionTextView.setText("jo爱的色放adoif就是防守反击三季度分厘卡剑荡四方阿卡迪夫拉克赛代练客服那算了开发拉开大夫拉克赛的饭卡夫拉克赛的家fid是flak的家纺哦is的");
+            requestAssessDetail(userGuid, entity.getOrderId());
+            orderPrice = entity.getOrderPrice();
         }
+    }
+
+    private void viewSetData(EvaluateDatailsEntity evaluateDatailsEntity) {
+        titleTextView.setText(evaluateDatailsEntity.getAdvice());
+        moneyTextView.setText("￥" + orderPrice);
+        dateTextView.setText(evaluateDatailsEntity.getAssessData());
+        qualityRatingBar.setRating(Integer.getInteger(evaluateDatailsEntity.getQualityStar()));
+        speedRatingBar.setRating(Integer.getInteger(evaluateDatailsEntity.getDileveryStar()));
+        opinionTextView.setText(evaluateDatailsEntity.getAdvice());
+    }
+
+    //访问商品评价信息
+    private void requestAssessDetail(String userGuid, String merchandiseId) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("MERCHANDISEID", merchandiseId);
+        args.put("USERGUID", userGuid);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetAssessment", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+                }))
+                .build();
+        FacadeClient.request(OrderEvaluateDetailActivity.this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(OrderEvaluateDetailActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+                    ResponseProtocol<LinkedTreeMap<String, String>> responseProtocol = (ResponseProtocol) msg.protocol;
+//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    setData(responseProtocol.getResponse());
+                }
+                if (errorMsg == null) {
+                } else {
+                    Log.e("reqGetAllUsers", "ERROR");
+                }
+            }
+        });
+    }
+
+    private void setData(LinkedTreeMap<String, String> response) {
+        int count = response == null ? 0 : response.size();
+        if (count <= 0) {
+            return;
+        }
+        EvaluateDatailsEntity evaluateDatailsEntity = EvaluateDatailsEntity.mapToEntity(response);
+        viewSetData(evaluateDatailsEntity);
     }
 
     private void actionBarEvent() {
@@ -72,8 +146,8 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
         dateTextView = (TextView) findViewById(R.id.order_date);
         countTextView = (TextView) findViewById(R.id.order_count);
 
-        qualityRatingBar = (RatingBar) findViewById(R.id.order_evaluate_quality_ratingbar);
-        speedRatingBar = (RatingBar) findViewById(R.id.order_evaluate_speed_ratingbar);
+        qualityRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_quality_ratingbar);
+        speedRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_speed_ratingbar);
         opinionTextView = (TextView) findViewById(R.id.order_evaluate_opinion_text);
     }
 }

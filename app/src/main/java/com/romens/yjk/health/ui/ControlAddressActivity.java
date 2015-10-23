@@ -1,9 +1,8 @@
 package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,11 +10,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,14 +29,16 @@ import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
-import com.romens.android.ui.cells.ShadowSectionCell;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.CitysEntity;
+import com.romens.yjk.health.ui.adapter.ControlAddressAdapter;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import org.json.JSONException;
@@ -69,6 +69,7 @@ public class ControlAddressActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_shipping_address, R.id.action_bar);
         havaAddressLayout = (LinearLayout) findViewById(R.id.control_address_hava_address);
         noHaveAddressLayout = (LinearLayout) findViewById(R.id.control_address_no_address);
@@ -81,10 +82,12 @@ public class ControlAddressActivity extends BaseActivity {
         }
         queryDb();
         if (entities == null || entities.size() < 1) {
+            needShowProgress("正在请求城市信息，请稍等...");
             requestCityDataChanged();
         }
     }
 
+    //没有地址时，显示
     private void setNoHaveAddressView() {
         noHaveAddressLayout.setVisibility(View.VISIBLE);
         havaAddressLayout.setVisibility(View.GONE);
@@ -107,6 +110,7 @@ public class ControlAddressActivity extends BaseActivity {
         requestDataChanged(userGuid, "0");
     }
 
+    //有地址时，显示
     private void setHaveAddressView() {
         listView = (RecyclerView) findViewById(R.id.control_address_recycler);
         adapter = new ControlAddressAdapter(this, addressListEntitis);
@@ -115,21 +119,28 @@ public class ControlAddressActivity extends BaseActivity {
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
         UIHelper.setupSwipeRefreshLayoutProgress(swipeRefreshLayout);
+        swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new refreshTask().execute(swipeRefreshLayout);
+                requestDataChanged(userGuid, "0");
             }
         });
         noHaveAddressLayout.setVisibility(View.GONE);
         havaAddressLayout.setVisibility(View.VISIBLE);
-//        addAddress = (Button) findViewById(R.id.control_address_add_newaddress);
-//        addAddress.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(ControlAddressActivity.this, NewShoppingAddressActivity.class));
-//            }
-//        });
+
+        adapter.setOnItemLongClickLinstener(new ControlAddressAdapter.onItemLongClickLinstener() {
+            @Override
+            public void itemLongClickLinstener(int position) {
+                removeDialogView(position);
+            }
+
+            @Override
+            public void isDefaultClickLLinstener(int postion) {
+                addressListEntitis = adapter.getLiatData();
+                requestDefaultChanged(userGuid, addressListEntitis.get(postion).getADDRESSID(), postion);
+            }
+        });
     }
 
     //请求收货地址列表
@@ -179,6 +190,7 @@ public class ControlAddressActivity extends BaseActivity {
         } else {
             setNoHaveAddressView();
         }
+        swipeRefreshLayout.setRefreshing(false);
         adapter.setData(addressListEntitis);
         adapter.notifyDataSetChanged();
     }
@@ -186,11 +198,6 @@ public class ControlAddressActivity extends BaseActivity {
     private void actionBarEven() {
         actionBar = getMyActionBar();
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-//        actionBarMenu.addItem(0, R.drawable.addcontact_blue);
-//        TextView textView = new TextView(this);
-//        textView.setText("新增");
-//        textView.setGravity(Gravity.CENTER);
-//        actionBarMenu.addView(textView, 0);
         actionBarMenu.addItem(0, R.drawable.add_address_btn_bg);
 
         actionBar.setTitle("收货地址管理");
@@ -208,125 +215,39 @@ public class ControlAddressActivity extends BaseActivity {
         });
     }
 
-    class refreshTask extends AsyncTask<SwipeRefreshLayout, Void, Void> {
+    public void removeDialogView(final int position) {
+        addressListEntitis = adapter.getLiatData();
+        final AlertDialog dialog = new AlertDialog.Builder(this).create();
+        TextView textView = new TextView(this);
 
-        private SwipeRefreshLayout layout;
+        textView.setBackgroundResource(R.drawable.bg_white);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView.setSingleLine(true);
+        textView.setGravity(Gravity.CENTER);
+        textView.setText("删除");
+        textView.setTextColor(getResources().getColor(R.color.theme_primary));
+        textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(8), AndroidUtilities.dp(32), AndroidUtilities.dp(8));
+        LinearLayout.LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+        infoViewParams.weight = 1;
+        infoViewParams.gravity = Gravity.CENTER;
+        textView.setLayoutParams(infoViewParams);
 
-        @Override
-        protected Void doInBackground(SwipeRefreshLayout... params) {
-            this.layout = params[0];
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestDeleteDataChanged(addressListEntitis.get(position).getADDRESSID());
+                dialog.dismiss();
+                needShowProgress("正在处理...");
             }
-            return null;
-        }
+        });
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            layout.setRefreshing(false);
-        }
+        dialog.show();
+        dialog.setContentView(textView);
     }
 
     private void initData() {
         addressListEntitis = new ArrayList<>();
         requestDataChanged(userGuid, "0");
-    }
-
-
-    class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressHolder> {
-
-        private Context context;
-        private List<AddressEntity> data;
-        private int currDefaultAddressIndex = -1;
-
-        public void setData(List<AddressEntity> data) {
-            this.data = data;
-        }
-
-        public void changeDefaultAddressIndex(int newIndex) {
-            if (newIndex == currDefaultAddressIndex) {
-                return;
-            }
-            if (currDefaultAddressIndex != -1) {
-                data.get(currDefaultAddressIndex).setISDEFAULT("0");
-            }
-            currDefaultAddressIndex = newIndex;
-            data.get(currDefaultAddressIndex).setISDEFAULT("1");
-            notifyDataSetChanged();
-        }
-
-        public ControlAddressAdapter(Context context, List<AddressEntity> date) {
-            this.context = context;
-            this.data = date;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position % 2;
-        }
-
-        @Override
-        public ControlAddressHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = null;
-            if (viewType == 0) {
-                view = LayoutInflater.from(context).inflate(R.layout.list_item_controladdress, null);
-            } else if (viewType == 1) {
-                view = new ShadowSectionCell(context);
-            }
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            view.setLayoutParams(lp);
-            return new ControlAddressHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ControlAddressHolder holder, final int position) {
-            int type = getItemViewType(position);
-            if (type == 0) {
-                final int index = position / 2;
-                holder.nameView.setText(data.get(index).getRECEIVER());
-                holder.telView.setText(data.get(index).getCONTACTPHONE());
-                holder.addressview.setText(data.get(index).getADDRESS());
-                holder.del.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        removeItem(index);
-                    }
-                });
-                holder.defaultImg.setImageResource(R.drawable.control_address_undeafult);
-                AddressEntity entity = data.get(index);
-                if (entity.getISDEFAULT().equals("1")) {
-                    currDefaultAddressIndex = index;
-                    holder.defaultImg.setImageResource(R.drawable.control_address_deafult);
-                }
-                holder.isDefault.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        requestDefaultChanged(userGuid, data.get(index).getADDRESSID(), index);
-                    }
-                });
-            }
-        }
-
-        public void removeItem(final int position) {
-            new AlertDialog.Builder(context).setTitle("真的要删除吗？").setNegativeButton("不了", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            }).setPositiveButton("是的", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    requestDeleteDataChanged(data.get(position).getADDRESSID());
-                }
-            }).show();
-        }
-
-        @Override
-        public int getItemCount() {
-            return data.size() * 2;
-        }
     }
 
     //请求修改默认
@@ -356,7 +277,7 @@ public class ControlAddressActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    if (requestCode.equals("ok")) {
+                    if (requestCode.equals("yes")) {
                         requestDataChanged(userGuid, "0");
                     } else {
                         Toast.makeText(ControlAddressActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
@@ -395,38 +316,18 @@ public class ControlAddressActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    if (requestCode.equals("ok")) {
+                    if (requestCode.equals("yes")) {
                         requestDataChanged(userGuid, "0");
                     } else {
                         Toast.makeText(ControlAddressActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
                     }
+                    needHideProgress();
                 }
                 if (errorMsg != null) {
                     Log.e("reqGetAllUsers", msg.msg);
                 }
             }
         });
-    }
-
-
-    class ControlAddressHolder extends RecyclerView.ViewHolder {
-
-        private TextView nameView;
-        private TextView telView;
-        private TextView addressview;
-        private Button isDefault;
-        private ImageView del;
-        private ImageView defaultImg;
-
-        public ControlAddressHolder(View itemView) {
-            super(itemView);
-            nameView = (TextView) itemView.findViewById(R.id.control_address_name);
-            telView = (TextView) itemView.findViewById(R.id.control_address_tel);
-            addressview = (TextView) itemView.findViewById(R.id.control_address_address);
-            isDefault = (Button) itemView.findViewById(R.id.control_address_isdefault);
-            del = (ImageView) itemView.findViewById(R.id.control_address_del);
-            defaultImg = (ImageView) itemView.findViewById(R.id.controladdress_deafult_img);
-        }
     }
 
     //请求省市县
@@ -454,6 +355,7 @@ public class ControlAddressActivity extends BaseActivity {
                 if (errorMsg != null) {
                     Log.e("reqGetAllUsers", "ERROR");
                 }
+                needHideProgress();
             }
         });
     }

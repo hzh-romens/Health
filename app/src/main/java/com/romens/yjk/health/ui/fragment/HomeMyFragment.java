@@ -35,6 +35,7 @@ import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
+import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 /**
@@ -59,14 +60,20 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         swipeRefreshLayout = new SwipeRefreshLayout(context);
         UIHelper.setupSwipeRefreshLayoutProgress(swipeRefreshLayout);
         content.addView(swipeRefreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        FrameLayout listContainer = new FrameLayout(context);
-        swipeRefreshLayout.addView(listContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         listView = new ListView(context);
+//        FrameLayout listContainer = new FrameLayout(context);
+        swipeRefreshLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
-        listContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+//        listContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         return content;
     }
 
@@ -97,7 +104,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == feedbackRow) {
                     startActivity(new Intent(getActivity(), FeedBackActivity.class));
                 } else if (position == helpRow) {
-                    Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getActivity(), HelpActivity.class));
                 } else if (position == accountRow) {
                     Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
                 }

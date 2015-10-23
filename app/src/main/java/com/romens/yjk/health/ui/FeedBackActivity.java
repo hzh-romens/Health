@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -10,15 +11,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.ui.cells.EditTagCell;
 import com.romens.yjk.health.ui.components.FlowLayout;
 import com.romens.yjk.health.ui.components.FlowLayoutCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anlc on 2015/10/14.
@@ -27,11 +46,11 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
 
     private FlowLayout tagFlowLayout;
     private FlowLayout selectTagFlowLayout;
-    private EditTagCell editTagTxt;
+    //    private EditTagCell editTagTxt;
     private EditText feedBackInfo;
-    private ImageView firstUpLoadImg;
-    private ImageView secondUpLoadImg;
-    private ImageView threeUpLoadImg;
+    //    private ImageView firstUpLoadImg;
+//    private ImageView secondUpLoadImg;
+//    private ImageView threeUpLoadImg;
     private TextView submitBtn;
     private TextView resetBtn;
     private ActionBar actionBar;
@@ -39,31 +58,31 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
 
     private List<String> selectTagTxtList;
     private List<String> tagList;
+    private String userGuid = "3333";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_feed_back, R.id.feed_back_action);
         actionBarEvent();
         initData();
         tagFlowLayout = (FlowLayout) findViewById(R.id.feed_back_flow_layout);
-//        selectTagFlowLayout = (FlowLayout) findViewById(R.id.feed_back_flow_layout_select);
         feedBackSelectTagLayout = (FrameLayout) findViewById(R.id.feed_back_select_tag_layout);
-        editTagTxt = (EditTagCell) findViewById(R.id.feed_back_edit_tag);
+//        editTagTxt = (EditTagCell) findViewById(R.id.feed_back_edit_tag);
         feedBackInfo = (EditText) findViewById(R.id.feed_back_info);
-        firstUpLoadImg = (ImageView) findViewById(R.id.feed_back_first_img);
-        secondUpLoadImg = (ImageView) findViewById(R.id.feed_back_second_img);
-        threeUpLoadImg = (ImageView) findViewById(R.id.feed_back_three_img);
+//        firstUpLoadImg = (ImageView) findViewById(R.id.feed_back_first_img);
+//        secondUpLoadImg = (ImageView) findViewById(R.id.feed_back_second_img);
+//        threeUpLoadImg = (ImageView) findViewById(R.id.feed_back_three_img);
         submitBtn = (TextView) findViewById(R.id.feed_back_submit);
         resetBtn = (TextView) findViewById(R.id.feed_back_reset);
 
         selectTagFlowLayout = new FlowLayout(this);
         flowlayoutEvent(tagFlowLayout, selectTagFlowLayout);
-//        flowlayoutEvent(tagFlowLayout);
-        editTagEvent();
-        firstUpLoadImg.setOnClickListener(this);
-        secondUpLoadImg.setOnClickListener(this);
-        threeUpLoadImg.setOnClickListener(this);
+//        editTagEvent();
+//        firstUpLoadImg.setOnClickListener(this);
+//        secondUpLoadImg.setOnClickListener(this);
+//        threeUpLoadImg.setOnClickListener(this);
         submitBtn.setOnClickListener(this);
         resetBtn.setOnClickListener(this);
     }
@@ -71,43 +90,66 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.feed_back_first_img:
-                Toast.makeText(FeedBackActivity.this, "firstImgClick", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.feed_back_second_img:
-                Toast.makeText(FeedBackActivity.this, "secondImgClick", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.feed_back_three_img:
-                Toast.makeText(FeedBackActivity.this, "threeImgClick", Toast.LENGTH_SHORT).show();
-                break;
+//            case R.id.feed_back_first_img:
+//                Toast.makeText(FeedBackActivity.this, "firstImgClick", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.feed_back_second_img:
+//                Toast.makeText(FeedBackActivity.this, "secondImgClick", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.feed_back_three_img:
+//                Toast.makeText(FeedBackActivity.this, "threeImgClick", Toast.LENGTH_SHORT).show();
+//                break;
             case R.id.feed_back_submit:
-                Toast.makeText(FeedBackActivity.this, "submitClick", Toast.LENGTH_SHORT).show();
+                String info = feedBackInfo.getText().toString().trim();
+                if (info == null || info.equals("")) {
+                    Toast.makeText(FeedBackActivity.this, "请输入意见信息", Toast.LENGTH_SHORT).show();
+                } else {
+                    submitBtn.setClickable(false);
+                    needShowProgress("正在提交.....");
+                    requestFeedBack(userGuid, info, getTags());
+                }
                 break;
             case R.id.feed_back_reset:
                 initData();
                 feedBackSelectTagLayout.removeAllViews();
                 tagFlowLayout.updateLayout();
                 selectTagFlowLayout.updateLayout();
-                editTagTxt.setEditViewText("");
+//                editTagTxt.setEditViewText("");
                 feedBackInfo.setText("");
                 break;
         }
     }
 
-    private void editTagEvent() {
-        editTagTxt.setRightViewText("贴上", false);
-        editTagTxt.setOnBtnClickListener(new EditTagCell.onBtnClickListener() {
-            @Override
-            public void onClick() {
-                selectTagTxtList.add(editTagTxt.getEditText());
-                selectTagFlowLayout.updateLayout();
-                editTagTxt.setEditViewText("");
+    private String getTags() {
+        JSONArray jsonArray = new JSONArray();
+        try {
+            for (int i = 0; i < selectTagTxtList.size(); i++) {
+                if (!selectTagTxtList.get(i).equals("      ")) {
+                    JSONObject object = new JSONObject();
+                    object.put("TAG", selectTagTxtList.get(i));
+                    jsonArray.put(object);
+                }
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonArray.toString();
+    }
 
-            @Override
-            public void editTextChange() {
-            }
-        });
+    private void editTagEvent() {
+//        editTagTxt.setRightViewText("贴上", false);
+//        editTagTxt.setOnBtnClickListener(new EditTagCell.onBtnClickListener() {
+//            @Override
+//            public void onClick() {
+//                selectTagTxtList.add(editTagTxt.getEditText());
+//                selectTagFlowLayout.updateLayout();
+//                editTagTxt.setEditViewText("");
+//            }
+//
+//            @Override
+//            public void editTextChange() {
+//            }
+//        });
     }
 
     private void flowlayoutEvent(final FlowLayout tagFlowLayout, final FlowLayout selectTaglayout) {
@@ -216,5 +258,92 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
         });
     }
 
+    //请求意见反馈
+    private void requestFeedBack(String userGuid, String feedBackInfo, String tags) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("ADVICE", feedBackInfo);
+        args.put("JSONDATA", tags);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "Feedback", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+//                }))
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(FeedBackActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String requestCode = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                        requestCode = jsonObject.getString("success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (requestCode.equals("yes")) {
+                        Toast.makeText(FeedBackActivity.this, "您好，我们已收到您的反馈", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(FeedBackActivity.this, "反馈未成功", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (errorMsg != null) {
+                    Log.e("reqGetAllUsers", "ERROR");
+                }
+                needHideProgress();
+                submitBtn.setClickable(true);
+            }
+        });
+    }
+
+    //请求获取评价的标签
+    private void requestGetTags(String userGuid, String feedBackInfo) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("ADVICE", feedBackInfo);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "Feedback", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+//                }))
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(FeedBackActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+//                    setQueryData(responseProtocol.getResponse());
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String requestCode = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                        requestCode = jsonObject.getString("success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (requestCode.equals("yes")) {
+                        Toast.makeText(FeedBackActivity.this, "您好，我们已收到您的反馈", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(FeedBackActivity.this, "反馈未成功", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (errorMsg != null) {
+                    Log.e("reqGetAllUsers", "ERROR");
+                }
+            }
+        });
+    }
 }

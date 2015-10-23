@@ -29,11 +29,24 @@ public class IsSelectCell extends LinearLayout {
     private int dividerRightPadding = 0;
     private static Paint paint;
     private boolean flag;
+    private TextView rightView;
+    private boolean needTopDivier;
 
     private SelectClick click;
+    private onViewClick viewClick;
+
+    public void setViewClick(onViewClick viewClick) {
+        this.viewClick = viewClick;
+    }
 
     public void setClick(SelectClick click) {
         this.click = click;
+    }
+
+    public interface onViewClick {
+        void onImageViewClick();
+
+        void rightBtnClick();
     }
 
     public interface SelectClick {
@@ -64,6 +77,9 @@ public class IsSelectCell extends LinearLayout {
                 if (click != null) {
                     click.onClick();
                 }
+                if (viewClick != null) {
+                    viewClick.onImageViewClick();
+                }
             }
         });
 
@@ -74,8 +90,31 @@ public class IsSelectCell extends LinearLayout {
         infoTextView.setGravity(Gravity.CENTER_VERTICAL);
         infoTextView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
-        addView(infoTextView, infoViewParams);
+        infoViewParams.weight = 1;
+        infoTextView.setLayoutParams(infoViewParams);
+        addView(infoTextView);
 
+        rightView = new TextView(context);
+        rightView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        rightView.setSingleLine(true);
+        rightView.setVisibility(GONE);
+        rightView.setTextColor(Color.WHITE);
+        rightView.setBackgroundResource(R.drawable.btn_primary_default);
+        rightView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
+        rightView.setGravity(Gravity.CENTER_VERTICAL);
+        LayoutParams rightViewParams = LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
+        rightViewParams.setMargins(AndroidUtilities.dp(0), AndroidUtilities.dp(0), AndroidUtilities.dp(8), AndroidUtilities.dp(0));
+        rightView.setLayoutParams(rightViewParams);
+        addView(rightView);
+
+        rightView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewClick != null) {
+                    viewClick.rightBtnClick();
+                }
+            }
+        });
 
     }
 
@@ -83,6 +122,11 @@ public class IsSelectCell extends LinearLayout {
         this.needDivider = needDivider;
         infoTextView.setText(infoTxt);
         setWillNotDraw(!needDivider);
+    }
+
+    public void needTopDivider(boolean needTopDivider) {
+        this.needTopDivier = needTopDivider;
+        setWillNotDraw(!needTopDivider);
     }
 
     public boolean changeSelect() {
@@ -96,6 +140,11 @@ public class IsSelectCell extends LinearLayout {
         return flag;
     }
 
+    public void setRightBtnTxt(String infoTxt) {
+        rightView.setVisibility(VISIBLE);
+        rightView.setText(infoTxt);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(48) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
@@ -105,6 +154,9 @@ public class IsSelectCell extends LinearLayout {
     protected void onDraw(Canvas canvas) {
         if (needDivider) {
             canvas.drawLine(dividerLeftPadding, getHeight() - 1, getWidth() - dividerRightPadding, getHeight() - 1, paint);
+        }
+        if (needTopDivier) {
+            canvas.drawLine(dividerLeftPadding, 1, getWidth() - dividerRightPadding, 1, paint);
         }
     }
 

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/story_icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:paddingBottom="8dp"
+        android:src="@drawable/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/story_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/story_icon"
+        android:text="同仁堂大药房"
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <TextView
+        android:id="@+id/story_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/story_name"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/story_icon"
+        android:text="(安定门外)"
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <TextView
+        android:id="@+id/drug_attention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bg_white"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:text="关注"
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <TextView
+        android:id="@+id/drug_attention_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/drug_attention"
+        android:text="关注度"
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <TextView
+        android:id="@+id/durg_attention_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/drug_attention_hint"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/drug_attention"
+        android:text="500万"
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <TextView
+        android:layout_width="0.5dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_toLeftOf="@id/durg_attention_count"
+        android:background="@color/theme_sub_title"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:background="@color/theme_sub_title"/>
+</RelativeLayout>
