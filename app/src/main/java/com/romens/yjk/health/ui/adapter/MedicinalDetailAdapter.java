@@ -38,8 +38,9 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
         this.mdatas = data;
         this.mContext = context;
     }
+
     public void setUrls(List<String> urls) {
-        this.urls=urls;
+        this.urls = urls;
     }
 
     @Override
@@ -53,13 +54,14 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             view = View.inflate(mContext, R.layout.list_item_medicinal_info, null);
             holder = new informationHolder(view);
         }
-        //else if (viewType == 2) {
-           // view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
-            //holder = new aboutHolder(view);
-      //  } else if (viewType == 3) {
-          //  view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
-            //holder = new aboutHolder(view);
-       // }
+        else if (viewType == 2) {
+        view = View.inflate(mContext, R.layout.list_item_medicinal_price, null);
+        holder = new PriceHolder(view);
+        }
+        //else if (viewType == 3) {
+        //  view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
+        //holder = new aboutHolder(view);
+        // }
         else if (viewType == 4) {
             view = View.inflate(mContext, R.layout.list_shadow_item, null);
             holder = new ShadowHolder(view);
@@ -72,19 +74,19 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
         } else if (viewType == 7) {
             view = View.inflate(mContext, R.layout.list_item_medicinal_more, null);
             holder = new MoreHolder(view);
-        } else if(viewType==8){
+        } else if (viewType == 8) {
             view = View.inflate(mContext, R.layout.list_item_medicinal_information2, null);
             holder = new aboutHolder(view);
-        }else if(viewType==9){
-            ADErrorDataCell adErrorDataCell=new ADErrorDataCell(mContext);
+        } else if (viewType == 9) {
+            ADErrorDataCell adErrorDataCell = new ADErrorDataCell(mContext);
             adErrorDataCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
             return new ADErrorHolder(adErrorDataCell);
-        } else{
-            view=View.inflate(mContext,R.layout.list_item_empty_view,null);
-            holder=new EmptyHolder(view);
+        } else {
+            view = View.inflate(mContext, R.layout.list_item_empty_view, null);
+            holder = new EmptyHolder(view);
         }
         //        不知道为什么在xml设置的“android:layout_width="match_parent"”无效了，需要在这里重新设置
-       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
         return holder;
     }
@@ -98,7 +100,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
                 String imageUrl = mdatas.get(position).getImageUrl();
                 imageHolder.iv.setImageBitmap(ImageUtils.bindLocalImage(imageUrl));
                 Drawable defaultDrawable = imageHolder.iv.getDrawable();
-                ImageManager.loadForView(mContext, imageHolder.iv,imageUrl, defaultDrawable, defaultDrawable);
+                ImageManager.loadForView(mContext, imageHolder.iv, imageUrl, defaultDrawable, defaultDrawable);
                 break;
             case 1:
                 informationHolder inforHolder = (informationHolder) holder;
@@ -106,46 +108,44 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
                 inforHolder.tv_information.setText(testEntity.getInfor());
                 break;
             case 2:
+                PriceHolder priceHolder= (PriceHolder) holder;
+                priceHolder.tv_name.setText(testEntity.getJson());
+                priceHolder.tv_price.setText(testEntity.getInfor());
                 break;
             case 3:
                 break;
             case 4:
-                ShadowHolder shadowHolder= (ShadowHolder) holder;
+                ShadowHolder shadowHolder = (ShadowHolder) holder;
                 break;
             case 5:
-                GroupNameHolder groupNameHolder= (GroupNameHolder) holder;
+                GroupNameHolder groupNameHolder = (GroupNameHolder) holder;
                 groupNameHolder.tv_group_name.setText(testEntity.getJson());
-                if("在线药店".equals(testEntity.getJson())){
+                if ("在线药店".equals(testEntity.getJson())) {
                     groupNameHolder.more.setVisibility(View.GONE);
                 }
                 break;
             case 6:
-                StoreHolder storeHolder= (StoreHolder) holder;
+                StoreHolder storeHolder = (StoreHolder) holder;
                 storeHolder.iv_store.setImageBitmap(ImageUtils.bindLocalImage(testEntity.getImageUrl()));
-                Drawable defaultDrawables =  storeHolder.iv_store.getDrawable();
-                ImageManager.loadForView(mContext,  storeHolder.iv_store,testEntity.getImageUrl(), defaultDrawables, defaultDrawables);
+                Drawable defaultDrawables = storeHolder.iv_store.getDrawable();
+                ImageManager.loadForView(mContext, storeHolder.iv_store, testEntity.getImageUrl(), defaultDrawables, defaultDrawables);
                 storeHolder.tv_store_name.setText(testEntity.getJson());
                 storeHolder.tv_store_infor.setText(testEntity.getInfor());
                 break;
             case 7:
-                MoreHolder moreHolder= (MoreHolder) holder;
+                MoreHolder moreHolder = (MoreHolder) holder;
                 break;
             case 8:
                 aboutHolder holders = (aboutHolder) holder;
-               // List<AboutTestEntity>datas = new ArrayList<AboutTestEntity>();
-               // datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-                //datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
-           //     datas.add(new AboutTestEntity(testEntity.getImageUrl(),testEntity.getJson(),testEntity.getInfor()));
                 GridViewAdapter gridViewAdapter = new GridViewAdapter(urls, mContext);
                 holders.gridView.setAdapter(gridViewAdapter);
                 break;
             case 9:
-                 ADErrorHolder adErrorHolder= (ADErrorHolder) holder;
-                ADErrorDataCell cell= (ADErrorDataCell) adErrorHolder.itemView;
-             //   cell.ima
+                ADErrorHolder adErrorHolder = (ADErrorHolder) holder;
+                ADErrorDataCell cell = (ADErrorDataCell) adErrorHolder.itemView;
                 break;
             default:
-                EmptyHolder emptyHolder= (EmptyHolder) holder;
+                EmptyHolder emptyHolder = (EmptyHolder) holder;
                 break;
         }
     }
@@ -158,11 +158,13 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
         }
         return 0;
     }
-    public class EmptyHolder extends RecyclerView.ViewHolder{
-        public EmptyHolder(View view){
+
+    public class EmptyHolder extends RecyclerView.ViewHolder {
+        public EmptyHolder(View view) {
             super(view);
         }
     }
+
     //医药信息的holder
     public class informationHolder extends RecyclerView.ViewHolder {
         private TextView tv_name;
@@ -175,6 +177,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             //这里设置监听事件
         }
     }
+
     //相关医药的holder
     public class aboutHolder extends RecyclerView.ViewHolder {
         private ModifyGridView gridView;
@@ -185,6 +188,7 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             //这里设置监听事件
         }
     }
+
     //药品图片的holder
     public class ImageHolder extends RecyclerView.ViewHolder {
         private ImageView iv;
@@ -194,47 +198,65 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter {
             iv = (ImageView) view.findViewById(R.id.iv_detail);
         }
     }
+
     //在线药店的holder
-    public class StoreHolder extends RecyclerView.ViewHolder{
-        private  ImageView iv_store;
-        private  TextView tv_store_name,tv_store_infor;
-        public StoreHolder(View view){
+    public class StoreHolder extends RecyclerView.ViewHolder {
+        private ImageView iv_store;
+        private TextView tv_store_name, tv_store_infor;
+
+        public StoreHolder(View view) {
             super(view);
-            iv_store= (ImageView) view.findViewById(R.id.iv_store);
-            tv_store_name= (TextView) view.findViewById(R.id.tv_store_name);
-            tv_store_infor= (TextView) view.findViewById(R.id.tv_store_infor);
+            iv_store = (ImageView) view.findViewById(R.id.iv_store);
+            tv_store_name = (TextView) view.findViewById(R.id.tv_store_name);
+            tv_store_infor = (TextView) view.findViewById(R.id.tv_store_infor);
         }
     }
+
     //group的holder
-    public class GroupNameHolder extends RecyclerView.ViewHolder{
+    public class GroupNameHolder extends RecyclerView.ViewHolder {
         private TextView tv_group_name;
         private Button more;
-        public GroupNameHolder(View view){
+
+        public GroupNameHolder(View view) {
             super(view);
-            tv_group_name= (TextView) view.findViewById(R.id.group_name);
-            more= (Button) view.findViewById(R.id.moreButton);
+            tv_group_name = (TextView) view.findViewById(R.id.group_name);
+            more = (Button) view.findViewById(R.id.moreButton);
         }
     }
+
     //Shadow的holder
-    public class ShadowHolder extends RecyclerView.ViewHolder{
+    public class ShadowHolder extends RecyclerView.ViewHolder {
         private View empty_view;
-        public ShadowHolder(View view){
+
+        public ShadowHolder(View view) {
             super(view);
-            empty_view=view.findViewById(R.id.empty_view);
+            empty_view = view.findViewById(R.id.empty_view);
         }
     }
+
     //更多的holder
-    public class MoreHolder extends  RecyclerView.ViewHolder{
+    public class MoreHolder extends RecyclerView.ViewHolder {
         private TextView tv_more;
-        public MoreHolder(View view){
+
+        public MoreHolder(View view) {
             super(view);
-            tv_more= (TextView) view.findViewById(R.id.tv_more);
+            tv_more = (TextView) view.findViewById(R.id.tv_more);
         }
 
     }
-    public class  ADErrorHolder extends RecyclerView.ViewHolder{
-        public  ADErrorHolder(View view){
+
+    public class ADErrorHolder extends RecyclerView.ViewHolder {
+        public ADErrorHolder(View view) {
             super(view);
+        }
+    }
+    public class PriceHolder extends RecyclerView.ViewHolder{
+        private TextView tv_name;
+        private TextView tv_price;
+        public PriceHolder(View view){
+            super(view);
+            tv_name= (TextView) view.findViewById(R.id.tv_name);
+            tv_price= (TextView) view.findViewById(R.id.tv_detail);
         }
     }
 
