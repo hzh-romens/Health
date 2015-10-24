@@ -119,6 +119,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         });
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
+        requestShopCarCountData();
 
         mobvoiApiClient = new MobvoiApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -250,7 +251,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String buycount = jsonObject.getString("BUYCOUNT");
                         //shoppingCartItem.setIcon(Integer.parseInt(buycount));
-                        sumCount = Integer.parseInt(buycount);
+                        sumCount=Integer.parseInt(buycount);
                         updateShoppingCartCount(sumCount);
                     } catch (JSONException e) {
                         e.printStackTrace();

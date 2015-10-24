@@ -25,6 +25,7 @@
             android:layout_marginRight="@dimen/padding_outter"
             android:gravity="center"
             android:text="删除"
+            android:includeFontPadding="false"
             android:textColor="@color/transparent_black"
             android:textSize="@dimen/title_text_size" />
     </RelativeLayout>
@@ -64,6 +65,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="4dip"
             android:text="全选"
+            android:includeFontPadding="false"
             android:textColor="@color/md_white_1000"
             android:textSize="@dimen/text_size_small" />
 
@@ -75,8 +77,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="合计:"
+            android:includeFontPadding="false"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_large" />
+            android:textSize="@dimen/title_text_size" />
 
 
         <TextView
@@ -88,8 +91,9 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="结算"
+            android:includeFontPadding="false"
             android:textColor="@color/md_white_1000"
-            android:textSize="@dimen/text_size_large" />
+            android:textSize="@dimen/text_size_xlarge" />
     </LinearLayout>
 
 </FrameLayout>

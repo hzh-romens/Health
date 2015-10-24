@@ -7,19 +7,26 @@
     <ImageView
         android:layout_width="96dp"
         android:layout_height="64dp"
-        android:layout_margin="@dimen/padding_outter"
-        android:background="@drawable/ic_launcher"
+       android:layout_marginTop="@dimen/padding_inner"
+        android:layout_marginBottom="@dimen/padding_inner"
+        android:layout_marginLeft="@dimen/padding_outter"
+        android:layout_marginRight="@dimen/padding_inner"
+        android:src="@drawable/picture_fail"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_vertical"
         android:id="@+id/iv"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/padding_outter"
-        android:layout_marginLeft="128dp">
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/padding_inner"
+        android:layout_marginBottom="@dimen/padding_inner"
+        android:layout_marginRight="@dimen/padding_inner"
+        android:layout_marginLeft="120dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_inner"
             >
             <TextView
                 android:layout_width="wrap_content"
@@ -29,6 +36,7 @@
                 android:id="@+id/tv_name"
                 android:layout_alignParentLeft="true"
                 android:textSize="@dimen/text_size_medium"
+                android:includeFontPadding="false"
                 android:text="感冒药"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -36,12 +44,13 @@
                 android:layout_alignParentRight="true"
                 android:textSize="@dimen/text_size_medium"
                 android:id="@+id/tv_price"
+                android:includeFontPadding="false"
                 android:text="感冒药"/>
     </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_inner"
+            android:layout_marginTop="@dimen/padding_inner"
             >
             <TextView
                 android:layout_width="wrap_content"

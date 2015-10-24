@@ -134,10 +134,10 @@ public class ShopListAdapter extends RecyclerView.Adapter{
                             Toast.makeText(mContext, "加入购物车异常", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(mContext, "成功加入购物车", Toast.LENGTH_SHORT).show();
-                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
+                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged,1);
                         }
                     } else {
-                        android.util.Log.e("InsertIntoCar", errorMsg.toString() + "====" + errorMsg.msg);
+                        android.util.Log.e("InsertIntoCar",errorMsg.msg);
                     }
                 }
             });

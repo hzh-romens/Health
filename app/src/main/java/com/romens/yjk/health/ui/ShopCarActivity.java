@@ -161,6 +161,7 @@ public class ShopCarActivity extends BaseActivity {
                         if (childData != null) {
                             Iterator iter = childData.entrySet().iterator();
                             List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
+                            int count=0;
                             while (iter.hasNext()) {
                                 ParentEntity fatherEntity = new ParentEntity();
                                 Map.Entry entry = (Map.Entry) iter.next();
@@ -169,8 +170,12 @@ public class ShopCarActivity extends BaseActivity {
                                 for (int i = 0; i < child.size(); i++) {
                                     if ("true".equals(child.get(i).getCHECK())) {
                                         filterData.add(child.get(i));
+                                        count=count+child.get(i).getBUYCOUNT();
                                     }
+
                                 }
+
+
                             }
                             List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
                             for (int i = 0; i < filterData.size(); i++) {
@@ -180,7 +185,7 @@ public class ShopCarActivity extends BaseActivity {
                             }
                             Gson gson = new Gson();
                             String s = gson.toJson(deleteData);
-                            DeleteData(s,deleteData.size());
+                            DeleteData(s,count);
                         } else {
                             Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
                         }
@@ -371,6 +376,7 @@ public class ShopCarActivity extends BaseActivity {
 
     //删除商品
     private void DeleteData(String deletedata, final int reduceCount) {
+        Log.i("购物车删除数量----",reduceCount+"");
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", "2222").put("JSONDATA", deletedata).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelCartItem", args);
