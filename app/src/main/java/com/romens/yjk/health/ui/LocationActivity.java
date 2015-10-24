@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.StateListAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Outline;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -27,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -144,7 +146,7 @@ public class LocationActivity extends BaseActivity {
             targetLocationAddress = arguments.getString(ARGUMENT_KEY_TARGET_LOCATION_ADDRESS, "");
         }
         isReadOnly = !TextUtils.isEmpty(targetLocationAddress);
-        Context context = this;
+        final Context context = this;
 
         final ActionBar actionBar = new ActionBar(this);
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
@@ -193,7 +195,7 @@ public class LocationActivity extends BaseActivity {
                     mapViewClip.setVisibility(View.GONE);
                     searchListView.setVisibility(View.VISIBLE);
                     searchListView.setEmptyView(emptyTextLayout);
-                    if(otherMenuItem!=null){
+                    if (otherMenuItem != null) {
                         otherMenuItem.setVisibility(View.GONE);
                     }
                 }
@@ -208,7 +210,7 @@ public class LocationActivity extends BaseActivity {
                     searchListView.setVisibility(View.GONE);
                     emptyTextLayout.setVisibility(View.GONE);
                     searchAdapter.searchDelayed(null, null);
-                    if(otherMenuItem!=null){
+                    if (otherMenuItem != null) {
                         otherMenuItem.setVisibility(View.VISIBLE);
                     }
                 }
@@ -228,7 +230,7 @@ public class LocationActivity extends BaseActivity {
             item.getSearchField().setHint("搜索");
         }
 
-        otherMenuItem= menu.addItem(0, R.drawable.ic_ab_other);
+        otherMenuItem = menu.addItem(0, R.drawable.ic_ab_other);
         otherMenuItem.addSubItem(map_list_menu_map, "地图模式", 0);
         otherMenuItem.addSubItem(map_list_menu_satellite, "卫星模式", 0);
         fragmentView = new FrameLayout(context) {
@@ -412,6 +414,10 @@ public class LocationActivity extends BaseActivity {
                         getMyActionBar().openSearchField("");
                     } else {
                         LocationEntity object = adapter.getItem(position);
+                        Toast.makeText(context, "-lon-->" + object.lon + "--lan->" + object.lat, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LocationActivity.this, DrugStoryDetailActivity.class);
+                        intent.putExtra("locationEntity", object);
+                        startActivity(intent);
                     }
                 }
             });
@@ -730,7 +736,7 @@ public class LocationActivity extends BaseActivity {
                 return;
             }
 
-           overScrollHeight = resume ? overScrollHeight : viewHeight;
+            overScrollHeight = resume ? overScrollHeight : viewHeight;
             //overScrollHeight = resume ? overScrollHeight : viewHeight - AndroidUtilities.dp(66) - height;
 
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) listView.getLayoutParams();

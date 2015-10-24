@@ -134,6 +134,7 @@ public class CollectActivity extends BaseActivity {
     private void refreshContentView() {
         if (entities != null && entities.size() > 0) {
             attachView.setVisibility(View.GONE);
+            isSelectCell.setVisibility(View.VISIBLE);
             refreshLayout.setVisibility(View.VISIBLE);
         } else {
             refreshLayout.setVisibility(View.GONE);
@@ -189,16 +190,30 @@ public class CollectActivity extends BaseActivity {
             @Override
             public void rightBtnClick() {
                 entities = adapter.getEntities();
-                for (int i = 0; i < entities.size(); i++) {
-                    if (entities.get(i).isSelect()) {
-                        entities.remove(i);
-                        i--;
-                    }
-                }
+                requestDelFavour(userGuid, delItem(entities));
                 adapter.setEntities(entities);
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private String delItem(List<CollectDataEntity> entities) {
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < entities.size(); i++) {
+            if (entities.get(i).isSelect()) {
+//                entities.remove(i);
+//                i--;
+                try {
+                    JSONObject object = new JSONObject();
+                    object.put("MERCHANDISEID", entities.get(i).getMerchandiseId());
+                    array.put(object);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Log.e("tag", "--delCollect-->" + array.toString());
+        return array.toString();
     }
 
     private void initData() {
@@ -335,5 +350,51 @@ public class CollectActivity extends BaseActivity {
         refreshContentView();
         adapter.setEntities(entities);
         adapter.notifyDataSetChanged();
+    }
+
+    //访问删除收藏
+    private void requestDelFavour(final String userGuid, String jsonData) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("JSONDATA", jsonData);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(CollectActivity.this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(CollectActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    Log.e("tag", "--collect--->" + responseProtocol.getResponse());
+                    String requestCode = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                        requestCode = jsonObject.getString("success");
+                        Log.e("tag", "--requestCode--->" + requestCode);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (requestCode.equals("yes")) {
+                        Toast.makeText(CollectActivity.this, "确认收获", Toast.LENGTH_SHORT).show();
+                        requestCollectData(userGuid);
+                    } else {
+                        Toast.makeText(CollectActivity.this, "确认收获错误", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (errorMsg == null) {
+                } else {
+                    Log.e("reqGetAllUsers", "ERROR");
+                    Log.e("tag", "--collect--ERROR-->" + errorMsg.msg);
+                }
+                needHideProgress();
+            }
+        });
     }
 }

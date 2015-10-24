@@ -25,6 +25,35 @@ public class DiscoveryCollection {
         return false;
     }
 
+    public static boolean onFocusItemAction(Context context, CharSequence btnString) {
+        if (TextUtils.isEmpty(btnString)) {
+            return false;
+        }
+        /*if (btnString.equals(PharmicCounseling.name)) {
+            String action = PharmicCounseling.value;
+            if (!TextUtils.isEmpty(action)) {
+                context.startActivity(new Intent(action));
+            }
+        }*/
+        else if (btnString.equals(NearbyPharmacy.name)) {
+            String action = NearbyPharmacy.value;
+            if (!TextUtils.isEmpty(action)) {
+                context.startActivity(new Intent(action));
+            }
+        } else if (btnString.equals(MedicationReminders.name)) {
+            String action = MedicationReminders.value;
+            if (!TextUtils.isEmpty(action)) {
+                context.startActivity(new Intent(action));
+            }
+        } else if (btnString.equals(InformationNews.name)) {
+            String action = InformationNews.value;
+            if (!TextUtils.isEmpty(action)) {
+                context.startActivity(new Intent(action));
+            }
+        }
+        return false;
+    }
+
     public static final class NearbyPharmacy {
         public static final String key = "intent_nearby_pharmacy";
         public static final String value = "com.romens.yjk.health.NEARBYPHARMACY";
@@ -32,14 +61,14 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "附近药店";
         public static final int isCover = 1;
-        public static final int sortIndex=0;
-        public static final int primaryColor=0xFF8BC34A;
+        public static final int sortIndex = 0;
+        public static final int primaryColor = 0xFF8BC34A;
     }
 
     public static final class CommonDisease {
         public static final String key = "intent_common_disease";
         public static final String value = "com.romens.rhealth.COMMONDISEASE";
-        public static final int iconRes = R.drawable.sort;
+        public static final int iconRes = R.drawable.ic_sort;
         public static final String iconUrl = "";
         public static final String name = "常见疾病";
     }
@@ -47,23 +76,23 @@ public class DiscoveryCollection {
     public static final class PharmicCounseling {
         public static final String key = "intent_pharmic_counseling";
         public static final String value = "com.romens.rhealth.PHARMICCOUNSELING";
-        public static final int iconRes = R.drawable.pharmacist;
+        public static final int iconRes = R.drawable.ic_sort;
         public static final String iconUrl = "";
         public static final String name = "用药咨询";
         public static final int isCover = 0;
-        public static final int sortIndex=4;
-        public static final int primaryColor=0xFFA1887F;
+        public static final int sortIndex = 4;
+        public static final int primaryColor = 0xFFA1887F;
     }
 
     public static final class MedicationReminders {
         public static final String key = "intent_medication_reminders";
         public static final String value = "com.romens.rhealth.MEDICATIONREMINDERS";
-        public static final int iconRes = R.drawable.remind;
+        public static final int iconRes = R.drawable.ic_remind;
         public static final String iconUrl = "";
-        public static final String name = "服药提醒";
+        public static final String name = "用药提醒";
         public static final int isCover = 0;
-        public static final int sortIndex=5;
-        public static final int primaryColor=0xFFA1887F;
+        public static final int sortIndex = 5;
+        public static final int primaryColor = 0xFFA1887F;
     }
 
     public static final class OrderSheet {
@@ -77,12 +106,12 @@ public class DiscoveryCollection {
     public static final class InformationNews {
         public static final String key = "intent_information_new";
         public static final String value = "com.romens.rhealth.INFORMATION_NEWS";
-        public static final int iconRes = R.drawable.news;
+        public static final int iconRes = R.drawable.ic_news;
         public static final String iconUrl = "";
         public static final String name = "最新资讯";
         public static final int isCover = 0;
-        public static final int sortIndex=1;
-        public static final int primaryColor=0xFFFF8A65;
+        public static final int sortIndex = 1;
+        public static final int primaryColor = 0xFFFF8A65;
     }
 
     public static final class FindDrugWithScanner {
@@ -92,8 +121,8 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "扫码识药";
         public static final int isCover = 0;
-        public static final int sortIndex=2;
-        public static final int primaryColor=0xFFA1887F;
+        public static final int sortIndex = 2;
+        public static final int primaryColor = 0xFFA1887F;
     }
 
 }

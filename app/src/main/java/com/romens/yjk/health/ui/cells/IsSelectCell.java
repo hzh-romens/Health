@@ -65,7 +65,6 @@ public class IsSelectCell extends LinearLayout {
         isSelectImgView = new ImageView(context);
         isSelectImgView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         isSelectImgView.setImageResource(R.drawable.control_address_undeafult);
-        isSelectImgView.setVisibility(GONE);
         flag = false;
         LayoutParams imgParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         imgParams.gravity = Gravity.CENTER_VERTICAL;

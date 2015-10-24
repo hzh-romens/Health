@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.db.entity.DiscoveryCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,7 @@ public class AttachView extends FrameLayout {
         });
     }
 
-    public void bindData(int[] itemIcons, CharSequence[] items) {
+    public void bindData(int[] itemIcons, final CharSequence[] items) {
         views.clear();
         int size = itemIcons.length;
         for (int a = 0; a < size; a++) {
@@ -78,9 +79,11 @@ public class AttachView extends FrameLayout {
             addView(attachButton, LayoutHelper.createFrame(85, 90, Gravity.LEFT | Gravity.TOP));
             attachButton.setTag(a);
             views.add(attachButton);
+            final int finalA = a;
             attachButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    DiscoveryCollection.onFocusItemAction(getContext(), items[finalA]);
                     if (delegate != null) {
                         delegate.didPressedButton((Integer) v.getTag());
                     }

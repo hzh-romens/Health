@@ -51,8 +51,6 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
     private FlexibleRatingBar speedRatingBar;
     private TextView opinionTextView;
 
-    private String orderPrice;
-
     private String userGuid = "";
 
     @Override
@@ -69,18 +67,29 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
         Intent intent = getIntent();
         AllOrderEntity entity = (AllOrderEntity) intent.getSerializableExtra("evaluateDetailEntity");
         if (null != entity) {
+            Log.e("tag", "---entity-->" + entity.getGoodsName() + ":" + entity.getOrderPrice());
             requestAssessDetail(userGuid, entity.getOrderId());
-            orderPrice = entity.getOrderPrice();
+            titleTextView.setText(entity.getGoodsName());
+            moneyTextView.setText("￥" + entity.getOrderPrice());
+            dateTextView.setText(entity.getCreateDate());
         }
     }
 
     private void viewSetData(EvaluateDatailsEntity evaluateDatailsEntity) {
-        titleTextView.setText(evaluateDatailsEntity.getAdvice());
-        moneyTextView.setText("￥" + orderPrice);
-        dateTextView.setText(evaluateDatailsEntity.getAssessData());
-        qualityRatingBar.setRating(Integer.getInteger(evaluateDatailsEntity.getQualityStar()));
-        speedRatingBar.setRating(Integer.getInteger(evaluateDatailsEntity.getDileveryStar()));
+        String qualiStr = evaluateDatailsEntity.getQualityStar();
+        int qualiLevel = 0;
+        if (qualiStr != null && !qualiStr.equals("")) {
+            qualiLevel = Integer.getInteger(qualiStr);
+        }
+        String dileveryStr = evaluateDatailsEntity.getDileveryStar();
+        int dileveryLevel = 0;
+        if (dileveryStr != null && !dileveryStr.equals("")) {
+            dileveryLevel = Integer.getInteger(dileveryStr);
+        }
+        qualityRatingBar.setRating(qualiLevel);
+        speedRatingBar.setRating(dileveryLevel);
         opinionTextView.setText(evaluateDatailsEntity.getAdvice());
+        Log.e("tag", "--evaluateDeatil-->" + qualiLevel + "::" + dileveryLevel + "::" + evaluateDatailsEntity.getAdvice());
     }
 
     //访问商品评价信息
@@ -88,12 +97,12 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("MERCHANDISEID", merchandiseId);
         args.put("USERGUID", userGuid);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetAssessment", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAssessment", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
+//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+//                }))
                 .build();
         FacadeClient.request(OrderEvaluateDetailActivity.this, message, new FacadeClient.FacadeCallback() {
             @Override
@@ -104,25 +113,38 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
             @Override
             public void onResult(Message msg, Message errorMsg) {
                 if (msg != null) {
-                    ResponseProtocol<LinkedTreeMap<String, String>> responseProtocol = (ResponseProtocol) msg.protocol;
-//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     setData(responseProtocol.getResponse());
+                    Log.e("tag", "response---evaluateDetail->" + responseProtocol.getResponse());
                 }
                 if (errorMsg == null) {
                 } else {
+                    Log.e("tag", "evaluateDetail_---error->" + errorMsg.msg);
                     Log.e("reqGetAllUsers", "ERROR");
                 }
             }
         });
     }
 
-    private void setData(LinkedTreeMap<String, String> response) {
-        int count = response == null ? 0 : response.size();
-        if (count <= 0) {
+    private void setData(String response) {
+        Log.e("tag", "--setData->" + response + "-->");
+        if (response == null || response.equals("")) {
             return;
         }
-        EvaluateDatailsEntity evaluateDatailsEntity = EvaluateDatailsEntity.mapToEntity(response);
-        viewSetData(evaluateDatailsEntity);
+        try {
+            Log.e("tag", "--setData->" + response + "-->");
+            JSONObject item = new JSONObject(response);
+            EvaluateDatailsEntity entity = new EvaluateDatailsEntity();
+            entity.setAdvice(item.getString("ADVICE"));
+            entity.setIsAppend(item.getString("ISAPPEND"));
+            entity.setAssessData(item.getString("ASSESSDATE"));
+            entity.setDileveryStar(item.getString("DILEVERYSTAR"));
+            entity.setQualityStar(item.getString("QUALITYSTAR"));
+            viewSetData(entity);
+        } catch (JSONException e) {
+            Log.e("tag", "--setData-json_error->");
+            e.printStackTrace();
+        }
     }
 
     private void actionBarEvent() {

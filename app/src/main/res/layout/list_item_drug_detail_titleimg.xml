@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+    <com.romens.android.ui.Image.BackupImageView
+        android:id="@+id/title_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+
+    <TextView
+        android:id="@+id/title_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="70dp"
+        android:layout_toRightOf="@id/title_image"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="aa"
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/title_size"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/title_image"
+        android:layout_marginTop="8dp"
+        android:background="@color/theme_sub_title"/>
+</RelativeLayout>

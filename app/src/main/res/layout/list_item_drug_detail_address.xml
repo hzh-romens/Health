@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/address_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="12dp"
+        android:src="@drawable/address"/>
+
+    <TextView
+        android:id="@+id/drug_detail_address_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_toRightOf="@id/address_img"
+        android:text="aaa"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <ImageView
+        android:id="@+id/address_phone_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/address_img"
+        android:padding="12dp"
+        android:src="@drawable/phone_grey"/>
+
+    <TextView
+        android:id="@+id/drug_detail_address_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/drug_detail_address_title"
+        android:layout_marginTop="24dp"
+        android:layout_toRightOf="@id/address_phone_img"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/title_sub_size"/>
+</RelativeLayout>

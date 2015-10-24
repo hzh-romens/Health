@@ -236,10 +236,11 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
     private void initData() {
         selectTagTxtList = new ArrayList<>();
         tagList = new ArrayList<>();
-        tagList.add("服务");
-        tagList.add("药品");
-        tagList.add("药师");
-        tagList.add("医师");
+//        tagList.add("服务");
+//        tagList.add("药品");
+//        tagList.add("药师");
+//        tagList.add("医师");
+        requestGetTags();
     }
 
     private void actionBarEvent() {
@@ -304,11 +305,9 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
     }
 
     //请求获取评价的标签
-    private void requestGetTags(String userGuid, String feedBackInfo) {
+    private void requestGetTags() {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", userGuid);
-        args.put("ADVICE", feedBackInfo);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "Feedback", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetFeedbackTag", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
@@ -327,22 +326,22 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
 //                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
 //                    setQueryData(responseProtocol.getResponse());
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String requestCode = "";
+                    Log.e("tag", "--feedBack-getTag-->" + responseProtocol.getResponse());
                     try {
-                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-                        requestCode = jsonObject.getString("success");
+                        JSONArray array = new JSONArray(responseProtocol.getResponse());
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject object = array.getJSONObject(i);
+                            tagList.add(object.getString("TAGNAME"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
-                    if (requestCode.equals("yes")) {
-                        Toast.makeText(FeedBackActivity.this, "您好，我们已收到您的反馈", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(FeedBackActivity.this, "反馈未成功", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (errorMsg != null) {
                     Log.e("reqGetAllUsers", "ERROR");
+                    Log.e("tag", "---feedbackgettag--error-->" + errorMsg.msg);
                 }
+                tagFlowLayout.updateLayout();
             }
         });
     }

@@ -68,9 +68,8 @@ public class OrderEvaluateActivity extends BaseActivity {
         entity = (AllOrderEntity) intent.getSerializableExtra("orderEntity");
         if (null != entity) {
             titleTextView.setText(entity.getGoodsName());
-            moneyTextView.setText("x" + entity.getMerCount());
-            dateTextView.setText(entity.getOrderPrice());
-//            countTextView.setText("2015-12-15 08:09");
+            moneyTextView.setText("x" + entity.getOrderPrice());
+            dateTextView.setText(entity.getCreateDate());
             countTextView.setText(entity.getCreateDate());
         }
     }
@@ -132,7 +131,7 @@ public class OrderEvaluateActivity extends BaseActivity {
         args.put("QUALITYSTAR", dileveryStar);
         args.put("TEXT", bodyText);
         args.put("ISAPPEND", "0");
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "AssessMerch", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "AssessMerch", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
@@ -149,7 +148,6 @@ public class OrderEvaluateActivity extends BaseActivity {
             public void onResult(Message msg, Message errorMsg) {
                 if (msg != null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.e("tag", "--requestCode--->" + responseProtocol.getResponse());
                     String requestCode = "";
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
@@ -164,7 +162,8 @@ public class OrderEvaluateActivity extends BaseActivity {
                         Toast.makeText(OrderEvaluateActivity.this, "发表失败", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if (errorMsg == null) {
+                if (errorMsg != null) {
+                    Log.e("tag", "--requestCode--->" + errorMsg.msg);
                 } else {
                     Log.e("reqGetAllUsers", "ERROR");
                 }

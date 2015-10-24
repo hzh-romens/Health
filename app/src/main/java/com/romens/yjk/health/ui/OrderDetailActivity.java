@@ -60,7 +60,7 @@ public class OrderDetailActivity extends BaseActivity {
     private List<GoodsListEntity> goodsListEntities;
     private OrderExpandableDetailAdapter subExpandableadapter;
 
-    private String userGuid = "3333";
+    private String userGuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

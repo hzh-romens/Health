@@ -83,27 +83,28 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         slidingFixTabLayout.setViewPager(viewPager);
 
         actionBar.setTitle("要健康");
-        actionBar.setBackButtonImage(R.drawable.ic_wallet_giftcard_white_36dp);
+        actionBar.setBackButtonImage(R.drawable.yaojk_logo);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
 
-        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
-        debugMenu.addSubItem(2, "测试促销详情", 0);
-        debugMenu.addSubItem(3, "测试附近药店", 0);
-        debugMenu.addSubItem(4, "我的订单", 0);
-        debugMenu.addSubItem(5, "地址管理", 0);
-        debugMenu.addSubItem(6, "药店详情", 0);
+//        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
+//        debugMenu.addSubItem(2, "测试促销详情", 0);
+//        debugMenu.addSubItem(3, "测试附近药店", 0);
+//        debugMenu.addSubItem(4, "我的订单", 0);
+//        debugMenu.addSubItem(5, "地址管理", 0);
+//        debugMenu.addSubItem(6, "药店详情", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
-                if (id == -1) {
+               /* if (id == -1) {
                     startActivity(new Intent(HomeActivity.this, RemindActivity.class));
-                } else if (id == 0) {
+                }else*/
+                if (id == 0) {
                     startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 1) {
                     startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                } else if (id == 2) {
+                }/*  else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (id == 3) {
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));
@@ -113,7 +114,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     startActivity(new Intent(HomeActivity.this, ControlAddressActivity.class));
                 } else if (id == 6) {
                     startActivity(new Intent(HomeActivity.this, DrugStoryDetailActivity.class));
-                }
+                }*/
             }
         });
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
@@ -163,7 +164,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     @Override
     protected void onStop() {
         if (!mResolvingError) {
-        //    mobvoiApiClient.disconnect();
+            //    mobvoiApiClient.disconnect();
         }
         super.onStop();
     }
@@ -171,9 +172,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
     private List<String> initPagerTitle() {
         List<String> titles = new ArrayList<>();
-        titles.add("焦点");
+        titles.add("首页");
         titles.add("健康");
-        titles.add("探索");
+        titles.add("发现");
         titles.add("我");
         return titles;
     }
@@ -192,7 +193,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.shoppingCartCountChanged) {
             int count = (int) args[0];
-            sumCount=sumCount+count;
+            sumCount = sumCount + count;
             //updateShoppingCartCount(count);
             updateShoppingCartCount(sumCount);
         }
@@ -223,6 +224,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             return mPageTitle.get(position);
         }
     }
+
     //获取购物车数量
     private void requestShopCarCountData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
