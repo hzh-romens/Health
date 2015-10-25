@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.HomeConfig;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
 import com.romens.yjk.health.model.ADFunctionEntity;
 import com.romens.yjk.health.model.ADImageEntity;
@@ -98,6 +100,7 @@ public class HomeFocusFragment extends BaseFragment {
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
         requestDataChanged();
+       // Log.i("userguid----", UserConfig.getClientUser())
     }
 
     private void requestDataChanged() {

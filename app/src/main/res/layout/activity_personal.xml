@@ -1,32 +1,434 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <RelativeLayout
         style="@style/titleStytle"
-        android:orientation="horizontal"
-        android:background="@color/theme_primary">
+        android:background="@color/theme_primary"
+        android:orientation="horizontal">
+
         <ImageView
-            style="@style/iv_back_style"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padding_outter"
             android:id="@+id/back"
-            android:layout_alignParentLeft="true"/>
+            style="@style/iv_back_style"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_outter" />
+
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:layout_centerInParent="true"
             android:includeFontPadding="false"
             android:text="个人信息"
-            android:id="@+id/title"
-            android:textSize="@dimen/text_size_xlarge"
-            android:layout_centerInParent="true"
-            />
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_xlarge" />
     </RelativeLayout>
 
-    <ListView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listView"/>
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/md_grey_100"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/basicInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/md_grey_100"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="基本信息"
+                    android:textColor="@color/theme_primary_light"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/personName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="姓名"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <EditText
+                    android:id="@+id/editor_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/personSex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="性别"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <TextView
+                    android:id="@+id/choiceSex"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:drawableRight="@drawable/small"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/personWork"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="职业"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <EditText
+                    android:id="@+id/editor_work"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/personBirthDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="出生年月"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <TextView
+                    android:id="@+id/choiceBirthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:drawableRight="@drawable/small"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/md_grey_100"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/DetailInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/md_grey_100"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="详细信息"
+                    android:textColor="@color/theme_primary_light"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="有无遗传病史"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <TextView
+                    android:id="@+id/choiceHeredopathia"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:drawableRight="@drawable/small"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="有无病史"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <TextView
+                    android:id="@+id/choiceDisease"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:drawableRight="@drawable/small"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="有无过敏"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <TextView
+                    android:id="@+id/choiceAllergy"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:drawableRight="@drawable/small"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="饮食偏好"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <EditText
+                    android:id="@+id/editor_food"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="作息习惯"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <EditText
+                    android:id="@+id/editor_rest"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_inner"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:padding="@dimen/padding_inner"
+                    android:text="其他"
+                    android:textColor="@color/md_black_1000"
+                    android:textSize="@dimen/title_text_size"
+                    android:typeface="normal" />
+
+                <EditText
+                    android:id="@+id/editor_other"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
+                    android:background="@null"
+                    android:gravity="right|center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/md_grey_100"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/btn_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_margin="@dimen/padding_outter"
+                    android:background="@drawable/btn_goorder"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="保存"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/title_text_size" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

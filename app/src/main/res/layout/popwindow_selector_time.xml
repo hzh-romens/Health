@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,11 +35,21 @@
         android:orientation="horizontal">
 
         <widget.WheelView
-            android:id="@+id/wheelview"
+        android:id="@+id/YearView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+        <widget.WheelView
+            android:id="@+id/MonthView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-        </widget.WheelView>
+            android:layout_weight="1"/>
+        <widget.WheelView
+            android:id="@+id/DayView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
     </LinearLayout>
 
 </LinearLayout>

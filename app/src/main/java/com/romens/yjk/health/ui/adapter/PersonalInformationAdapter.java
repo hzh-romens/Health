@@ -61,39 +61,33 @@ public class PersonalInformationAdapter extends BaseAdapter implements OnWheelCh
                 convertView=View.inflate(mContext, R.layout.list_item_personal_parent,null);
                 TextView tv_parent= (TextView) convertView.findViewById(R.id.name);
                 tv_parent.setText(mResult.get(position).getTitleName());
-
-        } else if(getItemViewType(position)==1||getItemViewType(position)==2){
+        } else if(getItemViewType(position)==1){
                 convertView=View.inflate(mContext,R.layout.list_item_personal_child,null);
                 TextView tv_child= (TextView) convertView.findViewById(R.id.childName);
-                final EditText editor= (EditText) convertView.findViewById(R.id.editor);
+                EditText editor= (EditText) convertView.findViewById(R.id.editor);
                 tv_child.setText(mResult.get(position).getTitleName());
-            //EditText可编辑和不可编辑
-                 if (mResult.get(position).getType()==1){
-                    editor.setEnabled(true);
-                     editor.setFocusable(true);
-                 }else if(mResult.get(position).getType()==2){
-                     editor.setEnabled(true);
-                     editor.setFocusable(false);
-                     editor.setCompoundDrawables(null, null, mContext.getResources().getDrawable(R.drawable.ic_go), null);
-                     editor.setOnClickListener(new View.OnClickListener() {
-                         @Override
-                         public void onClick(View v) {
-                             Log.d("点击了----","点击");
-                             //打开popwindow
-                             if("性别".equals(mResult.get(position).getTitleName())){
-                                 String[] data=new String[2];
-                                 data[0]="男";
-                                 data[1]="女";
-                                getPopWindowInstance(data,editor);
-                             }else{
-                                 String[] data=new String[2];
-                                 data[0]="有";
-                                 data[1]="无";
-                                 getPopWindowInstance(data,editor);
-                             }
-                         }
-                     });
-                 }
+        }else if(getItemViewType(position)==2){
+            convertView=View.inflate(mContext,R.layout.list_item_personal_child2,null);
+            TextView tv_child= (TextView) convertView.findViewById(R.id.childName);
+            final TextView tv_choice= (TextView) convertView.findViewById(R.id.tv_choice);
+            tv_child.setText(mResult.get(position).getTitleName());
+            tv_choice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //打开popwindow
+                if ("性别".equals(mResult.get(position).getTitleName())) {
+                    String[] data = new String[2];
+                    data[0] = "男";
+                    data[1] = "女";
+                  //getPopWindowInstance(data, tv_choice);
+                } else {
+                    String[] data = new String[2];
+                    data[0] = "有";
+                    data[1] = "无";
+                   // getPopWindowInstance(data, tv_choice);
+                }
+            }
+        });
         }else if(getItemViewType(position)==3){
                 convertView=View.inflate(mContext,R.layout.list_item_surebutton,null);
                  LinearLayout btn_save= (LinearLayout) convertView.findViewById(R.id.btn_save);
@@ -117,65 +111,6 @@ public class PersonalInformationAdapter extends BaseAdapter implements OnWheelCh
 
 
 
-    // 获取PopWindow实例 保持一个实例
-    private void getPopWindowInstance(String[] data,EditText showAsView) {
-        if (null != mPopupWindow) {
-            mPopupWindow.dismiss();
-            return;
-        } else {
-            initPopWindow(data,showAsView);
-        }
-    }
-
-    private PopupWindow mPopupWindow;
-    private int mScreenwidth;
-    private int mScreenHeight;
-
-    // 创建PopupWindow
-    @SuppressWarnings("deprecation")
-    private List<ChoiceEntity> choiceDatas;
-
-    private void initPopWindow(final String[] data, final EditText showAsView) {
-        mScreenwidth = ((Activity)mContext).getWindowManager().getDefaultDisplay().getWidth();
-        mScreenHeight = ((Activity)mContext).getWindowManager().getDefaultDisplay().getHeight();
-        // 创建一个PopupWindow 并设置宽高
-        // 参数1：contentView 指定PopupWindow的内容
-        // 参数2：width 指定PopupWindow的width
-        // 参数3：height 指定PopupWindow的height
-       View view= View.inflate(mContext,R.layout.popwindows_selector,null);
-        TextView popwindow_close= (TextView) view.findViewById(R.id.popwindow_close);
-        TextView popwindow_complete= (TextView) view.findViewById(R.id.popwindow_complete);
-        final WheelView wheelView= (WheelView) view.findViewById(R.id.wheelview);
-        wheelView.addChangingListener(this);
-        wheelView.setBackgroundColor(Color.WHITE);
-        wheelView.setViewAdapter(new ArrayWheelAdapter<String>(mContext, data));
-        wheelView.setVisibleItems(3);
-        wheelView.setCurrentItem(0);
-        mPopupWindow =new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        mPopupWindow.showAtLocation(showAsView, Gravity.BOTTOM, 0, 0);
-        // #e0000000  半透明颜色
-        mPopupWindow.setAnimationStyle(R.anim.choose_citys_anim);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setOutsideTouchable(false);
-        popwindow_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.dismiss();
-                mPopupWindow=null;
-            }
-        });
-        popwindow_complete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String selectInfo = data[wheelView.getCurrentItem()];
-                showAsView.setText(selectInfo);
-                mPopupWindow.setAnimationStyle(R.anim.choose_citys_anim_exit);
-                mPopupWindow.dismiss();
-                mPopupWindow=null;
-            }
-        });
-
-    }
 
 
     @Override

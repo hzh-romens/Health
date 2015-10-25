@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.romens.android.ApplicationLoader;
@@ -108,6 +110,12 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     startActivity(new Intent(getActivity(), HelpActivity.class));
                 } else if (position == accountRow) {
                     startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
+                }else if(position==exitRow){
+                    //TODO 退出登录的修改
+                   // UserConfig.clearConfig();
+                    UserConfig.clearUser();
+                    userEntity=null;
+                    updateData();
                 }
             }
         });
@@ -164,6 +172,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             accountRow = -1;
             helpRow = -1;
             feedbackRow = -1;
+
         }
 
         otherInfoSectionRow = rowCount++;
@@ -177,6 +186,11 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         }
         checkUpdateRow = rowCount++;
         appInfoRow = rowCount++;
+        if (userEntity!=null){
+         exitRow=rowCount++;
+        }else{
+            exitRow=-1;
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -199,6 +213,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
     private int accountRow;
     private int helpRow;
     private int feedbackRow;
+
+    private int exitRow;
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
@@ -259,6 +275,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 return 4;
             } else if (i == loginRow) {
                 return 5;
+            }else if (i==exitRow){
+                return 6;
             }
             return 1;
         }
@@ -349,6 +367,11 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                         });
                     }
                 }
+            }else if(type==6){
+                view=View.inflate(getActivity(),R.layout.list_item_surebutton,null);
+                LinearLayout btn_exit= (LinearLayout) view.findViewById(R.id.btn_save);
+                TextView button= (TextView) view.findViewById(R.id.button);
+                button.setText("退出登录");
             }
             return view;
         }

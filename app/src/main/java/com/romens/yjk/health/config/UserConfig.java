@@ -154,6 +154,8 @@ public class UserConfig {
                 userValues.put("PhoneNumber", data.phoneNumber);
                 userValues.put("UserName", data.userName);
                 userValues.put("Token", data.token);
+                //TODO 增加UserGuid
+                userValues.put("UserGuid",data.userGuid);
                 String json = new Gson().toJson(userValues);
                 byte[] jsonBytes = json.getBytes(Charset.forName("utf-8"));
                 String userString = Base64.encodeToString(jsonBytes, Base64.DEFAULT);
@@ -181,9 +183,11 @@ public class UserConfig {
                 String phoneNumber = userValues.get("PhoneNumber");
                 String userName = userValues.get("UserName");
                 String token = userValues.get("Token");
+                String userGuid = userValues.get("UserGuid");
                 data.setOrg(orgCode, orgName);
                 data.setPhoneNumber(phoneNumber);
                 data.setLogin(userName, token);
+                data.setUserGuid(userGuid);
                 config = data;
             }
         }
@@ -192,7 +196,8 @@ public class UserConfig {
     public static UserEntity getClientUserEntity() {
         UserEntity userEntity = null;
         if (isClientLogined()) {
-            userEntity = new UserEntity(0, "", config.userName, "", config.phoneNumber, "", "", 0);
+         //   userEntity = new UserEntity(0, "", config.userName, "", config.phoneNumber, "", "", 0);
+            userEntity = new UserEntity(0, config.userGuid, config.userName, "", config.phoneNumber, "", "", 0);
         }
         return userEntity;
     }
@@ -204,15 +209,22 @@ public class UserConfig {
         protected String phoneNumber;
         protected String userName;
         protected String token;
+        protected String userGuid;
+
+        public void setLogin(String name, String token) {
+            this.userName = name == null ? "" : name;
+            this.token = token == null ? "" : token;
+        }
+
+
 
         public void setOrg(String code, String name) {
             this.orgCode = code == null ? "" : code;
             this.orgName = name == null ? "" : name;
         }
 
-        public void setLogin(String name, String token) {
-            this.userName = name == null ? "" : name;
-            this.token = token == null ? "" : token;
+        public void setUserGuid(String userGuid) {
+            this.userGuid = userGuid == null ? "" : userGuid;
         }
 
         public void setPhoneNumber(String phone) {

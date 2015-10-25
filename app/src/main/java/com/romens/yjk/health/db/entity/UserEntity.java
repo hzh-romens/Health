@@ -1,7 +1,7 @@
 package com.romens.yjk.health.db.entity;
 
 public class UserEntity {
-
+//TODO 增加Guid
     private int id;
 
     private String guid;

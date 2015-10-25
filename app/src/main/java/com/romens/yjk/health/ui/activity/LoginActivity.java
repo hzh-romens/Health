@@ -1110,8 +1110,10 @@ public class LoginActivity extends BaseActivity {
                     String orgName = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_NAME);
                     userConfigData.setOrg(orgCode, orgName);
                     String phoneNumber = currentParams.getString(PhoneView.PARAM_PHONE);
+                    String userGuid = currentParams.getString("UserGuid");
                     userConfigData.setPhoneNumber(phoneNumber);
                     userConfigData.setLogin(userName, password);
+                    userConfigData.setUserGuid(userGuid);
                     UserConfig.saveConfig(userConfigData);
                     UserConfig.loadConfig();
                     AndroidUtilities.runOnUIThread(new Runnable() {
@@ -1823,7 +1825,7 @@ public class LoginActivity extends BaseActivity {
                 needShowAlert(getString(R.string.app_name), "请输入手机号码");
                 return;
             }
-            String regExp = "^[1]([3][0-9]{1}|59|58|88|89)[0-9]{8}$";
+            final String regExp = "^[1]([3][0-9]{1}|59|58|88|89)[0-9]{8}$";
             Pattern p = Pattern.compile(regExp);
             String phone = PhoneFormat.stripExceptNumbers(PhoneFormat.stripExceptNumbers(phoneField.getText().toString()));
             Matcher m = p.matcher(phone);
@@ -1868,6 +1870,7 @@ public class LoginActivity extends BaseActivity {
                                 boolean value = TextUtils.equals("2", isValidity);
                                 params.putBoolean("IsValidityUser", value);
                                 params.putString(PARAM_HX_ID, result.get("NAME"));
+                                params.putString("UserGuid",result.get("USERGUID"));
                                 setPage(value ? 1 : 2, true, params, false);
                             } else {
                                 needShowAlert(getString(R.string.app_name), "手机号码异常");
