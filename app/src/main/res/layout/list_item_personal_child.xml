@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <TextView
+        android:padding="@dimen/padding_inner"
+        android:layout_marginLeft="@dimen/padding_inner"
+        android:background="@color/white"
+        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:text="药店名"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/childName"
+        android:typeface="normal"
+        android:textSize="@dimen/title_text_size"
+        android:includeFontPadding="false"
+        android:textColor="@color/md_black_1000"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@null"
+        android:singleLine="true"
+        android:layout_gravity="center_vertical"
+        android:gravity="right|center_vertical"
+        android:id="@+id/editor"
+        android:imeOptions="actionDone"
+        android:layout_marginRight="8dp"
+        />
+
+</FrameLayout>

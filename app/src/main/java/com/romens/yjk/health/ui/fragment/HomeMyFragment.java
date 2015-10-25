@@ -32,6 +32,7 @@ import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
@@ -106,7 +107,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == helpRow) {
                     startActivity(new Intent(getActivity(), HelpActivity.class));
                 } else if (position == accountRow) {
-                    Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
                 }
             }
         });
