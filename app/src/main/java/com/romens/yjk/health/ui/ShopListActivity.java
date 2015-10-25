@@ -485,7 +485,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 popAdapter.notifyDataSetChanged();
                 Toast.makeText(ShopListActivity.this, choiceDatas.get(position).getChoice(), Toast.LENGTH_SHORT).show();
                 choice = choiceDatas.get(position).getChoice();
-
                 mPopupWindow.dismiss();
             }
         });

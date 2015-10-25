@@ -29,6 +29,15 @@ public class WeiShopEntity {
     private String SHOPID;
     private String SHOPNAME;
     private String SHOPADDRESS;
+    private String STORECOUNT;
+
+    public String getSTORECOUNT() {
+        return STORECOUNT;
+    }
+
+    public void setSTORECOUNT(String STORECOUNT) {
+        this.STORECOUNT = STORECOUNT;
+    }
 
     public String getSHOPADDRESS() {
         return SHOPADDRESS;

@@ -20,6 +20,16 @@ public class NearByOnSaleEntity {
 
     private String PRICE;
 
+    private String TOTLESALEDCOUNT;
+
+    public String getTOTLESALEDCOUNT() {
+        return TOTLESALEDCOUNT;
+    }
+
+    public void setTOTLESALEDCOUNT(String TOTLESALEDCOUNT) {
+        this.TOTLESALEDCOUNT = TOTLESALEDCOUNT;
+    }
+
     public String getPRICE() {
         return PRICE;
     }

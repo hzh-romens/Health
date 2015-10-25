@@ -13,6 +13,15 @@ public class GoodListEntity {
     private String PICSMALL;                        //药品小图
     private String PRICE;                           //商品价格
     private String MEMBERPRICE;                    //会员价格
+    private String ASSESSCOUNT;    //评论数
+
+    public String getASSESSCOUNT() {
+        return ASSESSCOUNT;
+    }
+
+    public void setASSESSCOUNT(String ASSESSCOUNT) {
+        this.ASSESSCOUNT = ASSESSCOUNT;
+    }
 
     public void setMERCHANDISEID(String MERCHANDISEID) {
         this.MERCHANDISEID = MERCHANDISEID;

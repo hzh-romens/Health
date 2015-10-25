@@ -106,7 +106,6 @@ public class MedicinalDetailActivity extends BaseActivity {
         String s = getIntent().getStringExtra("guid");
         if (s != null) {
             GUID = s;
-            Log.i("guid=====",GUID);
         } else {
             GUID = "";
             GUID = "851823b0-75fc-4795-8c2f-4554ec5402cf";
@@ -308,7 +307,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 int count = 0;
                                 controls.append(count, new ADPagerControl().bindModel(adPagerEntities));
                                 count++;
-                                controls.append(count, new ADMedicinalDetailControl().bindModle("10", weiShopEntity.getSHORTDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
+                                controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getSHORTDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
                                 count++;
                                 controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
                                 count++;
@@ -316,7 +315,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 count++;
                                 if (nearResult != null && !("".equals(nearResult))) {
                                     for (int i = 0; i < nearResult.size(); i++) {
-                                        controls.append(count, new ADStoreControls().bindModel("20", nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNO(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getID()));
+                                        controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getID()));
                                         count++;
                                     }
                                 }
