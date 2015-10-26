@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -21,7 +20,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
-import com.romens.android.io.image.ImageManager;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ParentEntity;
@@ -104,19 +102,28 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-
         int groupType = getGroupType(groupPosition);
-        // switch (groupType){
-        //   case 1:
-        if (groupType == 1) {
-            SendHolder sendHolder = null;
+        if(groupType==0){
+            ParentHolder parentHolder = null;
             if (convertView == null) {
-                sendHolder = new SendHolder();
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
+                parentHolder = new ParentHolder();
+                parentHolder.tv_groupname = (TextView) convertView.findViewById(R.id.group_name);
+                convertView.setTag(parentHolder);
+            } else {
+                parentHolder = (ParentHolder) convertView.getTag();
+            }
+            parentHolder.tv_groupname.setText(mFatherData.get(groupPosition).getShopName());
+            parentHolder.tv_groupname.setClickable(true);
+        }else  if (groupType == 1) {
+            SendHolder sendHolder=null;
+            if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
-                sendHolder.tv_groupname = (TextView) convertView.findViewById(R.id.name);
-                sendHolder.rg = (RadioGroup) convertView.findViewById(R.id.rg);
-                sendHolder.rb1 = (RadioButton) convertView.findViewById(R.id.rb1);
-                sendHolder.rb2 = (RadioButton) convertView.findViewById(R.id.rb2);
+                sendHolder = new SendHolder();
+                TextView tv_groupname = (TextView) convertView.findViewById(R.id.name);
+                RadioGroup rg = (RadioGroup) convertView.findViewById(R.id.rg);
+                RadioButton rb1 = (RadioButton) convertView.findViewById(R.id.rb1);
+                RadioButton rb2 = (RadioButton) convertView.findViewById(R.id.rb2);
                 convertView.setTag(sendHolder);
             } else {
                 sendHolder = (SendHolder) convertView.getTag();
@@ -135,48 +142,32 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
                     }
                 }
             });
-            //break;
-            // case 0:
-        } else {
-            ParentHolder parentHolder = null;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
-                parentHolder = new ParentHolder();
-                parentHolder.tv_groupname = (TextView) convertView.findViewById(R.id.name);
-                convertView.setTag(parentHolder);
-            } else {
-                parentHolder = (ParentHolder) convertView.getTag();
-            }
-            parentHolder.tv_groupname.setText(mFatherData.get(groupPosition).getShopName());
-            parentHolder.tv_groupname.setClickable(true);
         }
-        //  break;
-        //   }
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        ChildHolder childHolder = null;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
-            childHolder = new ChildHolder();
-            childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
-            childHolder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
-            childHolder.tv_infor = (TextView) convertView.findViewById(R.id.tv_infor);
-            childHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            childHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
-            convertView.setTag(childHolder);
-        } else {
-            childHolder = (ChildHolder) convertView.getTag();
-        }
-        ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-        Drawable defaultDrawables =  childHolder.iv.getDrawable();
-        ImageManager.loadForView(mContext, childHolder.iv, shopCarEntity.getGOODURL(), defaultDrawables, defaultDrawables);
-        childHolder.tv_price.setText(shopCarEntity.getGOODSPRICE() + "");
-        childHolder.tv_name.setText(shopCarEntity.getNAME());
-        childHolder.tv_infor.setText(shopCarEntity.getSPEC());
-        childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
+       // if(getGroupType(groupPosition)==0) {
+            ChildHolder childHolder = null;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
+                childHolder = new ChildHolder();
+                childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
+                childHolder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
+                childHolder.tv_infor = (TextView) convertView.findViewById(R.id.tv_infor);
+                childHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+                childHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
+                convertView.setTag(childHolder);
+            } else {
+                childHolder = (ChildHolder) convertView.getTag();
+            }
+            ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+            childHolder.tv_price.setText(shopCarEntity.getGOODSPRICE() + "");
+            childHolder.tv_name.setText(shopCarEntity.getNAME());
+            childHolder.tv_infor.setText(shopCarEntity.getSPEC());
+            childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
+      //  }
         return convertView;
     }
 

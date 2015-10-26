@@ -22,6 +22,7 @@ import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.GoodListEntity;
@@ -110,7 +111,7 @@ public class ShopListAdapter extends RecyclerView.Adapter{
             int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
             Map<String, String> args = new FacadeArgs.MapBuilder().build();
             args.put("GOODSGUID",GUID);
-            args.put("USERGUID", "2222");
+            args.put("USERGUID","2222");
             args.put("BUYCOUNT", "1");
             args.put("PRICE", PRICE);
 

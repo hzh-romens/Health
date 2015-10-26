@@ -197,7 +197,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         choiceSex.setOnClickListener(this);
         editor_name = (EditText) findViewById(R.id.editor_name);
         editor_work = (EditText) findViewById(R.id.editor_work);
-        editor_food = (EditText) findViewById(R.id.editor_work);
+        editor_food = (EditText) findViewById(R.id.editor_food);
         editor_rest = (EditText) findViewById(R.id.editor_rest);
         editor_other = (EditText) findViewById(R.id.editor_other);
         btn_save = (LinearLayout) findViewById(R.id.btn_save);

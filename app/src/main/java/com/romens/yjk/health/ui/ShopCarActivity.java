@@ -208,6 +208,7 @@ public class ShopCarActivity extends BaseActivity {
 
     //获取购物车的信息
     private void requestShopCarDataChanged() {
+
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", "2222").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);

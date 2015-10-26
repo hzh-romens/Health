@@ -47,7 +47,9 @@ import com.romens.android.ui.viewholder.PaddingDividerItemDecoration;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.model.ChoiceEntity;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.model.GoodsEntity;
@@ -376,6 +378,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     //获取用户商品列表
     private void requestSearchData(String key, String sortfiled) {
         Log.i("guid--key--sortfiled", GUID + "--" + key + "--" + sortfiled);
+        UserEntity clientUserEntity = UserConfig.getClientUserEntity();
+      Log.i("用户guid----", clientUserEntity.getGuid());
         refreshLayout.setRefreshing(true);
         Map<String, Object> args = new HashMap<>();
         args.put("GUID", GUID);

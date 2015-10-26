@@ -335,6 +335,12 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.CommitResultActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:screenOrientation="portrait"/>
 
 
     </application>
