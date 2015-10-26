@@ -283,7 +283,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
         @Override
         public int getViewTypeCount() {
-            return 6;
+            return 7;
         }
 
         @Override

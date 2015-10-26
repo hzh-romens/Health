@@ -404,7 +404,7 @@
 
             </FrameLayout>
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:background="@color/md_grey_100"
@@ -424,11 +424,12 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="保存"
+                        android:id="@+id/btn_commit"
                         android:textColor="@color/white"
                         android:textSize="@dimen/title_text_size" />
                 </LinearLayout>
 
-            </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

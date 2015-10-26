@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -20,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
+import com.romens.android.io.image.ImageManager;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ParentEntity;
@@ -169,6 +171,8 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             childHolder = (ChildHolder) convertView.getTag();
         }
         ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+        Drawable defaultDrawables =  childHolder.iv.getDrawable();
+        ImageManager.loadForView(mContext, childHolder.iv, shopCarEntity.getGOODURL(), defaultDrawables, defaultDrawables);
         childHolder.tv_price.setText(shopCarEntity.getGOODSPRICE() + "");
         childHolder.tv_name.setText(shopCarEntity.getNAME());
         childHolder.tv_infor.setText(shopCarEntity.getSPEC());

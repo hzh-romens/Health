@@ -10,7 +10,7 @@
         android:id="@+id/iv"
         style="@style/ImageStyle"
         android:scaleType="fitXY"
-        android:src="@drawable/succees"/>
+        android:src="@drawable/picture_fail"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

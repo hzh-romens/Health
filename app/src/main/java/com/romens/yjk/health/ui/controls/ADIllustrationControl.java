@@ -1,10 +1,12 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
+import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADIllustrationCell;
 import com.romens.yjk.health.ui.components.logger.Log;
@@ -31,6 +33,7 @@ public class ADIllustrationControl extends ADBaseControl{
             public void ToIllustration() {
                 //跳转到药品说明页面
                 Toast.makeText(context, "跳转到药品说明页面", Toast.LENGTH_SHORT).show();
+               // context.startActivity(new Intent(context, PersonalInformationActivity.class));
             }
         });
     }

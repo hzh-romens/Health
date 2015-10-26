@@ -58,8 +58,8 @@ public class ADStoreCell extends FrameLayout{
     public void setValue(String str_count,String str_addresss,String str_price,String str_name,String str_distance,String img_url){
         address.setText(str_addresss);
         pharmacy_name.setText(str_name);
-        price.setText(str_price);
-        distance.setText(str_distance);
+        price.setText("¥"+str_price);
+        distance.setText(str_distance.substring(0,str_distance.indexOf(".")+2)+"km");
         //if(img_url!=null) {
 //        if("".equals(img_url)||img_url==null){
 //        }else {

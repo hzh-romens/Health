@@ -70,6 +70,7 @@
             android:gravity="center_horizontal|bottom"
             android:drawablePadding="2dip"
             android:paddingBottom="2dp"
+            android:visibility="gone"
             android:drawableTop="@drawable/shopcar_bgc"
             />
         <TextView

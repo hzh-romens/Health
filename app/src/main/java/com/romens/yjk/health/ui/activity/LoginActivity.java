@@ -17,6 +17,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -1879,6 +1880,7 @@ public class LoginActivity extends BaseActivity {
                     } else {
                         if (errorMsg.code != 0) {
                             needShowAlert(getString(R.string.app_name), errorMsg.msg);
+                            Log.i("登录错误日志----",errorMsg.msg);
                         }
                     }
                 }

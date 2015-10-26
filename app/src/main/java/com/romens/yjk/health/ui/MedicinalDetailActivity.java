@@ -530,6 +530,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                         if (errorMsg == null) {
                                             ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                                             String response = responseProtocol.getResponse();
+                                            Log.i("附近有售数据----",response);
                                             Gson gson = new Gson();
                                             nearResult = gson.fromJson(response, new TypeToken<List<NearByOnSaleEntity>>() {
                                             }.getType());

@@ -1,6 +1,8 @@
 package com.romens.yjk.health.ui;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -52,6 +55,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     private LinearLayout btn_save;
     private PersonalEntity personalEntity;
     private WheelView YearView, MonthView, DayView;
+    private TextView btn_commit;
 
     private PersonalInformationAdapter inforAdapter;
 
@@ -117,9 +121,9 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             editor_name.setText(personalEntity.getPERSONNAME());
         }
         if ("".equals(personalEntity.getJOB()) || personalEntity.getJOB() == null) {
-            editor_name.setText("");
+            editor_work.setText("");
         } else {
-            editor_name.setText(personalEntity.getJOB());
+            editor_work.setText(personalEntity.getJOB());
         }
         if ("".equals(personalEntity.getFOODHOBBY()) || personalEntity.getFOODHOBBY() == null) {
             editor_food.setText("");
@@ -203,6 +207,9 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         editor_rest.setOnFocusChangeListener(this);
         editor_work.setOnFocusChangeListener(this);
         btn_save.setOnClickListener(this);
+        btn_commit= (TextView) findViewById(R.id.btn_commit);
+        btn_commit.setText("编辑");
+
     }
 
     private String[] has;
@@ -222,29 +229,47 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         switch (v.getId()) {
             case R.id.choiceAllergy:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                btn_commit.setText("提交");
                 getPopWindowInstance(has, choiceAllergy, 0);
                 break;
             case R.id.choiceBirthday:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                btn_commit.setText("提交");
                 getPopWindowInstance(has, choiceBirthday, 1);
                 break;
             case R.id.choiceDisease:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                btn_commit.setText("提交");
                 getPopWindowInstance(has, choiceDisease, 0);
                 break;
             case R.id.choiceHeredopathia:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                btn_commit.setText("提交");
                 getPopWindowInstance(has, choiceHeredopathia, 0);
                 break;
             case R.id.choiceSex:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                btn_commit.setText("提交");
                 getPopWindowInstance(sex, choiceSex, 0);
                 break;
             case R.id.btn_save:
-                if (btn_save.getBackground() == getResources().getDrawable(R.drawable.btn_goorder)) {
-                    //可以点击
-                    SaveInfor();
+                try {
+
+                    String resTypeName = getResources().getResourceTypeName(R.id.btn_save);
+                    String resEntryName = getResources().getResourceEntryName(R.id.btn_save);
+                    Context apk = createPackageContext(MyApplication.applicationContext.getPackageName(),
+                            Context.CONTEXT_IGNORE_SECURITY);
+                    int drawavleId = apk.getResources().getIdentifier(resEntryName, resTypeName,
+                            apk.getPackageName());
+                    Log.i("btn_save背景图片",(drawavleId == R.drawable.btn_goorder)+"========"+drawavleId+"------"+R.drawable.btn_goorder+"=-=-=-="+R.drawable.btn_goorder_grey);
+                    if ("提交".equals(btn_commit.getText().toString())) {
+                        //可以点击
+                        SaveInfor();
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
                 }
+
                 break;
 
         }
@@ -256,7 +281,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         if ("男".equals(choiceSex.getText().toString())) {
             personalEntity.setGENDER("1");
         } else {
-            personalEntity.setGENDER("0");
+            personalEntity.setGENDER("2");
         }
         if ("有".equals(choiceDisease.getText().toString())) {
             personalEntity.setHASSERIOUS("1");
@@ -311,7 +336,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                         e.printStackTrace();
                     }
                 } else {
-                    Log.e("个人信息", "ERROR");
+                    Log.e("个人信息错误日志",errorMsg.msg);
                 }
             }
         });
@@ -506,9 +531,11 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
     @Override
     public void onChanged(WheelView wheel, int oldValue, int newValue) {
+        if (YearView!=null&&MonthView!=null&&DayView!=null) {
             String choiceYear = Year[YearView.getCurrentItem()];
             String choiceMonth = Month[MonthView.getCurrentItem()];
             setDayValue(Integer.parseInt(choiceYear.substring(0, choiceYear.indexOf("年"))), Integer.parseInt(choiceMonth.substring(0, choiceMonth.indexOf("月"))));
+        }
     }
 
     @Override
@@ -517,26 +544,31 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             case R.id.editor_food:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                    btn_commit.setText("提交");
                 }
                 break;
             case R.id.editor_name:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                    btn_commit.setText("提交");
                 }
                 break;
             case R.id.editor_other:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                    btn_commit.setText("提交");
                 }
                 break;
             case R.id.editor_rest:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                    btn_commit.setText("提交");
                 }
                 break;
             case R.id.editor_work:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                    btn_commit.setText("提交");
                 }
                 break;
         }
