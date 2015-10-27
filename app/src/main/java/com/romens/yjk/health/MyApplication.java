@@ -6,8 +6,6 @@ import android.os.PowerManager;
 import android.text.TextUtils;
 
 import com.easemob.chat.EMChat;
-import com.mobvoi.android.common.MobvoiApiManager;
-import com.mobvoi.android.common.NoAvailableServiceException;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
@@ -31,11 +29,6 @@ public class MyApplication extends ApplicationLoader {
         IMHXSDKHelper.getInstance().onInit(MyApplication.applicationContext);
         //初始化蒲公英SDK
         PgyCrashManager.register(this, PgyConfig.APP_ID);
-        try {
-            MobvoiApiManager.getInstance().adaptService(applicationContext);
-        } catch (NoAvailableServiceException e) {
-            FileLog.e("init tic api error", e);
-        }
         UserConfig.loadConfig();
     }
 

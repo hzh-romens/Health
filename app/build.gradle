@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'com.ticwear.application'
-
 def releaseTime() {
     return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
 }
@@ -14,8 +12,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 151027
+        versionName "1.1.1"
         multiDexEnabled true
         manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens",IM_SDK_APPKEY: "romens#yjkim888888"]
     }
@@ -24,9 +22,6 @@ android {
         main {
             jniLibs.srcDir 'libs'
             jni.srcDirs = [] //disable automatic ndk-build call
-        }
-        release {
-            manifest.srcFile 'config/release/AndroidManifest.xml'
         }
     }
 
@@ -46,6 +41,12 @@ android {
             keyAlias "androiddebugkey"
             keyPassword "android"
         }
+        release {
+            storeFile file("../keystore/RomensYunuoHealth.jks")
+            storePassword "Romens2Yunuo"
+            keyAlias "yunuohealth"
+            keyPassword "Yunuo2Health"
+        }
     }
 
 
@@ -55,8 +56,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
@@ -116,8 +118,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
     compile 'com.nineoldandroids:library:+'
-    //wear
-    compile files('libs/mobvoi-api.jar')
     compile files('libs/Android_2DMapApi_V2.5.0.jar')
     compile files('libs/Android_Map_V2.5.0.jar')
     compile files('libs/MapApiLocation_1.3.3.jar')
@@ -134,17 +134,6 @@ dependencies {
     compile files('libs/easemobchat_2.2.3.jar')
     compile 'com.commit451:PhotoView:1.2.4'
 }
-
-
-dependencies {
-    compile 'com.google.android.gms:play-services:+'
-}
-//dependencies {
-//    //compile 'com.google.android.gms:play-services:+@aar'
-//    //compile 'com.mobvoi.api:library:1.0.0'
-//    compile 'com.android.support:support-v4:+'
-//    wearApp project(':wear')
-//}
 
 repositories {
     mavenCentral()

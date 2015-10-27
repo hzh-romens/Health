@@ -38,7 +38,6 @@ public class RemindActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remind, R.id.remind_actionbar);
         initData();
-
         adapter = new RemindAdapter(data, this);
         actionBar = getMyActionBar();
         listView = (RecyclerView) findViewById(R.id.remind_list);
