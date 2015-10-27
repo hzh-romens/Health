@@ -3,18 +3,16 @@ package com.romens.yjk.health.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
-import android.widget.Toast;
+import android.widget.ListView;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
+import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -22,21 +20,24 @@ import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
-import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.ActionBarMenuItem;
-import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.Components.FlowCell;
+import com.romens.android.ui.Components.FlowLayout;
+import com.romens.android.ui.Components.FlowLayoutCallback;
+import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.HeaderCell;
+import com.romens.android.ui.cells.LoadingCell;
+import com.romens.android.ui.cells.TextCell;
+import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
-import com.romens.yjk.health.ui.adapter.FlowlayoutAdapter;
-import com.romens.yjk.health.ui.components.FlowLayout;
-import com.romens.yjk.health.ui.utils.UIHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,102 +47,177 @@ import java.util.Map;
  * Created by anlc on 2015/8/17.
  */
 public class SearchActivityNew extends BaseActivity {
-
-    private ExpandableListView listView;
-    private SearchExpandableAdapter expandableAdapter;
-    private SwipeRefreshLayout refreshLayout;
-//    private ListAdapter adapter;
-
-    private ArrayList<SearchResultEntity> drugList;
-    private ArrayList<SearchResultEntity> illnessList;
+    private View searchHistoryContainer;
     private FlowLayout historyLayout;
-    private FlowlayoutAdapter historyLayoutAdapter;
+
+    private ListView searchResultList;
+
+
+    private final List<String> searchHistoryKeywordList = new ArrayList<>();
+    private final List<SearchResultEntity> searchDrugResult = new ArrayList<>();
+    private final List<SearchResultEntity> searchDiseaseResult = new ArrayList<>();
+
+    private static final int LAYOUT_FLAG_HISTORY = 0;
+    private static final int LAYOUT_FLAG_RESULT = 1;
+
+    private int layoutFlag = LAYOUT_FLAG_HISTORY;
+    private boolean searchDrugProgress = false;
+    private boolean searchDiseaseProgress = false;
+
+
+    private SearchResultAdapter searchResultAdapter;
+    private int rowCount;
+    private int searchDrugSession;
+    private int searchDrugProgressRow;
+    private int searchDrugEmptyRow;
+    private int searchDiseaseSession;
+    private int searchDiseaseProgressRow;
+    private int searchDiseaseEmptyRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
-        ActionBar actionBar = new ActionBar(this);
-        container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        setContentView(container, actionBar);
+        setContentView(R.layout.activity_search, R.id.action_bar);
 
-        drugList = new ArrayList<>();
-        illnessList = new ArrayList<>();
+        searchHistoryContainer = findViewById(R.id.search_history_container);
+        historyLayout = (FlowLayout) findViewById(R.id.search_history_list);
 
-        addFloatLayout(container);
-        actionBarEvent(actionBar, container);
-    }
-
-    private void addFloatLayout(final ActionBarLayout.LinearLayoutContainer container) {
-        historyLayout = new FlowLayout(this);
-        final List<String> keywords = readHistoryKeyword();
-        historyLayoutAdapter = new FlowlayoutAdapter(historyLayout, this, keywords);
-        historyLayoutAdapter.andTextView();
-        historyLayoutAdapter.ItemClickListener(new FlowlayoutAdapter.FlowLayoutItemClick() {
+        searchResultList = (ListView) findViewById(R.id.search_result_list);
+        searchResultList.setDivider(null);
+        searchResultList.setDividerHeight(0);
+        searchResultList.setVerticalScrollBarEnabled(false);
+        searchResultList.setSelector(R.drawable.list_selector);
+        searchResultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                Toast.makeText(SearchActivityNew.this, "-->" + position, Toast.LENGTH_SHORT).show();
-                String searchText = keywords.get(position);
-                requestDrugChanged(searchText);
-                requestIllnessChanged(searchText);
-                showSearchResult(container);
-                historyLayout.setVisibility(View.GONE);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (isDrugSearchResultRow(position)) {
+                    //跳转药品页面
+                } else if (isDiseaseSearchResultRow(position)) {
+                    //跳转疾病页面
+                }
             }
         });
-        container.addView(historyLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-    }
 
-    private void actionBarEvent(ActionBar actionBar, final ActionBarLayout.LinearLayoutContainer container) {
+        searchResultAdapter = new SearchResultAdapter(this);
+        searchResultList.setAdapter(searchResultAdapter);
+
+        ActionBar actionBar = getMyActionBar();
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         ActionBarMenuItem searchItem = actionBarMenu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
+        searchItem.getSearchField().setHint("输入疾病或者药品");
         searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
 
             @Override
             public boolean canCollapseSearch() {
-                historyLayout.setVisibility(View.VISIBLE);
-                return true;
+                return false;
+            }
+
+            @Override
+            public void onSearchExpand() {
+                updateLayoutFlag(LAYOUT_FLAG_HISTORY);
+            }
+
+            @Override
+            public void onSearchCollapse() {
+                updateLayoutFlag(LAYOUT_FLAG_RESULT);
             }
 
             @Override
             public void onTextChanged(EditText var1) {
+                if (var1.getText().length() <= 0) {
+                    updateLayoutFlag(LAYOUT_FLAG_HISTORY);
+                }
+            }
+
+            @Override
+            public void onSearchPressed(EditText var1) {
                 String searchText = var1.getText().toString().trim();
                 if (!searchText.equals("") && searchText != null) {
-                    requestDrugChanged(searchText);
-                    requestIllnessChanged(searchText);
-                    showSearchResult(container);
-                    historyLayout.setVisibility(View.GONE);
+                    search(searchText);
                 }
             }
         });
-        actionBarMenu.addItem(1, R.drawable.search_zxing_extend_36);
+        actionBarMenu.addItem(1, R.drawable.ic_camera_alt_white_24dp);
         actionBar.setTitle("搜索");
-        actionBar.setBackgroundResource(R.color.theme_primary);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
                 } else if (id == 1) {
-//                    requestDrugChanged(searchStr);
-//                    requestIllnessChanged(searchStr);
-//                    saveHistoryKeyword(searchStr);
-//                    historyLayout.setVisibility(View.GONE);
-//                    showSearchResult(container);
                     startActivity(new Intent("com.romens.yjk.health.QRSCANNER"));
                 }
             }
         });
         actionBar.openSearchField("");
+
+
+        historyLayout.setHorizontalSpacing(AndroidUtilities.dp(8));
+        historyLayout.setVerticalSpacing(AndroidUtilities.dp(4));
+
+        historyLayout.setAdapter(new FlowLayoutCallback() {
+            @Override
+            public int getCount() {
+                return searchHistoryKeywordList.size();
+            }
+
+            @Override
+            public View getView(final int position, ViewGroup container) {
+                FlowCell cell = new FlowCell(container.getContext(), 0xff0f9d58);
+                cell.setText(searchHistoryKeywordList.get(position));
+                cell.setClickable(true);
+                cell.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String searchText = searchHistoryKeywordList.get(position);
+                        getMyActionBar().openSearchField(searchText);
+                        search(searchText);
+                    }
+                });
+                return cell;
+            }
+        });
+        historyLayout.updateLayout();
+        updateLayoutFlag(LAYOUT_FLAG_HISTORY);
+        refreshSearchHistoryKeywords();
+        updateAdapter();
     }
 
-    private List<String> readHistoryKeyword() {
-        List<String> keywords = new ArrayList<>();
+    private void search(String queryText) {
+        updateLayoutFlag(LAYOUT_FLAG_RESULT);
+
+        searchDrugResult.clear();
+        searchDiseaseResult.clear();
+
+        requestSearchDrug(queryText);
+        requestSearchDisease(queryText);
+    }
+
+    private void refreshSearchHistoryKeywords() {
+        searchHistoryKeywordList.clear();
         SearchHistoryDao dao = DBInterface.instance().openReadableDb().getSearchHistoryDao();
         List<SearchHistoryEntity> searchHistoryEntities = dao.queryBuilder().orderAsc(SearchHistoryDao.Properties.Id).list();
-        for (SearchHistoryEntity entity : searchHistoryEntities) {
-            keywords.add(entity.getHistoryKeyword());
+        if (searchHistoryEntities != null) {
+            for (SearchHistoryEntity entity :
+                    searchHistoryEntities) {
+                searchHistoryKeywordList.add(entity.getHistoryKeyword());
+            }
         }
-        return keywords;
+        if (historyLayout.getVisibility() == View.VISIBLE) {
+            historyLayout.updateLayout();
+        }
+    }
+
+    private void updateLayoutFlag(int flag) {
+        layoutFlag = flag;
+        if (layoutFlag == LAYOUT_FLAG_RESULT) {
+            searchHistoryContainer.setVisibility(View.GONE);
+            searchResultList.setVisibility(View.VISIBLE);
+        } else {
+            searchHistoryContainer.setVisibility(View.VISIBLE);
+            searchResultList.setVisibility(View.GONE);
+            historyLayout.updateLayout();
+        }
     }
 
     private void saveHistoryKeyword(String keyword) {
@@ -163,28 +239,11 @@ public class SearchActivityNew extends BaseActivity {
                 dao.insert(entity);
             }
         }
+        refreshSearchHistoryKeywords();
     }
 
-    private void showSearchResult(ActionBarLayout.LinearLayoutContainer container) {
-        FrameLayout listContainer = new FrameLayout(this);
-        container.addView(listContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
-        refreshLayout = new SwipeRefreshLayout(this);
-        UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
-        refreshLayout.setRefreshing(true);
-        listContainer.addView(refreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
-        listView = new ExpandableListView(this);
-        expandableAdapter = new SearchExpandableAdapter(this, drugList, illnessList);
-        listView.setAdapter(expandableAdapter);
-        listView.setGroupIndicator(null);
-        listView.setDivider(null);
-        listView.setDividerHeight(0);
-        listView.setVerticalScrollBarEnabled(false);
-        refreshLayout.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-    }
-
-    private void requestIllnessChanged(String searchStr) {
+    private void requestSearchDisease(String searchStr) {
+        requestSearchDiseaseProgress(true);
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("KEY", searchStr);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetSearchDisease", args);
@@ -197,39 +256,41 @@ public class SearchActivityNew extends BaseActivity {
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                Toast.makeText(SearchActivityNew.this, msg.msg, Toast.LENGTH_SHORT).show();
+                requestSearchDiseaseProgress(false);
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                if (msg != null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    setIllnessListData(responseProtocol.getResponse());
-                }
+                requestSearchDiseaseProgress(false);
                 if (errorMsg == null) {
-                } else {
-                    Log.e("reqGetAllUsers", "ERROR");
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    handleSearchDiseaseResult(responseProtocol.getResponse());
                 }
             }
         });
     }
 
-    private void setIllnessListData(List<LinkedTreeMap<String, String>> response) {
+    private void requestSearchDiseaseProgress(boolean progress) {
+        searchDiseaseProgress = progress;
+        updateAdapter();
+    }
+
+    private void handleSearchDiseaseResult(List<LinkedTreeMap<String, String>> response) {
+        searchDiseaseResult.clear();
         int count = response == null ? 0 : response.size();
         if (count <= 0) {
             return;
         }
-        illnessList.clear();
         for (LinkedTreeMap<String, String> item : response) {
-            SearchResultEntity entity = new SearchResultEntity();
-            entity.setName(item.get("DISEASENAME"));
-            illnessList.add(entity);
+            searchDiseaseResult.add(new SearchResultEntity("", item.get("DISEASENAME")));
         }
-        requestOkToSetDataForRefershView();
+        updateAdapter();
+        searchResultList.smoothScrollToPosition(0);
     }
 
     //请求相关药品
-    private void requestDrugChanged(final String searchStr) {
+    private void requestSearchDrug(final String searchStr) {
+        requestSearchDrugProgress(true);
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("KEY", searchStr);
         args.put("PAGE", "0");
@@ -244,164 +305,299 @@ public class SearchActivityNew extends BaseActivity {
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                Toast.makeText(SearchActivityNew.this, msg.msg, Toast.LENGTH_SHORT).show();
+                requestSearchDrugProgress(false);
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                if (msg != null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    setDrugListData(responseProtocol.getResponse());
-                    saveHistoryKeyword(searchStr);
-                }
+                requestSearchDrugProgress(false);
                 if (errorMsg == null) {
-                } else {
-                    Log.e("reqGetAllUsers", "ERROR");
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    handleSearchDrugResult(responseProtocol.getResponse());
+                    saveHistoryKeyword(searchStr);
                 }
             }
         });
     }
 
-    private void setDrugListData(List<LinkedTreeMap<String, String>> response) {
+    private void requestSearchDrugProgress(boolean progress) {
+        searchDrugProgress = progress;
+        updateAdapter();
+    }
+
+    private void handleSearchDrugResult(List<LinkedTreeMap<String, String>> response) {
+        searchDrugResult.clear();
         int count = response == null ? 0 : response.size();
         if (count <= 0) {
             return;
         }
-        drugList.clear();
         for (LinkedTreeMap<String, String> item : response) {
-//            Map<String, String> map = new HashMap<>();
-//            map.put("name", item.get("NAME"));
-//            map.put("guid", item.get("GUID"));
-            SearchResultEntity entity = new SearchResultEntity();
-            entity.setName(item.get("MEDICINENAME"));
-            entity.setGuid(item.get("MERCHANDISEID"));
-            drugList.add(entity);
+            searchDrugResult.add(new SearchResultEntity(item.get("MERCHANDISEID"), item.get("MEDICINENAME")));
         }
-        requestOkToSetDataForRefershView();
+        updateAdapter();
+        searchResultList.smoothScrollToPosition(0);
     }
 
-    public void requestOkToSetDataForRefershView() {
-        refreshLayout.setRefreshing(false);
-        expandableAdapter.setAdapterData(drugList, illnessList);
-        expandableAdapter.notifyDataSetChanged();
-
-        int count = listView.getCount();
-        for (int i = 0; i < count; i++) {
-            listView.expandGroup(i);
+    private void updateAdapter() {
+        rowCount = 0;
+        searchDrugSession = rowCount++;
+        if (searchDrugProgress) {
+            searchDrugProgressRow = rowCount++;
+        } else {
+            searchDrugProgressRow = -1;
+            if (searchDrugResult.size() <= 0) {
+                searchDrugEmptyRow = rowCount++;
+            } else {
+                searchDrugEmptyRow = -1;
+                rowCount += searchDrugResult.size();
+            }
         }
+        searchDiseaseSession = rowCount++;
+        if (searchDiseaseProgress) {
+            searchDiseaseProgressRow = rowCount++;
+        } else {
+            searchDiseaseProgressRow = -1;
+            if (searchDiseaseResult.size() <= 0) {
+                searchDiseaseEmptyRow = rowCount++;
+            } else {
+                searchDiseaseEmptyRow = -1;
+                rowCount += searchDiseaseResult.size();
+            }
+        }
+        searchResultAdapter.notifyDataSetChanged();
     }
 
-    class SearchExpandableAdapter extends BaseExpandableListAdapter {
+    private boolean isDrugSearchResultRow(int position) {
+        if (searchDrugEmptyRow == -1 && searchDrugProgressRow == -1) {
+            if (position > searchDrugSession && position < searchDiseaseSession) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        private List<List<SearchResultEntity>> groupList;
-        private Context context;
+    private boolean isDiseaseSearchResultRow(int position) {
+        if (searchDiseaseEmptyRow == -1 && searchDiseaseProgressRow == -1) {
+            if (position > searchDiseaseSession) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        public void setAdapterData(List<SearchResultEntity> drugList, List<SearchResultEntity> illnessList) {
-            groupList.clear();
-            groupList.add(drugList);
-            groupList.add(illnessList);
+    class SearchResultAdapter extends BaseFragmentAdapter {
+        private Context adapterContext;
+
+        public SearchResultAdapter(Context context) {
+            adapterContext = context;
         }
 
-        public SearchExpandableAdapter(Context context, List<SearchResultEntity> drugList, List<SearchResultEntity> illnessList) {
-            this.context = context;
-            groupList = new ArrayList<>();
-            groupList.add(drugList);
-            groupList.add(illnessList);
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
         }
 
         @Override
-        public int getGroupCount() {
-            return groupList.size();
+        public boolean isEnabled(int i) {
+            if (searchDrugEmptyRow == -1 && searchDrugProgressRow == -1) {
+                if (i > searchDrugSession && i < searchDiseaseSession) {
+                    return true;
+                }
+            }
+            if (searchDiseaseEmptyRow == -1 && searchDiseaseProgressRow == -1) {
+                if (i > searchDiseaseSession) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
-        public int getChildrenCount(int groupPosition) {
-            return groupList.get(groupPosition).size();
+        public int getCount() {
+            return rowCount;
         }
 
         @Override
-        public Object getGroup(int groupPosition) {
-            return groupList.get(groupPosition);
+        public Object getItem(int i) {
+            return null;
         }
 
         @Override
-        public Object getChild(int groupPosition, int childPosition) {
-            return groupList.get(groupPosition).get(childPosition);
-        }
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
+        public long getItemId(int i) {
+            return i;
         }
 
         @Override
         public boolean hasStableIds() {
-            return true;
+            return false;
         }
 
         @Override
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = new HeaderCell(context);
+        public int getItemViewType(int i) {
+            if (i == searchDrugSession || i == searchDiseaseSession) {
+                return 0;
+            } else if (i == searchDrugProgressRow || i == searchDiseaseProgressRow) {
+                return 2;
+            } else if (i == searchDrugEmptyRow || i == searchDiseaseEmptyRow) {
+                return 3;
             }
-            HeaderCell cell = (HeaderCell) convertView;
-            if (groupPosition == 0) {
-                cell.setText("相关药品");
-            } else if (groupPosition == 1) {
-                cell.setText("相关疾病");
-            }
-            return convertView;
+            return 1;
         }
 
         @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = new TextSettingsCell(context);
-            }
-            TextSettingsCell cell = (TextSettingsCell) convertView;
-            String nameStr = groupList.get(groupPosition).get(childPosition).getName();
-            if (nameStr != null) {
-                cell.setText(nameStr, false);
-            }
-            cell.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        public int getViewTypeCount() {
+            return 4;
+        }
 
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            int type = getItemViewType(position);
+            if (type == 0) {
+                if (view == null) {
+                    view = new HeaderCell(adapterContext);
                 }
-            });
-            cell.setBackgroundColor(getResources().getColor(R.color.white));
-            return convertView;
-        }
-
-        @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
+                HeaderCell cell = (HeaderCell) view;
+                cell.setTextColor(ResourcesConfig.textPrimary);
+                if (position == searchDrugSession) {
+                    cell.setText("相关药品");
+                } else if (position == searchDiseaseSession) {
+                    cell.setText("相关疾病");
+                }
+            } else if (type == 1) {
+                if (view == null) {
+                    view = new TextSettingsCell(adapterContext);
+                }
+                TextSettingsCell cell = (TextSettingsCell) view;
+                if (position > searchDrugSession && position < searchDiseaseSession) {
+                    cell.setText(searchDrugResult.get(position - (searchDrugSession + 1)).name, true);
+                } else if (position > searchDiseaseSession) {
+                    cell.setText(searchDiseaseResult.get(position - (searchDiseaseSession + 1)).name, true);
+                }
+            } else if (type == 2) {
+                if (view == null) {
+                    view = new LoadingCell(adapterContext);
+                }
+            } else if (type == 3) {
+                if (view == null) {
+                    view = new TextInfoCell(adapterContext);
+                }
+                TextInfoCell cell = (TextInfoCell) view;
+                if (position == searchDrugEmptyRow) {
+                    cell.setText("无搜索结果");
+                } else if (position == searchDiseaseEmptyRow) {
+                    cell.setText("无搜索结果");
+                }
+            }
+            return view;
         }
     }
 
+//    class SearchExpandableAdapter extends BaseExpandableListAdapter {
+//
+//        private List<List<SearchResultEntity>> groupList;
+//        private Context context;
+//
+//        public void setAdapterData(List<SearchResultEntity> drugList, List<SearchResultEntity> illnessList) {
+//            groupList.clear();
+//            groupList.add(drugList);
+//            groupList.add(illnessList);
+//        }
+//
+//        public SearchExpandableAdapter(Context context, List<SearchResultEntity> drugList, List<SearchResultEntity> illnessList) {
+//            this.context = context;
+//            groupList = new ArrayList<>();
+//            groupList.add(drugList);
+//            groupList.add(illnessList);
+//        }
+//
+//        @Override
+//        public int getGroupCount() {
+//            return groupList.size();
+//        }
+//
+//        @Override
+//        public int getChildrenCount(int groupPosition) {
+//            return groupList.get(groupPosition).size();
+//        }
+//
+//        @Override
+//        public Object getGroup(int groupPosition) {
+//            return groupList.get(groupPosition);
+//        }
+//
+//        @Override
+//        public Object getChild(int groupPosition, int childPosition) {
+//            return groupList.get(groupPosition).get(childPosition);
+//        }
+//
+//        @Override
+//        public long getGroupId(int groupPosition) {
+//            return groupPosition;
+//        }
+//
+//        @Override
+//        public long getChildId(int groupPosition, int childPosition) {
+//            return childPosition;
+//        }
+//
+//        @Override
+//        public boolean hasStableIds() {
+//            return true;
+//        }
+//
+//        @Override
+//        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+//            if (convertView == null) {
+//                convertView = new HeaderCell(context);
+//            }
+//            HeaderCell cell = (HeaderCell) convertView;
+//            if (groupPosition == 0) {
+//                cell.setText("相关药品");
+//            } else if (groupPosition == 1) {
+//                cell.setText("相关疾病");
+//            }
+//            return convertView;
+//        }
+//
+//        @Override
+//        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+//            if (convertView == null) {
+//                convertView = new TextSettingsCell(context);
+//            }
+//            TextSettingsCell cell = (TextSettingsCell) convertView;
+//            String nameStr = groupList.get(groupPosition).get(childPosition).name;
+//            if (nameStr != null) {
+//                cell.setText(nameStr, false);
+//            }
+//            cell.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                }
+//            });
+//            cell.setBackgroundColor(getResources().getColor(R.color.white));
+//            return convertView;
+//        }
+//
+//        @Override
+//        public boolean isChildSelectable(int groupPosition, int childPosition) {
+//            return true;
+//        }
+//    }
+
     class SearchResultEntity {
-        private String name;
-        private String guid;
+        public final String guid;
+        public final String name;
 
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getGuid() {
-            return guid;
-        }
-
-        public void setGuid(String guid) {
+        public SearchResultEntity(String guid, String name) {
             this.guid = guid;
+            this.name = name;
         }
     }
 }
