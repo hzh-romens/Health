@@ -29,7 +29,6 @@ public class HistoryActivity extends BaseActivity implements View.OnClickListene
     private SwipeRefreshLayout refreshLayout;
     private HistoryAdapter adapter;
     private List<HistoryEntity> goodsListEntities;
-    private String userGuid = "2222";
     private TextView tv_clear, title;
     private ImageView back;
     private CustomDialog.Builder ibuilder;
