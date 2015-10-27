@@ -37,7 +37,7 @@ public class AttachView extends FrameLayout {
 
             imageView = new ImageView(context);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
-            addView(imageView, LayoutHelper.createFrame(64, 64, Gravity.CENTER_HORIZONTAL | Gravity.TOP));
+            addView(imageView, LayoutHelper.createFrame(48, 48, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 8, 0, 0));
 
             textView = new TextView(context);
             textView.setLines(1);
@@ -94,9 +94,9 @@ public class AttachView extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        int count=views.size();
-        int row =(count==0)?1:(int) Math.ceil((double)count/4);
-        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(row*105), MeasureSpec.EXACTLY));
+        int count = views.size();
+        int row = (count == 0) ? 1 : (int) Math.ceil((double) count / 4);
+        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(row * 105), MeasureSpec.EXACTLY));
     }
 
     @Override
