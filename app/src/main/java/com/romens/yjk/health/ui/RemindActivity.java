@@ -28,7 +28,6 @@ import java.util.List;
  */
 public class RemindActivity extends BaseActivity {
 
-    private ActionBar actionBar;
     private RecyclerView listView;
     private List<RemindEntity> data;
     private RemindAdapter adapter;
@@ -36,22 +35,19 @@ public class RemindActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_remind, R.id.remind_actionbar);
+        setContentView(R.layout.activity_remind, R.id.action_bar);
         initData();
         adapter = new RemindAdapter(data, this);
-        actionBar = getMyActionBar();
+        ActionBar actionBar = getMyActionBar();
         listView = (RecyclerView) findViewById(R.id.remind_list);
         listView.setAdapter(adapter);
-        setListVewBackground();
 
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listView.addItemDecoration(new RemindItemDecoration(AndroidUtilities.dp(10), AndroidUtilities.dp(20), data.size()));
 
         actionBar.setTitle("用药提醒");
-        actionBar.setBackgroundResource(R.color.theme_primary);
-        actionBar.setMinimumHeight(AndroidUtilities.dp(100));
         ActionBarMenu menu = actionBar.createMenu();
-        menu.addItem(1, R.drawable.addcontact_blue);
+        menu.addItem(1, R.drawable.ic_add_white_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
@@ -70,7 +66,6 @@ public class RemindActivity extends BaseActivity {
         initData();
         adapter.setData(data);
         adapter.notifyDataSetChanged();
-        setListVewBackground();
     }
 
     private void initData() {
@@ -83,14 +78,6 @@ public class RemindActivity extends BaseActivity {
 //        List<RemindEntity> entities = remindDao.queryBuilder().orderDesc(RemindDao.Properties.Id).list();
 //        return entities;
 //    }
-
-    private void setListVewBackground() {
-        if (data.size() <= 0) {
-            listView.setBackgroundResource(R.drawable.guide_1);
-        } else {
-            listView.setBackgroundColor(0xdddddd);
-        }
-    }
 
     class RemindItemDecoration extends RecyclerView.ItemDecoration {
         private int horMargin;
@@ -140,13 +127,13 @@ public class RemindActivity extends BaseActivity {
             final RemindEntity entity = data.get(position);
             holder.user.setText(entity.getUser());
             holder.drug.setText(entity.getDrug());
-            holder.intervalDay.setText(entity.getIntervalDay()+"次");
+            holder.intervalDay.setText(entity.getIntervalDay() + "次");
             holder.detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(RemindActivity.this,RemindDetailActivity.class);
+                    Intent intent = new Intent(RemindActivity.this, RemindDetailActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("detailEntity",data.get(position));
+                    bundle.putSerializable("detailEntity", data.get(position));
                     intent.putExtra("detailBundle", bundle);
                     startActivity(intent);
                 }
