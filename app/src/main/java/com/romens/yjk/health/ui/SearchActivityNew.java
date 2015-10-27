@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -35,6 +37,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.ui.adapter.FlowlayoutAdapter;
+import com.romens.yjk.health.ui.cells.SearchTitleCell;
 import com.romens.yjk.health.ui.components.FlowLayout;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -60,19 +63,25 @@ public class SearchActivityNew extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
-        ActionBar actionBar = new ActionBar(this);
-        container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        setContentView(container, actionBar);
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+//        ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
+//        ActionBar actionBar = new ActionBar(this);
+//        setContentView(container, actionBar);
+        SearchTitleCell cell = new SearchTitleCell(this);
+        container.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        setContentView(container);
 
         drugList = new ArrayList<>();
         illnessList = new ArrayList<>();
 
         addFloatLayout(container);
-        actionBarEvent(actionBar, container);
+//        actionBarEvent(actionBar, container);
+        actionBarEvent(cell);
+        showSearchResult(container);
     }
 
-    private void addFloatLayout(final ActionBarLayout.LinearLayoutContainer container) {
+    private void addFloatLayout(final LinearLayout container) {
         historyLayout = new FlowLayout(this);
         final List<String> keywords = readHistoryKeyword();
         historyLayoutAdapter = new FlowlayoutAdapter(historyLayout, this, keywords);
@@ -84,11 +93,43 @@ public class SearchActivityNew extends BaseActivity {
                 String searchText = keywords.get(position);
                 requestDrugChanged(searchText);
                 requestIllnessChanged(searchText);
-                showSearchResult(container);
+//                showSearchResult(container);
                 historyLayout.setVisibility(View.GONE);
             }
         });
-        container.addView(historyLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        container.addView(historyLayout, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
+    }
+
+    private void actionBarEvent(SearchTitleCell searchTitleCell) {
+        searchTitleCell.setHintTextAndRightImg("搜索", R.drawable.search_zxing_extend_36, true);
+        searchTitleCell.setBackgroundResource(R.color.theme_primary);
+        searchTitleCell.setOnViewClickLinstener(new SearchTitleCell.onViewClickLinstener() {
+            @Override
+            public void onBackViewClick() {
+                finish();
+            }
+
+            @Override
+            public void onEditViewChange(EditText view) {
+                String searchText = view.getText().toString().trim();
+                if (!searchText.equals("") && searchText != null) {
+                    requestDrugChanged(searchText);
+                    requestIllnessChanged(searchText);
+//                    showSearchResult(container);
+                    historyLayout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onEditViewClick() {
+                historyLayout.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onRightViewClick() {
+                startActivity(new Intent("com.romens.yjk.health.QRSCANNER"));
+            }
+        });
     }
 
     private void actionBarEvent(ActionBar actionBar, final ActionBarLayout.LinearLayoutContainer container) {
@@ -165,7 +206,7 @@ public class SearchActivityNew extends BaseActivity {
         }
     }
 
-    private void showSearchResult(ActionBarLayout.LinearLayoutContainer container) {
+    private void showSearchResult(LinearLayout container) {
         FrameLayout listContainer = new FrameLayout(this);
         container.addView(listContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
@@ -182,6 +223,12 @@ public class SearchActivityNew extends BaseActivity {
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         refreshLayout.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+//        listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            @Override
+//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//                return false;
+//            }
+//        });
     }
 
     private void requestIllnessChanged(String searchStr) {
@@ -359,7 +406,7 @@ public class SearchActivityNew extends BaseActivity {
         }
 
         @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = new TextSettingsCell(context);
             }
@@ -375,6 +422,18 @@ public class SearchActivityNew extends BaseActivity {
                 }
             });
             cell.setBackgroundColor(getResources().getColor(R.color.white));
+
+            cell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (groupPosition == 0) {
+                        Toast.makeText(context, "item_click", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SearchActivityNew.this, MedicinalDetailActivity.class);
+                        intent.putExtra("guid", drugList.get(childPosition - 1).getGuid());
+                        startActivity(intent);
+                    }
+                }
+            });
             return convertView;
         }
 
