@@ -331,7 +331,9 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                         JSONArray array = new JSONArray(responseProtocol.getResponse());
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject object = array.getJSONObject(i);
-                            tagList.add(object.getString("TAGNAME"));
+                            if (!object.getString("TAGNAME").equals("")) {
+                                tagList.add(object.getString("TAGNAME"));
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

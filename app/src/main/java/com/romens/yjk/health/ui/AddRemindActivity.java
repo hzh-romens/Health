@@ -392,7 +392,7 @@ public class AddRemindActivity extends BaseActivity implements DatePickerDialog.
     @Override
     public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
         super.startActivityForResult(intent, requestCode, options);
-        if(requestCode==11){
+        if (requestCode == 11) {
             editUsercell.setValue(intent.getStringExtra("userName"));
         }
     }
@@ -422,11 +422,12 @@ public class AddRemindActivity extends BaseActivity implements DatePickerDialog.
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AddRemindActivity.this, SearchActivity.class));
+                startActivity(new Intent(AddRemindActivity.this, SearchActivityNew.class));
             }
         });
         simpleDialog(view);
     }
+
     public Dialog simpleDialog(View view) {
         final Dialog dialog = new AlertDialog.Builder(this).create();
         dialog.show();
