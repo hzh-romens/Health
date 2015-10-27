@@ -38,7 +38,8 @@
                 android:layout_centerVertical="true"
                 android:id="@+id/other"
                 android:background="@drawable/ic_ab_other"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:visibility="gone"/>
     </RelativeLayout>
     <RadioGroup
         android:layout_width="match_parent"

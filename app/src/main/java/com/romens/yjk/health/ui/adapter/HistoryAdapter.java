@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,12 +70,12 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return typeEntitiesList.size();
+        return typeEntitiesList == null ? 0 : typeEntitiesList.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return typeEntitiesList.get(groupPosition).size();
+        return typeEntitiesList == null ? 0 : typeEntitiesList.get(groupPosition).size();
     }
 
     @Override
@@ -104,49 +105,51 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        ParentHolder parentHolder=null;
+        ParentHolder parentHolder = null;
         if (convertView == null) {
-            convertView=LayoutInflater.from(adapterContext).inflate(R.layout.list_item_group,null);
-            parentHolder=new ParentHolder();
-            parentHolder.name= (TextView) convertView.findViewById(R.id.name);
-            parentHolder.empty_view=convertView.findViewById(R.id.empty_view);
+            convertView = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_group, null);
+            parentHolder = new ParentHolder();
+            parentHolder.name = (TextView) convertView.findViewById(R.id.group_name);
+            parentHolder.empty_view = convertView.findViewById(R.id.empty_view);
             convertView.setTag(parentHolder);
-        }else{
-            parentHolder= (ParentHolder) convertView.getTag();
+        } else {
+            parentHolder = (ParentHolder) convertView.getTag();
         }
-        if(groupPosition==0){
+        if (groupPosition == 0) {
             parentHolder.empty_view.setVisibility(View.GONE);
-        }else{
+        } else {
             parentHolder.empty_view.setVisibility(View.VISIBLE);
         }
+
         parentHolder.name.setText(typeList.get(groupPosition));
+
         return convertView;
     }
 
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        ChildHolder childHolder=null;
+        ChildHolder childHolder = null;
         if (convertView == null) {
-            childHolder=new ChildHolder();
+            childHolder = new ChildHolder();
             LayoutInflater inflater = LayoutInflater.from(adapterContext);
             convertView = inflater.inflate(R.layout.list_item_shop_list_history, null);
-            childHolder.iv= (ImageView) convertView.findViewById(R.id.iv);
-            childHolder.shop= (ImageView) convertView.findViewById(R.id.shop);
-            childHolder.name= (TextView) convertView.findViewById(R.id.name);
-            childHolder.discountPrice= (TextView) convertView.findViewById(R.id.discountPrice);
-            childHolder.realPrice= (TextView) convertView.findViewById(R.id.realPrice);
-            childHolder.comment= (TextView) convertView.findViewById(R.id.comment);
-            childHolder.linear_item= (LinearLayout) convertView.findViewById(R.id.linear_item);
-            childHolder.saleCount= (TextView) convertView.findViewById(R.id.saleCount);
+            childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
+            childHolder.shop = (ImageView) convertView.findViewById(R.id.shop);
+            childHolder.name = (TextView) convertView.findViewById(R.id.name);
+            childHolder.discountPrice = (TextView) convertView.findViewById(R.id.discountPrice);
+            childHolder.realPrice = (TextView) convertView.findViewById(R.id.realPrice);
+            childHolder.comment = (TextView) convertView.findViewById(R.id.comment);
+            childHolder.linear_item = (LinearLayout) convertView.findViewById(R.id.linear_item);
+            childHolder.saleCount = (TextView) convertView.findViewById(R.id.saleCount);
             convertView.setTag(childHolder);
-        }else{
-            childHolder= (ChildHolder) convertView.getTag();
+        } else {
+            childHolder = (ChildHolder) convertView.getTag();
         }
 
 
         final HistoryEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
 
-        Drawable defaultDrawables =  childHolder.iv.getDrawable();
+        Drawable defaultDrawables = childHolder.iv.getDrawable();
         ImageManager.loadForView(adapterContext, childHolder.iv, entity.getImgUrl(), defaultDrawables, defaultDrawables);
         childHolder.name.setText(entity.getMedicinalName());
         childHolder.realPrice.setTextColor(adapterContext.getResources().getColor(R.color.md_red_400));
@@ -155,16 +158,18 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         childHolder.discountPrice.setText("¥" + entity.getDiscountPrice());
         childHolder.shop.setImageDrawable(adapterContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
         childHolder.shop.setVisibility(View.GONE);
-        childHolder.comment.setText(entity.getCommentCount()+"条评论");
-        childHolder.saleCount.setText(entity.getSaleCount()+"件已售");
+        childHolder.comment.setText(entity.getCommentCount() + "条评论");
+        childHolder.saleCount.setText(entity.getSaleCount() + "件已售");
         return convertView;
     }
-    class ChildHolder{
-        private ImageView iv,shop;
-        private TextView name,discountPrice,realPrice,comment,saleCount;
+
+    class ChildHolder {
+        private ImageView iv, shop;
+        private TextView name, discountPrice, realPrice, comment, saleCount;
         private LinearLayout linear_item;
     }
-    class ParentHolder{
+
+    class ParentHolder {
         private TextView name;
         private View empty_view;
     }

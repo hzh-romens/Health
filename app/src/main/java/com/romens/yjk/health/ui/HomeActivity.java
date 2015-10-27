@@ -102,8 +102,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 }else*/
                 if (id == 0) {
                     startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
-                } else if (id == 1) {
-                    startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+                } else if (id == 1) {   //判断是否登录
+                    if (UserConfig.isClientLogined()) {
+                        startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+                    }
                 }/*  else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (id == 3) {
@@ -119,7 +121,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         });
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
-        requestShopCarCountData();
+        if(UserConfig.isClientLogined()) {
+            requestShopCarCountData();
+        }
 
         mobvoiApiClient = new MobvoiApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -229,7 +233,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     //获取购物车数量
     private void requestShopCarCountData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()

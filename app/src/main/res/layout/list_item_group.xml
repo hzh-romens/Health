@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:background="@color/white"
-    android:layout_height="53dp">
+    android:layout_height="53dp"
+    android:id="@+id/group_name_layout">
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
