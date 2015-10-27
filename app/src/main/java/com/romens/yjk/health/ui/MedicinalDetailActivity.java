@@ -48,6 +48,7 @@ import com.romens.extend.scanner.Intents;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
@@ -191,7 +192,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("MERCHANDISEID",GUID);
-        args.put("USERGUID", "2222");
+        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
 
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "AddMyFavour", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
@@ -353,7 +354,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("GOODSGUID", "851823b0-75fc-4795-8c2f-4554ec5402cf");
-        args.put("USERGUID", "2222");
+        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
         args.put("BUYCOUNT", "1");
         args.put("PRICE", PRICE);
 
@@ -393,8 +394,8 @@ public class MedicinalDetailActivity extends BaseActivity {
         historyEntity.setMedicinalName(weiShopEntity.getNAME());
         historyEntity.setCurrentPrice(weiShopEntity.getUSERPRICE());
         historyEntity.setDiscountPrice(weiShopEntity.getMARKETPRICE());
-        historyEntity.setSaleCount("22");
-        historyEntity.setCommentCount("23");
+        historyEntity.setSaleCount(weiShopEntity.getSTORECOUNT());
+        historyEntity.setCommentCount(weiShopEntity.getSTORECOUNT());
         historyEntity.setGuid(weiShopEntity.getGUID());
         historyEntity.setShopIp(weiShopEntity.getSHOPID());
         HistoryDao historyDao = DBInterface.instance().openReadableDb().getHistoryDao();

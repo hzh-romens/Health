@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,7 +29,6 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +88,7 @@ public class ShopListAdapter extends RecyclerView.Adapter{
             itemHolder.realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             itemHolder.discountPrice.setText("¥"+goodListEntity.getPRICE());
             itemHolder.shop.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
-            itemHolder.comment.setText(goodListEntity.getASSESSCOUNT());
+            itemHolder.comment.setText(goodListEntity.getSHOPNAME());
             //itemHolder.comment.setVisibility(View.GONE);
             itemHolder.shop.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,7 +111,7 @@ public class ShopListAdapter extends RecyclerView.Adapter{
             int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
             Map<String, String> args = new FacadeArgs.MapBuilder().build();
             args.put("GOODSGUID",GUID);
-            args.put("USERGUID","2222");
+            args.put("USERGUID",UserConfig.getClientUserEntity().getGuid());
             args.put("BUYCOUNT", "1");
             args.put("PRICE", PRICE);
 
@@ -123,7 +123,7 @@ public class ShopListAdapter extends RecyclerView.Adapter{
             FacadeClient.request(mContext, message, new FacadeClient.FacadeCallback() {
                 @Override
                 public void onTokenTimeout(Message msg) {
-                    android.util.Log.e("InsertIntoCar", "ERROR");
+                    android.util.Log.e("InsertIntoCar", msg.msg);
                 }
 
                 @Override

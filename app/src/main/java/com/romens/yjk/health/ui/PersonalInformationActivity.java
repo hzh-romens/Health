@@ -28,6 +28,7 @@ import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.model.ChoiceEntity;
 import com.romens.yjk.health.model.PersonalEntity;
 import com.romens.yjk.health.model.PersonalInformationEntity;
@@ -146,7 +147,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     //获取数据
     private void initData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -156,7 +157,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             @Override
             public void onTokenTimeout(Message msg) {
                 needHideProgress();
-                Log.e("个人信息", "ERROR");
+                Log.e("个人信息", msg.msg);
             }
 
             @Override
@@ -165,12 +166,11 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
-                    Log.i("个人===", response);
                     Gson gson = new Gson();
                     personalEntity = gson.fromJson(response, PersonalEntity.class);
                     setValue();
                 } else {
-                    Log.e("个人信息", "ERROR");
+                    Log.e("个人信息", errorMsg.msg);
                 }
             }
         });
@@ -306,7 +306,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         Gson gson=new Gson();
         final String jsonData = gson.toJson(personalEntity);
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222")
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
                 .put("JSONDATA",jsonData)
                 .build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SaveUserInfo", args);
@@ -331,6 +331,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                         JSONObject jsonObject=new JSONObject(response);
                         if ("yes".equals(jsonObject.getString("success"))){
                             Toast.makeText(PersonalInformationActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -27,6 +27,7 @@ import com.romens.extend.scanner.FinishListener;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.DeleteEntity;
@@ -71,7 +72,9 @@ public class ShopCarActivity extends BaseActivity {
         needShowProgress("正在加载...");
         myAdapter = new ShopAdapter(this);
         expandableListView.setAdapter(myAdapter);
+
         requestShopCarDataChanged();
+
         //向服务器提交购物车信息并跳转到订单页面
         iv_accounts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +164,7 @@ public class ShopCarActivity extends BaseActivity {
                         if (childData != null) {
                             Iterator iter = childData.entrySet().iterator();
                             List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
-                            int count=0;
+                            int count = 0;
                             while (iter.hasNext()) {
                                 ParentEntity fatherEntity = new ParentEntity();
                                 Map.Entry entry = (Map.Entry) iter.next();
@@ -170,7 +173,7 @@ public class ShopCarActivity extends BaseActivity {
                                 for (int i = 0; i < child.size(); i++) {
                                     if ("true".equals(child.get(i).getCHECK())) {
                                         filterData.add(child.get(i));
-                                        count=count+child.get(i).getBUYCOUNT();
+                                        count = count + child.get(i).getBUYCOUNT();
                                     }
 
                                 }
@@ -185,7 +188,7 @@ public class ShopCarActivity extends BaseActivity {
                             }
                             Gson gson = new Gson();
                             String s = gson.toJson(deleteData);
-                            DeleteData(s,count);
+                            DeleteData(s, count);
                         } else {
                             Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
                         }
@@ -210,7 +213,7 @@ public class ShopCarActivity extends BaseActivity {
     private void requestShopCarDataChanged() {
 
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -233,7 +236,7 @@ public class ShopCarActivity extends BaseActivity {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     onResponseShopCarData(responseProtocol.getResponse());
                 } else {
-                    Log.e("GetBuyCarCount", "ERROR");
+                    Log.e("GetBuyCarCount", errorMsg.msg);
                 }
             }
         });
@@ -247,8 +250,8 @@ public class ShopCarActivity extends BaseActivity {
     public void onResponseShopCarData(List<LinkedTreeMap<String, String>> ShopCarData) {
         int count = ShopCarData == null ? 0 : ShopCarData.size();
         if (count <= 0) {
-            List<ParentEntity> parentResult=new ArrayList<ParentEntity>();
-            HashMap<String, List<ShopCarEntity>> childResult=new HashMap<String, List<ShopCarEntity>>();
+            List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
+            HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
             myAdapter.bindData(parentResult, childResult, new ShopAdapter.AdapterCallBack() {
                 @Override
                 public void UpdateData() {
@@ -257,9 +260,16 @@ public class ShopCarActivity extends BaseActivity {
 
                 @Override
                 public void UpdateMoney(String money) {
-
+                    tv_all1.setText("总计：" + money);
                 }
             });
+            all_choice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myAdapter.switchAllSelect(!all_choice.isChecked());
+                }
+            });
+
             return;
         }
         List<ShopCarEntity> result = new ArrayList<ShopCarEntity>();
@@ -335,7 +345,7 @@ public class ShopCarActivity extends BaseActivity {
     //向服务器提交购物车信息
     private void CommitData(String data, final HashMap<String, List<ShopCarEntity>> filterChildData, final ArrayList<ParentEntity> filterParentData) {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").put("JSONDATA", data).build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", data).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveCart", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -377,9 +387,8 @@ public class ShopCarActivity extends BaseActivity {
 
     //删除商品
     private void DeleteData(String deletedata, final int reduceCount) {
-        Log.i("购物车删除数量----",reduceCount+"");
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").put("JSONDATA", deletedata).build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", deletedata).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelCartItem", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -396,22 +405,19 @@ public class ShopCarActivity extends BaseActivity {
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    if(responseProtocol.getResponse()==null||"".equals(responseProtocol.getResponse())) {
+                    if (responseProtocol.getResponse() == null || "".equals(responseProtocol.getResponse())) {
                         try {
-                            Log.i("删除数据返回数据----", responseProtocol.getResponse());
                             JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                             String success = jsonObject.getString("success");
                             if (success.equals("yes")) {
                                 requestShopCarDataChanged();
-
-
                             } else {
                                 Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }else{
+                    } else {
                         //暂时这样做
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -reduceCount);
                         requestShopCarDataChanged();

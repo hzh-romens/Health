@@ -8,7 +8,8 @@
 
         <FrameLayout style="@style/framelayou_back_style">
 
-            <ImageView style="@style/iv_back_style" />
+            <ImageView style="@style/iv_back_style"
+                android:background="@drawable/ic_ab_back_grey"/>
         </FrameLayout>
 
         <TextView

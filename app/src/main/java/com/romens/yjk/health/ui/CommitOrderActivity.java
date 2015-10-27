@@ -22,6 +22,7 @@ import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.model.CommitOrderEntity;
 import com.romens.yjk.health.model.FilterChildEntity;
@@ -70,12 +71,12 @@ public class CommitOrderActivity extends BaseActivity {
         childData = (HashMap<String, List<ShopCarEntity>>) getIntent().getSerializableExtra("childData");
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
         getAll(childData);
-        ParentEntity parentEntity = new ParentEntity();
-        parentEntity.setCheck("false");
-        parentEntity.setShopID("-1");
-        parentEntity.setShopName("1");
-        parentData.add(parentEntity);
-        adapter = new CommitOrderAdapter(this);
+//        ParentEntity parentEntity = new ParentEntity();
+//        parentEntity.setCheck("false");
+//        parentEntity.setShopID("-1");
+//        parentEntity.setShopName("1");
+//        parentData.add(parentEntity);
+        adapter = new CommitOrderAdapter(this,parentData.size()+1);
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
         //获取派送方式
@@ -202,7 +203,7 @@ public class CommitOrderActivity extends BaseActivity {
         String JSON_DATA = gson.toJson(commitOrderEntity);
         Log.i("DELIVERYTYPE-ADDRESSID+", DELIVERYTYPE + "=" + ADDRESSID);
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").put("JSONDATA", JSON_DATA).build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", JSON_DATA).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -248,7 +249,7 @@ public class CommitOrderActivity extends BaseActivity {
     //获取默认的收货地址信息
     public void getAdressData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").put("DEFAULTFLAG", "1").build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("DEFAULTFLAG", "1").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAddressList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -265,7 +266,6 @@ public class CommitOrderActivity extends BaseActivity {
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.i("收货地址-----", responseProtocol.getResponse());
                     //判空处理
                     if (responseProtocol.getResponse() == null || "".equals(responseProtocol.getResponse())) {
                         //如果为空

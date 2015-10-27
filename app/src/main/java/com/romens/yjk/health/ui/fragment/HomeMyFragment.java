@@ -142,7 +142,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 //        userEntity.setStatus(0);
 //        userEntity.setDepartmentId("22222");
         if (UserConfig.isClientLogined()) {
-            userEntity = new UserEntity(0, "", "siery", "", "", "", "", 0);
+            UserEntity clientUserEntity = UserConfig.getClientUserEntity();
+            userEntity = new UserEntity(0, clientUserEntity.getGuid(),clientUserEntity.getName(), clientUserEntity.getAvatar(),clientUserEntity.getPhone(), clientUserEntity.getEmail(),clientUserEntity.getDepartmentId(), 0);
 //            userEntity = new UserEntity();
 //            userEntity.setName("siery");
         } else {

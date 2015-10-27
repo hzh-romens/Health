@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -20,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
+import com.romens.android.io.image.ImageManager;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ParentEntity;
@@ -45,6 +47,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     private HashMap<String, List<ShopCarEntity>> mChildData;
     private Context mContext;
     private CheckDataCallBack checkDataCallBack;
+    private int sendFlag;
 
     public void setCheckDataChangeListener(CheckDataCallBack checkDataCallBack) {
         this.checkDataCallBack = checkDataCallBack;
@@ -55,23 +58,31 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         void getCheckData(String flag);
     }
 
-    public CommitOrderAdapter(Context context) {
+    public CommitOrderAdapter(Context context, int realCoutn) {
         this.mContext = context;
+        this.sendFlag = realCoutn;
+
     }
 
     public void SetData(List<ParentEntity> fatherData, HashMap<String, List<ShopCarEntity>> childData) {
         this.mFatherData = fatherData;
         this.mChildData = childData;
+
     }
 
     @Override
     public int getGroupCount() {
-        return mFatherData == null ? 0 : mFatherData.size();
+        int count = mFatherData == null ? 0 : mFatherData.size() + 1;
+        return count;
+
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(groupPosition).getShopID());
+        if (groupPosition == sendFlag) {
+            return 0;
+        }
+        List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID());
         return shopCarEntities == null ? 0 : shopCarEntities.size();
     }
 
@@ -103,27 +114,28 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         int groupType = getGroupType(groupPosition);
-        if(groupType==0){
+        if (groupType == 0) {
             ParentHolder parentHolder = null;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
                 parentHolder = new ParentHolder();
                 parentHolder.tv_groupname = (TextView) convertView.findViewById(R.id.group_name);
+                parentHolder.group_name_layout= (FrameLayout) convertView.findViewById(R.id.group_name_layout);
                 convertView.setTag(parentHolder);
             } else {
                 parentHolder = (ParentHolder) convertView.getTag();
             }
-            parentHolder.tv_groupname.setText(mFatherData.get(groupPosition).getShopName());
-            parentHolder.tv_groupname.setClickable(true);
-        }else  if (groupType == 1) {
-            SendHolder sendHolder=null;
+            parentHolder.tv_groupname.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
+            parentHolder.group_name_layout.setClickable(true);
+        } else if (groupType == 1) {
+            SendHolder sendHolder = null;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
                 sendHolder = new SendHolder();
-                TextView tv_groupname = (TextView) convertView.findViewById(R.id.name);
-                RadioGroup rg = (RadioGroup) convertView.findViewById(R.id.rg);
-                RadioButton rb1 = (RadioButton) convertView.findViewById(R.id.rb1);
-                RadioButton rb2 = (RadioButton) convertView.findViewById(R.id.rb2);
+                sendHolder.tv_groupname = (TextView) convertView.findViewById(R.id.name);
+                sendHolder.rg = (RadioGroup) convertView.findViewById(R.id.rg);
+                sendHolder.rb1 = (RadioButton) convertView.findViewById(R.id.rb1);
+                sendHolder.rb2 = (RadioButton) convertView.findViewById(R.id.rb2);
                 convertView.setTag(sendHolder);
             } else {
                 sendHolder = (SendHolder) convertView.getTag();
@@ -148,26 +160,26 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-       // if(getGroupType(groupPosition)==0) {
-            ChildHolder childHolder = null;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
-                childHolder = new ChildHolder();
-                childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
-                childHolder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
-                childHolder.tv_infor = (TextView) convertView.findViewById(R.id.tv_infor);
-                childHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-                childHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
-                convertView.setTag(childHolder);
-            } else {
-                childHolder = (ChildHolder) convertView.getTag();
-            }
-            ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-            childHolder.tv_price.setText(shopCarEntity.getGOODSPRICE() + "");
-            childHolder.tv_name.setText(shopCarEntity.getNAME());
-            childHolder.tv_infor.setText(shopCarEntity.getSPEC());
-            childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
-      //  }
+        ChildHolder childHolder = null;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
+            childHolder = new ChildHolder();
+            childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
+            childHolder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
+            childHolder.tv_infor = (TextView) convertView.findViewById(R.id.tv_infor);
+            childHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            childHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
+            convertView.setTag(childHolder);
+        } else {
+            childHolder = (ChildHolder) convertView.getTag();
+        }
+        ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID()).get(childPosition);
+        childHolder.tv_price.setText("¥"+shopCarEntity.getGOODSPRICE());
+        childHolder.tv_name.setText(shopCarEntity.getNAME());
+        childHolder.tv_infor.setText(shopCarEntity.getSPEC());
+        childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
+        Drawable defaultDrawables =  childHolder.iv.getDrawable();
+        ImageManager.loadForView(mContext, childHolder.iv, shopCarEntity.getGOODURL(), defaultDrawables, defaultDrawables);
         return convertView;
     }
 
@@ -184,6 +196,14 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
     class ParentHolder {
         private TextView tv_groupname;
+        private FrameLayout group_name_layout;
+    }
+
+    public int getCurrentGroupPosition(int groupPosition) {
+       if(groupPosition<sendFlag-1){
+           return groupPosition;
+       }
+        return 0;
     }
 
 
@@ -192,20 +212,17 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    @Override
-    public int getChildType(int groupPosition, int childPosition) {
-        if ("-1".equals(mFatherData.get(groupPosition).getShopID())) {
-            return 1;
-        }
-        return 0;
-    }
 
     @Override
     public int getGroupType(int groupPosition) {
-        if ("-1".equals(mFatherData.get(groupPosition).getShopID())) {
+        if (groupPosition == mFatherData.size()) {
             return 1;
         }
         return 0;
     }
 
+    @Override
+    public int getGroupTypeCount() {
+        return 2;
+    }
 }

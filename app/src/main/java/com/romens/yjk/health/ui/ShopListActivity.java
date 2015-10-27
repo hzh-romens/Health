@@ -377,9 +377,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
     //获取用户商品列表
     private void requestSearchData(String key, String sortfiled) {
-        Log.i("guid--key--sortfiled", GUID + "--" + key + "--" + sortfiled);
-        UserEntity clientUserEntity = UserConfig.getClientUserEntity();
-      Log.i("用户guid----", clientUserEntity.getGuid());
+//        UserEntity clientUserEntity = UserConfig.getClientUserEntity();
+//        Log.i("用户guid----", clientUserEntity.getGuid());
         refreshLayout.setRefreshing(true);
         Map<String, Object> args = new HashMap<>();
         args.put("GUID", GUID);
@@ -415,7 +414,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     refreshLayout.setRefreshing(false);
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
-                    Log.i("搜索数据", response);
                     Gson gson = new Gson();
                     List<GoodListEntity> result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {
                     }.getType());
