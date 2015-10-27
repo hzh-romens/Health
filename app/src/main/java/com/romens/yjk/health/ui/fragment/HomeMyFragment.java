@@ -11,10 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
@@ -32,13 +29,13 @@ import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.ui.CollectActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
+import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
-import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 /**
@@ -110,11 +107,11 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     startActivity(new Intent(getActivity(), HelpActivity.class));
                 } else if (position == accountRow) {
                     startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
-                }else if(position==exitRow){
+                } else if (position == exitRow) {
                     //TODO 退出登录的修改
-                   // UserConfig.clearConfig();
+                    // UserConfig.clearConfig();
                     UserConfig.clearUser();
-                    userEntity=null;
+                    userEntity = null;
                     updateData();
                 }
             }
@@ -143,7 +140,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 //        userEntity.setDepartmentId("22222");
         if (UserConfig.isClientLogined()) {
             UserEntity clientUserEntity = UserConfig.getClientUserEntity();
-            userEntity = new UserEntity(0, clientUserEntity.getGuid(),clientUserEntity.getName(), clientUserEntity.getAvatar(),clientUserEntity.getPhone(), clientUserEntity.getEmail(),clientUserEntity.getDepartmentId(), 0);
+            userEntity = new UserEntity(0, clientUserEntity.getGuid(), clientUserEntity.getName(), clientUserEntity.getAvatar(), clientUserEntity.getPhone(), clientUserEntity.getEmail(), clientUserEntity.getDepartmentId(), 0);
 //            userEntity = new UserEntity();
 //            userEntity.setName("siery");
         } else {
@@ -161,6 +158,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             collectRow = rowCount++;
             historyRow = rowCount++;
             addressRow = rowCount++;
+            exitRow = rowCount++;
         } else {
             loginRow = rowCount++;
             userProfileRow = -1;
@@ -170,6 +168,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             myOrderRow = -1;
             collectRow = -1;
             historyRow = -1;
+            exitRow = -1;
             accountRow = -1;
             helpRow = -1;
             feedbackRow = -1;
@@ -187,11 +186,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         }
         checkUpdateRow = rowCount++;
         appInfoRow = rowCount++;
-        if (userEntity!=null){
-         exitRow=rowCount++;
-        }else{
-            exitRow=-1;
-        }
+
         adapter.notifyDataSetChanged();
     }
 
@@ -206,16 +201,19 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
     private int otherInfoSectionRow;
     private int otherInfoSectionRow1;
-    private int checkUpdateRow;
-    private int appInfoRow;
+
 
     private int collectRow;
     private int historyRow;
+    private int exitRow;
+
     private int accountRow;
     private int helpRow;
     private int feedbackRow;
 
-    private int exitRow;
+
+    private int checkUpdateRow;
+    private int appInfoRow;
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
@@ -268,7 +266,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 return 0;
             } else if (i == userInfoSectionRow1 || i == otherInfoSectionRow1) {
                 return 2;
-            } else if (i == addressRow || i == checkUpdateRow || i == myOrderRow || i == helpRow) {
+            } else if (i == addressRow || i == checkUpdateRow || i == myOrderRow || i == helpRow || i == exitRow) {
                 return 3;
             } else if (i == collectRow || i == historyRow || i == accountRow || i == feedbackRow) {
                 return 3;
@@ -276,15 +274,13 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 return 4;
             } else if (i == loginRow) {
                 return 5;
-            }else if (i==exitRow){
-                return 6;
             }
             return 1;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 7;
+            return 6;
         }
 
         @Override
@@ -321,6 +317,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     view = new TextSettingsCell(adapterContext);
                 }
                 TextSettingsCell cell = (TextSettingsCell) view;
+                cell.setTextColor(0xff212121);
                 if (position == addressRow) {
                     cell.setText("收货地址管理", true);
                 } else if (position == checkUpdateRow) {
@@ -331,17 +328,20 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                         cell.setText("检查更新", true);
                     }
                 } else if (position == myOrderRow) {
-                    cell.setText("我的订单", false);
+                    cell.setText("我的订单", true);
                 } else if (position == collectRow) {
-                    cell.setText("我的收藏", false);
+                    cell.setText("我的收藏", true);
                 } else if (position == historyRow) {
-                    cell.setText("历史游览", false);
+                    cell.setText("历史游览", true);
                 } else if (position == feedbackRow) {
-                    cell.setText("意见反馈", false);
+                    cell.setText("意见反馈", true);
                 } else if (position == helpRow) {
-                    cell.setText("帮助", false);
+                    cell.setText("帮助", true);
                 } else if (position == accountRow) {
-                    cell.setText("账户管理", false);
+                    cell.setText("账户管理", true);
+                } else if (position == exitRow) {
+                    cell.setTextColor(0xffd01716);
+                    cell.setText("退出登录", true);
                 }
             } else if (type == 4) {
                 if (view == null) {
@@ -368,11 +368,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                         });
                     }
                 }
-            }else if(type==6){
-                view=View.inflate(getActivity(),R.layout.list_item_surebutton,null);
-                LinearLayout btn_exit= (LinearLayout) view.findViewById(R.id.btn_save);
-                TextView button= (TextView) view.findViewById(R.id.button);
-                button.setText("退出登录");
             }
             return view;
         }
