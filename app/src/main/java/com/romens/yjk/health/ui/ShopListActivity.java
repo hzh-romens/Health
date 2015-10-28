@@ -246,7 +246,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             case R.id.rb_all:
                 KEY = "default";
                 requestSearchData(EDITEXT, KEY);
-                Toast.makeText(ShopListActivity.this, "点击了综合排序", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rb_price:
                 if (PRICE_FLAG == 0) {
@@ -260,7 +259,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     rb_price.setText("按价格从低到高");
                     KEY = "priceUp";
                     requestSearchData(EDITEXT, KEY);
-                    Toast.makeText(ShopListActivity.this, "按价格从低到高", Toast.LENGTH_SHORT).show();
                     PRICE_FLAG = 2;
                     return;
                 }
@@ -268,7 +266,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     rb_price.setText("按价格从高到低");
                     KEY = "priceDown";
                     requestSearchData(EDITEXT, KEY);
-                    Toast.makeText(ShopListActivity.this, "按价格从高到低", Toast.LENGTH_SHORT).show();
                     PRICE_FLAG = 1;
                     return;
                 }
@@ -277,7 +274,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 if (SALE_FLAG == 5) {
                     KEY = "saleDown";
                     rb_sale.setText("按销量从高到低");
-                    Toast.makeText(ShopListActivity.this, "按销量从高到低", Toast.LENGTH_SHORT).show();
                     requestSearchData(EDITEXT, KEY);
                     SALE_FLAG = 6;
                     return;
@@ -285,7 +281,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 if (SALE_FLAG == 6) {
                     rb_sale.setText("按销量从低到高");
                     KEY = "saleUp";
-                    Toast.makeText(ShopListActivity.this, "按销量从低到高", Toast.LENGTH_SHORT).show();
                     SALE_FLAG = 7;
                     requestSearchData(EDITEXT, KEY);
                     return;
@@ -293,7 +288,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 if (SALE_FLAG == 7) {
                     rb_sale.setText("按销量从高到低");
                     KEY = "saleDown";
-                    Toast.makeText(ShopListActivity.this, "按销量从高到低", Toast.LENGTH_SHORT).show();
                     SALE_FLAG = 6;
                     requestSearchData(EDITEXT, KEY);
                     return;
@@ -355,6 +349,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     //bindData(responseProtocol.getResponse());
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
+                    Log.i("商品烈表示数据---",response);
                     Gson gson = new Gson();
                     List<GoodListEntity> result = new ArrayList<GoodListEntity>();
                     result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {

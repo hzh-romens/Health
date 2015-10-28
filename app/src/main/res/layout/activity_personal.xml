@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:includeFontPadding="false"
-            android:text="个人信息"
+            android:text="用户信息"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_xlarge" />
     </RelativeLayout>
@@ -88,6 +88,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
 
             <FrameLayout
@@ -121,6 +127,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
 
             <FrameLayout
@@ -153,6 +165,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
 
             </FrameLayout>
 
@@ -187,6 +205,7 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+
             </FrameLayout>
 
             <LinearLayout
@@ -241,6 +260,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
 
             <FrameLayout
@@ -273,6 +298,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
 
             <FrameLayout
@@ -306,6 +337,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
 
             <FrameLayout
@@ -337,6 +374,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
 
             </FrameLayout>
 
@@ -369,6 +412,12 @@
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.75dp"
+                    android:layout_marginLeft="@dimen/padding_outter"
+                    android:background="@color/md_grey_200"
+                    android:layout_gravity="bottom"/>
 
             </FrameLayout>
 

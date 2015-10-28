@@ -10,7 +10,7 @@
         android:id="@+id/iv"
         style="@style/ImageStyle"
         android:scaleType="fitXY"
-        android:src="@drawable/succees"/> <!--android:layout_marginTop="@dimen/padding_inner"-->
+        android:src="@drawable/picture_fail"/> <!--android:layout_marginTop="@dimen/padding_inner"-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,10 @@
             android:id="@+id/name"
             android:textColor="@color/md_black_1000"
             android:typeface="normal"
-            android:layout_margin="@dimen/padding_inner"
+            android:layout_marginLeft="@dimen/padding_inner"
+            android:layout_marginRight="@dimen/padding_inner"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
             android:text="同仁堂 人参归睥丸 30g"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,7 +75,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
        android:layout_gravity="center_vertical|right|bottom"
-        android:src="@drawable/succees"
+        android:src="@drawable/ic_list_shopcaricon"
        android:layout_marginRight="@dimen/padding_inner"
         android:layout_marginBottom="@dimen/padding_outter"
 

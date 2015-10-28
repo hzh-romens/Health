@@ -145,7 +145,9 @@ public class MedicinalDetailActivity extends BaseActivity {
         tv_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestBuy();
+              //  if (weiShopEntity.getGUID()!=null&&("".equals(weiShopEntity.getGUID()))) {
+                    requestBuy();
+                //}
             }
         });
 
@@ -299,7 +301,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 Gson gson = new Gson();
                                 result = gson.fromJson(response, new TypeToken<List<WeiShopEntity>>() {
                                 }.getType());
-                                WeiShopEntity weiShopEntity = result.get(0);
+                                 weiShopEntity = result.get(0);
                                 List<GoodSpicsEntity> goodspics = weiShopEntity.getGOODSPICS();
                                 List<ADPagerEntity> adPagerEntities = new ArrayList<ADPagerEntity>();
                                 for (int i = 0; i < goodspics.size(); i++) {
@@ -351,40 +353,44 @@ public class MedicinalDetailActivity extends BaseActivity {
 
     //加入购物车
     private void requestBuy() {
-        int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("GOODSGUID", "851823b0-75fc-4795-8c2f-4554ec5402cf");
-        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
-        args.put("BUYCOUNT", "1");
-        args.put("PRICE", PRICE);
+        if (UserConfig.isClientLogined()) {
+            int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
+            Map<String, String> args = new FacadeArgs.MapBuilder().build();
+            args.put("GOODSGUID", weiShopEntity.getGUID());
+            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+            args.put("BUYCOUNT", "1");
+            args.put("PRICE", PRICE);
 
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("InsertIntoCar", "ERROR");
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String response = responseProtocol.getResponse();
-                    if ("ERROE".equals(response)) {
-                        Toast.makeText(MedicinalDetailActivity.this, "加入购物车异常", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MedicinalDetailActivity.this, "成功加入购物车", Toast.LENGTH_SHORT).show();
-                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
-                    }
-                } else {
-                    Log.e("InsertIntoCar", errorMsg.toString() + "====" + errorMsg.msg);
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+            Message message = new Message.MessageBuilder()
+                    .withProtocol(protocol)
+                    .build();
+            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+                @Override
+                public void onTokenTimeout(Message msg) {
+                    Log.e("InsertIntoCar", "ERROR");
                 }
-            }
-        });
+
+                @Override
+                public void onResult(Message msg, Message errorMsg) {
+                    if (errorMsg == null) {
+                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                        String response = responseProtocol.getResponse();
+                        if ("ERROE".equals(response)) {
+                            Toast.makeText(MedicinalDetailActivity.this, "加入购物车异常", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MedicinalDetailActivity.this, "成功加入购物车", Toast.LENGTH_SHORT).show();
+                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
+                        }
+                    } else {
+                        Log.e("InsertIntoCar", errorMsg.toString() + "====" + errorMsg.msg);
+                    }
+                }
+            });
+        }else{
+            Toast.makeText(this,"请您先登录",Toast.LENGTH_SHORT).show();
+        }
     }
     public void AddToHistory(WeiShopEntity weiShopEntity) {
         HistoryEntity historyEntity = new HistoryEntity();

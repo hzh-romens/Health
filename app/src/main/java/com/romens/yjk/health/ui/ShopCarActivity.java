@@ -250,6 +250,7 @@ public class ShopCarActivity extends BaseActivity {
     public void onResponseShopCarData(List<LinkedTreeMap<String, String>> ShopCarData) {
         int count = ShopCarData == null ? 0 : ShopCarData.size();
         if (count <= 0) {
+
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
             HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
             myAdapter.bindData(parentResult, childResult, new ShopAdapter.AdapterCallBack() {
