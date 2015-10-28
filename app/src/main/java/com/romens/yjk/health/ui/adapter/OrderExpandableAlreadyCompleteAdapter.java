@@ -17,6 +17,7 @@ import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.cells.ShadowSectionCell;
+import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -55,11 +56,11 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         int type = getGroupType(groupPosition);
         if (type == 0) {
             if (convertView == null) {
-                convertView = new KeyAndValueCell(adapterContext);
+                convertView = new TextSettingsCell(adapterContext);
             }
-            KeyAndValueCell cell = (KeyAndValueCell) convertView;
-            cell.setKeyAndValue("订单编号：" + typeList.get(groupPosition / 2), "交易完成", true);
-            cell.setValueTextColor(0xfff06292);
+            TextSettingsCell cell = (TextSettingsCell) convertView;
+            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition / 2), typeEntitiesList.get(groupPosition / 2).get(0).getOrderStatuster(), true);
+            cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
         } else if (type == 1) {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(adapterContext);
@@ -147,14 +148,13 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             JSONArray array = object.getJSONArray("GOODSLIST");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject subObjcet = array.getJSONObject(i);
-                requestToBuy(subObjcet.getString("GOODSPRICE"),subObjcet.getString("GOODSGUID"));
+                requestToBuy(subObjcet.getString("GOODSPRICE"), subObjcet.getString("GOODSGUID"));
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
 
 
     public void requestToBuy(String PRICE, String GUID) {

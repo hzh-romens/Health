@@ -69,7 +69,7 @@
             android:drawablePadding="10dp"
             android:text="设为默认地址"
             android:textColor="@color/theme_sub_title"
-            android:textSize="@dimen/abc_text_size_body_2_material"/>
+            android:textSize="@dimen/abc_text_size_caption_material"/>
 
         <ImageView
             android:id="@+id/control_address_del"

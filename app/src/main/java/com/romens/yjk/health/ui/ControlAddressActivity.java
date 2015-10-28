@@ -198,7 +198,7 @@ public class ControlAddressActivity extends BaseActivity {
     private void actionBarEven() {
         actionBar = getMyActionBar();
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        actionBarMenu.addItem(0, R.drawable.add_address_btn_bg);
+        actionBarMenu.addItem(0, R.drawable.ic_add_white_24dp);
 
         actionBar.setTitle("收货地址管理");
         actionBar.setBackgroundResource(R.color.theme_primary);
