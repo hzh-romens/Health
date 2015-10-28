@@ -281,7 +281,12 @@ public class CommitOrderActivity extends BaseActivity {
 
                                     }
                                 });
-                                ibuilder.setNegativeButton(R.string.cancel, null);
+                                ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
                                 ibuilder.create().show();
                             }else {
                                 Gson gson = new Gson();

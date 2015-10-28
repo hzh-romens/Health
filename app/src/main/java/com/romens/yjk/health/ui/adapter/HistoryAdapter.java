@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.romens.android.io.image.ImageManager;
@@ -111,6 +113,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
             parentHolder = new ParentHolder();
             parentHolder.name = (TextView) convertView.findViewById(R.id.group_name);
             parentHolder.empty_view = convertView.findViewById(R.id.empty_view);
+            parentHolder.title_layout= (FrameLayout) convertView.findViewById(R.id.group_name_layout);
             convertView.setTag(parentHolder);
         } else {
             parentHolder = (ParentHolder) convertView.getTag();
@@ -120,6 +123,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         } else {
             parentHolder.empty_view.setVisibility(View.VISIBLE);
         }
+        parentHolder.title_layout.setClickable(true);
 
         parentHolder.name.setText(typeList.get(groupPosition));
 
@@ -172,6 +176,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
     class ParentHolder {
         private TextView name;
         private View empty_view;
+        private FrameLayout title_layout;
     }
 
     @Override

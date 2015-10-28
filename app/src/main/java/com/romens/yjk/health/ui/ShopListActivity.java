@@ -345,11 +345,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             public void onResult(Message msg, Message errorMsg) {
 
                 if (errorMsg == null) {
-                    //  ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    //bindData(responseProtocol.getResponse());
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
-                    Log.i("商品烈表示数据---",response);
                     Gson gson = new Gson();
                     List<GoodListEntity> result = new ArrayList<GoodListEntity>();
                     result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {
@@ -404,8 +401,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             public void onResult(Message msg, Message errorMsg) {
 
                 if (errorMsg == null) {
-                    //ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    //bindData(responseProtocol.getResponse());
                     refreshLayout.setRefreshing(false);
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();

@@ -108,11 +108,13 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == accountRow) {
                     startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
                 } else if (position == exitRow) {
-                    //TODO 退出登录的修改
+                    //TODO 退出登录的修改，清空购物车图标的数量
                     // UserConfig.clearConfig();
                     UserConfig.clearUser();
                     userEntity = null;
                     updateData();
+                    AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
+
                 }
             }
         });
@@ -130,19 +132,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
     }
 
     private void updateData() {
-//        userEntity = new UserEntity();
-//        userEntity.setName("anlc");
-//        userEntity.setAvatar("anlc");
-//        userEntity.setEmail("1235@yaojk.com");
-//        userEntity.setGuid("111111111");
-//        userEntity.setPhone("13323232323");
-//        userEntity.setStatus(0);
-//        userEntity.setDepartmentId("22222");
         if (UserConfig.isClientLogined()) {
             UserEntity clientUserEntity = UserConfig.getClientUserEntity();
             userEntity = new UserEntity(0, clientUserEntity.getGuid(), clientUserEntity.getName(), clientUserEntity.getAvatar(), clientUserEntity.getPhone(), clientUserEntity.getEmail(), clientUserEntity.getDepartmentId(), 0);
-//            userEntity = new UserEntity();
-//            userEntity.setName("siery");
         } else {
             userEntity = null;
         }

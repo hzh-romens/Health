@@ -137,7 +137,11 @@ public class MedicinalDetailActivity extends BaseActivity {
         tv_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addtoFavorite();
+                if (UserConfig.isClientLogined()) {
+                    addtoFavorite();
+                }else{
+                    Toast.makeText(MedicinalDetailActivity.this,"请您先登录",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
