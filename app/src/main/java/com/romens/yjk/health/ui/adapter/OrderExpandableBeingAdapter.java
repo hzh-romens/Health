@@ -60,7 +60,8 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                 convertView = new TextSettingsCell(adapterContext);
             }
             TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition / 2), "待评价", true);
+            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition / 2), typeEntitiesList.get(groupPosition / 2).get(0).getOrderStatuster(), true);
+            cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
         } else if (type == 1) {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(adapterContext);
@@ -82,7 +83,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         Button cancelBtn = (Button) view.findViewById(R.id.order_all_buy_cancel);
         cancelBtn.setVisibility(View.VISIBLE);
 
-        final AllOrderEntity entity = typeEntitiesList.get(groupPosition/2).get(childPosition);
+        final AllOrderEntity entity = typeEntitiesList.get(groupPosition / 2).get(childPosition);
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());

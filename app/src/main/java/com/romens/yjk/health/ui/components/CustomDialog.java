@@ -175,6 +175,7 @@ public class CustomDialog extends Dialog {
 			// instantiate the dialog with the custom Theme
 			final CustomDialog dialog = new CustomDialog(context,
 					R.style.mystyle);
+			dialog.setCanceledOnTouchOutside(false);
 			View layout = inflater.inflate(R.layout.customdialog, null);
 			dialog.addContentView(layout, new LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));

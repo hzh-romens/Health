@@ -6,19 +6,24 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
+import com.romens.yjk.health.ui.cells.ADHolder;
+import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 
 import java.util.List;
 
@@ -28,6 +33,7 @@ import java.util.List;
  */
 public class RemindActivity extends BaseActivity {
 
+    private ActionBar actionBar;
     private RecyclerView listView;
     private List<RemindEntity> data;
     private RemindAdapter adapter;
@@ -37,8 +43,9 @@ public class RemindActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remind, R.id.action_bar);
         initData();
+
         adapter = new RemindAdapter(data, this);
-        ActionBar actionBar = getMyActionBar();
+        actionBar = getMyActionBar();
         listView = (RecyclerView) findViewById(R.id.remind_list);
         listView.setAdapter(adapter);
 
@@ -46,6 +53,8 @@ public class RemindActivity extends BaseActivity {
         listView.addItemDecoration(new RemindItemDecoration(AndroidUtilities.dp(10), AndroidUtilities.dp(20), data.size()));
 
         actionBar.setTitle("用药提醒");
+        actionBar.setBackgroundResource(R.color.theme_primary);
+        actionBar.setMinimumHeight(AndroidUtilities.dp(100));
         ActionBarMenu menu = actionBar.createMenu();
         menu.addItem(1, R.drawable.ic_add_white_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -102,7 +111,7 @@ public class RemindActivity extends BaseActivity {
         }
     }
 
-    class RemindAdapter extends RecyclerView.Adapter<RemindViewHolder> {
+    class RemindAdapter extends RecyclerView.Adapter<ADHolder> {
 
         private List<RemindEntity> data;
         private Context context;
@@ -117,36 +126,51 @@ public class RemindActivity extends BaseActivity {
         }
 
         @Override
-        public RemindViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.list_item_remind, null);
-            return new RemindViewHolder(view);
+        public ADHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (data.size() <= 0) {
+                View view = new ImageAndTextCell(context);
+                return new ADHolder(view);
+            } else {
+                View view = LayoutInflater.from(context).inflate(R.layout.list_item_remind, null);
+                return new RemindViewHolder(view);
+            }
         }
 
         @Override
-        public void onBindViewHolder(RemindViewHolder holder, final int position) {
-            final RemindEntity entity = data.get(position);
-            holder.user.setText(entity.getUser());
-            holder.drug.setText(entity.getDrug());
-            holder.intervalDay.setText(entity.getIntervalDay() + "次");
-            holder.detail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(RemindActivity.this, RemindDetailActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("detailEntity", data.get(position));
-                    intent.putExtra("detailBundle", bundle);
-                    startActivity(intent);
-                }
-            });
+        public void onBindViewHolder(ADHolder viewHolder, final int position) {
+            if (data.size() <= 0) {
+                ImageAndTextCell cell = (ImageAndTextCell) viewHolder.itemView;
+                cell.setImageAndText(R.drawable.ic_medicinal_tip, "您还没有添加提醒");
+                LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+                layoutParams.gravity = Gravity.CENTER;
+                cell.setPadding(AndroidUtilities.dp(0), AndroidUtilities.dp(100), AndroidUtilities.dp(0), AndroidUtilities.dp(0));
+                cell.setLayoutParams(layoutParams);
+            } else {
+                final RemindEntity entity = data.get(position);
+                RemindViewHolder holder = (RemindViewHolder) viewHolder;
+                holder.user.setText(entity.getUser());
+                holder.drug.setText(entity.getDrug());
+                holder.intervalDay.setText(entity.getIntervalDay() + "次");
+                holder.detail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RemindActivity.this, RemindDetailActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("detailEntity", data.get(position));
+                        intent.putExtra("detailBundle", bundle);
+                        startActivity(intent);
+                    }
+                });
+            }
         }
 
         @Override
         public int getItemCount() {
-            return data.size();
+            return data.size() > 0 ? data.size() : 1;
         }
     }
 
-    class RemindViewHolder extends RecyclerView.ViewHolder {
+    class RemindViewHolder extends ADHolder {
 
         private ImageView userIcon;
         private TextView user;

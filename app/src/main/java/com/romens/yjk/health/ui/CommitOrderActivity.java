@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.romens.android.network.FacadeArgs;
@@ -25,10 +27,12 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.model.CommitOrderEntity;
+import com.romens.yjk.health.model.DeleteEntity;
 import com.romens.yjk.health.model.FilterChildEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.CommitOrderAdapter;
+import com.romens.yjk.health.ui.components.CustomDialog;
 import com.romens.yjk.health.ui.utils.DialogUtils;
 
 
@@ -56,6 +60,7 @@ public class CommitOrderActivity extends BaseActivity {
     private CommitOrderAdapter adapter;
     private int sumCount;
     private double sumMoney;
+    private CustomDialog.Builder ibuilder;
 
     private String ADDRESSID; //送货地址id
     private String DELIVERYTYPE;//送货方式
@@ -71,11 +76,6 @@ public class CommitOrderActivity extends BaseActivity {
         childData = (HashMap<String, List<ShopCarEntity>>) getIntent().getSerializableExtra("childData");
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
         getAll(childData);
-//        ParentEntity parentEntity = new ParentEntity();
-//        parentEntity.setCheck("false");
-//        parentEntity.setShopID("-1");
-//        parentEntity.setShopName("1");
-//        parentData.add(parentEntity);
         adapter = new CommitOrderAdapter(this,parentData.size()+1);
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
@@ -266,22 +266,39 @@ public class CommitOrderActivity extends BaseActivity {
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    //判空处理
-                    if (responseProtocol.getResponse() == null || "".equals(responseProtocol.getResponse())) {
-                        //如果为空
-                    } else {
+
                         try {
                             JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
-                            Gson gson = new Gson();
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
-                            String addressid = jsonObject.getString("ADDRESSID");
-                            person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
-                            address.setText(jsonObject.getString("ADDRESS"));
-                            ADDRESSID = addressid;
+                            if (jsonArray.length()==0){
+                                ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
+                                ibuilder.setTitle(R.string.prompt);
+                                ibuilder.setMessage("请填写收货地址");
+                                ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        startActivity(new Intent(CommitOrderActivity.this,NewShoppingAddressActivity.class));
+                                        finish();
+
+                                    }
+                                });
+                                ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                                ibuilder.create().show();
+                            }else {
+                                Gson gson = new Gson();
+                                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                String addressid = jsonObject.getString("ADDRESSID");
+                                person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
+                                address.setText(jsonObject.getString("ADDRESS"));
+                                ADDRESSID = addressid;
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }
                 } else {
                     Log.e("GetUserAddressList", errorMsg.msg);
                 }

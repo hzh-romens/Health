@@ -84,19 +84,19 @@ public class ShopListAdapter extends RecyclerView.Adapter{
             itemHolder.realPrice.setVisibility(View.VISIBLE);
             itemHolder.discountPrice.setVisibility(View.VISIBLE);
             itemHolder.shop.setVisibility(View.VISIBLE);
-            itemHolder.realPrice.setText("¥"+goodListEntity.getMEMBERPRICE());
+            itemHolder.realPrice.setText("¥" + goodListEntity.getMEMBERPRICE());
             itemHolder.realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-            itemHolder.discountPrice.setText("¥"+goodListEntity.getPRICE());
+            itemHolder.discountPrice.setText("¥" + goodListEntity.getPRICE());
             itemHolder.shop.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
-            itemHolder.comment.setText(goodListEntity.getSHOPNAME());
-            //itemHolder.comment.setVisibility(View.GONE);
-            itemHolder.shop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    requestToBuy(mResult.get(position).getPRICE(), mResult.get(position).getMERCHANDISEID());
-                }
-            });
         }
+        itemHolder.comment.setText(goodListEntity.getSHOPNAME());
+        //itemHolder.comment.setVisibility(View.GONE);
+        itemHolder.shop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestToBuy(mResult.get(position).getPRICE(), mResult.get(position).getMERCHANDISEID());
+            }
+        });
         itemHolder.linear_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -34,6 +34,7 @@ import com.romens.yjk.health.model.DeleteEntity;
 import com.romens.yjk.health.model.GoodsEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
+import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.components.CustomDialog;
@@ -212,8 +213,10 @@ public class ShopCarActivity extends BaseActivity {
     //获取购物车的信息
     private void requestShopCarDataChanged() {
 
-        Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        if (UserConfig.isClientLogined()){
+            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+        }
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -246,10 +249,11 @@ public class ShopCarActivity extends BaseActivity {
     List<ParentEntity> fatherEntities;//药店名称
     HashMap<String, List<ShopCarEntity>> childData;
 
-    //获取购物车信息
+
     public void onResponseShopCarData(List<LinkedTreeMap<String, String>> ShopCarData) {
         int count = ShopCarData == null ? 0 : ShopCarData.size();
         if (count <= 0) {
+
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
             HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
             myAdapter.bindData(parentResult, childResult, new ShopAdapter.AdapterCallBack() {
@@ -344,45 +348,50 @@ public class ShopCarActivity extends BaseActivity {
 
     //向服务器提交购物车信息
     private void CommitData(String data, final HashMap<String, List<ShopCarEntity>> filterChildData, final ArrayList<ParentEntity> filterParentData) {
-        Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", data).build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveCart", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol).build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("CommitData", "ERROR");
-                needHideProgress();
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-                        String success = jsonObject.getString("success");
-                        if (success.equals("yes")) {
-                            Intent i = new Intent(ShopCarActivity.this, CommitOrderActivity.class);
-                            i.putExtra("childData", filterChildData);
-                            i.putExtra("parentData", filterParentData);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.i("ERROR", errorMsg.msg);
+        if (UserConfig.isClientLogined()) {
+            Map<String, String> args = new FacadeArgs.MapBuilder()
+                    .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", data).build();
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveCart", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+            Message message = new Message.MessageBuilder()
+                    .withProtocol(protocol).build();
+            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+                @Override
+                public void onTokenTimeout(Message msg) {
+                    Log.e("CommitData", "ERROR");
+                    needHideProgress();
                 }
 
-            }
-        });
+                @Override
+                public void onResult(Message msg, Message errorMsg) {
+                    needHideProgress();
+                    if (errorMsg == null) {
+                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                            String success = jsonObject.getString("success");
+                            if (success.equals("yes")) {
+                                Intent i = new Intent(ShopCarActivity.this, CommitOrderActivity.class);
+                                i.putExtra("childData", filterChildData);
+                                i.putExtra("parentData", filterParentData);
+                                startActivity(i);
+                                finish();
+                            } else {
+                                Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.i("ERROR", errorMsg.msg);
+                    }
+
+                }
+            });
+        }else{
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
     }
 
     //删除商品

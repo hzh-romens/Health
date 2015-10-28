@@ -39,6 +39,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.PhoneFormat.PhoneFormat;
 import com.romens.android.log.FileLog;
+import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
@@ -50,6 +51,7 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
@@ -57,6 +59,9 @@ import com.romens.yjk.health.im.IMHXSDKHelper;
 import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.components.SlideView;
 import com.romens.yjk.health.ui.components.TypefaceSpan;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -829,6 +834,8 @@ public class LoginActivity extends BaseActivity {
                             onLoginCallback(true);
                         }
                     });
+                    //登录成功重新刷新一下购物车图标的数量
+                    requestShopCarCountData();
                 }
 
                 @Override
@@ -1124,6 +1131,8 @@ public class LoginActivity extends BaseActivity {
                             onLoginCallback(true);
                         }
                     });
+                    //登录成功重新刷新一下购物车图标的数量
+                    requestShopCarCountData();
                 }
 
                 @Override
@@ -1826,7 +1835,10 @@ public class LoginActivity extends BaseActivity {
                 needShowAlert(getString(R.string.app_name), "请输入手机号码");
                 return;
             }
-            final String regExp = "^[1]([3][0-9]{1}|59|58|88|89)[0-9]{8}$";
+            //TODO 正则表达式的修改
+            //final String regExp = "^[1]([3][0-9]{1}|59|58|88|89)[0-9]{8}$";
+            final String regExp = "^[1][0-9]{2}[0-9]{8}$";
+
             Pattern p = Pattern.compile(regExp);
             String phone = PhoneFormat.stripExceptNumbers(PhoneFormat.stripExceptNumbers(phoneField.getText().toString()));
             Matcher m = p.matcher(phone);
@@ -1919,6 +1931,50 @@ public class LoginActivity extends BaseActivity {
             if (phone != null) {
                 phoneField.setText(phone);
             }
+        }
+    }
+
+
+
+    //获取购物车数量
+    private void requestShopCarCountData() {
+        if (UserConfig.isClientLogined()) {
+
+            Map<String, String> args = new FacadeArgs.MapBuilder()
+                    .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+            Message message = new Message.MessageBuilder()
+                    .withProtocol(protocol).build();
+            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+
+                @Override
+                public void onTokenTimeout(Message msg) {
+                    needHideProgress();
+                    Log.e("GetBuyCarCount", "ERROR");
+                }
+
+                @Override
+                public void onResult(Message msg, Message errorMsg) {
+                    needHideProgress();
+                    if (errorMsg == null) {
+                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                            String buycount = jsonObject.getString("BUYCOUNT");
+                            //shoppingCartItem.setIcon(Integer.parseInt(buycount));
+                            int sumCount = Integer.parseInt(buycount);
+                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, sumCount);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.e("GetBuyCarCount", "ERROR");
+                    }
+                }
+            });
+        }else{
+
         }
     }
  }

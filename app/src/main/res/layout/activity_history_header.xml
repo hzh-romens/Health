@@ -20,7 +20,8 @@
            android:text="历史浏览"
            android:id="@+id/title"
            android:textSize="@dimen/text_size_xlarge"
-           android:layout_centerInParent="true"
+           android:layout_centerVertical="true"
+           android:layout_marginLeft="64dp"
            />
         <TextView
             android:layout_width="wrap_content"

@@ -14,7 +14,10 @@
 
         <TextView
             style="@style/title_textview_style"
-            android:text="购物车" />
+            android:text="购物车"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="64dp"/>
 
         <TextView
             android:id="@id/edit"

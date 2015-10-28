@@ -261,7 +261,6 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                             Context.CONTEXT_IGNORE_SECURITY);
                     int drawavleId = apk.getResources().getIdentifier(resEntryName, resTypeName,
                             apk.getPackageName());
-                    Log.i("btn_save背景图片",(drawavleId == R.drawable.btn_goorder)+"========"+drawavleId+"------"+R.drawable.btn_goorder+"=-=-=-="+R.drawable.btn_goorder_grey);
                     if ("提交".equals(btn_commit.getText().toString())) {
                         //可以点击
                         SaveInfor();

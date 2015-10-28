@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
@@ -98,7 +99,11 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 if (id == 0) {
                     startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 1) {
-                    startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+                    if (UserConfig.isClientLogined()) {
+                        startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+                    }else{
+                        Toast.makeText(HomeActivity.this,"请您先登录",Toast.LENGTH_SHORT).show();
+                    }
                 }/*  else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (id == 3) {
@@ -158,6 +163,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             int count = (int) args[0];
             sumCount = sumCount + count;
             //updateShoppingCartCount(count);
+            if(sumCount<0){
+                sumCount=0;
+            }
             updateShoppingCartCount(sumCount);
         }
     }
@@ -190,38 +198,43 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
     //获取购物车数量
     private void requestShopCarCountData() {
-        Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", "2222").build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol).build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+        if (UserConfig.isClientLogined()) {
 
-            @Override
-            public void onTokenTimeout(Message msg) {
-                needHideProgress();
-                Log.e("GetBuyCarCount", "ERROR");
-            }
+            Map<String, String> args = new FacadeArgs.MapBuilder()
+                    .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+            Message message = new Message.MessageBuilder()
+                    .withProtocol(protocol).build();
+            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-                        String buycount = jsonObject.getString("BUYCOUNT");
-                        //shoppingCartItem.setIcon(Integer.parseInt(buycount));
-                        sumCount=Integer.parseInt(buycount);
-                        updateShoppingCartCount(sumCount);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
+                @Override
+                public void onTokenTimeout(Message msg) {
+                    needHideProgress();
                     Log.e("GetBuyCarCount", "ERROR");
                 }
-            }
-        });
+
+                @Override
+                public void onResult(Message msg, Message errorMsg) {
+                    needHideProgress();
+                    if (errorMsg == null) {
+                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                            String buycount = jsonObject.getString("BUYCOUNT");
+                            //shoppingCartItem.setIcon(Integer.parseInt(buycount));
+                            sumCount = Integer.parseInt(buycount);
+                            updateShoppingCartCount(sumCount);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.e("GetBuyCarCount", "ERROR");
+                    }
+                }
+            });
+        }else{
+
+        }
     }
 }

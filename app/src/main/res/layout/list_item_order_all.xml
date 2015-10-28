@@ -27,7 +27,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:text="bbb"
-        android:textColor="@color/md_pink_300"
+        android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
     <TextView
