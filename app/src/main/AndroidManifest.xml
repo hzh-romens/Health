@@ -65,14 +65,14 @@
             android:value="${APK_CHANNEL_VALUE}"/>
 
         <!-- 高德地图 DEBUG KEY-->
-        <!--<meta-data-->
-            <!--android:name="com.amap.api.v2.apikey"-->
-            <!--android:value="7827d8503aac9c36d00ccae581aa84a6"/>-->
-
-        <!-- 高德地图 RELEASE KEY-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="f22aabde9a3424ab5ac5e23bafaf5bad"/>
+            android:value="7827d8503aac9c36d00ccae581aa84a6"/>
+
+        <!-- 高德地图 RELEASE KEY-->
+        <!--<meta-data-->
+            <!--android:name="com.amap.api.v2.apikey"-->
+            <!--android:value="f22aabde9a3424ab5ac5e23bafaf5bad"/>-->
 
         <!--<meta-data-->
             <!--android:name="com.google.android.wearable.beta.app"-->
