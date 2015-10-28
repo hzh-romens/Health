@@ -7,9 +7,9 @@ import java.lang.reflect.Field;
  */
 public class HelpQuestionConfig {
 
-    public String question1 = "常见问题：";
-    public String question2 = "购药问题：";
-    public String question3 = "在线问诊、问药问题：";
+    public String question1 = "常见问题";
+    public String question2 = "购药问题";
+    public String question3 = "在线问诊、问药问题";
 
     public String question1_sub1 = "Q:如何注册要健康会员卡帐号？";
     public String question1_sub2 = "Q:为什么注册不成功，提示“手机号已经被注册”？";

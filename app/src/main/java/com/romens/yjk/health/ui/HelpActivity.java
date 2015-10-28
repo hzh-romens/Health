@@ -2,27 +2,21 @@ package com.romens.yjk.health.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.ShadowSectionCell;
+import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.HelpQuestionConfig;
-import com.romens.yjk.health.ui.BaseActivity;
-import com.romens.yjk.health.ui.cells.KeyAndImgCell;
-import com.romens.yjk.health.ui.utils.UIHelper;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +26,6 @@ import java.util.List;
 public class HelpActivity extends BaseActivity {
 
     private ListView listView;
-    private SwipeRefreshLayout refreshLayout;
     private HelpAdapter adapter;
 
     private List<String> data;
@@ -44,25 +37,23 @@ public class HelpActivity extends BaseActivity {
         ActionBar actionBar = new ActionBar(this);
         container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         setContentView(container, actionBar);
-        actionBarEvent(actionBar);
-        initData();
-
-        refreshLayout = new SwipeRefreshLayout(this);
-        UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
-        refreshLayout.setBackgroundResource(R.drawable.bg_light_gray);
-        container.addView(refreshLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        actionBar.setTitle("帮助");
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
-            public void onRefresh() {
-                refreshLayout.setRefreshing(false);
+            public void onItemClick(int i) {
+                super.onItemClick(i);
+                if (i == -1) {
+                    finish();
+                }
             }
         });
+        initData();
 
         listView = new ListView(this);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
-        refreshLayout.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        container.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         adapter = new HelpAdapter(this, data);
         listView.setAdapter(adapter);
 
@@ -83,22 +74,6 @@ public class HelpActivity extends BaseActivity {
             key = "question" + i;
             data.add(HelpQuestionConfig.getData(key));
         }
-    }
-
-    private void actionBarEvent(ActionBar actionBar) {
-        actionBar.setTitle("帮助");
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setBackgroundResource(R.color.theme_primary);
-        actionBar.setMinimumHeight(AndroidUtilities.dp(100));
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-            @Override
-            public void onItemClick(int i) {
-                super.onItemClick(i);
-                if (i == -1) {
-                    finish();
-                }
-            }
-        });
     }
 
     class HelpAdapter extends BaseAdapter {
@@ -139,17 +114,15 @@ public class HelpActivity extends BaseActivity {
                 }
             } else {
                 if (convertView == null) {
-                    convertView = new KeyAndImgCell(context);
+                    convertView = new TextSettingsCell(context);
                 }
-                KeyAndImgCell cell = (KeyAndImgCell) convertView;
-                cell.setCellBackgroudColor(Color.WHITE);
+                TextSettingsCell cell = (TextSettingsCell) convertView;
                 if (position < data.size()) {
-                    cell.setInfo(data.get(position), false, true);
+                    cell.setTextAndIcon(data.get(position), R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == data.size() + 1) {
-                    cell.setInfo("没有您的问题？", true, true);
-                    cell.setDivider(true, AndroidUtilities.dp(16), AndroidUtilities.dp(16));
+                    cell.setTextAndIcon("没有您的问题？", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == data.size() + 2) {
-                    cell.setInfo("联系客服电话", false, true);
+                    cell.setTextAndIcon("联系客服电话", R.drawable.ic_chevron_right_grey600_24dp, true);
                 }
             }
 

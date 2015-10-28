@@ -108,19 +108,19 @@
 -keep class com.romens.yjk.health.web.**{*;}
 
 -dontwarn com.romens.yjk.health.db.**
--keep class com.romens.yjk.health.db.**{*;}
+-keep public class com.romens.yjk.health.db.**{*;}
 
 -dontwarn com.romens.yjk.health.ui.components.**
--keep public com.romens.yjk.health.ui.components.**{*;}
+-keep public class com.romens.yjk.health.ui.components.**{*;}
 
 #library
 -dontwarn com.romens.android.library.datetimepicker.**
--keep public com.romens.android.library.datetimepicker.**{*;}
+-keep public class com.romens.android.library.datetimepicker.**{*;}
 
 
--keep public com.google.zxing.**{*;}
+-keep class com.google.zxing.**{*;}
 -dontwarn com.romens.extend.scanner.**
--keep public com.romens.extend.scanner.**{*;}
+-keep public class com.romens.extend.scanner.**{*;}
 
 #蒲公英
 -dontwarn com.pgyersdk.**
@@ -137,6 +137,10 @@
 
 -dontwarn de.greenrobot.dao.**
 -keep class de.greenrobot.dao.**{*;}
+
+-dontwarn de.greenrobot.common.**
+-keep class de.greenrobot.common.**{*;}
+
 
 -dontwarn com.squareup.okhttp.**
 -keep class com.squareup.okhttp.**{*;}

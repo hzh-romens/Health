@@ -12,9 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.FrameLayout;
 
-import com.mobvoi.android.common.ConnectionResult;
-import com.mobvoi.android.common.api.MobvoiApiClient;
-import com.mobvoi.android.wearable.Wearable;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -54,8 +51,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private HomePagerAdapter pagerAdapter;
     private ActionBarMenuItem shoppingCartItem;
 
-    private boolean mResolvingError = false;
-    MobvoiApiClient mobvoiApiClient;
     private int sumCount;
 
     @Override
@@ -102,10 +97,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 }else*/
                 if (id == 0) {
                     startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
-                } else if (id == 1) {   //判断是否登录
-                    if (UserConfig.isClientLogined()) {
-                        startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                    }
+                } else if (id == 1) {
+                    startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
                 }/*  else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (id == 3) {
@@ -121,36 +114,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         });
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
-        if(UserConfig.isClientLogined()) {
-            requestShopCarCountData();
-        }
-
-        mobvoiApiClient = new MobvoiApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(new MobvoiApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle bundle) {
-                        mResolvingError = false;
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-
-                    }
-                })
-                .addOnConnectionFailedListener(new MobvoiApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-                        if (mResolvingError) {
-                            // Already attempting to resolve an error.
-                            return;
-                        } else if (connectionResult.hasResolution()) {
-                            mResolvingError = true;
-                        } else {
-                            mResolvingError = false;
-                        }
-                    }
-                }).build();
+        requestShopCarCountData();
         setupConfig();
     }
 
@@ -161,16 +125,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     @Override
     protected void onStart() {
         super.onStart();
-        if (!mResolvingError) {
-//            mobvoiApiClient.connect();
-        }
     }
 
     @Override
     protected void onStop() {
-        if (!mResolvingError) {
-            //    mobvoiApiClient.disconnect();
-        }
         super.onStop();
     }
 
@@ -233,7 +191,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     //获取购物车数量
     private void requestShopCarCountData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+                .put("USERGUID", "2222").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()

@@ -382,10 +382,10 @@ public class CollectActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                     if (requestCode.equals("yes")) {
-                        Toast.makeText(CollectActivity.this, "确认收获", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CollectActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                         requestCollectData(userGuid);
                     } else {
-                        Toast.makeText(CollectActivity.this, "确认收获错误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CollectActivity.this, "删除错误", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (errorMsg == null) {
