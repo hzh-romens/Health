@@ -17,12 +17,11 @@ import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
-import com.romens.android.ui.cells.HeaderCell;
+import com.romens.android.ui.cells.GreySectionCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
+import com.romens.android.ui.cells.TextIconCell;
 import com.romens.android.ui.cells.TextInfoCell;
-import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
@@ -143,7 +142,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         if (userEntity != null) {
             loginRow = -1;
             userProfileRow = rowCount++;
-            userInfoSectionRow = rowCount++;
             userInfoSectionRow1 = rowCount++;
             accountRow = rowCount++;
             myOrderRow = rowCount++;
@@ -154,7 +152,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         } else {
             loginRow = rowCount++;
             userProfileRow = -1;
-            userInfoSectionRow = -1;
             userInfoSectionRow1 = -1;
             addressRow = -1;
             myOrderRow = -1;
@@ -167,7 +164,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
         }
 
-        otherInfoSectionRow = rowCount++;
         otherInfoSectionRow1 = rowCount++;
         if (userEntity != null) {
             helpRow = rowCount++;
@@ -186,12 +182,10 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
     private int loginRow;
     private int userProfileRow;
 
-    private int userInfoSectionRow;
     private int userInfoSectionRow1;
     private int addressRow;
     private int myOrderRow;
 
-    private int otherInfoSectionRow;
     private int otherInfoSectionRow1;
 
 
@@ -228,8 +222,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
         @Override
         public boolean isEnabled(int i) {
-            return i != userInfoSectionRow || i != userInfoSectionRow1 || i != otherInfoSectionRow || i != otherInfoSectionRow1;
-//            return i == userProfileRow || i == addressRow || i == myOrderRow;
+            return i != userInfoSectionRow1 || i != otherInfoSectionRow1;
         }
 
         @Override
@@ -295,10 +288,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 }
             } else if (type == 2) {
                 if (view == null) {
-                    view = new HeaderCell(adapterContext);
+                    view = new GreySectionCell(adapterContext);
                 }
-                HeaderCell cell = (HeaderCell) view;
-                cell.setTextColor(ResourcesConfig.primaryColor);
+                GreySectionCell cell = (GreySectionCell) view;
                 if (position == otherInfoSectionRow1) {
                     cell.setText("其他");
                 } else if (position == userInfoSectionRow1) {
@@ -306,34 +298,34 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 }
             } else if (type == 3) {
                 if (view == null) {
-                    view = new TextSettingsCell(adapterContext);
+                    view = new TextIconCell(adapterContext);
                 }
-                TextSettingsCell cell = (TextSettingsCell) view;
+                TextIconCell cell = (TextIconCell) view;
                 cell.setTextColor(0xff212121);
                 if (position == addressRow) {
-                    cell.setText("收货地址管理", true);
+                    cell.setIconTextAndNav(R.drawable.attach_audio_states, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == checkUpdateRow) {
                     try {
                         PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
-                        cell.setTextAndValue("检查更新", "c" + pInfo.versionCode, true);
+                        cell.setIconTextAndValue(0, "检查更新", "c" + pInfo.versionCode, true);
                     } catch (PackageManager.NameNotFoundException e) {
-                        cell.setText("检查更新", true);
+                        cell.setIconText(0, "检查更新", true);
                     }
                 } else if (position == myOrderRow) {
-                    cell.setText("我的订单", true);
+                    cell.setIconText(R.drawable.attach_audio_states, "我的订单", true);
                 } else if (position == collectRow) {
-                    cell.setText("我的收藏", true);
+                    cell.setIconText(R.drawable.attach_audio_states, "我的收藏", true);
                 } else if (position == historyRow) {
-                    cell.setText("历史游览", true);
+                    cell.setIconText(R.drawable.attach_audio_states, "历史游览", true);
                 } else if (position == feedbackRow) {
-                    cell.setText("意见反馈", true);
+                    cell.setIconText(R.drawable.attach_audio_states, "意见反馈", true);
                 } else if (position == helpRow) {
-                    cell.setText("帮助", true);
+                    cell.setIconText(R.drawable.attach_audio_states, "帮助", true);
                 } else if (position == accountRow) {
-                    cell.setText("账户管理", true);
+                    cell.setIconText(R.drawable.attach_audio_states, "账户管理", true);
                 } else if (position == exitRow) {
                     cell.setTextColor(0xffd01716);
-                    cell.setText("退出登录", true);
+                    cell.setIconText(R.drawable.attach_audio_states, "退出登录", true);
                 }
             } else if (type == 4) {
                 if (view == null) {

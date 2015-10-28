@@ -12,11 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
+import com.romens.android.ui.Components.FlowCell;
+import com.romens.android.ui.Components.FlowLayout;
+import com.romens.android.ui.Components.FlowLayoutCallback;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.components.FlowCell;
-import com.romens.yjk.health.ui.components.FlowLayout;
-import com.romens.yjk.health.ui.components.FlowLayoutCallback;
 
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class ADDiseaseCell extends LinearLayout {
 
             @Override
             public View getView(int position, ViewGroup container) {
-                FlowCell cell = new FlowCell(container.getContext(), 0xff0f9d58);
+                FlowCell cell = new FlowCell(container.getContext());
                 cell.setText(adDiseaseList.get(position).name);
                 cell.setClickable(true);
                 cell.setOnClickListener(new OnClickListener() {

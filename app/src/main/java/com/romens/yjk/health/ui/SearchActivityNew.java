@@ -167,7 +167,7 @@ public class SearchActivityNew extends BaseActivity {
 
             @Override
             public View getView(final int position, ViewGroup container) {
-                FlowCell cell = new FlowCell(container.getContext(), 0xff0f9d58);
+                FlowCell cell = new FlowCell(container.getContext());
                 cell.setText(searchHistoryKeywordList.get(position));
                 cell.setClickable(true);
                 cell.setOnClickListener(new View.OnClickListener() {
