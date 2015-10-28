@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -92,6 +93,9 @@ public class SearchActivityNew extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (isDrugSearchResultRow(position)) {
                     //跳转药品页面
+                    Intent intent = new Intent(SearchActivityNew.this, MedicinalDetailActivity.class);
+                    intent.putExtra("guid", searchDrugResult.get(position - (searchDrugSession + 1)).guid);
+                    startActivity(intent);
                 } else if (isDiseaseSearchResultRow(position)) {
                     //跳转疾病页面
                 }
@@ -456,7 +460,7 @@ public class SearchActivityNew extends BaseActivity {
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
+        public View getView(final int position, View view, ViewGroup viewGroup) {
             int type = getItemViewType(position);
             if (type == 0) {
                 if (view == null) {
@@ -497,99 +501,6 @@ public class SearchActivityNew extends BaseActivity {
             return view;
         }
     }
-
-//    class SearchExpandableAdapter extends BaseExpandableListAdapter {
-//
-//        private List<List<SearchResultEntity>> groupList;
-//        private Context context;
-//
-//        public void setAdapterData(List<SearchResultEntity> drugList, List<SearchResultEntity> illnessList) {
-//            groupList.clear();
-//            groupList.add(drugList);
-//            groupList.add(illnessList);
-//        }
-//
-//        public SearchExpandableAdapter(Context context, List<SearchResultEntity> drugList, List<SearchResultEntity> illnessList) {
-//            this.context = context;
-//            groupList = new ArrayList<>();
-//            groupList.add(drugList);
-//            groupList.add(illnessList);
-//        }
-//
-//        @Override
-//        public int getGroupCount() {
-//            return groupList.size();
-//        }
-//
-//        @Override
-//        public int getChildrenCount(int groupPosition) {
-//            return groupList.get(groupPosition).size();
-//        }
-//
-//        @Override
-//        public Object getGroup(int groupPosition) {
-//            return groupList.get(groupPosition);
-//        }
-//
-//        @Override
-//        public Object getChild(int groupPosition, int childPosition) {
-//            return groupList.get(groupPosition).get(childPosition);
-//        }
-//
-//        @Override
-//        public long getGroupId(int groupPosition) {
-//            return groupPosition;
-//        }
-//
-//        @Override
-//        public long getChildId(int groupPosition, int childPosition) {
-//            return childPosition;
-//        }
-//
-//        @Override
-//        public boolean hasStableIds() {
-//            return true;
-//        }
-//
-//        @Override
-//        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-//            if (convertView == null) {
-//                convertView = new HeaderCell(context);
-//            }
-//            HeaderCell cell = (HeaderCell) convertView;
-//            if (groupPosition == 0) {
-//                cell.setText("相关药品");
-//            } else if (groupPosition == 1) {
-//                cell.setText("相关疾病");
-//            }
-//            return convertView;
-//        }
-//
-//        @Override
-//        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-//            if (convertView == null) {
-//                convertView = new TextSettingsCell(context);
-//            }
-//            TextSettingsCell cell = (TextSettingsCell) convertView;
-//            String nameStr = groupList.get(groupPosition).get(childPosition).name;
-//            if (nameStr != null) {
-//                cell.setText(nameStr, false);
-//            }
-//            cell.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
-//            cell.setBackgroundColor(getResources().getColor(R.color.white));
-//            return convertView;
-//        }
-//
-//        @Override
-//        public boolean isChildSelectable(int groupPosition, int childPosition) {
-//            return true;
-//        }
-//    }
 
     class SearchResultEntity {
         public final String guid;

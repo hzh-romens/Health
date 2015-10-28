@@ -33,7 +33,8 @@ public class OrderExpandableAdapter extends BaseExpandableAdapter {
                 convertView = new TextSettingsCell(adapterContext);
             }
             TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setText("订单编号：" + typeList.get(groupPosition / 2), true);
+            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition / 2), typeEntitiesList.get(groupPosition / 2).get(0).getOrderStatuster(), true);
+            cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
         } else if (type == 1) {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(adapterContext);
