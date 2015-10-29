@@ -1,8 +1,6 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,35 +8,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
-import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
-import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
-import com.romens.yjk.health.ui.BaseActivity;
+import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
+import com.romens.yjk.health.ui.fragment.OrderFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,19 +47,19 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        int type = getGroupType(groupPosition);
-        if (type == 0) {
-            if (convertView == null) {
-                convertView = new TextSettingsCell(adapterContext);
-            }
-            TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition / 2), typeEntitiesList.get(groupPosition / 2).get(0).getOrderStatuster(), true);
-            cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-        } else if (type == 1) {
-            if (convertView == null) {
-                convertView = new ShadowSectionCell(adapterContext);
-            }
+//        int type = getGroupType(groupPosition);
+//        if (type == 0) {
+        if (convertView == null) {
+            convertView = new TextSettingsCell(adapterContext);
         }
+        TextSettingsCell cell = (TextSettingsCell) convertView;
+        cell.setTextAndValue("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
+        cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
+//        } else if (type == 1) {
+//            if (convertView == null) {
+//                convertView = new ShadowSectionCell(adapterContext);
+//            }
+//        }
         return convertView;
     }
 
@@ -83,7 +76,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         Button cancelBtn = (Button) view.findViewById(R.id.order_all_buy_cancel);
         cancelBtn.setVisibility(View.VISIBLE);
 
-        final AllOrderEntity entity = typeEntitiesList.get(groupPosition / 2).get(childPosition);
+        final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
@@ -94,7 +87,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
             public void onClick(View v) {
 //                Toast.makeText(adapterContext, "click-->确认订单", Toast.LENGTH_SHORT).show();
                 needShowProgress("正在处理...");
-                requestConfirmReceive(userGuid, entity.getOrderId());
+                requestConfirmReceive(userGuid, entity.getOrderId(), groupPosition, childPosition);
             }
         });
         buyAgainBtn.setBackgroundResource(R.drawable.order_follow);
@@ -114,7 +107,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         return view;
     }
 
-    private void requestCancelOrderList(String userGuid, String orderId) {
+    private void requestCancelOrderList(final String userGuid, String orderId) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERID", orderId);
@@ -141,6 +134,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                     }
                     if (requestCode.equals("yes")) {
                         Toast.makeText(adapterContext, "取消成功", Toast.LENGTH_SHORT).show();
+                        requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_BEING);
                     } else {
                         Toast.makeText(adapterContext, "取消失败", Toast.LENGTH_SHORT).show();
                     }
@@ -172,11 +166,11 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
     }
 
     //访问确认收获
-    private void requestConfirmReceive(String userGuid, String orderId) {
+    private void requestConfirmReceive(final String userGuid, String orderId, final int groupPosition, final int childPosition) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERID", orderId);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "ConfirmReceive", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "ConfirmReceive", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
@@ -203,6 +197,13 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                     }
                     if (requestCode.equals("yes")) {
                         Toast.makeText(adapterContext, "确认收获", Toast.LENGTH_SHORT).show();
+                        requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_BEING);
+
+                        Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
+                        intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
+                        adapterContext.startActivity(intent);
+//                        AppNotificationCenter.getInstance().addObserver(adapterContext, AppNotificationCenter.orderCompleteAdd);
+//                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.orderCompleteAdd);
                     } else {
                         Toast.makeText(adapterContext, "确认收获错误", Toast.LENGTH_SHORT).show();
                     }
@@ -210,6 +211,8 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                 if (errorMsg == null) {
                 } else {
                     Log.e("reqGetAllUsers", "ERROR");
+                    Toast.makeText(adapterContext, "出现未知错误", Toast.LENGTH_SHORT).show();
+                    Log.e("tag", "ERROR---->" + errorMsg.msg);
                 }
                 needHideProgress();
             }

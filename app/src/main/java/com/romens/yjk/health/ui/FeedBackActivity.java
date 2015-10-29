@@ -291,6 +291,7 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                     }
                     if (requestCode.equals("yes")) {
                         Toast.makeText(FeedBackActivity.this, "您好，我们已收到您的反馈", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Toast.makeText(FeedBackActivity.this, "反馈未成功", Toast.LENGTH_SHORT).show();
                     }

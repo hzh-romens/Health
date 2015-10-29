@@ -87,7 +87,6 @@ public class OrderEvaluateActivity extends BaseActivity {
         submitBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(OrderEvaluateActivity.this, "click-->submit", Toast.LENGTH_SHORT).show();
                 requestAssessMerch(userGuid, entity.getOrderId(), qualityEvaluateLevel + "", speedEvaluateLevel + "", opinionEditText.getText().toString());
             }
         });
@@ -95,14 +94,12 @@ public class OrderEvaluateActivity extends BaseActivity {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 qualityEvaluateLevel = (int) rating;
-                Toast.makeText(OrderEvaluateActivity.this, "click-quality->" + rating, Toast.LENGTH_SHORT).show();
             }
         });
         speedRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 speedEvaluateLevel = (int) rating;
-                Toast.makeText(OrderEvaluateActivity.this, "click-speed->" + rating, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -158,14 +155,13 @@ public class OrderEvaluateActivity extends BaseActivity {
                     }
                     if (requestCode.equals("yes")) {
                         Toast.makeText(OrderEvaluateActivity.this, "发表评论成功", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Toast.makeText(OrderEvaluateActivity.this, "发表失败", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (errorMsg != null) {
                     Log.e("tag", "--requestCode--->" + errorMsg.msg);
-                } else {
-                    Log.e("reqGetAllUsers", "ERROR");
                 }
             }
         });

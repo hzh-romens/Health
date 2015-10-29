@@ -27,6 +27,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
+import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
@@ -53,19 +54,19 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        int type = getGroupType(groupPosition);
-        if (type == 0) {
-            if (convertView == null) {
-                convertView = new TextSettingsCell(adapterContext);
-            }
-            TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition / 2), typeEntitiesList.get(groupPosition / 2).get(0).getOrderStatuster(), true);
-            cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-        } else if (type == 1) {
-            if (convertView == null) {
-                convertView = new ShadowSectionCell(adapterContext);
-            }
+//        int type = getGroupType(groupPosition);
+//        if (type == 0) {
+        if (convertView == null) {
+            convertView = new TextSettingsCell(adapterContext);
         }
+        TextSettingsCell cell = (TextSettingsCell) convertView;
+        cell.setTextAndValue("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
+        cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
+//        } else if (type == 1) {
+//            if (convertView == null) {
+//                convertView = new ShadowSectionCell(adapterContext);
+//            }
+//        }
         return convertView;
     }
 
@@ -79,7 +80,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
 
         Button buyAgainBtn = (Button) view.findViewById(R.id.order_all_buy_again);
         Button evaluateBtn = (Button) view.findViewById(R.id.order_all_evaluate_btn);
-        final AllOrderEntity entity = typeEntitiesList.get(groupPosition / 2).get(childPosition);
+        final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
@@ -91,7 +92,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             public void onClick(View v) {
                 Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
 //              Intent intent = new Intent(adapterContext, intentActivity);
-                intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition / 2).get(childPosition));
+                intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
                 adapterContext.startActivity(intent);
             }
         });
@@ -100,6 +101,8 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             public void onClick(View v) {
                 Toast.makeText(adapterContext, "click-->再来一单", Toast.LENGTH_SHORT).show();
 //                requestToBuy(entity.getOrderPrice(), entity.getOrderId());
+                Log.e("tag", "--userGuid--ccc->" + UserGuidConfig.USER_GUID);
+                Log.e("tag", "--userGuid--ccc->" + userGuid);
                 requestOrderDetailList(UserGuidConfig.USER_GUID, entity.getOrderId());
             }
         });
@@ -107,7 +110,6 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
     }
 
     private void requestOrderDetailList(String userGuid, String orderId) {
-
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERID", orderId);
@@ -195,7 +197,5 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
                 }
             }
         });
-
-
     }
 }

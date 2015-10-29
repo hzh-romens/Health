@@ -27,19 +27,19 @@ public class OrderExpandableAdapter extends BaseExpandableAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        int type = getGroupType(groupPosition);
-        if (type == 0) {
+//        int type = getGroupType(groupPosition);
+//        if (type == 0) {
             if (convertView == null) {
                 convertView = new TextSettingsCell(adapterContext);
             }
             TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition / 2), typeEntitiesList.get(groupPosition / 2).get(0).getOrderStatuster(), true);
+            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
             cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-        } else if (type == 1) {
-            if (convertView == null) {
-                convertView = new ShadowSectionCell(adapterContext);
-            }
-        }
+//        } else if (type == 1) {
+//            if (convertView == null) {
+//                convertView = new ShadowSectionCell(adapterContext);
+//            }
+//        }
         return convertView;
     }
 
@@ -51,7 +51,7 @@ public class OrderExpandableAdapter extends BaseExpandableAdapter {
         TextView specTextView = (TextView) view.findViewById(R.id.order_date);
 //        TextView countTextView = (TextView) view.findViewById(R.id.order_count);
 
-        AllOrderEntity entity = typeEntitiesList.get(groupPosition / 2).get(childPosition);
+        AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());

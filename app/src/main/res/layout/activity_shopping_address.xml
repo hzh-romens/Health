@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
+            android:background="@color/white"
             android:text="用户名:"
             android:textColor="@color/theme_sub_title"
             android:textSize="@dimen/abc_text_size_body_1_material"/>
@@ -53,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
+            android:background="@color/white"
             android:text="联系方式:"
             android:textColor="@color/theme_sub_title"
             android:textSize="@dimen/abc_text_size_body_1_material"/>
@@ -88,6 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
+            android:background="@color/white"
             android:text="所在地区:"
             android:textColor="@color/theme_sub_title"
             android:textSize="@dimen/abc_text_size_body_1_material"/>
@@ -111,6 +114,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
+            android:background="@color/white"
             android:src="@drawable/y"/>
     </LinearLayout>
 
@@ -129,6 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
+            android:background="@color/white"
             android:text="详细地址:"
             android:textColor="@color/theme_sub_title"
             android:textSize="@dimen/abc_text_size_body_1_material"/>

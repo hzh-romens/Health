@@ -13,4 +13,7 @@ public class AppNotificationCenter extends NotificationCenter {
     public static final int appConfigLoaded = totalEvents++;
     public static final int appConfigChanged = totalEvents++;
 
+    //order
+    public static final int orderCompleteAdd = totalEvents++;
+
 }

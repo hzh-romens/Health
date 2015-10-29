@@ -69,15 +69,14 @@ public class OrderFragment extends BaseFragment {
         switch (fragmentType) {
             case MyOrderActivity.ORDER_TYPE_COMPLETE:
                 adapter = new OrderExpandableAlreadyCompleteAdapter(getActivity(), mOrderEntities);
-                requestOrderList(userGuid);
                 break;
             case MyOrderActivity.ORDER_TYPE_EVALUATE:
                 adapter = new OrderExpandableAdapter(getActivity(), mOrderEntities);
-                requestOrderList(userGuid);
+//                requestOrderList(userGuid);
                 break;
             case MyOrderActivity.ORDER_TYPE_BEING:
                 adapter = new OrderExpandableBeingAdapter(getActivity(), mOrderEntities);
-                requestOrderList(userGuid);
+//                requestOrderList(userGuid);
                 break;
         }
     }
@@ -97,7 +96,7 @@ public class OrderFragment extends BaseFragment {
                 requestOrderList(userGuid);
             }
         });
-
+        requestOrderList(userGuid);
         expandableListView = new ExpandableListView(context);
         swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         expandableListView.setAdapter(adapter);
@@ -112,14 +111,14 @@ public class OrderFragment extends BaseFragment {
                 return true;
             }
         });
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                parent.expandGroup(groupPosition);
-                Log.e("tag", "-------->" + groupPosition);
-                return true;
-            }
-        });
+//        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+//            @Override
+//            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+//                parent.expandGroup(groupPosition);
+//                Log.e("tag", "-------->" + groupPosition);
+//                return true;
+//            }
+//        });
 
         addCellView(content);
         refershContentView();
@@ -144,6 +143,12 @@ public class OrderFragment extends BaseFragment {
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.e("tag", "isVisibleToUser---->" + isVisibleToUser);
     }
 
     private void requestOrderList(String userGuid) {
@@ -171,7 +176,6 @@ public class OrderFragment extends BaseFragment {
                 }
                 if (errorMsg == null) {
                 } else {
-//                    setRefreshOver();
                     android.util.Log.e("reqGetAllUsers", "ERROR");
                 }
             }
@@ -212,5 +216,9 @@ public class OrderFragment extends BaseFragment {
             swipeRefreshLayout.setVisibility(View.GONE);
             attachView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void requestDataRefreshView() {
+        requestOrderList(userGuid);
     }
 }

@@ -47,7 +47,8 @@
         android:textStyle="normal"/>
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:id="@+id/control_address_defult_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -58,7 +59,7 @@
             android:layout_marginLeft="20dp"
             android:src="@drawable/control_address_undeafult"/>
 
-        <Button
+        <TextView
             android:id="@+id/control_address_isdefault"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,18 +72,6 @@
             android:textColor="@color/theme_sub_title"
             android:textSize="@dimen/abc_text_size_caption_material"/>
 
-        <ImageView
-            android:id="@+id/control_address_del"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/control_address_del"
-            android:textColor="@color/body_text_2"
-            android:textSize="@dimen/abc_text_size_body_2_material"
-            android:visibility="gone"/>
     </RelativeLayout>
 
 
