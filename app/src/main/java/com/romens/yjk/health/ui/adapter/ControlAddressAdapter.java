@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
@@ -116,7 +117,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
                 currDefaultAddressIndex = index;
                 holder.defaultImg.setImageResource(R.drawable.control_address_deafult);
             }
-            holder.defaultImg.setOnClickListener(new View.OnClickListener() {
+            holder.defaultLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onItemLongClickLinstener != null) {
@@ -124,6 +125,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
                     }
                 }
             });
+
             holder.isDefault.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -154,27 +156,26 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
     public int getItemCount() {
         return data.size() * 2;
     }
-//}
 
     class ControlAddressHolder extends RecyclerView.ViewHolder {
 
         public TextView nameView;
         public TextView telView;
         public TextView addressview;
-        public Button isDefault;
-        public ImageView del;
+        public TextView isDefault;
         public ImageView defaultImg;
         public LinearLayout outsideLayout;
+        public RelativeLayout defaultLayout;
 
         public ControlAddressHolder(View itemView) {
             super(itemView);
             nameView = (TextView) itemView.findViewById(R.id.control_address_name);
             telView = (TextView) itemView.findViewById(R.id.control_address_tel);
             addressview = (TextView) itemView.findViewById(R.id.control_address_address);
-            isDefault = (Button) itemView.findViewById(R.id.control_address_isdefault);
-            del = (ImageView) itemView.findViewById(R.id.control_address_del);
+            isDefault = (TextView) itemView.findViewById(R.id.control_address_isdefault);
             defaultImg = (ImageView) itemView.findViewById(R.id.controladdress_deafult_img);
             outsideLayout = (LinearLayout) itemView.findViewById(R.id.control_address_layout);
+            defaultLayout = (RelativeLayout) itemView.findViewById(R.id.control_address_defult_layout);
         }
     }
 }

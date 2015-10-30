@@ -140,7 +140,7 @@ public class RemindActivity extends BaseActivity {
         public void onBindViewHolder(ADHolder viewHolder, final int position) {
             if (data.size() <= 0) {
                 ImageAndTextCell cell = (ImageAndTextCell) viewHolder.itemView;
-                cell.setImageAndText(R.drawable.ic_medicinal_tip, "您还没有添加提醒");
+                cell.setImageAndText(R.drawable.remind_no_item_bg, "您还没有添加提醒\n\n点击图片或者点击右上角添加提醒");
                 LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
                 layoutParams.gravity = Gravity.CENTER;
                 cell.setPadding(AndroidUtilities.dp(0), AndroidUtilities.dp(100), AndroidUtilities.dp(0), AndroidUtilities.dp(0));

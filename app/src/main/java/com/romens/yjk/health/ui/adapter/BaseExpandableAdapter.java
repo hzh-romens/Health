@@ -5,13 +5,25 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.romens.android.log.FileLog;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anlc on 2015/10/22.
@@ -30,6 +42,12 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
     }
 
     public void setOrderEntities(List<AllOrderEntity> orderEntities) {
+        if (typeEntitiesList != null) {
+            typeEntitiesList.clear();
+        }
+        if (typeList != null) {
+            typeList.clear();
+        }
         classifyEntity(orderEntities);
     }
 
@@ -61,15 +79,16 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return typeEntitiesList.size() * 2 - 1;
+        return typeEntitiesList.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (groupPosition == typeEntitiesList.size() + 1) {
-            return 0;
-        }
-        return groupPosition % 2 == 0 ? typeEntitiesList.get(groupPosition / 2).size() : 0;
+//        if (groupPosition == typeEntitiesList.size() + 1) {
+//            return 0;
+//        }
+//        return groupPosition % 2 == 0 ? typeEntitiesList.get(groupPosition / 2).size() : 0;
+        return typeEntitiesList.get(groupPosition).size();
     }
 
     @Override
@@ -79,7 +98,8 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return typeEntitiesList.get(groupPosition / 2).get(childPosition);
+//        return typeEntitiesList.get(groupPosition / 2).get(childPosition);
+        return typeEntitiesList.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -107,10 +127,10 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
         return null;
     }
 
-    @Override
-    public int getGroupType(int groupPosition) {
-        return groupPosition % 2;
-    }
+//    @Override
+//    public int getGroupType(int groupPosition) {
+//        return groupPosition % 2;
+//    }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -138,5 +158,51 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
             FileLog.e(adapterContext.getPackageName(), e);
         }
         progressDialog = null;
+    }
+
+    public void requestOrderList(String userGuid, int fragmentType) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("ORDERSTATUS", fragmentType + "");
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrders", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+                }))
+                .build();
+        FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    setOrderData(responseProtocol.getResponse());
+                }
+                if (errorMsg == null) {
+                } else {
+//                    setRefreshOver();
+                    android.util.Log.e("reqGetAllUsers", "ERROR");
+                }
+            }
+        });
+    }
+
+    public void setOrderData(List<LinkedTreeMap<String, String>> response) {
+        int count = response == null ? 0 : response.size();
+        if (count <= 0) {
+            return;
+        }
+        List<AllOrderEntity> mOrderEntities = new ArrayList<>();
+        for (LinkedTreeMap<String, String> item : response) {
+            AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
+            mOrderEntities.add(entity);
+        }
+        setOrderEntities(mOrderEntities);
+        notifyDataSetChanged();
     }
 }

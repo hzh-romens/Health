@@ -35,12 +35,17 @@ public class ImageAndTextCell extends LinearLayout {
         textView.setTextColor(0xff757575);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         LayoutParams textParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT);
-        textParams.setMargins(AndroidUtilities.dp(0),AndroidUtilities.dp(16),AndroidUtilities.dp(0),AndroidUtilities.dp(0));
+        textParams.setMargins(AndroidUtilities.dp(0), AndroidUtilities.dp(16), AndroidUtilities.dp(0), AndroidUtilities.dp(0));
+        textView.setLayoutParams(textParams);
         addView(textView);
     }
 
     public void setImageAndText(int imgResource, String text) {
         textView.setText(text);
         imageView.setBackgroundResource(imgResource);
+    }
+
+    public void setTextViewPadding(int left, int top, int right, int bottom) {
+        textView.setPadding(left, top, right, bottom);
     }
 }

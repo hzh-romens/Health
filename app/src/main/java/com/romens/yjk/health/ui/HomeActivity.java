@@ -146,7 +146,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         titles.add("首页");
         titles.add("健康");
         titles.add("发现");
-        titles.add("我");
+        titles.add("我的");
         return titles;
     }
 

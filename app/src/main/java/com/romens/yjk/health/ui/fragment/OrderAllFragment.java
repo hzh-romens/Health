@@ -63,7 +63,6 @@ public class OrderAllFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userGuid = UserGuidConfig.USER_GUID;
-        initData();
         adapter = new AllOrderViewAdapter(getActivity(), mOrderEntities);
     }
 
@@ -75,6 +74,7 @@ public class OrderAllFragment extends BaseFragment {
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context context = getActivity();
+        initData();
         content = new FrameLayout(context);
         swipeRefreshLayout = new SwipeRefreshLayout(context);
         content.addView(swipeRefreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -167,6 +167,7 @@ public class OrderAllFragment extends BaseFragment {
 
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
+        requestOrderList(userGuid);
         recyclerView.setAdapter(adapter);
     }
 
