@@ -2,6 +2,13 @@ package com.romens.yjk.health.db.entity;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * Created by anlc on 2015/9/19.
  * 城市选择的实体
@@ -61,4 +68,5 @@ public class CitysEntity {
         entity.setLevel(item.get("LEVEL"));
         return entity;
     }
+
 }
