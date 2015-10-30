@@ -79,7 +79,7 @@ public class ShopListAdapter extends RecyclerView.Adapter{
         if("".equals(goodListEntity.getPRICE())||goodListEntity==null){
             itemHolder.realPrice.setVisibility(View.INVISIBLE);
             itemHolder.discountPrice.setVisibility(View.INVISIBLE);
-            itemHolder.shop.setVisibility(View.INVISIBLE);
+           // itemHolder.shop.setVisibility(View.INVISIBLE);
         }else {
             itemHolder.realPrice.setVisibility(View.VISIBLE);
             itemHolder.discountPrice.setVisibility(View.VISIBLE);

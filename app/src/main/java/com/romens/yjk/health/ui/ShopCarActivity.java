@@ -62,7 +62,7 @@ public class ShopCarActivity extends BaseActivity {
     private List<ShopCarEntity> datas;
     private ShopAdapter myAdapter;
     private ImageView btn_back;
-    private TextView delete;
+    private ImageView delete;
     private CustomDialog.Builder ibuilder;
 
     @Override
@@ -143,7 +143,7 @@ public class ShopCarActivity extends BaseActivity {
         iv_accounts = (TextView) findViewById(R.id.accounts);
         expandableListView = (ExpandableListView) findViewById(R.id.ev);
         btn_back = (ImageView) findViewById(R.id.back);
-        delete = (TextView) findViewById(R.id.edit);
+        delete = (ImageView) findViewById(R.id.edit);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

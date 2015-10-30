@@ -30,7 +30,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_xlarge"
             />
-        <TextView   android:layout_width="wrap_content"
+        <ImageView   android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/padding_outter"
             android:layout_marginRight="@dimen/padding_outter"
@@ -38,7 +38,7 @@
             android:id="@+id/edit"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:text="删除"
+            android:src="@drawable/ic_delete"
             android:includeFontPadding="false"
             android:textColor="@color/white"
             android:textSize="@dimen/title_text_size" />
