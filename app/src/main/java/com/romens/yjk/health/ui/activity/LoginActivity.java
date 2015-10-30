@@ -1861,7 +1861,7 @@ public class LoginActivity extends BaseActivity {
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "CheckPhoneNumber", args);
             Message message = new Message.MessageBuilder()
                     .withProtocol(protocol)
-                    .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
+                   .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
                     }))
                     .build();
             FacadeClient.request(LoginActivity.this, message, new FacadeClient.FacadeCallback() {
@@ -1874,6 +1874,7 @@ public class LoginActivity extends BaseActivity {
                 public void onResult(Message msg, Message errorMsg) {
                     nextPressed = false;
                     needHideProgress();
+                  //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
                     if (errorMsg == null) {
                         ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
                         LinkedTreeMap<String, String> result = response.getResponse();
@@ -1891,8 +1892,10 @@ public class LoginActivity extends BaseActivity {
                         }
                     } else {
                         if (errorMsg.code != 0) {
+                         //   ResponseProtocol<String> error = (ResponseProtocol) msg.protocol;
+                           // Log.i("错误信息是否为空----",(error.getResponse()==null)+"");
                             needShowAlert(getString(R.string.app_name), errorMsg.msg);
-                            Log.i("登录错误日志----",errorMsg.msg);
+                           // Log.i("登录错误日志----",errorMsg.msg);
                         }
                     }
                 }

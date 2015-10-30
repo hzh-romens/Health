@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
+import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.cells.IsSelectCell;
 
 import java.util.ArrayList;
@@ -145,6 +147,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
             childHolder.comment = (TextView) convertView.findViewById(R.id.comment);
             childHolder.linear_item = (LinearLayout) convertView.findViewById(R.id.linear_item);
             childHolder.saleCount = (TextView) convertView.findViewById(R.id.saleCount);
+            childHolder.childitem= (FrameLayout) convertView.findViewById(R.id.childitem);
             convertView.setTag(childHolder);
         } else {
             childHolder = (ChildHolder) convertView.getTag();
@@ -164,6 +167,15 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         childHolder.shop.setVisibility(View.GONE);
         childHolder.comment.setText(entity.getCommentCount() + "条评论");
         childHolder.saleCount.setText(entity.getSaleCount() + "件已售");
+        childHolder.childitem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(adapterContext,MedicinalDetailActivity.class);
+                i.putExtra("guid",entity.getGuid());
+                adapterContext.startActivity(i);
+
+            }
+        });
         return convertView;
     }
 
@@ -171,6 +183,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         private ImageView iv, shop;
         private TextView name, discountPrice, realPrice, comment, saleCount;
         private LinearLayout linear_item;
+        private FrameLayout childitem;
     }
 
     class ParentHolder {

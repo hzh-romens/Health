@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -51,8 +52,8 @@ import widget.adapters.ArrayWheelAdapter;
  */
 public class PersonalInformationActivity extends BaseActivity implements View.OnClickListener, OnWheelChangedListener, View.OnFocusChangeListener {
     private ImageView iv_back;
-    private TextView choiceSex, choiceBirthday, choiceHeredopathia, choiceDisease, choiceAllergy;
-    private EditText editor_name, editor_work, editor_food, editor_rest, editor_other;
+    private TextView choiceSex, choiceBirthday, choiceHeredopathia, choiceDisease, choiceAllergy,editor_name;
+    private EditText editor_work, editor_food, editor_rest, editor_other;
     private LinearLayout btn_save;
     private PersonalEntity personalEntity;
     private WheelView YearView, MonthView, DayView;
@@ -195,20 +196,20 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         choiceHeredopathia.setOnClickListener(this);
         choiceSex = (TextView) findViewById(R.id.choiceSex);
         choiceSex.setOnClickListener(this);
-        editor_name = (EditText) findViewById(R.id.editor_name);
+        editor_name = (TextView) findViewById(R.id.editor_name);
         editor_work = (EditText) findViewById(R.id.editor_work);
         editor_food = (EditText) findViewById(R.id.editor_food);
         editor_rest = (EditText) findViewById(R.id.editor_rest);
         editor_other = (EditText) findViewById(R.id.editor_other);
         btn_save = (LinearLayout) findViewById(R.id.btn_save);
         editor_food.setOnFocusChangeListener(this);
-        editor_name.setOnFocusChangeListener(this);
         editor_other.setOnFocusChangeListener(this);
         editor_rest.setOnFocusChangeListener(this);
         editor_work.setOnFocusChangeListener(this);
+        editor_name.setOnClickListener(this);
         btn_save.setOnClickListener(this);
         btn_commit= (TextView) findViewById(R.id.btn_commit);
-        btn_commit.setText("编辑");
+        btn_commit.setText("保存");
 
     }
 
@@ -238,23 +239,33 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 getPopWindowInstance(has, choiceBirthday, 1);
                 break;
             case R.id.choiceDisease:
-                btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                btn_commit.setText("提交");
-                getPopWindowInstance(has, choiceDisease, 0);
+             //   btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+               // btn_commit.setText("提交");
+                //跳转到病史选择页面
+                //getPopWindowInstance(has, choiceDisease, 0);
+                Intent dieaseIntent=new Intent(this,SetDiseaseActivity.class);
+                startActivityForResult(dieaseIntent, 3);
                 break;
             case R.id.choiceHeredopathia:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
                 btn_commit.setText("提交");
                 getPopWindowInstance(has, choiceHeredopathia, 0);
+
                 break;
             case R.id.choiceSex:
-                btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                btn_commit.setText("提交");
-                getPopWindowInstance(sex, choiceSex, 0);
+               // btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+                //btn_commit.setText("提交");
+                //跳转到性别选择页面
+               // getPopWindowInstance(sex, choiceSex, 0);
+                Intent sexIntent=new Intent(this,SetSexActivity.class);
+                startActivityForResult(sexIntent,2);
+                break;
+            case R.id.editor_name:
+                Intent nameIntent=new Intent(this,SetNameActivity.class);
+                startActivityForResult(nameIntent,1);
                 break;
             case R.id.btn_save:
                 try {
-
                     String resTypeName = getResources().getResourceTypeName(R.id.btn_save);
                     String resEntryName = getResources().getResourceEntryName(R.id.btn_save);
                     Context apk = createPackageContext(MyApplication.applicationContext.getPackageName(),
@@ -343,6 +354,23 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case 1:
+                String namevalue = data.getStringExtra("namevalue");
+                editor_name.setText(namevalue);
+                break;
+            case 2:
+                String sexValue = data.getStringExtra("sexvalue");
+                choiceSex.setText(sexValue);
+                break;
+            case 3:
+                String dieasevalue = data.getStringExtra("dieasevalue");
+                choiceDisease.setText(dieasevalue);
+                break;
+        }
+    }
 
     // 获取PopWindow实例 保持一个实例
     private void getPopWindowInstance(String[] data, TextView showAsView, int flag) {
@@ -542,12 +570,6 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
             case R.id.editor_food:
-                if (hasFocus) {
-                    btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                    btn_commit.setText("提交");
-                }
-                break;
-            case R.id.editor_name:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
                     btn_commit.setText("提交");

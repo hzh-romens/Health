@@ -11,6 +11,7 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +61,7 @@ public class ShopCarActivity extends BaseActivity {
     private TextView iv_accounts;
     private List<ShopCarEntity> datas;
     private ShopAdapter myAdapter;
-    private FrameLayout btn_back;
+    private ImageView btn_back;
     private TextView delete;
     private CustomDialog.Builder ibuilder;
 
@@ -73,9 +74,7 @@ public class ShopCarActivity extends BaseActivity {
         needShowProgress("正在加载...");
         myAdapter = new ShopAdapter(this);
         expandableListView.setAdapter(myAdapter);
-
         requestShopCarDataChanged();
-
         //向服务器提交购物车信息并跳转到订单页面
         iv_accounts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +142,7 @@ public class ShopCarActivity extends BaseActivity {
         tv_all1 = (TextView) findViewById(R.id.tv_all1);
         iv_accounts = (TextView) findViewById(R.id.accounts);
         expandableListView = (ExpandableListView) findViewById(R.id.ev);
-        btn_back = (FrameLayout) findViewById(R.id.btn_back);
+        btn_back = (ImageView) findViewById(R.id.back);
         delete = (TextView) findViewById(R.id.edit);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,21 +161,19 @@ public class ShopCarActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
-                        if (childData != null) {
+                        HashMap<String, SparseBooleanArray> childStatusList = myAdapter.getChildStatusList();
+                        if (myAdapter.isAllSelected()) {
                             Iterator iter = childData.entrySet().iterator();
                             List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
                             int count = 0;
                             while (iter.hasNext()) {
-                                ParentEntity fatherEntity = new ParentEntity();
                                 Map.Entry entry = (Map.Entry) iter.next();
                                 String key = (String) entry.getKey();
                                 List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+                                SparseBooleanArray sparseBooleanArray = childStatusList.get(key);
                                 for (int i = 0; i < child.size(); i++) {
-                                    if ("true".equals(child.get(i).getCHECK())) {
-                                        filterData.add(child.get(i));
-                                        count = count + child.get(i).getBUYCOUNT();
-                                    }
-
+                                    filterData.add(child.get(i));
+                                    count = count + child.get(i).getBUYCOUNT();
                                 }
 
 
@@ -190,9 +187,74 @@ public class ShopCarActivity extends BaseActivity {
                             Gson gson = new Gson();
                             String s = gson.toJson(deleteData);
                             DeleteData(s, count);
+                        } else if (myAdapter.isAllNotSelected()) {
+                            Toast.makeText(ShopCarActivity.this, "请至少选择一件商品", Toast.LENGTH_SHORT).show();
+
                         } else {
-                            Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
+                            if (childData != null) {
+                                Iterator iter = childData.entrySet().iterator();
+                                List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
+                                int count = 0;
+                                while (iter.hasNext()) {
+                                    ParentEntity fatherEntity = new ParentEntity();
+                                    Map.Entry entry = (Map.Entry) iter.next();
+                                    String key = (String) entry.getKey();
+                                    List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+                                    SparseBooleanArray sparseBooleanArray = childStatusList.get(key);
+                                    for (int i = 0; i < sparseBooleanArray.size(); i++) {
+                                        if (sparseBooleanArray.get(i)) {
+                                            filterData.add(child.get(i));
+                                            count = count + child.get(i).getBUYCOUNT();
+                                        }
+                                    }
+
+
+                                }
+                                List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
+                                for (int i = 0; i < filterData.size(); i++) {
+                                    DeleteEntity deleteEntity = new DeleteEntity();
+                                    deleteEntity.setMERCHANDISEID(filterData.get(i).getGOODSGUID());
+                                    deleteData.add(deleteEntity);
+                                }
+                                Gson gson = new Gson();
+                                String s = gson.toJson(deleteData);
+                                DeleteData(s, count);
+                            } else {
+                                Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
+                            }
                         }
+//                        SparseBooleanArray parentStatus = myAdapter.getParentStatus();
+//                        if (childData != null) {
+//                            Iterator iter = childData.entrySet().iterator();
+//                            List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
+//                            int count = 0;
+//                            while (iter.hasNext()) {
+//                                ParentEntity fatherEntity = new ParentEntity();
+//                                Map.Entry entry = (Map.Entry) iter.next();
+//                                String key = (String) entry.getKey();
+//                                List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+//                                for (int i = 0; i < child.size(); i++) {
+//                                    if ("true".equals(child.get(i).getCHECK())) {
+//                                        filterData.add(child.get(i));
+//                                        count = count + child.get(i).getBUYCOUNT();
+//                                    }
+//
+//                                }
+//
+//
+//                            }
+//                            List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
+//                            for (int i = 0; i < filterData.size(); i++) {
+//                                DeleteEntity deleteEntity = new DeleteEntity();
+//                                deleteEntity.setMERCHANDISEID(filterData.get(i).getGOODSGUID());
+//                                deleteData.add(deleteEntity);
+//                            }
+//                            Gson gson = new Gson();
+//                            String s = gson.toJson(deleteData);
+//                            DeleteData(s, count);
+//                        } else {
+//                            Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
+//                        }
 
                     }
                 });
@@ -214,7 +276,7 @@ public class ShopCarActivity extends BaseActivity {
     private void requestShopCarDataChanged() {
 
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        if (UserConfig.isClientLogined()){
+        if (UserConfig.isClientLogined()) {
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
         }
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);
@@ -253,7 +315,6 @@ public class ShopCarActivity extends BaseActivity {
     public void onResponseShopCarData(List<LinkedTreeMap<String, String>> ShopCarData) {
         int count = ShopCarData == null ? 0 : ShopCarData.size();
         if (count <= 0) {
-
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
             HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
             myAdapter.bindData(parentResult, childResult, new ShopAdapter.AdapterCallBack() {
@@ -267,13 +328,7 @@ public class ShopCarActivity extends BaseActivity {
                     tv_all1.setText("总计：" + money);
                 }
             });
-            all_choice.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myAdapter.switchAllSelect(!all_choice.isChecked());
-                }
-            });
-
+            all_choice.setChecked(false);
             return;
         }
         List<ShopCarEntity> result = new ArrayList<ShopCarEntity>();
@@ -308,6 +363,7 @@ public class ShopCarActivity extends BaseActivity {
             fatherEntity.setCheck("true");
             fatherEntities.add(fatherEntity);
         }
+
         myAdapter.bindData(fatherEntities, childData, new ShopAdapter.AdapterCallBack() {
 
             @Override
@@ -388,7 +444,7 @@ public class ShopCarActivity extends BaseActivity {
 
                 }
             });
-        }else{
+        } else {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
@@ -419,6 +475,7 @@ public class ShopCarActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                             String success = jsonObject.getString("success");
                             if (success.equals("yes")) {
+                                Log.i("是佛---", "是");
                                 requestShopCarDataChanged();
                             } else {
                                 Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();

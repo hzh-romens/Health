@@ -288,44 +288,48 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 }
             } else if (type == 2) {
                 if (view == null) {
-                    view = new GreySectionCell(adapterContext);
+                    //view = new GreySectionCell(adapterContext);
+                    view=new TextIconCell(adapterContext);
                 }
-                GreySectionCell cell = (GreySectionCell) view;
+                TextIconCell cell=(TextIconCell)view;
                 if (position == otherInfoSectionRow1) {
-                    cell.setText("其他");
+                    cell.setBackgroundColor(getActivity().getResources().getColor(R.color.second_title));
+                    cell.setIconText(R.drawable.ic_other, "其他", false);
                 } else if (position == userInfoSectionRow1) {
-                    cell.setText("个人信息");
+                    cell.setBackgroundColor(getActivity().getResources().getColor(R.color.second_title));
+                    cell.setIconText(R.drawable.ic_person,"个人中心",false);
                 }
             } else if (type == 3) {
                 if (view == null) {
                     view = new TextIconCell(adapterContext);
                 }
+
                 TextIconCell cell = (TextIconCell) view;
                 cell.setTextColor(0xff212121);
                 if (position == addressRow) {
-                    cell.setIconTextAndNav(R.drawable.attach_audio_states, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_address, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == checkUpdateRow) {
                     try {
                         PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
-                        cell.setIconTextAndValue(0, "检查更新", "c" + pInfo.versionCode, true);
+                        cell.setIconTextAndValueAndNav(R.drawable.ic_update,"检查更新","c" + pInfo.versionCode,R.drawable.ic_chevron_right_grey600_24dp,true);
                     } catch (PackageManager.NameNotFoundException e) {
-                        cell.setIconText(0, "检查更新", true);
+                        cell.setIconTextAndNav(R.drawable.ic_update, "检查更新",R.drawable.ic_chevron_right_grey600_24dp,true);
                     }
                 } else if (position == myOrderRow) {
-                    cell.setIconText(R.drawable.attach_audio_states, "我的订单", true);
+                    cell.setIconTextAndNav(R.drawable.ic_order, "我的订单", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == collectRow) {
-                    cell.setIconText(R.drawable.attach_audio_states, "我的收藏", true);
+                    cell.setIconTextAndNav(R.drawable.ic_favorite, "我的收藏",R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == historyRow) {
-                    cell.setIconText(R.drawable.attach_audio_states, "历史游览", true);
+                    cell.setIconTextAndNav(R.drawable.ic_history, "历史游览",R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == feedbackRow) {
-                    cell.setIconText(R.drawable.attach_audio_states, "意见反馈", true);
+                    cell.setIconTextAndNav(R.drawable.ic_advice, "意见反馈",R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == helpRow) {
-                    cell.setIconText(R.drawable.attach_audio_states, "帮助", true);
+                    cell.setIconTextAndNav(R.drawable.ic_help, "帮助", R.drawable.ic_chevron_right_grey600_24dp,true);
                 } else if (position == accountRow) {
-                    cell.setIconText(R.drawable.attach_audio_states, "账户管理", true);
+                    cell.setIconTextAndNav(R.drawable.ic_account, "账户管理", R.drawable.ic_chevron_right_grey600_24dp,true);
                 } else if (position == exitRow) {
                     cell.setTextColor(0xffd01716);
-                    cell.setIconText(R.drawable.attach_audio_states, "退出登录", true);
+                    cell.setIconTextAndNav(R.drawable.ic_exit, "退出登录",R.drawable.ic_chevron_right_grey600_24dp, true);
                 }
             } else if (type == 4) {
                 if (view == null) {

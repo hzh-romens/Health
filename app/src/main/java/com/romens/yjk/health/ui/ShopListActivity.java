@@ -462,7 +462,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(false);
         getChoiceData();
-        final PopAdapter popAdapter = new PopAdapter(ShopListActivity.this);
+        final PopAdapter popAdapter = new PopAdapter(ShopListActivity.this,choiceDatas);
         lv.setAdapter(popAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -512,9 +512,9 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         private Context mContext;
         private List<ChoiceEntity> mDdatas;
 
-        public PopAdapter(Context context) {
+        public PopAdapter(Context context,List<ChoiceEntity> datas) {
             this.mContext = context;
-
+            this.mDdatas=datas;
         }
 
         @Override

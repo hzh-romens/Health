@@ -57,13 +57,14 @@
                     android:textSize="@dimen/title_text_size"
                     android:typeface="normal" />
             </LinearLayout>
+            <!--android:focusable="true"-->
+            <!--android:focusableInTouchMode="true"-->
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@color/white"
-                android:focusable="true"
-                android:focusableInTouchMode="true" >
+               >
 
                 <TextView
                     android:id="@+id/personName"
@@ -80,7 +81,7 @@
                     android:textSize="@dimen/title_text_size"
                     android:typeface="normal" />
 
-                <EditText
+                <TextView
                     android:id="@+id/editor_name"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -88,6 +89,7 @@
                     android:layout_marginRight="8dp"
                     android:background="@null"
                     android:gravity="right|center_vertical"
+                    android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
                 <View
@@ -125,7 +127,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="8dp"
                     android:background="@null"
-                    android:drawableRight="@drawable/small"
+                    android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
@@ -203,7 +205,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="8dp"
                     android:background="@null"
-                    android:drawableRight="@drawable/small"
+                    android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
@@ -258,7 +260,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="8dp"
                     android:background="@null"
-                    android:drawableRight="@drawable/small"
+                    android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
@@ -296,7 +298,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="8dp"
                     android:background="@null"
-                    android:drawableRight="@drawable/small"
+                    android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
@@ -335,7 +337,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="8dp"
                     android:background="@null"
-                    android:drawableRight="@drawable/small"
+                    android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />
