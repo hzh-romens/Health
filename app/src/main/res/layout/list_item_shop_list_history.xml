@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:id="@+id/childitem"
     >
     <ImageView
@@ -24,9 +25,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/title_sub_size"
+            android:textSize="13sp"
             android:id="@+id/name"
-            android:textColor="@color/md_black_1000"
+            android:textColor="@color/titlecolor"
             android:typeface="normal"
             android:layout_margin="@dimen/padding_inner"
             android:text="同仁堂 人参归睥丸 30g"/>
@@ -40,17 +41,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/md_red_600"
-                android:textSize="@dimen/title_sub_size"
+                android:textColor="#fa5939"
+                android:textSize="@dimen/smail_size"
                 android:id="@+id/discountPrice"
                 android:text="¥9.9"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/md_grey_400"
+                android:textColor="#999999"
                 android:layout_marginLeft="@dimen/padding_outter"
                 android:text="¥9.9"
-                android:textSize="@dimen/text_size_small"
+                android:textSize="@dimen/smail_size"
                 android:typeface="normal"
                 android:id="@+id/realPrice"
                 />
@@ -65,8 +66,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@color/md_grey_400"
+            android:textSize="@dimen/smail_size"
+            android:textColor="#666666"
             android:text="100"
             android:id="@+id/saleCount"
             android:singleLine="true"
@@ -75,8 +76,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@color/md_grey_400"
+            android:textSize="@dimen/smail_size"
+            android:textColor="#666666"
             android:text="999评论"
             android:layout_marginLeft="@dimen/padding_inner"
             android:id="@+id/comment"

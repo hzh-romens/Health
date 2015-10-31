@@ -37,14 +37,16 @@
                 android:layout_alignParentLeft="true"
                 android:textSize="@dimen/text_size_medium"
                 android:includeFontPadding="false"
+                android:textColor="#666666"
                 android:text="感冒药"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:textSize="@dimen/text_size_medium"
+                android:textSize="@dimen/text_size_large"
                 android:id="@+id/tv_price"
                 android:includeFontPadding="false"
+                android:textColor="#666666"
                 android:text="感冒药"/>
     </RelativeLayout>
         <RelativeLayout
@@ -60,6 +62,7 @@
                 android:layout_alignParentLeft="true"
                 android:textSize="@dimen/text_size_medium"
                 android:id="@+id/tv_infor"
+                android:textColor="#666666"
                 android:text="感冒药"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -67,6 +70,7 @@
                 android:layout_alignParentRight="true"
                 android:textSize="@dimen/text_size_medium"
                 android:id="@+id/tv_count"
+                android:textColor="#666666"
                 android:text="感冒药"/>
         </RelativeLayout>
    </LinearLayout>

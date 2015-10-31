@@ -10,11 +10,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="@string/list_item_group_more"
+        android:text="查看更多附近药店"
         android:id="@+id/tv_more"
         android:includeFontPadding="false"
-        android:textColor="@color/md_black_1000"
-        android:textSize="@dimen/text_size_large"
+        android:textColor="#666666"
+        android:textSize="@dimen/text_size_small"
         android:gravity="center"
         android:padding="4dp"/>
 </LinearLayout>

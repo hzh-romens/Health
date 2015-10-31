@@ -13,7 +13,8 @@
     </FrameLayout>
     <TextView
         style="@style/title_textview_style"
-        android:text="订单"
+        android:text="购物车"
+        android:textColor="#333333"
         /></RelativeLayout>
     <ExpandableListView
         android:layout_width="match_parent"
@@ -37,7 +38,8 @@
             android:id="@+id/tv_content"
             android:text="共2件 总金额¥100"
             android:includeFontPadding="false"
-            android:textSize="@dimen/text_size_medium"
+            android:textColor="#666666"
+            android:textSize="@dimen/text_size_large"
            />
         <TextView
             android:id="@+id/accounts"
@@ -46,11 +48,11 @@
             android:background="#66cc00"
             android:gravity="center"
             android:singleLine="true"
-            android:text="结算"
+            android:text="去结算"
             android:includeFontPadding="false"
             android:layout_alignParentRight="true"
-            android:textColor="@color/md_white_1000"
-            android:textSize="@dimen/text_size_xlarge" />
+            android:textColor="@color/themecolor"
+            android:textSize="@dimen/text_size_large" />
         </RelativeLayout>
 
 </FrameLayout>

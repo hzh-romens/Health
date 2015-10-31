@@ -162,50 +162,19 @@ public class ShopCarActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
                         HashMap<String, SparseBooleanArray> childStatusList = myAdapter.getChildStatusList();
-                        if (myAdapter.isAllSelected()) {
-                            Iterator iter = childData.entrySet().iterator();
-                            List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
-                            int count = 0;
-                            while (iter.hasNext()) {
-                                Map.Entry entry = (Map.Entry) iter.next();
-                                String key = (String) entry.getKey();
-                                List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
-                                SparseBooleanArray sparseBooleanArray = childStatusList.get(key);
-                                for (int i = 0; i < child.size(); i++) {
-                                    filterData.add(child.get(i));
-                                    count = count + child.get(i).getBUYCOUNT();
-                                }
-
-
-                            }
-                            List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
-                            for (int i = 0; i < filterData.size(); i++) {
-                                DeleteEntity deleteEntity = new DeleteEntity();
-                                deleteEntity.setMERCHANDISEID(filterData.get(i).getGOODSGUID());
-                                deleteData.add(deleteEntity);
-                            }
-                            Gson gson = new Gson();
-                            String s = gson.toJson(deleteData);
-                            DeleteData(s, count);
-                        } else if (myAdapter.isAllNotSelected()) {
-                            Toast.makeText(ShopCarActivity.this, "请至少选择一件商品", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            if (childData != null) {
+                        if (childData != null) {
+                            if (myAdapter.isAllSelected()) {
                                 Iterator iter = childData.entrySet().iterator();
                                 List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
                                 int count = 0;
                                 while (iter.hasNext()) {
-                                    ParentEntity fatherEntity = new ParentEntity();
                                     Map.Entry entry = (Map.Entry) iter.next();
                                     String key = (String) entry.getKey();
                                     List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
                                     SparseBooleanArray sparseBooleanArray = childStatusList.get(key);
-                                    for (int i = 0; i < sparseBooleanArray.size(); i++) {
-                                        if (sparseBooleanArray.get(i)) {
-                                            filterData.add(child.get(i));
-                                            count = count + child.get(i).getBUYCOUNT();
-                                        }
+                                    for (int i = 0; i < child.size(); i++) {
+                                        filterData.add(child.get(i));
+                                        count = count + child.get(i).getBUYCOUNT();
                                     }
 
 
@@ -219,10 +188,42 @@ public class ShopCarActivity extends BaseActivity {
                                 Gson gson = new Gson();
                                 String s = gson.toJson(deleteData);
                                 DeleteData(s, count);
+                            } else if (myAdapter.isAllNotSelected()) {
+                                Toast.makeText(ShopCarActivity.this, "请至少选择一件商品", Toast.LENGTH_SHORT).show();
+
                             } else {
-                                Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
+                                if (childData != null) {
+                                    Iterator iter = childData.entrySet().iterator();
+                                    List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
+                                    int count = 0;
+                                    while (iter.hasNext()) {
+                                        ParentEntity fatherEntity = new ParentEntity();
+                                        Map.Entry entry = (Map.Entry) iter.next();
+                                        String key = (String) entry.getKey();
+                                        List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+                                        SparseBooleanArray sparseBooleanArray = childStatusList.get(key);
+                                        for (int i = 0; i < sparseBooleanArray.size(); i++) {
+                                            if (sparseBooleanArray.get(i)) {
+                                                filterData.add(child.get(i));
+                                                count = count + child.get(i).getBUYCOUNT();
+                                            }
+                                        }
+
+
+                                    }
+                                    List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
+                                    for (int i = 0; i < filterData.size(); i++) {
+                                        DeleteEntity deleteEntity = new DeleteEntity();
+                                        deleteEntity.setMERCHANDISEID(filterData.get(i).getGOODSGUID());
+                                        deleteData.add(deleteEntity);
+                                    }
+                                    Gson gson = new Gson();
+                                    String s = gson.toJson(deleteData);
+                                    DeleteData(s, count);
+                                } else {
+                                    Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
 //                        SparseBooleanArray parentStatus = myAdapter.getParentStatus();
 //                        if (childData != null) {
 //                            Iterator iter = childData.entrySet().iterator();
@@ -256,6 +257,9 @@ public class ShopCarActivity extends BaseActivity {
 //                            Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
 //                        }
 
+                        }else{
+                            return;
+                        }
                     }
                 });
                 ibuilder.setNegativeButton(R.string.cancel, null);
