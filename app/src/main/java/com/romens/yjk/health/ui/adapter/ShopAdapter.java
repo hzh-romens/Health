@@ -54,7 +54,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
     }
 
 
-    private HashMap<String, SparseBooleanArray> ch = new HashMap<String, SparseBooleanArray>();
+    private HashMap<String, SparseBooleanArray> childStatusList = new HashMap<String, SparseBooleanArray>();
 
     public ShopAdapter(Context context) {
         this.mContext = context;
@@ -77,6 +77,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         this.mChildData = childData;
         this.mAdapterCallBack = adapterCallBack;
         sumMoney=0;
+        fatherStatus.clear();
         for (int i = 0; i < mFatherData.size(); i++) {
             fatherStatus.append(i, true);
         }
@@ -91,10 +92,14 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                 childStatus.append(i, true);
                 sumMoney = sumMoney + child.get(i).getBUYCOUNT() * child.get(i).getGOODSPRICE();
             }
-            ch.put(key, childStatus);
+            childStatusList.put(key, childStatus);
         }
         updateData();
         updateMoney(sumMoney + "");
+    }
+    //获取childstatus的集合
+    public HashMap<String, SparseBooleanArray> getChildStatusList(){
+        return childStatusList;
     }
 
     //fatherItem的单个点击事件
@@ -103,9 +108,9 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         for (int i = 0; i < mFatherData.size(); i++) {
             if (storeId.equals(mFatherData.get(i).getShopID())) {
                 fatherStatus.append(i, status);
-                SparseBooleanArray sparseBooleanArray = ch.get(storeId);
+                SparseBooleanArray sparseBooleanArray = childStatusList.get(storeId);
                 for (int m = 0; m < sparseBooleanArray.size(); m++) {
-                    ch.get(storeId).append(m, status);
+                    childStatusList.get(storeId).append(m, status);
                     mChildData.get(storeId).get(m).setCHECK(status + "");
                 }
                 List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(i).getShopID());
@@ -128,8 +133,8 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         double sMoney = sumMoney;
         ShopCarEntity entity = mChildData.get(parentId).get(childPosition);
         entity.setCHECK(status + "");
-        ch.get(parentId).put(childPosition, status);
-        SparseBooleanArray sparseBooleanArray = ch.get(parentId);
+        childStatusList.get(parentId).put(childPosition, status);
+        SparseBooleanArray sparseBooleanArray = childStatusList.get(parentId);
         if (sparseBooleanArray.indexOfValue(true) < 0) {
             SwitchFatherItem(parentId, false);
         } else {
@@ -179,7 +184,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
 
     //某一个parent下面的childItem是否全选
     public boolean childItemIsAllSelected(String parentId) {
-        SparseBooleanArray sparseBooleanArray = ch.get(parentId);
+        SparseBooleanArray sparseBooleanArray = childStatusList.get(parentId);
         int index = sparseBooleanArray.indexOfValue(false);
         return index < 0;
     }
@@ -211,7 +216,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                 }
             }
             s = s + allMoney;
-            ch.put(key, childStatus);
+            childStatusList.put(key, childStatus);
         }
         sumMoney = s;
         updateMoney(sumMoney + "");
@@ -318,7 +323,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         Drawable defaultDrawables =  holder.iv_detail.getDrawable();
         ImageManager.loadForView(mContext, holder.iv_detail,entity.getGOODURL(), defaultDrawables, defaultDrawables);
 
-        holder.checkBox.setChecked(ch.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
+        holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override

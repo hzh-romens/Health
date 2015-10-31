@@ -33,6 +33,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
@@ -102,7 +103,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     if (UserConfig.isClientLogined()) {
                         startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
                     }else{
+                        //跳转至登录页面
                         Toast.makeText(HomeActivity.this,"请您先登录",Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
                     }
                 }/*  else if (id == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));

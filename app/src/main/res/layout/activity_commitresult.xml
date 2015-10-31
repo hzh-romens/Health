@@ -19,12 +19,14 @@
         android:layout_height="match_parent"
         android:visibility="visible"
         android:layout_marginTop="48dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:visibility="gone"
             android:background="@color/white">
 
             <TextView

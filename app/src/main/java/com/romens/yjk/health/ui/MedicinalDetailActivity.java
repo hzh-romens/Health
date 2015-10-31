@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -61,6 +62,7 @@ import com.romens.yjk.health.model.NearByOnSaleEntity;
 import com.romens.yjk.health.model.TestEntity;
 import com.romens.yjk.health.model.WeiShopEntity;
 
+import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.adapter.MedicinalDetailAdapter;
 import com.romens.yjk.health.ui.cells.PopWindowCell;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
@@ -134,6 +136,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         initLayoutManager();
 
         tv_favorite = (TextView) findViewById(R.id.favorite);
+        tv_favorite.setEnabled(false);
         tv_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +149,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         });
 
         tv_buy = (TextView) findViewById(R.id.tv_buy);
+        tv_buy.setEnabled(false);
         tv_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,48 +195,51 @@ public class MedicinalDetailActivity extends BaseActivity {
                 }
             }
         });
+
     }
     //添加收藏夹
     private void addtoFavorite() {
+        if(UserConfig.isClientLogined()) {
+            Map<String, String> args = new FacadeArgs.MapBuilder().build();
+            args.put("MERCHANDISEID", GUID);
+            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
 
-        int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("MERCHANDISEID",GUID);
-        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
-
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "AddMyFavour", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("addtofarvite", "ERROR");
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String response = responseProtocol.getResponse();
-                    try {
-                        JSONObject jsonObject=new JSONObject(response);
-                        String returnMsg = jsonObject.getString("success");
-                        if("yes".equals(returnMsg)){
-                            Toast.makeText(MedicinalDetailActivity.this,"加入收藏夹成功",Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(MedicinalDetailActivity.this,"加入收藏夹失败",Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Toast.makeText(MedicinalDetailActivity.this,"加入收藏夹失败",Toast.LENGTH_SHORT).show();
-                    Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "AddMyFavour", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+            Message message = new Message.MessageBuilder()
+                    .withProtocol(protocol)
+                    .build();
+            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+                @Override
+                public void onTokenTimeout(Message msg) {
+                    Log.e("addtofarvite", "ERROR");
                 }
-            }
-        });
+
+                @Override
+                public void onResult(Message msg, Message errorMsg) {
+                    if (errorMsg == null) {
+                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                        String response = responseProtocol.getResponse();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String returnMsg = jsonObject.getString("success");
+                            if ("yes".equals(returnMsg)) {
+                                Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
+                        Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
+                    }
+                }
+            });
+        }else{
+            startActivity(new Intent(this, LoginActivity.class));
+        }
 
     }
 
@@ -295,6 +302,8 @@ public class MedicinalDetailActivity extends BaseActivity {
             public void onResult(Message msg, Message errorMsg) {
                 SparseArray<ADBaseControl> controls = new SparseArray<ADBaseControl>();
                 if (errorMsg == null) {
+                    tv_buy.setEnabled(true);
+                    tv_favorite.setEnabled(true);
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
                     data = new ArrayList<TestEntity>();

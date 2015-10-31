@@ -3,34 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.romens.yjk.health.ui.ShopCarActivity">
-
-    <RelativeLayout style="@style/titleStytle">
-
-        <FrameLayout style="@style/framelayou_back_style">
-
-            <ImageView style="@style/iv_back_style"
-                android:background="@drawable/ic_ab_back_grey"/>
-        </FrameLayout>
-
-        <TextView
-            style="@style/title_textview_style"
-            android:text="购物车"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="64dp"/>
-
-        <TextView
-            android:id="@id/edit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+    <RelativeLayout
+        style="@style/titleStytle"
+        android:orientation="horizontal"
+        android:background="@color/theme_primary">
+        <ImageView
+            style="@style/iv_back_style"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_outter"
+            android:id="@+id/back"
+            android:layout_alignParentLeft="true"/>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="64dp"
+            android:layout_marginTop="@dimen/padding_inner"
+            android:layout_marginBottom="@dimen/padding_inner"
+            android:layout_marginRight="48dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="购物车"
+            android:inputType="textPhonetic"
+            android:imeOptions="actionSearch"
+            android:drawablePadding="8dp"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_xlarge"
+            />
+        <ImageView   android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/padding_outter"
             android:layout_marginRight="@dimen/padding_outter"
+            android:layout_centerVertical="true"
+            android:id="@+id/edit"
+            android:layout_alignParentRight="true"
             android:gravity="center"
-            android:text="删除"
+            android:src="@drawable/ic_delete"
             android:includeFontPadding="false"
-            android:textColor="@color/transparent_black"
+            android:textColor="@color/white"
             android:textSize="@dimen/title_text_size" />
     </RelativeLayout>
 
@@ -39,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="45dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="52dp"
         android:groupIndicator="@null" />
 
     <LinearLayout

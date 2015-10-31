@@ -16,7 +16,7 @@
         <EditText
             android:layout_centerInParent="true"
             android:layout_width="match_parent"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="64dp"
             android:layout_marginTop="@dimen/padding_inner"
             android:layout_marginBottom="@dimen/padding_inner"
             android:layout_marginRight="48dp"

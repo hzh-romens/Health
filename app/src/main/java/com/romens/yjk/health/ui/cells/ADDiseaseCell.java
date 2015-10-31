@@ -17,6 +17,7 @@ import com.romens.android.ui.Components.FlowLayout;
 import com.romens.android.ui.Components.FlowLayoutCallback;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
+import com.romens.yjk.health.ui.ShopListActivity;
 
 import java.util.List;
 
@@ -83,8 +84,8 @@ public class ADDiseaseCell extends LinearLayout {
                 cell.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i=new Intent(getContext(), MedicinalDetailActivity.class);
-                        getContext().startActivity(i);
+                       // Intent i=new Intent(getContext(), ShopListActivity.class);
+                        //getContext().startActivity(i);
                     }
                 });
                 return cell;

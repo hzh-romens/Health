@@ -62,8 +62,16 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.toOrder:
+                Intent intent=new Intent(this,MyOrderActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.toShop:
+                Intent i=new Intent(this,HomeActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                finish();
                 break;
         }
     }

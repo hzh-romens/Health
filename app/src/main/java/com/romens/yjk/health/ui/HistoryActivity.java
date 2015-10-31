@@ -1,10 +1,12 @@
 package com.romens.yjk.health.ui;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,6 +53,7 @@ public class HistoryActivity extends BaseActivity implements View.OnClickListene
         listView.setAdapter(adapter);
         refreshLayout.setRefreshing(false);
         initData();
+
     }
 
     private List<HistoryEntity> historyEntities;

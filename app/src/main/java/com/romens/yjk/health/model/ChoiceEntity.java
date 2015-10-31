@@ -7,6 +7,7 @@ public class ChoiceEntity {
     private boolean Flag;
     private String Choice;
 
+
     public boolean isFlag() {
         return Flag;
     }
