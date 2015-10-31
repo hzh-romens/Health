@@ -369,13 +369,14 @@
                     android:textSize="@dimen/text_size_medium"
                     android:typeface="normal" />
 
-                <EditText
+                <TextView
                     android:id="@+id/editor_food"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="8dp"
                     android:background="@null"
+                    android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
                     android:gravity="right|center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true" />

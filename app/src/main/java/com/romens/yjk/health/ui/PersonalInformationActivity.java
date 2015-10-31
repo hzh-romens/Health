@@ -52,8 +52,8 @@ import widget.adapters.ArrayWheelAdapter;
  */
 public class PersonalInformationActivity extends BaseActivity implements View.OnClickListener, OnWheelChangedListener, View.OnFocusChangeListener {
     private ImageView iv_back;
-    private TextView choiceSex, choiceBirthday, choiceHeredopathia, choiceDisease, choiceAllergy,editor_name;
-    private EditText editor_work, editor_food, editor_rest, editor_other;
+    private TextView choiceSex, choiceBirthday, choiceHeredopathia, choiceDisease, choiceAllergy,editor_name,editor_food;
+    private EditText editor_work, editor_rest, editor_other;
     private LinearLayout btn_save;
     private PersonalEntity personalEntity;
     private WheelView YearView, MonthView, DayView;
@@ -198,11 +198,11 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         choiceSex.setOnClickListener(this);
         editor_name = (TextView) findViewById(R.id.editor_name);
         editor_work = (EditText) findViewById(R.id.editor_work);
-        editor_food = (EditText) findViewById(R.id.editor_food);
+        editor_food = (TextView) findViewById(R.id.editor_food);
         editor_rest = (EditText) findViewById(R.id.editor_rest);
         editor_other = (EditText) findViewById(R.id.editor_other);
         btn_save = (LinearLayout) findViewById(R.id.btn_save);
-        editor_food.setOnFocusChangeListener(this);
+        editor_food.setOnClickListener(this);
         editor_other.setOnFocusChangeListener(this);
         editor_rest.setOnFocusChangeListener(this);
         editor_work.setOnFocusChangeListener(this);
@@ -263,6 +263,10 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             case R.id.editor_name:
                 Intent nameIntent=new Intent(this,SetNameActivity.class);
                 startActivityForResult(nameIntent,1);
+                break;
+            case R.id.editor_food:
+                Intent foodIntent=new Intent(this,SetDietActivity.class);
+                startActivityForResult(foodIntent,4);
                 break;
             case R.id.btn_save:
                 try {
@@ -368,6 +372,10 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             case 3:
                 String dieasevalue = data.getStringExtra("dieasevalue");
                 choiceDisease.setText(dieasevalue);
+                break;
+            case 4:
+                String foodvalue = data.getStringExtra("foodvalue");
+                editor_food.setText(foodvalue);
                 break;
         }
     }
@@ -569,12 +577,6 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
-            case R.id.editor_food:
-                if (hasFocus) {
-                    btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                    btn_commit.setText("提交");
-                }
-                break;
             case R.id.editor_other:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));

@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -72,7 +73,17 @@ public class SetSexActivity extends BaseActivity{
         ce3.setChoice("保密");
         ce3.setFlag(false);
         result.add(ce3);
+    }
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Intent it = new Intent();
+            it.putExtra("sexvalue",sexValue);
+            setResult(2, it);
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
