@@ -38,6 +38,8 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
         public final static Property FiveTime = new Property(9, String.class, "fiveTime", false, "FIVETIME");
         public final static Property TimesInDay = new Property(10, int.class, "timesInDay", false, "TIMESINDAY");
         public final static Property IsRemind = new Property(11, int.class, "isRemind", false, "ISREMIND");
+        public final static Property Dosage = new Property(12, int.class, "dosage", false, "DOSAGE");
+        public final static Property Remark = new Property(13, int.class, "remark", false, "REMARK");
     }
 
 
@@ -66,7 +68,9 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
                 "'FOURTIME' TEXT NOT NULL ," + // 9: fourTime
                 "'FIVETIME' TEXT NOT NULL ," + // 10: fiveTime
                 "'TIMESINDAY' INTEGER NOT NULL ," + // 10: fiveTime
-                "'ISREMIND' INTEGER NOT NULL );"); // 11: times
+                "'ISREMIND' INTEGER NOT NULL ," + // 10: fiveTime
+                "'DOSAGE' INTEGER NOT NULL ," + // 10: fiveTime
+                "'REMARK' INTEGER NOT NULL );"); // 11: times
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_Remind_KEY ON " + TABLENAME +
                 " (_id);");
@@ -115,13 +119,15 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
         stmt.bindLong(4, entity.getIntervalDay());
         stmt.bindString(5, entity.getStartDate());
 
-        stmt.bindString(6,entity.getFirstTime());
+        stmt.bindString(6, entity.getFirstTime());
         stmt.bindString(7,entity.getSecondtime());
         stmt.bindString(8,entity.getThreeTime());
         stmt.bindString(9,entity.getFourTime());
         stmt.bindString(10,entity.getFiveTime());
-        stmt.bindLong(11,entity.getTimesInDay());
-        stmt.bindLong(12,entity.getIsRemind());
+        stmt.bindLong(11, entity.getTimesInDay());
+        stmt.bindLong(12, entity.getIsRemind());
+        stmt.bindString(13, entity.getDosage());
+        stmt.bindString(14, entity.getRemark());
     }
 
     /**
@@ -151,6 +157,8 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
         entity.setFiveTime(cursor.getString(offset + 9)); // count
         entity.setTimesInDay(cursor.getInt(offset + 10)); // count
         entity.setIsRemind(cursor.getInt(offset + 11)); // count
+        entity.setDosage(cursor.getString(offset + 12)); // count
+        entity.setRemark(cursor.getString(offset + 13)); // count
         return entity;
     }
 
@@ -172,6 +180,8 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
         entity.setFiveTime(cursor.getString(offset + 9)); // count
         entity.setTimesInDay(cursor.getInt(offset + 10)); // count
         entity.setIsRemind(cursor.getInt(offset + 11)); // count
+        entity.setDosage(cursor.getString(offset + 12)); // count
+        entity.setRemark(cursor.getString(offset + 13)); // count
     }
 
     /**

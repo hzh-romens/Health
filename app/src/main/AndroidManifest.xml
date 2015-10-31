@@ -236,12 +236,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.AddRemindActivity"
+            android:name=".ui.AddRemindActivityNew"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.RemindDetailActivity"
+            android:name=".ui.RemindDetailActivityNew"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"/>

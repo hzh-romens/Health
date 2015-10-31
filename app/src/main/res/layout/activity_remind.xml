@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <include layout="@layout/layout_actionbar" />
+    <include layout="@layout/layout_actionbar"/>
+
+    <com.romens.yjk.health.ui.cells.ImageAndTextCell
+        android:id="@+id/remind_no_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/remind_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

@@ -21,9 +21,28 @@ public class RemindEntity implements Serializable {
     private String fiveTime;
     private int timesInDay = 1;
 
+    private String dosage;
+    private String remark;
+
     private int isRemind = 0;
 
     public RemindEntity() {
+    }
+
+    public String getDosage() {
+        return dosage;
+    }
+
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public int getIsRemind() {

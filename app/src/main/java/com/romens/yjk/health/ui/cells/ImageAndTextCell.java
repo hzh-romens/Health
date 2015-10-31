@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -19,8 +20,12 @@ public class ImageAndTextCell extends LinearLayout {
     public TextView textView;
     public ImageView imageView;
 
-    public ImageAndTextCell(Context context) {
-        super(context);
+    public ImageAndTextCell(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public ImageAndTextCell(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         setOrientation(VERTICAL);
         imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER);
@@ -38,6 +43,10 @@ public class ImageAndTextCell extends LinearLayout {
         textParams.setMargins(AndroidUtilities.dp(0), AndroidUtilities.dp(16), AndroidUtilities.dp(0), AndroidUtilities.dp(0));
         textView.setLayoutParams(textParams);
         addView(textView);
+    }
+
+    public ImageAndTextCell(Context context) {
+        this(context, null);
     }
 
     public void setImageAndText(int imgResource, String text) {

@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.romens.android.library.datetimepicker.time.RadialPickerLayout;
 import com.romens.android.library.datetimepicker.time.TimePickerDialog;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.AddRemindActivity;
+import com.romens.yjk.health.ui.AddRemindActivityNew;
 import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
 
 import java.util.Calendar;
@@ -69,7 +69,7 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
                 TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(TimesAdapter.this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
                 timePickerDialog.setVibrate(true);
                 timePickerDialog.setCloseOnSingleTapMinute(false);
-                timePickerDialog.show(((AddRemindActivity) context).getSupportFragmentManager(), TIMEPICKER_TAG);
+                timePickerDialog.show(((AddRemindActivityNew) context).getSupportFragmentManager(), TIMEPICKER_TAG);
                 index = position;
                 Toast.makeText(context, "-->" + position, Toast.LENGTH_SHORT).show();
             }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.AddRemindActivity;
+import com.romens.yjk.health.ui.AddRemindActivityNew;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
 
 import java.util.List;
@@ -27,11 +28,11 @@ public class AddRemindTimesDailog {
     private List<String> timesData;
     private int timesInDay;
     private AddRemindTimesDailog dailogInstace;
-    private AddRemindActivity addRemindActivity;
+    private AddRemindActivityNew addRemindActivity;
 
     public AddRemindTimesDailog(Context context, List<String> timesData, int timesInDay) {
         dailogInstace = this;
-        addRemindActivity= (AddRemindActivity) context;
+        addRemindActivity = (AddRemindActivityNew) context;
         this.context = context;
         this.timesData = timesData;
         this.timesInDay = timesInDay;
