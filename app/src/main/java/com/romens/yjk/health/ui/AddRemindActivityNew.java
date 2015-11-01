@@ -5,10 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +68,7 @@ public class AddRemindActivityNew extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.remind_dosage:
-
+                showChoosDosageView(dosageTextView);
                 break;
             case R.id.remind_time_add:
                 new AddRemindTimesDailog(this, timesDataTemp, oldTimes).show();
@@ -129,6 +136,42 @@ public class AddRemindActivityNew extends BaseActivity implements View.OnClickLi
     public String getCurrentDate() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(System.currentTimeMillis());
+    }
+
+    public void showChoosDosageView(View view) {
+        final List<String> listData = new ArrayList<>();
+        listData.add("片");
+        listData.add("粒");
+        listData.add("丸");
+        listData.add("ML");
+        listData.add("L");
+
+        FrameLayout layout = new FrameLayout(this);
+        ListView listView = new ListView(this);
+        listView.setDivider(null);
+        listView.setDividerHeight(0);
+        listView.setVerticalScrollBarEnabled(false);
+        listView.setSelection(R.drawable.list_selector);
+        layout.addView(listView, LayoutHelper.createFrame(AndroidUtilities.dp(60), LayoutHelper.WRAP_CONTENT));
+        listView.setAdapter(new ArrayAdapter<String>(this, R.layout.popupwindow_list_itme, listData));
+
+        final PopupWindow popupWindow = new PopupWindow(layout, AndroidUtilities.dp(62), LayoutHelper.WRAP_CONTENT);
+
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(
+                R.drawable.bg_white));
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("tag", "---->" + listData.get(position) + "");
+                dosageTextView.setText(listData.get(position));
+                popupWindow.dismiss();
+            }
+        });
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.showAsDropDown(view);
+
     }
 
     //保存到数据库并退出当前的activity

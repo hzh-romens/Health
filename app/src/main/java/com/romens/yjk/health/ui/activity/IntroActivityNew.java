@@ -45,7 +45,7 @@ public class IntroActivityNew extends Activity {
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-       //setContentView(R.layout.activity_intro);
+        setContentView(R.layout.activity_intro);
         viewPager = (ViewPager) findViewById(R.id.intro_view_pager);
         imgs = new int[]{R.drawable.guide_1, R.drawable.guide_2, R.drawable.guide_3};
         viewPager.setAdapter(new MyPagerAdapter(imgs, this));
