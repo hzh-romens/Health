@@ -28,6 +28,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderEvaluateDetailActivity;
@@ -45,7 +46,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/10/22.
  */
-public class OrderFragment extends BaseFragment {
+public class OrderFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ExpandableListView expandableListView;
@@ -77,6 +78,7 @@ public class OrderFragment extends BaseFragment {
             case MyOrderActivity.ORDER_TYPE_BEING:
                 adapter = new OrderExpandableBeingAdapter(getActivity(), mOrderEntities);
 //                requestOrderList(userGuid);
+                AppNotificationCenter.getInstance().addObserver(getActivity(), AppNotificationCenter.orderCompleteAdd);
                 break;
         }
     }
@@ -93,10 +95,10 @@ public class OrderFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 mOrderEntities = new ArrayList<>();
-                requestOrderList(userGuid);
+                requestOrderList(userGuid, fragmentType);
             }
         });
-        requestOrderList(userGuid);
+        requestOrderList(userGuid, fragmentType);
         expandableListView = new ExpandableListView(context);
         swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         expandableListView.setAdapter(adapter);
@@ -151,7 +153,7 @@ public class OrderFragment extends BaseFragment {
         Log.e("tag", "isVisibleToUser---->" + isVisibleToUser);
     }
 
-    private void requestOrderList(String userGuid) {
+    private void requestOrderList(String userGuid, int fragmentType) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERSTATUS", fragmentType + "");
@@ -219,6 +221,14 @@ public class OrderFragment extends BaseFragment {
     }
 
     public void requestDataRefreshView() {
-        requestOrderList(userGuid);
+        requestOrderList(userGuid, fragmentType);
+    }
+
+    @Override
+    public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.orderCompleteAdd) {
+            Toast.makeText(getActivity(), "complete_change-->", Toast.LENGTH_SHORT).show();
+            requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_COMPLETE);
+        }
     }
 }
