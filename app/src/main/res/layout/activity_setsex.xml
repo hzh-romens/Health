@@ -23,7 +23,7 @@
             android:layout_centerInParent="true"
             android:includeFontPadding="false"
             android:text="修改姓名"
-            android:textColor="@color/md_black_1000"
+            android:textColor="@color/titlecolor"
             android:textSize="@dimen/text_size_xlarge" />
     </RelativeLayout>
    <ListView
@@ -31,5 +31,10 @@
        android:layout_height="wrap_content"
        android:choiceMode="singleChoice"
        android:id="@+id/listView"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/md_grey_300"
+        android:id="@+id/line"/>
 
 </LinearLayout>

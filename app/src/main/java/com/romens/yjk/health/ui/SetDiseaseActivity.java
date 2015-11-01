@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -80,5 +81,17 @@ public class SetDiseaseActivity extends BaseActivity{
         ce2.setChoice("无");
         ce2.setFlag(false);
         result.add(ce2);
+    }
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Intent it = new Intent();
+            it.putExtra("dieasevalue",dieaseValue);
+            setResult(3, it);
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

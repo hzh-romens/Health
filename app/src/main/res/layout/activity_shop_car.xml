@@ -6,12 +6,13 @@
     <RelativeLayout
         style="@style/titleStytle"
         android:orientation="horizontal"
-        android:background="@color/theme_primary">
+        android:background="#f9f9f9">
         <ImageView
             style="@style/iv_back_style"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_outter"
             android:id="@+id/back"
+            android:background="@drawable/ic_ab_back_grey"
             android:layout_alignParentLeft="true"/>
         <TextView
             android:layout_centerInParent="true"
@@ -27,8 +28,8 @@
             android:imeOptions="actionSearch"
             android:drawablePadding="8dp"
             android:layout_height="match_parent"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_xlarge"
+            android:textColor="#333333"
+            android:textSize="@dimen/text_size_large"
             />
         <ImageView   android:layout_width="wrap_content"
             android:layout_height="match_parent"

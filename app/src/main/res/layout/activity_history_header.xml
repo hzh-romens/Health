@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#f9f9f9">
     <RelativeLayout
         style="@style/titleStytle"
         android:orientation="horizontal"
-        android:background="@color/theme_primary">
+        android:background="#f9f9f9">
         <ImageView
             style="@style/iv_back_style"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_outter"
             android:id="@+id/back"
+            android:background="@drawable/ic_ab_back_grey"
             android:layout_alignParentLeft="true"/>
        <TextView
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:textColor="@color/white"
+           android:textColor="#333333"
            android:includeFontPadding="false"
            android:text="历史浏览"
            android:id="@+id/title"
            android:textSize="@dimen/text_size_xlarge"
-           android:layout_centerVertical="true"
-           android:layout_marginLeft="64dp"
+           android:layout_centerInParent="true"
            />
         <TextView
             android:layout_width="wrap_content"

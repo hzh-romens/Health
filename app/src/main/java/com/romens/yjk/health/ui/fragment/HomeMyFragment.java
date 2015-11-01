@@ -307,7 +307,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 TextIconCell cell = (TextIconCell) view;
                 cell.setTextColor(0xff212121);
                 if (position == addressRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_address, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_address2, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == checkUpdateRow) {
                     try {
                         PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
