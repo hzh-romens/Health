@@ -332,14 +332,14 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
                                 count++;
                                 //If it is from the vicinity of the details of the pharmacy to enter, do not show a nearby pharmacy module
-                                if(!flag){
+                              //  if(!flag){
                                 if (nearResult != null && !("".equals(nearResult))) {
                                     for (int i = 0; i < nearResult.size(); i++) {
                                         controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getID()));
                                         count++;
                                     }
                                 }
-                            }
+                          //  }
                                 controls.append(count, new ADMoreControl());
                                 AddToHistory(weiShopEntity);
                             } else {
@@ -369,6 +369,7 @@ public class MedicinalDetailActivity extends BaseActivity {
     //addTo shopCar
     private void requestBuy() {
         if (UserConfig.isClientLogined()) {
+
             int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
             Map<String, String> args = new FacadeArgs.MapBuilder().build();
             args.put("GOODSGUID", weiShopEntity.getGUID());
