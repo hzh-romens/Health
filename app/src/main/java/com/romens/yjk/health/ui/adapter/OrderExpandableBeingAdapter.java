@@ -202,8 +202,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                         Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
                         intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
                         adapterContext.startActivity(intent);
-//                        AppNotificationCenter.getInstance().addObserver(adapterContext, AppNotificationCenter.orderCompleteAdd);
-                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.orderCompleteAdd, adapterContext);
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.orderCompleteAdd);
                     } else {
                         Toast.makeText(adapterContext, "确认收获错误", Toast.LENGTH_SHORT).show();
                     }
