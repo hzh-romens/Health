@@ -373,16 +373,16 @@ public class MedicinalDetailActivity extends BaseActivity {
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
             args.put("BUYCOUNT", "1");
             args.put("PRICE", PRICE);
-
+          //  FacadeToken.getInstance().getAuthToken()
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
-            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+            protocol.withToken(UserConfig.createToken());
             Message message = new Message.MessageBuilder()
                     .withProtocol(protocol)
                     .build();
             FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
                 @Override
                 public void onTokenTimeout(Message msg) {
-                    Log.e("InsertIntoCar", "ERROR");
+                    Log.e("InsertIntoCar",msg.msg);
                 }
 
                 @Override

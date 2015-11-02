@@ -43,16 +43,16 @@
                 <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_medium"
+                android:textSize="10sp"
                 android:layout_alignParentLeft="true"
                 android:id="@+id/tv_owner_storeName"
                     android:includeFontPadding="false"
-                    android:textColor="@color/md_black_1000"
+                    android:textColor="@color/theme_title"
                 android:text="某某某大药房"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_medium"
+                    android:textSize="@dimen/text_size_small"
                     android:layout_alignParentRight="true"
                     android:textColor="@color/themecolor"
                     android:id="@+id/tv_owner_medicinalPrice"
@@ -71,7 +71,7 @@
                     android:layout_alignParentLeft="true"
                     android:id="@+id/tv_owner_storeAddress"
                     android:includeFontPadding="false"
-                    android:textColor="@color/md_black_1000"
+                    android:textColor="#666666"
                     android:text="安定门外大街418"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                     android:textSize="@dimen/text_size_medium"
                     android:layout_alignParentRight="true"
                     android:includeFontPadding="false"
-                    android:textColor="@color/md_black_1000"
+                    android:textColor="#666666"
                     android:id="@+id/tv_owner_inventory"
                     android:text="库存55件"/>
             </RelativeLayout>

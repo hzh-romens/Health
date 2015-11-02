@@ -288,7 +288,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
         }
     }
-
+    //保存信息
     private void SaveInfor() {
         personalEntity.setPERSONNAME(editor_name.getText().toString());
         personalEntity.setBIRTHDAY(choiceBirthday.getText().toString());

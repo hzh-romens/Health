@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 
@@ -18,6 +19,7 @@ public class ADGroupNameCell extends FrameLayout{
         super(context);
         View view=View.inflate(context, R.layout.list_item_group_name,null);
         tv_groupName= (TextView) view.findViewById(R.id.group_name);
+        tv_groupName.setTextSize(14);
         moreButton= (TextView) view.findViewById(R.id.moreButton);
         addView(view, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT,LayoutHelper.WRAP_CONTENT));
     }
