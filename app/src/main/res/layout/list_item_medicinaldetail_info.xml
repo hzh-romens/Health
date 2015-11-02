@@ -43,7 +43,7 @@
                 <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_size_small"
                 android:layout_alignParentLeft="true"
                 android:id="@+id/tv_owner_storeName"
                     android:includeFontPadding="false"
@@ -67,7 +67,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_medium"
+                    android:textSize="@dimen/text_size_small"
                     android:layout_alignParentLeft="true"
                     android:id="@+id/tv_owner_storeAddress"
                     android:includeFontPadding="false"
@@ -76,7 +76,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_medium"
+                    android:textSize="@dimen/text_size_small"
                     android:layout_alignParentRight="true"
                     android:includeFontPadding="false"
                     android:textColor="#666666"
@@ -90,8 +90,8 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textSize="10sp"
-        android:textColor="@color/md_black_1000"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/theme_title"
         android:text="感冒引发的....."
         android:id="@+id/tv_owner_medicinalDetail"
         android:layout_marginTop="@dimen/sliding_overlay_blur_size"

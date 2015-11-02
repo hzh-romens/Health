@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -45,9 +46,15 @@ public class UserConfig {
         if (config == null) {
             return null;
         }
+       // final String token = config.token;
+      //  String md5Token = TextUtils.isEmpty(token) ? "" : MD5Helper.createMD5(token + "0");
+      //  md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
+        //md5Token = Base64Helper.encodeBase64String(md5Token);
+        Log.i("用户token--------",config.token);
         String md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, config.token);
         md5Token = Base64Helper.encodeBase64String(md5Token);
         return md5Token;
+
     }
 
     public static boolean isClientActivated() {
@@ -205,13 +212,16 @@ public class UserConfig {
         protected String orgName;
 
         protected String phoneNumber;
+        //手机号码
         protected String userName;
+        //登录密码
         protected String token;
         protected String userGuid;
 
         public void setLogin(String name, String token) {
             this.userName = name == null ? "" : name;
             this.token = token == null ? "" : token;
+            Log.i("用户登录密码------",token);
         }
 
 
@@ -252,7 +262,6 @@ public class UserConfig {
     }
 
     public static class AppChannel {
-        //packageName and appName
         public final String orgCode;
         public final String orgName;
 

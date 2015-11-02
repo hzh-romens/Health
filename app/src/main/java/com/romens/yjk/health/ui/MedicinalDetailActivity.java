@@ -100,11 +100,19 @@ public class MedicinalDetailActivity extends BaseActivity {
     private double LONGITUDE;
     private double LATITUDE;
     private List<NearByOnSaleEntity> nearResult;
+    private boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicinal_detail, R.id.action_bar);
+        initIntentValue();
+        initView();
+        requestNearbyData();
+
+    }
+    //获取intent传递过来的值
+    private void initIntentValue() {
         //测试数据
         String s = getIntent().getStringExtra("guid");
         if (s != null) {
@@ -113,9 +121,14 @@ public class MedicinalDetailActivity extends BaseActivity {
             GUID = "";
             GUID = "851823b0-75fc-4795-8c2f-4554ec5402cf";
         }
-        initView();
-        requestNearbyData();
-
+        String mark = getIntent().getStringExtra("flag");
+        if("".equals(mark)||mark ==null){
+             flag=false;
+        }else if("true".equals(this.flag)){
+            flag=true;
+        }else{
+            flag=false;
+        }
     }
 
     //获取附近有售数据
@@ -142,8 +155,8 @@ public class MedicinalDetailActivity extends BaseActivity {
             public void onClick(View v) {
                 if (UserConfig.isClientLogined()) {
                     addtoFavorite();
-                }else{
-                    Toast.makeText(MedicinalDetailActivity.this,"请您先登录",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MedicinalDetailActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -153,18 +166,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         tv_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  if (weiShopEntity.getGUID()!=null&&("".equals(weiShopEntity.getGUID()))) {
                     requestBuy();
-                //}
-            }
-        });
-
-        shopcar = (TextView) findViewById(R.id.shopcar);
-        shopcar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Intent i = new Intent(MedicinalDetailActivity.this, ShopCarActivity.class);
-                //startActivity(i);
             }
         });
 
@@ -314,7 +316,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 Gson gson = new Gson();
                                 result = gson.fromJson(response, new TypeToken<List<WeiShopEntity>>() {
                                 }.getType());
-                                 weiShopEntity = result.get(0);
+                                weiShopEntity = result.get(0);
                                 List<GoodSpicsEntity> goodspics = weiShopEntity.getGOODSPICS();
                                 List<ADPagerEntity> adPagerEntities = new ArrayList<ADPagerEntity>();
                                 for (int i = 0; i < goodspics.size(); i++) {
@@ -329,20 +331,20 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 count++;
                                 controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
                                 count++;
+                                //If it is from the vicinity of the details of the pharmacy to enter, do not show a nearby pharmacy module
+                              //  if(!flag){
                                 if (nearResult != null && !("".equals(nearResult))) {
                                     for (int i = 0; i < nearResult.size(); i++) {
                                         controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getID()));
                                         count++;
                                     }
                                 }
+                          //  }
                                 controls.append(count, new ADMoreControl());
-                                //count++;
-                                // controls.append(count, new ADHorizontalScrollControl().bindModle(goodspics));
                                 AddToHistory(weiShopEntity);
                             } else {
-                            }
 
-                            //   controls.append(4, new ADEmptyControl());
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -353,7 +355,7 @@ public class MedicinalDetailActivity extends BaseActivity {
 
                 } else {
                     Log.e("GetStoreData2", errorMsg.msg);
-                    //错误页面
+                    //error page
                     controls.append(0,new ADErrorControl());
 
                 }
@@ -364,18 +366,18 @@ public class MedicinalDetailActivity extends BaseActivity {
         });
     }
 
-    //加入购物车
+    //addTo shopCar
     private void requestBuy() {
         if (UserConfig.isClientLogined()) {
+
             int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
             Map<String, String> args = new FacadeArgs.MapBuilder().build();
             args.put("GOODSGUID", weiShopEntity.getGUID());
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
             args.put("BUYCOUNT", "1");
             args.put("PRICE", PRICE);
-          //  FacadeToken.getInstance().getAuthToken()
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
-            protocol.withToken(UserConfig.createToken());
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
             Message message = new Message.MessageBuilder()
                     .withProtocol(protocol)
                     .build();

@@ -179,6 +179,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     }
 
     private void initView() {
+        btn_commit= (TextView) findViewById(R.id.btn_commit);
         iv_back = (ImageView) findViewById(R.id.back);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,7 +209,6 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         editor_work.setOnFocusChangeListener(this);
         editor_name.setOnClickListener(this);
         btn_save.setOnClickListener(this);
-        btn_commit= (TextView) findViewById(R.id.btn_commit);
         btn_commit.setText("保存");
 
     }
@@ -290,35 +290,36 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     }
     //保存信息
     private void SaveInfor() {
-        personalEntity.setPERSONNAME(editor_name.getText().toString());
-        personalEntity.setBIRTHDAY(choiceBirthday.getText().toString());
+        PersonalEntity entity=new PersonalEntity();
+        entity.setPERSONNAME(editor_name.getText().toString()+"");
+        entity.setBIRTHDAY(choiceBirthday.getText().toString());
         if ("男".equals(choiceSex.getText().toString())) {
-            personalEntity.setGENDER("1");
+            entity.setGENDER("1");
         } else {
-            personalEntity.setGENDER("2");
+            entity.setGENDER("2");
         }
         if ("有".equals(choiceDisease.getText().toString())) {
-            personalEntity.setHASSERIOUS("1");
+            entity.setHASSERIOUS("1");
         } else {
-            personalEntity.setHASSERIOUS("0");
+            entity.setHASSERIOUS("0");
         }
         if ("有".equals(choiceHeredopathia.getText().toString())) {
-            personalEntity.setHASINHERITED("1");
+            entity.setHASINHERITED("1");
         } else {
-            personalEntity.setHASINHERITED("0");
+            entity.setHASINHERITED("0");
         }
 
         if ("有".equals(choiceAllergy.getText().toString())) {
-            personalEntity.setHASGUOMIN("1");
+            entity.setHASGUOMIN("1");
         } else {
-            personalEntity.setHASGUOMIN("0");
+            entity.setHASGUOMIN("0");
         }
-        personalEntity.setFOODHOBBY(editor_food.getText().toString());
-        personalEntity.setJOB(editor_work.getText().toString());
-        personalEntity.setOTHER(editor_other.getText().toString());
-        personalEntity.setSLEEPHOBBY(editor_rest.getText().toString());
+        entity.setFOODHOBBY(editor_food.getText().toString());
+        entity.setJOB(editor_work.getText().toString());
+        entity.setOTHER(editor_other.getText().toString());
+        entity.setSLEEPHOBBY(editor_rest.getText().toString());
         Gson gson=new Gson();
-        final String jsonData = gson.toJson(personalEntity);
+        final String jsonData = gson.toJson(entity);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
                 .put("JSONDATA",jsonData)
