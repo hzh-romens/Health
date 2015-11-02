@@ -45,9 +45,7 @@ public class UserConfig {
         if (config == null) {
             return null;
         }
-        final String token = config.token;
-        String md5Token = TextUtils.isEmpty(token) ? "" : MD5Helper.createMD5(token + "0");
-        md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
+        String md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, config.token);
         md5Token = Base64Helper.encodeBase64String(md5Token);
         return md5Token;
     }
