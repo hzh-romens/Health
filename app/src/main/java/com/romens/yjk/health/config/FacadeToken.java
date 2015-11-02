@@ -29,8 +29,7 @@ public class FacadeToken {
 
     public void init() {
         synchronized (sync) {
-            //  authToken = "";
-            authToken =UserConfig.createToken();
+            authToken=UserConfig.createToken();
         }
     }
 
