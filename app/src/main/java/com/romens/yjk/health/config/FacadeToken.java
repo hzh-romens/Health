@@ -30,7 +30,7 @@ public class FacadeToken {
     public void init() {
         synchronized (sync) {
             //  authToken = "";
-             UserConfig.createToken();
+            authToken =UserConfig.createToken();
         }
     }
 

@@ -79,7 +79,7 @@
             android:layout_weight="1.5"
             android:id="@+id/tv_buy"
             android:text="加入购物车"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="@android:color/white"
             android:background="@color/themecolor"
             android:gravity="center"/>
