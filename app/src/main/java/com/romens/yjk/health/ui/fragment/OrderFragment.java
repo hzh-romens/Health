@@ -78,7 +78,7 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
             case MyOrderActivity.ORDER_TYPE_BEING:
                 adapter = new OrderExpandableBeingAdapter(getActivity(), mOrderEntities);
 //                requestOrderList(userGuid);
-                AppNotificationCenter.getInstance().addObserver(getActivity(), AppNotificationCenter.orderCompleteAdd);
+//                AppNotificationCenter.getInstance().addObserver(getActivity(), AppNotificationCenter.orderCompleteAdd);
                 break;
         }
     }
@@ -139,7 +139,13 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
 
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.orderCompleteAdd);
+    }
 
+    @Override
+    public void onDestroy() {
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.orderCompleteAdd);
+        super.onDestroy();
     }
 
     @Override
