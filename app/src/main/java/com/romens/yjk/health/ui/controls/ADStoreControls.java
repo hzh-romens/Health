@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADStoreCell;
 import com.romens.yjk.health.ui.components.logger.Log;
@@ -30,7 +31,11 @@ public class ADStoreControls extends ADBaseControl{
             @Override
             public void ToStoreListener() {
                 //跳转到另一个药品的详情页面
-                Toast.makeText(context,"跳转到详情页面",Toast.LENGTH_SHORT).show();
+                Intent i=new Intent(context, MedicinalDetailActivity.class);
+                i.putExtra("guid",mGuid);
+                i.putExtra("flag","true");
+                context.startActivity(i);
+
             }
         });
         adStoreCell.ItemClickListener2(new ADStoreCell.ItemClickBack2() {

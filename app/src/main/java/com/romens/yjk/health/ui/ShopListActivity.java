@@ -97,19 +97,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_list);
-        if (getIntent().getStringExtra("guid") != null) {
-            GUID = getIntent().getStringExtra("guid");
-        }
-        if (getIntent().getStringExtra("key_id") != null) {
-            GUID = getIntent().getStringExtra("key_id");
-        }
-        if (getIntent().getStringExtra("key_name") != null) {
-            name = getIntent().getStringExtra("key_name");
-            EDITEXT = name;
-        }
-
+        initIntentValue();
         initView();
-        // et_search.setText(name);
 
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -163,6 +152,20 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         refreshLayout.setRefreshing(true);
         requestData();
         setListener();
+    }
+
+    private void initIntentValue() {
+        if (getIntent().getStringExtra("guid") != null) {
+            GUID = getIntent().getStringExtra("guid");
+        }
+        if (getIntent().getStringExtra("key_id") != null) {
+            GUID = getIntent().getStringExtra("key_id");
+        }
+        if (getIntent().getStringExtra("key_name") != null) {
+            name = getIntent().getStringExtra("key_name");
+            EDITEXT = name;
+        }
+
     }
 
     private void setListener() {
@@ -462,7 +465,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(false);
         getChoiceData();
-        final PopAdapter popAdapter = new PopAdapter(ShopListActivity.this,choiceDatas);
+        final PopAdapter popAdapter = new PopAdapter(ShopListActivity.this, choiceDatas);
         lv.setAdapter(popAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -512,9 +515,9 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         private Context mContext;
         private List<ChoiceEntity> mDdatas;
 
-        public PopAdapter(Context context,List<ChoiceEntity> datas) {
+        public PopAdapter(Context context, List<ChoiceEntity> datas) {
             this.mContext = context;
-            this.mDdatas=datas;
+            this.mDdatas = datas;
         }
 
         @Override

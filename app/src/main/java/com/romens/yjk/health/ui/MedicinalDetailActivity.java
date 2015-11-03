@@ -100,7 +100,7 @@ public class MedicinalDetailActivity extends BaseActivity {
     private double LONGITUDE;
     private double LATITUDE;
     private List<NearByOnSaleEntity> nearResult;
-    private boolean flag;
+    private boolean flag=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +124,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         String mark = getIntent().getStringExtra("flag");
         if("".equals(mark)||mark ==null){
              flag=false;
-        }else if("true".equals(this.flag)){
+        }else if("true".equals(mark)){
             flag=true;
         }else{
             flag=false;
@@ -308,6 +308,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                     tv_favorite.setEnabled(true);
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
+                    Log.i("药品详情数据",response);
                     data = new ArrayList<TestEntity>();
                     if (response != null) {
                         try {
@@ -328,22 +329,24 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getSHORTDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
                                 count++;
                                 controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
-                                count++;
-                                controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
-                                count++;
-                                //If it is from the vicinity of the details of the pharmacy to enter, do not show a nearby pharmacy module
-                              //  if(!flag){
-                                if (nearResult != null && !("".equals(nearResult))) {
-                                    for (int i = 0; i < nearResult.size(); i++) {
-                                        controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getID()));
-                                        count++;
+                                if(!flag) {
+                                    count++;
+                                    controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
+                                    count++;
+                                    //If it is from the vicinity of the details of the pharmacy to enter, do not show a nearby pharmacy module
+                                    if (nearResult != null && !("".equals(nearResult))) {
+                                        for (int i = 0; i < nearResult.size(); i++) {
+                                            controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getMERCHANDISEID()));
+
+                                        }
                                     }
+                                    count++;
+                                    controls.append(count, new ADMoreControl());
                                 }
-                          //  }
-                                controls.append(count, new ADMoreControl());
                                 AddToHistory(weiShopEntity);
                             } else {
-
+                                //show emptyPage
+                              controls.append(0,new ADErrorControl().bindModel("该药店未能查询到该药品"));
                             }
 
                         } catch (JSONException e) {
@@ -354,9 +357,9 @@ public class MedicinalDetailActivity extends BaseActivity {
                     }
 
                 } else {
-                    Log.e("GetStoreData2", errorMsg.msg);
                     //error page
-                    controls.append(0,new ADErrorControl());
+                    Log.e("GetStoreData2", errorMsg.msg);
+                    controls.append(0, new ADErrorControl().bindModel("该药品不存在"));
 
                 }
                 MedicinalDetailAdapter medicinalDetailAdapter2 = new MedicinalDetailAdapter(MedicinalDetailActivity.this);

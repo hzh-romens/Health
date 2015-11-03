@@ -87,6 +87,7 @@
         android:layout_gravity="right|bottom"
         android:id="@+id/pharmacy_buy"
         android:layout_margin="@dimen/padding_inner"
+        android:visibility="gone"
         />
     <View
         android:layout_marginTop="5dp"
