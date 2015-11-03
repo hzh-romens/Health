@@ -19,7 +19,7 @@
             android:gravity="center"
             android:textColor="#333333"
             android:text="说明书"
-            android:textSize="@dimen/text_size_medium"/>
+            android:textSize="@dimen/text_size_large"/>
         <ImageView
             android:layout_margin="@dimen/padding_inner"
             android:layout_width="24dp"
@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="#666666"
             android:gravity="center"
             android:id="@+id/tv1"
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padding_inner"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="#666666"
             android:gravity="center"
 
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padding_inner"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="#666666"
             android:gravity="center"
             android:id="@+id/tv3"
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padding_inner"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="#666666"
             android:gravity="center"
             android:id="@+id/tv4"

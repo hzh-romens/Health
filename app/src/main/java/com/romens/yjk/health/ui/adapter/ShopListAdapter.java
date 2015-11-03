@@ -29,6 +29,8 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
+import com.romens.yjk.health.ui.ShopListActivity;
+import com.romens.yjk.health.ui.activity.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +96,13 @@ public class ShopListAdapter extends RecyclerView.Adapter{
         itemHolder.shop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestToBuy(mResult.get(position).getPRICE(), mResult.get(position).getMERCHANDISEID());
+                if(UserConfig.isClientLogined()) {
+                    requestToBuy(mResult.get(position).getPRICE(), mResult.get(position).getMERCHANDISEID());
+                }else{
+                    //跳转至登录页面
+                    Toast.makeText(mContext,"请您先登录",Toast.LENGTH_SHORT).show();
+                    mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                }
             }
         });
         itemHolder.linear_item.setOnClickListener(new View.OnClickListener() {
