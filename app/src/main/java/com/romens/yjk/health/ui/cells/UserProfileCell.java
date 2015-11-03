@@ -33,7 +33,7 @@ public class UserProfileCell extends FrameLayoutFixed {
         nameView.setEllipsize(TextUtils.TruncateAt.END);
         nameView.setTextColor(0xff212121);
         nameView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT,Gravity.CENTER_HORIZONTAL, 0, 88, 0, 0));
+        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT,Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 88, 0, 0));
     }
 
     public void setUser(UserEntity userEntity) {

@@ -115,7 +115,6 @@ public class ShopListAdapter extends RecyclerView.Adapter{
         });
     }
     public void requestToBuy(String PRICE,String GUID){
-        //加入购物车,用户暂定为2222
             int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
             Map<String, String> args = new FacadeArgs.MapBuilder().build();
             args.put("GOODSGUID",GUID);

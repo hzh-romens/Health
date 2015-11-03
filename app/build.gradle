@@ -15,7 +15,7 @@ android {
         versionCode 151028
         versionName "1.2.1"
         multiDexEnabled true
-        manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens",IM_SDK_APPKEY: "romens#yjkim888888"]
+        manifestPlaceholders = [APK_CHANNEL_VALUE: "2;romens",IM_SDK_APPKEY: "romens#yjkim888888"]
     }
 
     sourceSets {
@@ -27,11 +27,11 @@ android {
 
     productFlavors {
         channel_yjk {
-            manifestPlaceholders = [APK_CHANNEL_VALUE: "888888;romens",IM_SDK_APPKEY: "romens#yjkim888888"]
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "2;romens",IM_SDK_APPKEY: "romens#yjkim888888"]
 
         }
         channel_nj_xszk {
-            manifestPlaceholders = [APK_CHANNEL_VALUE: "0;nj_xszk",IM_SDK_APPKEY: "romens#yjkim888888"]
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "2;nj_xszk",IM_SDK_APPKEY: "romens#yjkim888888"]
         }
     }
     signingConfigs {
