@@ -19,7 +19,7 @@ public class ADGroupNameCell extends FrameLayout{
         super(context);
         View view=View.inflate(context, R.layout.list_item_group_name,null);
         tv_groupName= (TextView) view.findViewById(R.id.group_name);
-        tv_groupName.setTextSize(14);
+        tv_groupName.setTextSize(16);
         moreButton= (TextView) view.findViewById(R.id.moreButton);
         addView(view, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT,LayoutHelper.WRAP_CONTENT));
     }

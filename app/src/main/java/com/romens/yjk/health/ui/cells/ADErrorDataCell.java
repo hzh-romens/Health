@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,13 +16,13 @@ import com.romens.yjk.health.R;
  * Created by AUSU on 2015/9/11.
  */
 public class ADErrorDataCell extends FrameLayout{
-    private ImageView imageView;
+    private TextView errorMsg;
     public ADErrorDataCell(Context context) {
         super(context);
-        setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
-        imageView=new ImageView(context);
-        imageView.setBackground(getResources().getDrawable(R.drawable.error));
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        addView(imageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
+        View view=View.inflate(context,R.layout.list_item_error,null);
+        errorMsg= (TextView) view.findViewById(R.id.errorMsg);
+    }
+    public void setValue(String msg){
+        errorMsg.setText(msg);
     }
 }

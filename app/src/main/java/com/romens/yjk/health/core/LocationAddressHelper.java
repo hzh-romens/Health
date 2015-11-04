@@ -22,7 +22,7 @@ import java.util.List;
  * Created by siery on 15/8/20.
  * 省市县初始化
  */
-public class AddressHelper {
+public class LocationAddressHelper {
     public static final String PREFERENCE_KEY_NAME = "is_setup_address_location_data";
 
     private static Object sync = new Object();

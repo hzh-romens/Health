@@ -21,6 +21,51 @@ public class NearByOnSaleEntity {
     private String PRICE;
 
     private String TOTLESALEDCOUNT;
+    private String CHAINPHARMACY;
+    private String PID;
+    private String STORECOUNT;
+    private String ASSESSCOUNT;
+    private String MERCHANDISEID;
+
+    public String getCHAINPHARMACY() {
+        return CHAINPHARMACY;
+    }
+
+    public void setCHAINPHARMACY(String CHAINPHARMACY) {
+        this.CHAINPHARMACY = CHAINPHARMACY;
+    }
+
+    public String getPID() {
+        return PID;
+    }
+
+    public void setPID(String PID) {
+        this.PID = PID;
+    }
+
+    public String getSTORECOUNT() {
+        return STORECOUNT;
+    }
+
+    public void setSTORECOUNT(String STORECOUNT) {
+        this.STORECOUNT = STORECOUNT;
+    }
+
+    public String getASSESSCOUNT() {
+        return ASSESSCOUNT;
+    }
+
+    public void setASSESSCOUNT(String ASSESSCOUNT) {
+        this.ASSESSCOUNT = ASSESSCOUNT;
+    }
+
+    public String getMERCHANDISEID() {
+        return MERCHANDISEID;
+    }
+
+    public void setMERCHANDISEID(String MERCHANDISEID) {
+        this.MERCHANDISEID = MERCHANDISEID;
+    }
 
     public String getTOTLESALEDCOUNT() {
         return TOTLESALEDCOUNT;

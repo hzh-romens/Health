@@ -27,7 +27,7 @@
             <TextView android:layout_width="0dp"
                 android:layout_weight="6.5"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_small"
+                android:textSize="@dimen/text_size_medium"
                 android:singleLine="true"
                 android:maxLines="1"
                 android:textColor="#333333"
@@ -41,7 +41,7 @@
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:maxLines="1"
-                android:textSize="@dimen/text_size_small"
+                android:textSize="@dimen/text_size_medium"
                 android:textColor="@color/themecolor"
                 android:ellipsize="end"
                 android:id="@+id/price"
@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:text="安定门外大街京宝大厦418"
             android:layout_marginBottom="@dimen/padding_inner"
             android:layout_marginLeft="@dimen/padding_outter"
@@ -71,7 +71,7 @@
             android:maxLines="1"
             android:drawableLeft="@drawable/ic_area"
             android:text="533米"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="#666666"
             android:includeFontPadding="false"
             android:id="@+id/distance"
@@ -87,6 +87,7 @@
         android:layout_gravity="right|bottom"
         android:id="@+id/pharmacy_buy"
         android:layout_margin="@dimen/padding_inner"
+        android:visibility="gone"
         />
     <View
         android:layout_marginTop="5dp"

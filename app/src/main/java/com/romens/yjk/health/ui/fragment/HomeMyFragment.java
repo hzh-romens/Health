@@ -110,6 +110,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     //TODO 退出登录的修改，清空购物车图标的数量
                     // UserConfig.clearConfig();
                     UserConfig.clearUser();
+                    UserConfig.clearConfig();
+                    UserConfig.clearUserToken();
                     userEntity = null;
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);

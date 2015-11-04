@@ -6,7 +6,7 @@
 
     <RelativeLayout
         style="@style/titleStytle"
-        android:background="#f9f9f9"
+        android:background="@color/md_grey_300"
         android:orientation="horizontal">
 
         <ImageView

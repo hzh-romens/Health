@@ -50,9 +50,8 @@ public class UserConfig {
       //  String md5Token = TextUtils.isEmpty(token) ? "" : MD5Helper.createMD5(token + "0");
       //  md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
         //md5Token = Base64Helper.encodeBase64String(md5Token);
-        Log.i("用户token--------",config.token);
-        String md5Token= MD5Helper.createMD5(config.token);
-        md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName,md5Token);
+        String md5Token=MD5Helper.createMD5(config.token);
+        md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
         md5Token = Base64Helper.encodeBase64String(md5Token);
         return md5Token;
 
@@ -222,7 +221,6 @@ public class UserConfig {
         public void setLogin(String name, String token) {
             this.userName = name == null ? "" : name;
             this.token = token == null ? "" : token;
-            Log.i("用户登录密码------",token);
         }
 
 

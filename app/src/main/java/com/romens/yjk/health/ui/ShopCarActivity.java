@@ -224,38 +224,6 @@ public class ShopCarActivity extends BaseActivity {
                                     Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
                                 }
                             }
-//                        SparseBooleanArray parentStatus = myAdapter.getParentStatus();
-//                        if (childData != null) {
-//                            Iterator iter = childData.entrySet().iterator();
-//                            List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
-//                            int count = 0;
-//                            while (iter.hasNext()) {
-//                                ParentEntity fatherEntity = new ParentEntity();
-//                                Map.Entry entry = (Map.Entry) iter.next();
-//                                String key = (String) entry.getKey();
-//                                List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
-//                                for (int i = 0; i < child.size(); i++) {
-//                                    if ("true".equals(child.get(i).getCHECK())) {
-//                                        filterData.add(child.get(i));
-//                                        count = count + child.get(i).getBUYCOUNT();
-//                                    }
-//
-//                                }
-//
-//
-//                            }
-//                            List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
-//                            for (int i = 0; i < filterData.size(); i++) {
-//                                DeleteEntity deleteEntity = new DeleteEntity();
-//                                deleteEntity.setMERCHANDISEID(filterData.get(i).getGOODSGUID());
-//                                deleteData.add(deleteEntity);
-//                            }
-//                            Gson gson = new Gson();
-//                            String s = gson.toJson(deleteData);
-//                            DeleteData(s, count);
-//                        } else {
-//                            Toast.makeText(ShopCarActivity.this, "列表为空", Toast.LENGTH_SHORT).show();
-//                        }
 
                         }else{
                             return;
@@ -281,6 +249,7 @@ public class ShopCarActivity extends BaseActivity {
 
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         if (UserConfig.isClientLogined()) {
+            Log.i("用户guid",UserConfig.getClientUserEntity().getGuid());
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
         }
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);

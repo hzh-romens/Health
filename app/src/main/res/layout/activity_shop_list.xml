@@ -17,8 +17,8 @@
             android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_marginLeft="64dp"
-            android:layout_marginTop="@dimen/padding_inner"
-            android:layout_marginBottom="@dimen/padding_inner"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="11dp"
             android:layout_marginRight="48dp"
             android:hint="请输入关键字"
             android:id="@+id/et_search"
@@ -27,10 +27,11 @@
             android:inputType="textPhonetic"
             android:imeOptions="actionSearch"
             android:drawablePadding="8dp"
-            android:textColorHint="@color/md_grey_500"
+            android:textColorHint="#999999"
             android:layout_height="match_parent"
-            android:textSize="@dimen/text_size_xlarge"
+            android:textSize="@dimen/text_size_large"
             android:background="@drawable/edittext_background_radiu"
+            android:textColor="@color/theme_title"
             android:drawableLeft="@drawable/ic_search_grey600_24dp"
             />
             <ImageView style="@style/iv_back_style"
@@ -41,15 +42,21 @@
                 android:layout_alignParentRight="true"
                 android:visibility="gone"/>
     </RelativeLayout>
-    <RadioGroup
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:orientation="horizontal"
+        >
+    <RadioGroup
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="3"
         android:id="@+id/radiogroup"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginRight="@dimen/padding_outter"
-        android:layout_marginLeft="@dimen/padding_outter">
+        android:gravity="center_vertical"
+        >
         <RadioButton
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -57,36 +64,50 @@
             android:text="综合"
             android:id="@+id/rb_all"
             android:button="@null"
-            android:textColor="@color/radio_text_states"
+            android:textColor="#666666"
             android:background="@drawable/radio_check_states"
             android:gravity="center"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="15sp"
             />
         <RadioButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="按价格"
+            android:text="价格"
             android:button="@null"
             android:id="@+id/rb_price"
-            android:textColor="@color/radio_text_states"
+            android:textColor="#666666"
             android:background="@drawable/radio_check_states"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="15sp"
             android:gravity="center"
             />
         <RadioButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="按销量"
+            android:text="销量"
             android:button="@null"
             android:id="@+id/rb_sale"
-            android:textColor="@color/radio_text_states"
+            android:textColor="#666666"
             android:background="@drawable/radio_check_states"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="15sp"
             android:gravity="center"
             />
     </RadioGroup>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="right"
+            android:id="@+id/btn_switch"
+            android:visibility="gone"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_centerInParent="true"
+                android:layout_height="18dp"
+                android:background="@drawable/ic_switch"/>
+        </RelativeLayout>
+        </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.75dp"
