@@ -249,7 +249,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         public int getItemViewType(int i) {
             if (i == userProfileRow) {
                 return 0;
-            } else if (i == userInfoSectionRow1 || i == otherInfoSectionRow1) {
+            } else if (i == userInfoSectionRow1) {
                 return 2;
             } else if (i == addressRow || i == checkUpdateRow || i == myOrderRow || i == helpRow || i == exitRow) {
                 return 3;
@@ -289,15 +289,12 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             } else if (type == 2) {
                 if (view == null) {
                     //view = new GreySectionCell(adapterContext);
-                    view=new TextIconCell(adapterContext);
+                    view = new TextIconCell(adapterContext);
                 }
-                TextIconCell cell=(TextIconCell)view;
-                if (position == otherInfoSectionRow1) {
+                TextIconCell cell = (TextIconCell) view;
+                if (position == userInfoSectionRow1) {
                     cell.setBackgroundColor(getActivity().getResources().getColor(R.color.second_title));
-                    cell.setIconText(R.drawable.ic_other, "其他", false);
-                } else if (position == userInfoSectionRow1) {
-                    cell.setBackgroundColor(getActivity().getResources().getColor(R.color.second_title));
-                    cell.setIconText(R.drawable.ic_person,"个人中心",false);
+                    cell.setIconText(R.drawable.ic_person, "个人中心", false);
                 }
             } else if (type == 3) {
                 if (view == null) {
@@ -311,25 +308,25 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == checkUpdateRow) {
                     try {
                         PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
-                        cell.setIconTextAndValueAndNav(R.drawable.ic_update,"检查更新","c" + pInfo.versionCode,R.drawable.ic_chevron_right_grey600_24dp,true);
+                        cell.setIconTextAndValue(R.drawable.ic_update, "检查更新", "c" + pInfo.versionCode, true);
                     } catch (PackageManager.NameNotFoundException e) {
-                        cell.setIconTextAndNav(R.drawable.ic_update, "检查更新",R.drawable.ic_chevron_right_grey600_24dp,true);
+                        cell.setIconText(R.drawable.ic_update, "检查更新", true);
                     }
                 } else if (position == myOrderRow) {
                     cell.setIconTextAndNav(R.drawable.ic_order, "我的订单", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == collectRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_favorite, "我的收藏",R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_favorite, "我的收藏", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == historyRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_history, "历史游览",R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_history, "历史游览", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == feedbackRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_advice, "意见反馈",R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_advice, "意见反馈", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == helpRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_help, "帮助", R.drawable.ic_chevron_right_grey600_24dp,true);
+                    cell.setIconTextAndNav(R.drawable.ic_help, "帮助", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == accountRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_account, "账户管理", R.drawable.ic_chevron_right_grey600_24dp,true);
+                    cell.setIconTextAndNav(R.drawable.ic_account, "账户管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == exitRow) {
                     cell.setTextColor(0xffd01716);
-                    cell.setIconTextAndNav(R.drawable.ic_exit, "退出登录",R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconText(R.drawable.ic_exit, "退出登录", true);
                 }
             } else if (type == 4) {
                 if (view == null) {

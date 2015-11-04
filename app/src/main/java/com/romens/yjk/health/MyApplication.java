@@ -58,9 +58,9 @@ public class MyApplication extends ApplicationLoader {
         }
 
         UserConfig.loadConfig();
-        if (UserConfig.isClientLogined()) {
-            FacadeToken.getInstance().init();
-        }
+//        if (UserConfig.isClientLogined()) {
+//            FacadeToken.getInstance().init();
+//        }
         FileLog.e("romens", "app initied");
     }
 }
