@@ -328,7 +328,6 @@ public class LoginActivity extends BaseActivity {
 
     protected void onLoginCallback(boolean isSuccess) {
         if (isSuccess) {
-            FacadeToken.getInstance().init();
             AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.loginSuccess);
         }
         finish();
@@ -1666,9 +1665,7 @@ public class LoginActivity extends BaseActivity {
 
         public PhoneView(Context context) {
             super(context);
-
             setOrientation(VERTICAL);
-
             LinearLayout linearLayout = new LinearLayout(context);
             linearLayout.setOrientation(HORIZONTAL);
             addView(linearLayout);
@@ -1862,7 +1859,7 @@ public class LoginActivity extends BaseActivity {
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "CheckPhoneNumber", args);
             Message message = new Message.MessageBuilder()
                     .withProtocol(protocol)
-                    .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
+                   .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
                     }))
                     .build();
             FacadeClient.request(LoginActivity.this, message, new FacadeClient.FacadeCallback() {
@@ -1875,7 +1872,7 @@ public class LoginActivity extends BaseActivity {
                 public void onResult(Message msg, Message errorMsg) {
                     nextPressed = false;
                     needHideProgress();
-                    //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
+                 //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
                     if (errorMsg == null) {
                         ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
                         LinkedTreeMap<String, String> result = response.getResponse();
@@ -1885,7 +1882,7 @@ public class LoginActivity extends BaseActivity {
                                 boolean value = TextUtils.equals("2", isValidity);
                                 params.putBoolean("IsValidityUser", value);
                                 params.putString(PARAM_HX_ID, result.get("NAME"));
-                                params.putString("UserGuid", result.get("USERGUID"));
+                                params.putString("UserGuid",result.get("USERGUID"));
                                 setPage(value ? 1 : 2, true, params, false);
                             } else {
                                 needShowAlert(getString(R.string.app_name), "手机号码异常");
@@ -1893,10 +1890,10 @@ public class LoginActivity extends BaseActivity {
                         }
                     } else {
                         if (errorMsg.code != 0) {
-                            //   ResponseProtocol<String> error = (ResponseProtocol) msg.protocol;
-                            // Log.i("错误信息是否为空----",(error.getResponse()==null)+"");
+                         //   ResponseProtocol<String> error = (ResponseProtocol) msg.protocol;
+                           // Log.i("错误信息是否为空----",(error.getResponse()==null)+"");
                             needShowAlert(getString(R.string.app_name), errorMsg.msg);
-                            // Log.i("登录错误日志----",errorMsg.msg);
+                           // Log.i("登录错误日志----",errorMsg.msg);
                         }
                     }
                 }
@@ -1939,6 +1936,7 @@ public class LoginActivity extends BaseActivity {
     }
 
 
+
     //获取购物车数量
     private void requestShopCarCountData() {
         if (UserConfig.isClientLogined()) {
@@ -1954,7 +1952,7 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void onTokenTimeout(Message msg) {
                     needHideProgress();
-                    Log.e("GetBuyCarCount", "ERROR");
+                    Log.e("GetBuyCarCount",msg.msg);
                 }
 
                 @Override
@@ -1972,12 +1970,12 @@ public class LoginActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     } else {
-                        Log.e("GetBuyCarCount", "ERROR");
+                        Log.e("GetBuyCarCount", errorMsg.msg);
                     }
                 }
             });
-        } else {
+        }else{
 
         }
     }
-}
+ }

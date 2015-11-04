@@ -35,7 +35,7 @@
             android:orientation="vertical"
            android:gravity="center_vertical"
             android:layout_height="48dp">
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/sliding_overlay_blur_size"
@@ -44,22 +44,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_medium"
-                android:layout_alignParentLeft="true"
+              android:layout_gravity="left"
                 android:id="@+id/tv_owner_storeName"
                     android:includeFontPadding="false"
                     android:textColor="@color/theme_title"
+                    android:layout_marginRight="48dp"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                 android:text="某某某大药房"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_medium"
-                    android:layout_alignParentRight="true"
+                  android:layout_gravity="right"
                     android:textColor="@color/themecolor"
                     android:id="@+id/tv_owner_medicinalPrice"
                     android:includeFontPadding="false"
                     android:text="¥19"/>
-                </RelativeLayout>
-            <RelativeLayout
+                </FrameLayout>
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/sliding_overlay_blur_size"
@@ -68,21 +71,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_medium"
-                    android:layout_alignParentLeft="true"
+                   android:layout_gravity="left"
                     android:id="@+id/tv_owner_storeAddress"
                     android:includeFontPadding="false"
+                    android:layout_marginRight="48dp"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:textColor="#666666"
                     android:text="安定门外大街418"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_medium"
-                    android:layout_alignParentRight="true"
+                   android:layout_gravity="right"
                     android:includeFontPadding="false"
                     android:textColor="#666666"
                     android:id="@+id/tv_owner_inventory"
                     android:text="库存55件"/>
-            </RelativeLayout>
+            </FrameLayout>
         </LinearLayout>
     </FrameLayout>
     <TextView

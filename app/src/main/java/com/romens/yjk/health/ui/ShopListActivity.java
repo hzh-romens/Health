@@ -244,21 +244,21 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.rb_price:
                 if (PRICE_FLAG == 0) {
-                    rb_price.setText("按价格从高到低");
+                  //  rb_price.setText("按价格从高到低");
                     KEY = "priceDown";
                     requestSearchData(EDITEXT, KEY);
                     PRICE_FLAG = 1;
                     return;
                 }
                 if (PRICE_FLAG == 1) {
-                    rb_price.setText("按价格从低到高");
+                    //rb_price.setText("按价格从低到高");
                     KEY = "priceUp";
                     requestSearchData(EDITEXT, KEY);
                     PRICE_FLAG = 2;
                     return;
                 }
                 if (PRICE_FLAG == 2) {
-                    rb_price.setText("按价格从高到低");
+                    //rb_price.setText("按价格从高到低");
                     KEY = "priceDown";
                     requestSearchData(EDITEXT, KEY);
                     PRICE_FLAG = 1;
@@ -268,20 +268,20 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             case R.id.rb_sale:
                 if (SALE_FLAG == 5) {
                     KEY = "saleDown";
-                    rb_sale.setText("按销量从高到低");
+                  //  rb_sale.setText("按销量从高到低");
                     requestSearchData(EDITEXT, KEY);
                     SALE_FLAG = 6;
                     return;
                 }
                 if (SALE_FLAG == 6) {
-                    rb_sale.setText("按销量从低到高");
+                   // rb_sale.setText("按销量从低到高");
                     KEY = "saleUp";
                     SALE_FLAG = 7;
                     requestSearchData(EDITEXT, KEY);
                     return;
                 }
                 if (SALE_FLAG == 7) {
-                    rb_sale.setText("按销量从高到低");
+                  //  rb_sale.setText("按销量从高到低");
                     KEY = "saleDown";
                     SALE_FLAG = 6;
                     requestSearchData(EDITEXT, KEY);

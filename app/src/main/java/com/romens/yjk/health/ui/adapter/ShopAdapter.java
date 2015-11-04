@@ -78,6 +78,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         this.mAdapterCallBack = adapterCallBack;
         sumMoney=0;
         fatherStatus.clear();
+       childStatusList.clear();
         for (int i = 0; i < mFatherData.size(); i++) {
             fatherStatus.append(i, true);
         }

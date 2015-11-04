@@ -82,6 +82,7 @@ public class ShopCarActivity extends BaseActivity {
                 //向服务器发送请求
                 HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
                 ArrayList<ParentEntity> parentData = (ArrayList<ParentEntity>) myAdapter.getParentData();
+                HashMap<String, SparseBooleanArray> childStatusList = myAdapter.getChildStatusList();
                 if (myAdapter.isAllNotSelected()) {
                     Toast.makeText(ShopCarActivity.this, "请选择一样商品", Toast.LENGTH_SHORT).show();
                 } else {
@@ -94,11 +95,9 @@ public class ShopCarActivity extends BaseActivity {
                         SparseBooleanArray parentStatus = myAdapter.getParentStatus();
                         if (parentData != null) {
                             for (int i = 0; i < parentData.size(); i++) {
-                                //  if ("true".equals(parentData.get(i).getCheck())) {
                                 if (parentStatus.get(i)) {
                                     filterParentData.add(parentData.get(i));
                                 }
-                                //}
                             }
                             Iterator iter = childData.entrySet().iterator();
                             while (iter.hasNext()) {
@@ -106,9 +105,10 @@ public class ShopCarActivity extends BaseActivity {
                                 Map.Entry entry = (Map.Entry) iter.next();
                                 String key = (String) entry.getKey();
                                 List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+                                SparseBooleanArray sparseBooleanArray = childStatusList.get(key);
                                 List<ShopCarEntity> mChild = new ArrayList<ShopCarEntity>();
                                 for (int i = 0; i < child.size(); i++) {
-                                    if ("true".equals(child.get(i).getCHECK())) {
+                                    if (sparseBooleanArray.get(i)) {
                                         mChild.add(child.get(i));
                                     }
                                     GoodsEntity goodsEntity = new GoodsEntity();
@@ -153,9 +153,8 @@ public class ShopCarActivity extends BaseActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //myAdapter.getChildData();
                 ibuilder = new CustomDialog.Builder(ShopCarActivity.this);
-                ibuilder.setTitle(R.string.prompt);
+               // ibuilder.setTitle(R.string.prompt);
                 ibuilder.setMessage("是否删除？");
                 ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     @Override
@@ -208,8 +207,6 @@ public class ShopCarActivity extends BaseActivity {
                                                 count = count + child.get(i).getBUYCOUNT();
                                             }
                                         }
-
-
                                     }
                                     List<DeleteEntity> deleteData = new ArrayList<DeleteEntity>();
                                     for (int i = 0; i < filterData.size(); i++) {
@@ -249,7 +246,6 @@ public class ShopCarActivity extends BaseActivity {
 
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         if (UserConfig.isClientLogined()) {
-            Log.i("用户guid",UserConfig.getClientUserEntity().getGuid());
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
         }
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);
@@ -448,7 +444,6 @@ public class ShopCarActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                             String success = jsonObject.getString("success");
                             if (success.equals("yes")) {
-                                Log.i("是佛---", "是");
                                 requestShopCarDataChanged();
                             } else {
                                 Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();

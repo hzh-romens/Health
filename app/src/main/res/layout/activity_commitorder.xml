@@ -2,20 +2,29 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
-        android:layout_gravity="top"
-        style="@style/titleStytle">
     <FrameLayout
-        style="@style/framelayou_back_style">
+        style="@style/titleStytle"
+        android:orientation="horizontal"
+        android:layout_height="52dp"
+        android:background="@color/theme_primary">
         <ImageView
             style="@style/iv_back_style"
-            android:background="@drawable/ic_ab_back_grey"/>
+            android:layout_marginLeft="@dimen/padding_outter"
+            android:id="@id/btn_back"
+            android:background="@drawable/ic_ab_back"
+            android:layout_gravity="left|center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:includeFontPadding="false"
+            android:text="购物车"
+            android:id="@+id/title"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/text_size_xlarge"
+            android:layout_marginLeft="64dp"
+            />
     </FrameLayout>
-    <TextView
-        style="@style/title_textview_style"
-        android:text="购物车"
-        android:textColor="#333333"
-        /></RelativeLayout>
     <ExpandableListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,7 +60,7 @@
             android:text="去结算"
             android:includeFontPadding="false"
             android:layout_alignParentRight="true"
-            android:textColor="@color/themecolor"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size_large" />
         </RelativeLayout>
 
