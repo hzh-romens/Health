@@ -22,7 +22,7 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, String.class, "id", true, "_id");
+        public final static Property Id = new Property(0, String.class, "key", true, "_id");
         public final static Property Key = new Property(1, String.class, "key", false, "KEY");
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property PID = new Property(3, String.class, "parentId", false, "PID");

@@ -34,6 +34,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
@@ -81,10 +82,14 @@ public class ControlAddressActivity extends BaseActivity {
             setNoHaveAddressView();
         }
         queryDb();
-        if (entities == null || entities.size() < 1) {
-            needShowProgress("正在请求城市信息，请稍等...");
-            requestCityDataChanged();
-        }
+
+        //同步省市县数据
+        LocationAddressHelper.syncServerLocationAddress(this);
+
+//        if (entities == null || entities.size() < 1) {
+//            needShowProgress("正在请求城市信息，请稍等...");
+//            requestCityDataChanged();
+//        }
     }
 
     //没有地址时，显示

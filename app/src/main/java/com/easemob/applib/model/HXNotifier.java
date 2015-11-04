@@ -43,7 +43,7 @@ public class HXNotifier {
             "%1个联系人发来%2条消息"
     };
 
-    protected static int notifyID = 0525; // start notification id
+    protected static int notifyID = 0525; // start notification key
     protected static int foregroundNotifyID = 0555;
 
     protected NotificationManager notificationManager = null;

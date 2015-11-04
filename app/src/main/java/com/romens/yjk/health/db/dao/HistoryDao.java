@@ -14,7 +14,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
     public static final String TABLENAME = "History";
     public static class Properties {
-    public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+    public final static Property Id = new Property(0, Long.class, "key", true, "_id");
     public final static Property ShopName = new Property(1, String.class, "shopName", false, "SHOPNAME");
     public final static Property ImgUrl = new Property(2, String.class, "imgUrl", false, "IMGURL");
     public final static Property IsSelect = new Property(3, int.class, "isSelect", false, "ISSELECT");
@@ -38,7 +38,7 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'History' (" + //
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
                 "'SHOPNAME' TEXT NOT NULL ," +
                 "'IMGURL' TEXT ," +
                 "'ISSELECT' INTEGER ," +
@@ -76,7 +76,7 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
     @Override
     protected HistoryEntity readEntity(Cursor cursor, int offset) {
         HistoryEntity entity = new HistoryEntity();
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setShopName(cursor.getString(offset + 1));
         entity.setImgUrl(cursor.getString(offset + 2));
         entity.setIsSelect((cursor.getInt(offset + 3) == 1));
@@ -98,7 +98,7 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
 
     @Override
     protected void readEntity(Cursor cursor, HistoryEntity entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setShopName(cursor.getString(offset + 1));
         entity.setImgUrl(cursor.getString(offset + 2));
         entity.setIsSelect((cursor.getInt(offset + 3) == 1));
@@ -114,9 +114,9 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, HistoryEntity entity) {
         stmt.clearBindings();
-     //   Long id = entity.id;
-       // if (id != null) {
-         //   stmt.bindLong(1, id);
+     //   Long key = entity.key;
+       // if (key != null) {
+         //   stmt.bindLong(1, key);
         //}
         stmt.bindString(2,entity.getShopName());
         stmt.bindString(3,entity.getImgUrl());

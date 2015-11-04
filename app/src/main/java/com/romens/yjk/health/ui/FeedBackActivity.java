@@ -69,11 +69,11 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
         initData();
         tagFlowLayout = (FlowLayout) findViewById(R.id.feed_back_flow_layout);
         feedBackSelectTagLayout = (FrameLayout) findViewById(R.id.feed_back_select_tag_layout);
-//        editTagTxt = (EditTagCell) findViewById(R.id.feed_back_edit_tag);
+//        editTagTxt = (EditTagCell) findViewById(R.key.feed_back_edit_tag);
         feedBackInfo = (EditText) findViewById(R.id.feed_back_info);
-//        firstUpLoadImg = (ImageView) findViewById(R.id.feed_back_first_img);
-//        secondUpLoadImg = (ImageView) findViewById(R.id.feed_back_second_img);
-//        threeUpLoadImg = (ImageView) findViewById(R.id.feed_back_three_img);
+//        firstUpLoadImg = (ImageView) findViewById(R.key.feed_back_first_img);
+//        secondUpLoadImg = (ImageView) findViewById(R.key.feed_back_second_img);
+//        threeUpLoadImg = (ImageView) findViewById(R.key.feed_back_three_img);
         submitBtn = (TextView) findViewById(R.id.feed_back_submit);
         resetBtn = (TextView) findViewById(R.id.feed_back_reset);
 
@@ -90,13 +90,13 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.feed_back_first_img:
+//            case R.key.feed_back_first_img:
 //                Toast.makeText(FeedBackActivity.this, "firstImgClick", Toast.LENGTH_SHORT).show();
 //                break;
-//            case R.id.feed_back_second_img:
+//            case R.key.feed_back_second_img:
 //                Toast.makeText(FeedBackActivity.this, "secondImgClick", Toast.LENGTH_SHORT).show();
 //                break;
-//            case R.id.feed_back_three_img:
+//            case R.key.feed_back_three_img:
 //                Toast.makeText(FeedBackActivity.this, "threeImgClick", Toast.LENGTH_SHORT).show();
 //                break;
             case R.id.feed_back_submit:

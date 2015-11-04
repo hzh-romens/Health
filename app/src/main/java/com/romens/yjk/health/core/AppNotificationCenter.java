@@ -4,16 +4,18 @@ import com.romens.android.core.NotificationCenter;
 
 public class AppNotificationCenter extends NotificationCenter {
 
-    private static int totalEvents = maxCursor;
+    private static int appTotalEvents = maxCursor;
 
-    public static final int loginSuccess = totalEvents++;
-    public static final int shoppingCartCountChanged = totalEvents++;
+    public static final int loginSuccess = appTotalEvents++;
+    public static final int shoppingCartCountChanged = appTotalEvents++;
 
     //AppConfig
-    public static final int appConfigLoaded = totalEvents++;
-    public static final int appConfigChanged = totalEvents++;
+    public static final int appConfigLoaded = appTotalEvents++;
+    public static final int appConfigChanged = appTotalEvents++;
 
     //order
-    public static final int orderCompleteAdd = totalEvents++;
+    public static final int orderCompleteAdd = appTotalEvents++;
+
+    public static final int onLocationAddressChanged = appTotalEvents++;
 
 }

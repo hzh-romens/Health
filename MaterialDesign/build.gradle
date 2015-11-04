@@ -23,7 +23,7 @@ android {
 
 dependencies {
     compile 'com.nineoldandroids:library:+'
-    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:support-v4:22.+'
 }
 
 // COMMENT TO DEVELOPER MODE / UNCOMMENT TO UPLOAD TO BINTARRAY

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -26,12 +25,11 @@ import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
-import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.core.AddressHelper;
+import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
@@ -94,7 +92,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
-               /* if (id == -1) {
+               /* if (key == -1) {
                     startActivity(new Intent(HomeActivity.this, RemindActivity.class));
                 }else*/
                 if (id == 0) {
@@ -107,15 +105,15 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                         Toast.makeText(HomeActivity.this,"请您先登录",Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(HomeActivity.this, LoginActivity.class));
                     }
-                }/*  else if (id == 2) {
+                }/*  else if (key == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
-                } else if (id == 3) {
+                } else if (key == 3) {
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));
-                } else if (id == 4) {
+                } else if (key == 4) {
                     startActivity(new Intent(HomeActivity.this, MyOrderActivity.class));
-                } else if (id == 5) {
+                } else if (key == 5) {
                     startActivity(new Intent(HomeActivity.this, ControlAddressActivity.class));
-                } else if (id == 6) {
+                } else if (key == 6) {
                     startActivity(new Intent(HomeActivity.this, DrugStoryDetailActivity.class));
                 }*/
             }
@@ -127,7 +125,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     }
 
     private void setupConfig() {
-        AddressHelper.trySetupAddressLocationData();
+        LocationAddressHelper.syncServerLocationAddress(this);
     }
 
     @Override

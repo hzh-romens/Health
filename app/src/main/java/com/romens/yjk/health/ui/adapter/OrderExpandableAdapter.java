@@ -49,7 +49,7 @@ public class OrderExpandableAdapter extends BaseExpandableAdapter {
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView specTextView = (TextView) view.findViewById(R.id.order_date);
-//        TextView countTextView = (TextView) view.findViewById(R.id.order_count);
+//        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
 
         AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
         titleTextView.setText(entity.getGoodsName());

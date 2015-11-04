@@ -26,7 +26,7 @@ public class CitysDao extends AbstractDao<CitysEntity, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
         public final static Property Guid = new Property(1, String.class, "guid", false, "GUID");
         public final static Property ParentGuid = new Property(2, String.class, "parentGuid", false, "PARENTGUID");
         public final static Property Name = new Property(3, String.class, "name", false, "NAME");
@@ -42,7 +42,7 @@ public class CitysDao extends AbstractDao<CitysEntity, Long> {
 //        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         String constraint ="IF NOT EXISTS ";
         db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
                 "'GUID' TEXT NOT NULL ," + // 2: user
                 "'PARENTGUID' TEXT NOT NULL ," + // 3: drug
                 "'NAME' TEXT NOT NULL ," + // 4: count
@@ -91,7 +91,7 @@ public class CitysDao extends AbstractDao<CitysEntity, Long> {
     @Override
     public CitysEntity readEntity(Cursor cursor, int offset) {
         CitysEntity entity = new CitysEntity();
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setGuid(cursor.getString(offset + 1));// user
         entity.setParentGuid(cursor.getString(offset + 2)); // drug
         entity.setName(cursor.getString(offset + 3)); // count
@@ -105,7 +105,7 @@ public class CitysDao extends AbstractDao<CitysEntity, Long> {
      */
     @Override
     public void readEntity(Cursor cursor, CitysEntity entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setGuid(cursor.getString(offset + 1));// user
         entity.setParentGuid(cursor.getString(offset + 2)); // drug
         entity.setName(cursor.getString(offset + 3)); // count

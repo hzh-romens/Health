@@ -17,10 +17,11 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
  * Master of DAO (schema version 12): knows all DAOs.
 */
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 17;
+    public static final int SCHEMA_VERSION = 21;
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
+        DataCacheDao.createTable(db,ifNotExists);
         DiscoveryDao.createTable(db, ifNotExists);
         DrugGroupDao.createTable(db,ifNotExists);
         LocationAddressDao.createTable(db,ifNotExists);
@@ -34,6 +35,7 @@ public class DaoMaster extends AbstractDaoMaster {
     
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
+        DataCacheDao.dropTable(db, ifExists);
         DiscoveryDao.dropTable(db, ifExists);
         DrugGroupDao.dropTable(db,ifExists);
         LocationAddressDao.dropTable(db,ifExists);
@@ -46,6 +48,7 @@ public class DaoMaster extends AbstractDaoMaster {
     }
 
     public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion){
+        DataCacheDao.upgradeTable(db, oldVersion, newVersion);
         DiscoveryDao.upgradeTable(db, oldVersion, newVersion);
         DrugGroupDao.upgradeTable(db,oldVersion,newVersion);
         LocationAddressDao.upgradeTable(db,oldVersion,newVersion);
@@ -85,6 +88,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(SQLiteDatabase db) {
         super(db, SCHEMA_VERSION);
+        registerDaoClass(DataCacheDao.class);
         registerDaoClass(DiscoveryDao.class);
         registerDaoClass(DrugGroupDao.class);
         registerDaoClass(LocationAddressDao.class);

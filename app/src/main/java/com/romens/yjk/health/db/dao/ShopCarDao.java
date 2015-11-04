@@ -18,7 +18,7 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
     public static final String TABLENAME = "ShopCar";
 
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
         public final static Property USERGUID = new Property(1, String.class, "USERGUID", false, "USERGUID");
         public final static Property GUID = new Property(2, String.class, "GUID", false, "GUID");
         public final static Property GOODSGUID = new Property(3, String.class, "GOODSGUID", false, "GOODSGUID");
@@ -49,7 +49,7 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'ShopCar' (" + //
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
                 "'USERGUID' TEXT ," +
                 "'GUID' INTEGER ," +
                 "'GOODSGUID' TEXT ," +
@@ -94,7 +94,7 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
     @Override
     protected ShopCarEntity readEntity(Cursor cursor, int offset) {
         ShopCarEntity entity = new ShopCarEntity();
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
        // entity.setUSERGUID(cursor.getString(offset + 1));
         //entity.setGUID(cursor.getString(offset + 2));
         entity.setGOODSGUID(cursor.getString(offset + 3));
@@ -122,7 +122,7 @@ public class ShopCarDao extends AbstractDao<ShopCarEntity, Long> {
 
     @Override
     protected void readEntity(Cursor cursor, ShopCarEntity entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
    //     entity.setUSERGUID(cursor.getString(offset + 1));
      //   entity.setGUID(cursor.getString(offset + 2));
         entity.setGOODSGUID(cursor.getString(offset + 3));

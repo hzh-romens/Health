@@ -25,7 +25,7 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
         public final static Property User = new Property(1, String.class, "user", false, "USER");
         public final static Property Drug = new Property(2, String.class, "drug", false, "DRUG");
         public final static Property IntervalDay = new Property(3, String.class, "intervalDay", false, "INTERVALDAY");
@@ -57,7 +57,7 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
                 "'USER' TEXT NOT NULL ," + // 2: user
                 "'DRUG' TEXT NOT NULL ," + // 3: drug
                 "'INTERVALDAY' TEXT NOT NULL ," + // 4: count
@@ -144,7 +144,7 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
     @Override
     public RemindEntity readEntity(Cursor cursor, int offset) {
         RemindEntity entity = new RemindEntity();
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setUser(cursor.getString(offset + 1));// user
         entity.setDrug(cursor.getString(offset + 2)); // drug
         entity.setIntervalDay(cursor.getInt(offset + 3)); // count

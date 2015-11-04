@@ -96,7 +96,7 @@ public class VoiceCircleImageView extends ImageView {
     /**
      * sets the icon that will be shown on the fab icon
      *
-     * @param resource the resource id of the icon
+     * @param resource the resource key of the icon
      */
     public void setIcon(int resource) {
         setIcon(resource, resource);

@@ -34,7 +34,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
         public final static Property Key = new Property(1, String.class, "key", false, "KEY");
         public final static Property IconRes = new Property(2, int.class, "iconRes", false, "ICON_RES");
         public final static Property IconUrl = new Property(3, String.class, "iconUrl", false, "ICON_URL");
@@ -63,7 +63,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'Discovery' (" + //
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
                 "'KEY' TEXT NOT NULL UNIQUE ," + // 1: key
                 "'ICON_RES' TEXT NOT NULL ," + // 2: iconResId
                 "'ICON_URL' TEXT NOT NULL ," + // 3: iconUrl
@@ -218,7 +218,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
     @Override
     public DiscoveryEntity readEntity(Cursor cursor, int offset) {
         DiscoveryEntity entity = new DiscoveryEntity();
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setKey(cursor.getString(offset + 1)); // key
         entity.setIconRes(cursor.getInt(offset + 2));// iconResId
         entity.setIconUrl(cursor.getString(offset + 3)); // iconUrl

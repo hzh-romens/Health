@@ -1,160 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.romens.android.ui.ActionBar.ActionBar
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <com.romens.yjk.health.ui.cells.InputTextCell
+        android:id="@+id/new_shopping_address_user_name"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:background="@color/white"
-            android:text="用户名:"
-            android:textColor="@color/theme_sub_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-
-        <EditText
-            android:id="@+id/shopping_address_user"
-            style="@null"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:hint="请输入用户名"
-            android:textColor="@color/theme_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-    </LinearLayout>
-
-    <TextView
+    <com.romens.yjk.health.ui.cells.InputTextCell
+        android:id="@+id/new_shopping_address_user_phone"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/theme_sub_title"/>
+        android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <com.romens.yjk.health.ui.cells.InputTextCell
+        android:id="@+id/new_shopping_address_address"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:background="@color/white"
-            android:text="联系方式:"
-            android:textColor="@color/theme_sub_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-
-        <EditText
-            android:id="@+id/shopping_address_phone"
-            style="@null"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:hint="请输入手机号码"
-            android:inputType="phone"
-            android:textColor="@color/theme_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-    </LinearLayout>
-
-    <TextView
+    <com.romens.yjk.health.ui.cells.InputTextCell
+        android:id="@+id/new_shopping_address_detail"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/theme_sub_title"/>
+        android:layout_height="wrap_content" />
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:orientation="horizontal">-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:background="@color/white"-->
+    <!--android:text="详细地址:"-->
+    <!--android:textColor="@color/theme_sub_title"-->
+    <!--android:textSize="@dimen/abc_text_size_body_1_material" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:background="@color/white"
-            android:text="所在地区:"
-            android:textColor="@color/theme_sub_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-
-        <TextView
-            android:id="@+id/shopping_address_address"
-            style="@null"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:hint="选择区域"
-            android:textColor="@color/theme_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
-            android:background="@color/white"
-            android:src="@drawable/y"/>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/theme_sub_title"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:background="@color/white"
-            android:text="详细地址:"
-            android:textColor="@color/theme_sub_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-
-        <EditText
-            android:id="@+id/shopping_address_address_detail"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:hint="请输入详细地址信息"
-            android:textColor="@color/theme_title"
-            android:textSize="@dimen/abc_text_size_body_1_material"/>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/theme_sub_title"/>
+    <!--<EditText-->
+    <!--android:key="@+key/shopping_address_address_detail"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:background="@color/white"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:hint="请输入详细地址信息"-->
+    <!--android:textColor="@color/theme_title"-->
+    <!--android:textSize="@dimen/abc_text_size_body_1_material" />-->
+    <!--</LinearLayout>-->
 
 </LinearLayout>

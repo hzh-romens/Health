@@ -22,6 +22,7 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextIconCell;
 import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
@@ -82,7 +83,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 //        listView.setAdapter(adapter);
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long key) {
 //                if (position == addressRow) {
 //                    startActivity(new Intent(getActivity(), ControlAddressActivity.class));
 //                }
@@ -108,10 +109,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
                 } else if (position == exitRow) {
                     //TODO 退出登录的修改，清空购物车图标的数量
-                    // UserConfig.clearConfig();
+                    FacadeToken.getInstance().expired();
                     UserConfig.clearUser();
                     UserConfig.clearConfig();
-                    UserConfig.clearUserToken();
                     userEntity = null;
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);

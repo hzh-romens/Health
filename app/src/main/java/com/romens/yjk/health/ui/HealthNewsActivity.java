@@ -215,7 +215,7 @@ public class HealthNewsActivity extends BaseActivity {
                             itemTemp = dataInfoJsonArray.getJSONObject(i);
                             if (itemTemp != null) {
                                 entities.add(new HealthNewsEntity(
-                                        itemTemp.getString("id"),
+                                        itemTemp.getString("key"),
                                         itemTemp.getString("text"),
                                         itemTemp.getString("pic"),
                                         itemTemp.getString("title")));

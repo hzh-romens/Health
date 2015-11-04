@@ -645,7 +645,7 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //                    builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), new DialogInterface.OnClickListener() {
 //                        @Override
 //                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            MessagesController.getInstance().unblockUser(currentUser.id);
+//                            MessagesController.getInstance().unblockUser(currentUser.key);
 //                        }
 //                    });
 //                } else {
@@ -1057,15 +1057,15 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //		if (currentUser == null) {
 //			addContactItem.setVisibility(View.GONE);
 //		} else {
-//			TLRPC.User user = MessagesController.getInstance().getUser(currentUser.id);
+//			TLRPC.User user = MessagesController.getInstance().getUser(currentUser.key);
 //			if (user != null) {
 //				currentUser = user;
 //			}
 //			if (currentEncryptedChat != null && !(currentEncryptedChat instanceof TLRPC.TL_encryptedChat)
-//					|| currentUser.id / 1000 == 333 || currentUser.id / 1000 == 777
+//					|| currentUser.key / 1000 == 333 || currentUser.key / 1000 == 777
 //					|| currentUser instanceof TLRPC.TL_userEmpty || currentUser instanceof TLRPC.TL_userDeleted
 //					|| ContactsController.getInstance().isLoadingContacts()
-//					|| (currentUser.phone != null && currentUser.phone.length() != 0 && ContactsController.getInstance().contactsDict.get(currentUser.id) != null && (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts()))) {
+//					|| (currentUser.phone != null && currentUser.phone.length() != 0 && ContactsController.getInstance().contactsDict.get(currentUser.key) != null && (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts()))) {
 //				addContactItem.setVisibility(View.GONE);
 //			} else {
 //				addContactItem.setVisibility(View.VISIBLE);
@@ -1222,30 +1222,30 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //     * initView
 //     */
 //    protected void initView() {
-//        recordingContainer = findViewById(R.id.recording_container);
-//        micImage = (ImageView) findViewById(R.id.mic_image);
-//        recordingHint = (TextView) findViewById(R.id.recording_hint);
-//        listView = (ListView) findViewById(R.id.list);
-//        mEditTextContent = (PasteEditText) findViewById(R.id.et_sendmessage);
-//        buttonSetModeKeyboard = findViewById(R.id.btn_set_mode_keyboard);
-//        edittext_layout = (RelativeLayout) findViewById(R.id.edittext_layout);
-//        buttonSetModeVoice = findViewById(R.id.btn_set_mode_voice);
-//        buttonSend = findViewById(R.id.btn_send);
-//        buttonPressToSpeak = findViewById(R.id.btn_press_to_speak);
-//        expressionViewpager = (ViewPager) findViewById(R.id.vPager);
-//        emojiIconContainer = (LinearLayout) findViewById(R.id.ll_face_container);
-//        btnContainer = (LinearLayout) findViewById(R.id.ll_btn_container);
-//        locationImgview = (ImageView) findViewById(R.id.btn_location);
-//        iv_emoticons_normal = (ImageView) findViewById(R.id.iv_emoticons_normal);
-//        iv_emoticons_checked = (ImageView) findViewById(R.id.iv_emoticons_checked);
-//        loadmorePB = (ProgressBar) findViewById(R.id.pb_load_more);
-//        btnMore = (Button) findViewById(R.id.btn_more);
+//        recordingContainer = findViewById(R.key.recording_container);
+//        micImage = (ImageView) findViewById(R.key.mic_image);
+//        recordingHint = (TextView) findViewById(R.key.recording_hint);
+//        listView = (ListView) findViewById(R.key.list);
+//        mEditTextContent = (PasteEditText) findViewById(R.key.et_sendmessage);
+//        buttonSetModeKeyboard = findViewById(R.key.btn_set_mode_keyboard);
+//        edittext_layout = (RelativeLayout) findViewById(R.key.edittext_layout);
+//        buttonSetModeVoice = findViewById(R.key.btn_set_mode_voice);
+//        buttonSend = findViewById(R.key.btn_send);
+//        buttonPressToSpeak = findViewById(R.key.btn_press_to_speak);
+//        expressionViewpager = (ViewPager) findViewById(R.key.vPager);
+//        emojiIconContainer = (LinearLayout) findViewById(R.key.ll_face_container);
+//        btnContainer = (LinearLayout) findViewById(R.key.ll_btn_container);
+//        locationImgview = (ImageView) findViewById(R.key.btn_location);
+//        iv_emoticons_normal = (ImageView) findViewById(R.key.iv_emoticons_normal);
+//        iv_emoticons_checked = (ImageView) findViewById(R.key.iv_emoticons_checked);
+//        loadmorePB = (ProgressBar) findViewById(R.key.pb_load_more);
+//        btnMore = (Button) findViewById(R.key.btn_more);
 //        iv_emoticons_normal.setVisibility(View.VISIBLE);
 //        iv_emoticons_checked.setVisibility(View.INVISIBLE);
-//        more = findViewById(R.id.more);
+//        more = findViewById(R.key.more);
 //        edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
-//        voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
-//        videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
+//        voiceCallBtn = (ImageView) findViewById(R.key.btn_voice_call);
+//        videoCallBtn = (ImageView) findViewById(R.key.btn_video_call);
 //
 //        // 动画资源文件,用于录制语音时
 //        micImages = new Drawable[]{getResources().getDrawable(R.drawable.record_animate_01),
@@ -1323,7 +1323,7 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //            }
 //        });
 //
-//        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.chat_swipe_layout);
+//        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.key.chat_swipe_layout);
 //
 //        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
 //                android.R.color.holo_orange_light, android.R.color.holo_red_light);
@@ -1385,13 +1385,13 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //
 //        if (chatType == CHATTYPE_SINGLE) { // 单聊
 //            toChatUsername = getIntent().getStringExtra("userId");
-//            ((TextView) findViewById(R.id.name)).setText(toChatUsername);
+//            ((TextView) findViewById(R.key.name)).setText(toChatUsername);
 //        } else {
 //            // 群聊
-//            findViewById(R.id.container_to_group).setVisibility(View.VISIBLE);
-//            findViewById(R.id.container_remove).setVisibility(View.GONE);
-//            findViewById(R.id.container_voice_call).setVisibility(View.GONE);
-//            findViewById(R.id.container_video_call).setVisibility(View.GONE);
+//            findViewById(R.key.container_to_group).setVisibility(View.VISIBLE);
+//            findViewById(R.key.container_remove).setVisibility(View.GONE);
+//            findViewById(R.key.container_voice_call).setVisibility(View.GONE);
+//            findViewById(R.key.container_video_call).setVisibility(View.GONE);
 //            toChatUsername = getIntent().getStringExtra("groupId");
 //
 //            if (chatType == CHATTYPE_GROUP) {
@@ -1505,9 +1505,9 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //        chatGroup = EMGroupManager.getInstance().getGroup(toChatUsername);
 //
 //        if (chatGroup != null) {
-//            ((TextView) findViewById(R.id.name)).setText(chatGroup.getGroupName());
+//            ((TextView) findViewById(R.key.name)).setText(chatGroup.getGroupName());
 //        } else {
-//            ((TextView) findViewById(R.id.name)).setText(toChatUsername);
+//            ((TextView) findViewById(R.key.name)).setText(toChatUsername);
 //        }
 //
 //        // 监听当前会话的群聊解散被T事件
@@ -1516,7 +1516,7 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //    }
 //
 //    protected void onChatRoomViewCreation() {
-//        findViewById(R.id.container_to_group).setVisibility(View.GONE);
+//        findViewById(R.key.container_to_group).setVisibility(View.GONE);
 //
 //        final ProgressDialog pd = ProgressDialog.show(this, "", "Joining......");
 //        EMChatManager.getInstance().joinChatRoom(toChatUsername, new EMValueCallBack<EMChatRoom>() {
@@ -1530,9 +1530,9 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //                        pd.dismiss();
 //                        chatRoom = EMChatManager.getInstance().getChatRoom(toChatUsername);
 //                        if (chatRoom != null) {
-//                            ((TextView) findViewById(R.id.name)).setText(chatRoom.getName());
+//                            ((TextView) findViewById(R.key.name)).setText(chatRoom.getName());
 //                        } else {
-//                            ((TextView) findViewById(R.id.name)).setText(toChatUsername);
+//                            ((TextView) findViewById(R.key.name)).setText(toChatUsername);
 //                        }
 //                        EMLog.d(TAG, "join chatRoom success : " + chatRoom.getName());
 //
@@ -1787,37 +1787,37 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //    @Override
 //    public void onClick(View view) {
 //        String st1 = getResources().getString(R.string.not_connect_to_server);
-//        int id = view.getId();
-//        if (id == R.id.btn_send) {// 点击发送按钮(发文字和表情)
+//        int key = view.getId();
+//        if (key == R.key.btn_send) {// 点击发送按钮(发文字和表情)
 //            String s = mEditTextContent.getText().toString();
 //            sendMessageForText(s);
-//        } else if (id == R.id.btn_take_picture) {
+//        } else if (key == R.key.btn_take_picture) {
 //            selectPicFromCamera();// 点击照相图标
-//        } else if (id == R.id.btn_picture) {
+//        } else if (key == R.key.btn_picture) {
 //            selectPicFromLocal(); // 点击图片图标
-//        } else if (id == R.id.btn_location) { // 位置
+//        } else if (key == R.key.btn_location) { // 位置
 //            startActivityForResult(new Intent(this, BaiduMapActivity.class), REQUEST_CODE_MAP);
-//        } else if (id == R.id.iv_emoticons_normal) { // 点击显示表情框
+//        } else if (key == R.key.iv_emoticons_normal) { // 点击显示表情框
 //            more.setVisibility(View.VISIBLE);
 //            iv_emoticons_normal.setVisibility(View.INVISIBLE);
 //            iv_emoticons_checked.setVisibility(View.VISIBLE);
 //            btnContainer.setVisibility(View.GONE);
 //            emojiIconContainer.setVisibility(View.VISIBLE);
 //            hideKeyboard();
-//        } else if (id == R.id.iv_emoticons_checked) { // 点击隐藏表情框
+//        } else if (key == R.key.iv_emoticons_checked) { // 点击隐藏表情框
 //            iv_emoticons_normal.setVisibility(View.VISIBLE);
 //            iv_emoticons_checked.setVisibility(View.INVISIBLE);
 //            btnContainer.setVisibility(View.VISIBLE);
 //            emojiIconContainer.setVisibility(View.GONE);
 //            more.setVisibility(View.GONE);
 //
-//        } else if (id == R.id.btn_video) {
+//        } else if (key == R.key.btn_video) {
 //            // 点击摄像图标
 //            Intent intent = new Intent(ChatActivity.this, ImageGridActivity.class);
 //            startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
-//        } else if (id == R.id.btn_file) { // 点击文件图标
+//        } else if (key == R.key.btn_file) { // 点击文件图标
 //            selectFileFromLocal();
-//        } else if (id == R.id.btn_voice_call) { // 点击语音电话图标
+//        } else if (key == R.key.btn_voice_call) { // 点击语音电话图标
 //            if (!EMChatManager.getInstance().isConnected())
 //                Toast.makeText(this, st1, 0).show();
 //            else {
@@ -1826,7 +1826,7 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //                voiceCallBtn.setEnabled(false);
 //                toggleMore(null);
 //            }
-//        } else if (id == R.id.btn_video_call) { // 视频通话
+//        } else if (key == R.key.btn_video_call) { // 视频通话
 //            if (!EMChatManager.getInstance().isConnected())
 //                Toast.makeText(this, st1, 0).show();
 //            else {
@@ -2450,7 +2450,7 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //     */
 //    private View getGridChildView(int i) {
 //        View view = View.inflate(this, R.layout.expression_gridview, null);
-//        ExpandGridView gv = (ExpandGridView) view.findViewById(R.id.gridview);
+//        ExpandGridView gv = (ExpandGridView) view.findViewById(R.key.gridview);
 //        List<String> list = new ArrayList<String>();
 //        if (i == 1) {
 //            List<String> list1 = reslist.subList(0, 20);
@@ -2464,7 +2464,7 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //        gv.setOnItemClickListener(new OnItemClickListener() {
 //
 //            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long key) {
 //                String filename = expressionAdapter.getItem(position);
 //                try {
 //                    // 文字输入框可见时，才可输入表情
@@ -2533,7 +2533,7 @@ public class IMChatActivity extends BaseActivity implements NotificationCenter.N
 //    protected void onResume() {
 //        super.onResume();
 //        if (chatGroup != null)
-//            ((TextView) findViewById(R.id.name)).setText(chatGroup.getGroupName());
+//            ((TextView) findViewById(R.key.name)).setText(chatGroup.getGroupName());
 //        voiceCallBtn.setEnabled(true);
 //        videoCallBtn.setEnabled(true);
 //

@@ -3,6 +3,7 @@ package com.romens.yjk.health.db.dao;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.yjk.health.db.entity.CitysEntity;
+import com.romens.yjk.health.db.entity.DataCacheEntity;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.EatDrugUserEntity;
@@ -27,6 +28,10 @@ import de.greenrobot.dao.internal.DaoConfig;
  * @see AbstractDaoSession
  */
 public class DaoSession extends AbstractDaoSession {
+
+    private final DataCacheDao dataCacheDao;
+    private final DaoConfig dataCacheDaoConfig;
+
 
     private final DaoConfig discoveryDaoConfig;
     private final DaoConfig drugGroupDaoConfig;
@@ -59,6 +64,12 @@ public class DaoSession extends AbstractDaoSession {
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
+
+        dataCacheDaoConfig = daoConfigMap.get(DataCacheDao.class).clone();
+        dataCacheDaoConfig.initIdentityScope(type);
+        dataCacheDao = new DataCacheDao(dataCacheDaoConfig, this);
+        registerDao(DataCacheEntity.class, dataCacheDao);
+
 
         discoveryDaoConfig = daoConfigMap.get(DiscoveryDao.class).clone();
         discoveryDaoConfig.initIdentityScope(type);
@@ -107,6 +118,7 @@ public class DaoSession extends AbstractDaoSession {
     }
 
     public void clear() {
+        dataCacheDaoConfig.getIdentityScope().clear();
         discoveryDaoConfig.getIdentityScope().clear();
         drugGroupDaoConfig.getIdentityScope().clear();
         locationAddressDaoConfig.getIdentityScope().clear();
@@ -117,6 +129,11 @@ public class DaoSession extends AbstractDaoSession {
         cityDaoConfig.getIdentityScope().clear();
         historyDaoConfig.getIdentityScope().clear();
     }
+
+    public DataCacheDao getDataCacheDao() {
+        return dataCacheDao;
+    }
+
 
     public DiscoveryDao getDiscoveryDao() {
         return discoveryDao;
@@ -149,6 +166,7 @@ public class DaoSession extends AbstractDaoSession {
     public CitysDao getCitysDao() {
         return citysDao;
     }
+
     public HistoryDao getHistoryDao() {
         return historyDao;
     }

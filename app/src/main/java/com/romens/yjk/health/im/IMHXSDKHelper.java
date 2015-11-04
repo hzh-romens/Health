@@ -141,7 +141,7 @@ public class IMHXSDKHelper extends HXSDKHelper {
                 EMMessage message = null;
                 if (event.getData() instanceof EMMessage) {
                     message = (EMMessage) event.getData();
-                    EMLog.d(TAG, "receive the event : " + event.getEvent() + ",id : " + message.getMsgId());
+                    EMLog.d(TAG, "receive the event : " + event.getEvent() + ",key : " + message.getMsgId());
                 }
 
                 switch (event.getEvent()) {

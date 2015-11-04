@@ -132,7 +132,7 @@ public class AddRemindActivity extends BaseActivity implements DatePickerDialog.
 
     private void viewSetData(final RemindEntity entity) {
         deleteBtnRow = rowCount++;
-//        deleteBtn = (Button) findViewById(R.id.add_remind_deleteBtn);
+//        deleteBtn = (Button) findViewById(R.key.add_remind_deleteBtn);
 //        deleteBtn.setVisibility(View.VISIBLE);
         editUsercell.setValue(entity.getUser());
         editDrugCell.setValue(entity.getDrug());

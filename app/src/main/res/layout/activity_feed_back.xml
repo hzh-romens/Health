@@ -36,7 +36,7 @@
         android:layout_margin="8dp"/>
 
     <!--<com.romens.yjk.health.ui.cells.EditTagCell-->
-        <!--android:id="@+id/feed_back_edit_tag"-->
+        <!--android:key="@+key/feed_back_edit_tag"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"/>-->
 
@@ -58,21 +58,21 @@
         <!--android:orientation="horizontal">-->
 
         <!--<ImageView-->
-            <!--android:id="@+id/feed_back_first_img"-->
+            <!--android:key="@+key/feed_back_first_img"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_weight="1"-->
             <!--android:src="@drawable/no_img_upload"/>-->
 
         <!--<ImageView-->
-            <!--android:id="@+id/feed_back_second_img"-->
+            <!--android:key="@+key/feed_back_second_img"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_weight="1"-->
             <!--android:src="@drawable/no_img_upload"/>-->
 
         <!--<ImageView-->
-            <!--android:id="@+id/feed_back_three_img"-->
+            <!--android:key="@+key/feed_back_three_img"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_weight="1"-->

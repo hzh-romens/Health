@@ -23,7 +23,7 @@ public class SearchHistoryDao extends AbstractDao<SearchHistoryEntity, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
         public final static Property HISTORYKEYWORD = new Property(1, int.class, "historyKeyword", false, "HISTORYKEYWORD");
     }
 
@@ -42,7 +42,7 @@ public class SearchHistoryDao extends AbstractDao<SearchHistoryEntity, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
                 "'HISTORYKEYWORD' TEXT NOT NULL );"); // 11: times
         // Add Indexes
         db.execSQL("CREATE INDEX " + "IF NOT EXISTS " + "IDX_Remind_KEY ON " + TABLENAME +
@@ -104,7 +104,7 @@ public class SearchHistoryDao extends AbstractDao<SearchHistoryEntity, Long> {
     @Override
     public SearchHistoryEntity readEntity(Cursor cursor, int offset) {
         SearchHistoryEntity entity = new SearchHistoryEntity();
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setHistoryKeyword(cursor.getString(offset + 1)); // userIcon
         return entity;
     }

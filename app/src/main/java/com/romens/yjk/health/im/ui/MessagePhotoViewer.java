@@ -578,7 +578,7 @@ public class MessagePhotoViewer implements NotificationCenter.NotificationCenter
                 radialProgressViews.setProgress(progress, true);
             }
         }
-        //else if (id == NotificationCenter.userPhotosLoaded) {
+        //else if (key == NotificationCenter.userPhotosLoaded) {
 //            int guid = (Integer) args[4];
 //            int uid = (Integer) args[0];
 //            if (avatarsUserId == uid && classGuid == guid) {
@@ -630,7 +630,7 @@ public class MessagePhotoViewer implements NotificationCenter.NotificationCenter
 //                    //MessagesController.getInstance().loadUserPhotos(avatarsUserId, 0, 80, 0, false, classGuid);
 //                }
 //            }
-//        } else if (id == NotificationCenter.mediaCountDidLoaded) {
+//        } else if (key == NotificationCenter.mediaCountDidLoaded) {
 //            long uid = (Long) args[0];
 //            if (uid == currentDialogId) {
 //                if ((int) currentDialogId != 0 && (Boolean) args[2]) {
@@ -649,7 +649,7 @@ public class MessagePhotoViewer implements NotificationCenter.NotificationCenter
 //                    }
 //                }
 //            }
-//        } else if (id == NotificationCenter.mediaDidLoaded) {
+//        } else if (key == NotificationCenter.mediaDidLoaded) {
 //            long uid = (Long) args[0];
 //            int guid = (Integer) args[4];
 //            if (uid == currentDialogId && guid == classGuid) {
@@ -743,7 +743,7 @@ public class MessagePhotoViewer implements NotificationCenter.NotificationCenter
 //                    }
 //                }
 //            }
-//        } else if (id == NotificationCenter.emojiDidLoaded) {
+//        } else if (key == NotificationCenter.emojiDidLoaded) {
 //            if (captionTextView != null) {
 //                captionTextView.invalidate();
 //            }
@@ -919,10 +919,10 @@ public class MessagePhotoViewer implements NotificationCenter.NotificationCenter
 //                                    closePhoto(false, false);
 //                                } else if (photo != null) {
 //                                    TLRPC.TL_inputPhoto inputPhoto = new TLRPC.TL_inputPhoto();
-//                                    inputPhoto.id = photo.id;
+//                                    inputPhoto.key = photo.key;
 //                                    inputPhoto.access_hash = photo.access_hash;
 //                                    MessagesController.getInstance().deleteUserPhoto(inputPhoto);
-//                                    MessagesStorage.getInstance().clearUserPhoto(avatarsUserId, photo.id);
+//                                    MessagesStorage.getInstance().clearUserPhoto(avatarsUserId, photo.key);
 //                                    imagesArrLocations.remove(currentIndex);
 //                                    imagesArrLocationsSizes.remove(currentIndex);
 //                                    avatarsArr.remove(currentIndex);

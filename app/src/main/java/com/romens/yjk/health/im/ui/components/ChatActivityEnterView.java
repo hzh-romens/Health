@@ -235,7 +235,7 @@ public class ChatActivityEnterView extends LinearLayout implements NotificationC
 //                    if ((int) dialog_id > 0) {
 //                        currentUser = MessagesController.getInstance().getUser((int) dialog_id);
 //                    }
-//                    if (currentUser != null && (currentUser.id == UserConfig.getClientUserId() || currentUser.status != null && currentUser.status.expires < currentTime)) {
+//                    if (currentUser != null && (currentUser.key == UserConfig.getClientUserId() || currentUser.status != null && currentUser.status.expires < currentTime)) {
 //                        return;
 //                    }
                     lastTypingTimeSend = System.currentTimeMillis();
@@ -1178,7 +1178,7 @@ public class ChatActivityEnterView extends LinearLayout implements NotificationC
                 delegate.onMessageSend(null);
             }
         }
-//        else if (id == NotificationCenter.hideEmojiKeyboard) {
+//        else if (key == NotificationCenter.hideEmojiKeyboard) {
 //            hideEmojiPopup();
 //        }
     }

@@ -26,13 +26,15 @@ public class ListSelectActivity extends BaseActivity {
     public static final String ARGUMENTS_KEY_TITLE = "title";
     public static final String ARGUMENTS_KEY_NAME_LIST = "name_list";
     public static final String ARGUMENTS_KEY_VALUE_LIST = "value_list";
-
+    public static final String ARGUMENTS_KEY_ONLY_SELECT = "only_select";
     public static final String RESULT_KEY_SELECTED_NAME = "selected_name";
     public static final String RESULT_KEY_SELECTED_VALUE = "selected_value";
 
     private String title;
-    private final List<String> nameList = new ArrayList<>();
-    private final List<String> valueList = new ArrayList<>();
+    protected final List<String> nameList = new ArrayList<>();
+    protected final List<String> valueList = new ArrayList<>();
+
+    private boolean isOnlySelect = true;
 
 
     @Override
@@ -41,7 +43,7 @@ public class ListSelectActivity extends BaseActivity {
         Intent intent = getIntent();
 
         title = intent.getStringExtra(ARGUMENTS_KEY_TITLE);
-
+        isOnlySelect = intent.getBooleanExtra(ARGUMENTS_KEY_ONLY_SELECT, true);
         ArrayList<String> nameListArg = intent.getStringArrayListExtra(ARGUMENTS_KEY_NAME_LIST);
         nameList.clear();
         if (nameListArg != null && nameListArg.size() > 0) {
@@ -50,12 +52,13 @@ public class ListSelectActivity extends BaseActivity {
         ArrayList<String> valueListArg = intent.getStringArrayListExtra(ARGUMENTS_KEY_VALUE_LIST);
         valueList.clear();
         if (valueListArg != null && valueListArg.size() > 0) {
-            valueList.addAll(nameListArg);
+            valueList.addAll(valueListArg);
         }
 
 
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
+        content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         actionBar.setTitle(title);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -76,7 +79,11 @@ public class ListSelectActivity extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                returnSelectedItem(position);
+                if (isOnlySelect) {
+                    returnSelectedItem(position);
+                } else {
+                    onItemSelected(position);
+                }
             }
         });
 
@@ -91,7 +98,10 @@ public class ListSelectActivity extends BaseActivity {
         cancelSelect();
     }
 
-    private void returnSelectedItem(int position) {
+    protected void onItemSelected(int position) {
+    }
+
+    protected void returnSelectedItem(int position) {
         String name = nameList.get(position);
         String value = null;
         if (position >= 0 && position < valueList.size()) {

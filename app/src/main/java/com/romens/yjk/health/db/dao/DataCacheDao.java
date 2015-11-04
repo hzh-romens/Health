@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import com.romens.erp.chain.db.entity.DataCacheEntity;
+import com.romens.yjk.health.db.entity.DataCacheEntity;
 
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
@@ -32,8 +32,8 @@ public class DataCacheDao extends AbstractDao<DataCacheEntity, String> {
         super(config);
     }
 
-    public DataCacheDao(DaoConfig config, AppDaoSession appDaoSession) {
-        super(config, appDaoSession);
+    public DataCacheDao(DaoConfig config, DaoSession daoSession) {
+        super(config, daoSession);
     }
 
     /**
@@ -68,9 +68,9 @@ public class DataCacheDao extends AbstractDao<DataCacheEntity, String> {
     protected void bindValues(SQLiteStatement stmt, DataCacheEntity entity) {
         stmt.clearBindings();
 
-//        Long id = entity.getId();
-//        if (id != null) {
-//            stmt.bindLong(1, id);
+//        Long key = entity.getId();
+//        if (key != null) {
+//            stmt.bindLong(1, key);
 //        }
         stmt.bindString(1, entity.getCacheKey());
         stmt.bindLong(2, entity.getCacheUpdated());

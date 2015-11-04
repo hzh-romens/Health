@@ -5,16 +5,18 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
-import com.romens.yjk.health.BuildConfig;
 import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
+import com.romens.yjk.health.db.dao.DataCacheDao;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.dao.HistoryDao;
+import com.romens.yjk.health.db.dao.LocationAddressDao;
 import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
+import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 
 import java.util.List;
@@ -120,6 +122,7 @@ public class DBInterface {
             return entity.getUpdated();
         }
     }
+
     //获取购物车数据上次的加载时间
     public int getShopCarDataLastTime() {
         ShopCarDao dao = openReadableDb().getShopCarDao();
@@ -133,6 +136,7 @@ public class DBInterface {
             return entity.getUpdatedTime();
         }
     }
+
     //查询购物车所有的数据
     public List<ShopCarEntity> loadAllShopCar() {
         ShopCarDao dao = openReadableDb().getShopCarDao();
@@ -188,6 +192,7 @@ public class DBInterface {
                 .list();
         return result;
     }
+
     //查询浏览历史里面的所有的数据
     public List<HistoryEntity> loadAllHistory() {
         HistoryDao dao = openReadableDb().getHistoryDao();

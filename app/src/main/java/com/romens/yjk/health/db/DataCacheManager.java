@@ -1,8 +1,8 @@
 package com.romens.yjk.health.db;
 
-import com.romens.erp.chain.db.dao.DataCacheDao;
-import com.romens.erp.chain.db.entity.DataCacheEntity;
-import com.romens.erp.library.db.DBInterface;
+
+import com.romens.yjk.health.db.dao.DataCacheDao;
+import com.romens.yjk.health.db.entity.DataCacheEntity;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -12,9 +12,6 @@ import java.util.List;
  * Created by siery on 15/10/30.
  */
 public class DataCacheManager {
-
-    public static final String CacheKeyForDiseaseGroup = "DiseaseGroup";
-
     private static final HashMap<String, DataCacheEntity> dataCaches = new HashMap<>();
 
     private static volatile DataCacheManager Instance = null;
@@ -39,7 +36,7 @@ public class DataCacheManager {
     }
 
     private void loadDataCaches() {
-        DataCacheDao dataCacheDao = AppDBInterface.instance().openReadableDb().getDataCacheDao();
+        DataCacheDao dataCacheDao = DBInterface.instance().openReadableDb().getDataCacheDao();
         List<DataCacheEntity> dataCacheEntities = dataCacheDao.loadAll();
         for (DataCacheEntity entity :
                 dataCacheEntities) {
@@ -55,7 +52,7 @@ public class DataCacheManager {
                 long currTime = Calendar.getInstance().getTimeInMillis();
                 long cacheTime = dataCacheEntity.getCacheUpdated();
                 int validity = dataCacheEntity.getCacheValidity() * 1000;
-                if (validity <= 0 || (currTime - cacheTime) > validity) {
+                if (validity <= 0 || (currTime - cacheTime) < validity) {
                     return true;
                 }
             }
@@ -79,7 +76,7 @@ public class DataCacheManager {
             dataCacheEntity.setCacheUpdated(Calendar.getInstance().getTimeInMillis());
             dataCacheEntity.setCacheValidity(validity);
 
-            DataCacheDao dataCacheDao = AppDBInterface.instance().openWritableDb().getDataCacheDao();
+            DataCacheDao dataCacheDao = DBInterface.instance().openWritableDb().getDataCacheDao();
             dataCacheDao.insertOrReplace(dataCacheEntity);
             dataCaches.put(key, dataCacheEntity);
         }

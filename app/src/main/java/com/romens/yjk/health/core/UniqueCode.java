@@ -60,7 +60,7 @@ public class UniqueCode {
         String androidId = androidId(context);
         String wifiMAC = wifimac(context);
         // String btmac = btmac(context);
-        // String id = imei + deviceid + androidid + wifimac + btmac;
+        // String key = imei + deviceid + androidid + wifimac + btmac;
         String id = IMEI + deviceId + androidId + wifiMAC;
         MessageDigest m = null;
         try {

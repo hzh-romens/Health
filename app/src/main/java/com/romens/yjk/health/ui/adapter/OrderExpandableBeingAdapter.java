@@ -69,7 +69,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
-//        TextView countTextView = (TextView) view.findViewById(R.id.order_count);
+//        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
 
         Button buyAgainBtn = (Button) view.findViewById(R.id.order_all_buy_again);
         Button evaluateBtn = (Button) view.findViewById(R.id.order_all_evaluate_btn);

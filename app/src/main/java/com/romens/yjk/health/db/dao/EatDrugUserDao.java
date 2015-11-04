@@ -26,7 +26,7 @@ public class EatDrugUserDao  extends AbstractDao<EatDrugUserEntity, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
     }
 
@@ -44,7 +44,7 @@ public class EatDrugUserDao  extends AbstractDao<EatDrugUserEntity, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
                 "'NAME' INTEGER NOT NULL );"); // 11: times
         // Add Indexes
         db.execSQL("CREATE INDEX " + "IF NOT EXISTS " + "IDX_Remind_KEY ON " + TABLENAME +
@@ -106,7 +106,7 @@ public class EatDrugUserDao  extends AbstractDao<EatDrugUserEntity, Long> {
     @Override
     public EatDrugUserEntity readEntity(Cursor cursor, int offset) {
         EatDrugUserEntity entity = new EatDrugUserEntity();
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // id
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0)); // key
         entity.setName(cursor.getString(offset + 1));// user
         return entity;
     }

@@ -140,10 +140,11 @@ public class UserConfig {
 
     public static void clearUserToken() {
         config.clearToken();
-        boolean isCommit = saveConfig(config);
-        if (isCommit) {
-            FacadeToken.getInstance().expired();
-        }
+        saveConfig(config);
+//        if (isCommit) {
+//            FacadeToken.getInstance().expired();
+//        }
+        FacadeToken.getInstance().expired();
     }
 
     public static boolean saveConfig(Data data) {
