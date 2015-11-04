@@ -2,35 +2,29 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
+    <FrameLayout
         style="@style/titleStytle"
         android:orientation="horizontal"
+        android:layout_height="52dp"
         android:background="@color/theme_primary">
         <ImageView
             style="@style/iv_back_style"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_outter"
             android:id="@id/btn_back"
             android:background="@drawable/ic_ab_back"
-            android:layout_alignParentLeft="true"/>
+            android:layout_gravity="left|center_vertical"/>
         <TextView
-            android:layout_centerInParent="true"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="64dp"
-            android:layout_marginTop="@dimen/padding_inner"
-            android:layout_marginBottom="@dimen/padding_inner"
-            android:layout_marginRight="48dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:text="购物车"
-            android:inputType="textPhonetic"
-            android:imeOptions="actionSearch"
-            android:drawablePadding="8dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textColor="@color/white"
+            android:includeFontPadding="false"
+            android:text="购物车"
+            android:id="@+id/title"
+            android:layout_gravity="center_vertical"
             android:textSize="@dimen/text_size_xlarge"
+            android:layout_marginLeft="64dp"
             />
-    </RelativeLayout>
+    </FrameLayout>
     <ExpandableListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
