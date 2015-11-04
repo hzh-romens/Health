@@ -12,10 +12,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.romens.android.core.NotificationCenter;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -25,6 +27,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.model.CommitOrderEntity;
 import com.romens.yjk.health.model.DeleteEntity;
@@ -52,7 +55,7 @@ import java.util.Map;
  */
 public class CommitOrderActivity extends BaseActivity {
     private ExpandableListView expandableListView;
-    private FrameLayout back;
+    private ImageView back;
     private HashMap<String, List<ShopCarEntity>> childData;
     private List<ParentEntity> parentData;
     private TextView person;
@@ -75,6 +78,7 @@ public class CommitOrderActivity extends BaseActivity {
         getAdressData();
         childData = (HashMap<String, List<ShopCarEntity>>) getIntent().getSerializableExtra("childData");
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
+        Log.i("订单数据长度---",parentData.size()+"");
         getAll(childData);
         adapter = new CommitOrderAdapter(this,parentData.size()+1);
         expandableListView.setAdapter(adapter);
@@ -84,9 +88,9 @@ public class CommitOrderActivity extends BaseActivity {
             @Override
             public void getCheckData(String flag) {
                 if ("药店派送".equals(flag)) {
-                    DELIVERYTYPE = "1";
+                    DELIVERYTYPE = "55b30f7d31f2f";
                 } else {
-                    DELIVERYTYPE = "2";
+                    DELIVERYTYPE = "23B70F47-45D6-4ECE-8A3A-13CC92DEA4B1";
                 }
             }
         });
@@ -144,7 +148,7 @@ public class CommitOrderActivity extends BaseActivity {
             public void onClick(View v) {
                 needShowProgress("正在提交..");
                 if (DELIVERYTYPE != null && !("".equals(DELIVERYTYPE))) {
-                    commitOrder(filteData);
+                    commitOrder(filteData,sumCount);
                 } else {
                     needHideProgress();
                     DialogUtils dialogUtils = new DialogUtils();
@@ -157,7 +161,7 @@ public class CommitOrderActivity extends BaseActivity {
 
     private void initView() {
         expandableListView = (ExpandableListView) findViewById(R.id.ev);
-        back = (FrameLayout) findViewById(R.id.btn_back);
+        back = (ImageView) findViewById(R.id.btn_back);
         tv_content = (TextView) findViewById(R.id.tv_content);
         accounts = (TextView) findViewById(R.id.accounts);
         //头部添加地址
@@ -194,14 +198,13 @@ public class CommitOrderActivity extends BaseActivity {
     }
 
     //向服务器提交订单
-    private void commitOrder(List<FilterChildEntity> data) {
+    private void commitOrder(List<FilterChildEntity> data, final int count) {
         Gson gson = new Gson();
         CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
         commitOrderEntity.setDELIVERYTYPE(DELIVERYTYPE);
         commitOrderEntity.setADDRESSID(ADDRESSID);
         commitOrderEntity.setGOODSLIST(data);
         String JSON_DATA = gson.toJson(commitOrderEntity);
-        Log.i("DELIVERYTYPE-ADDRESSID+", DELIVERYTYPE + "=" + ADDRESSID);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", JSON_DATA).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
@@ -229,6 +232,7 @@ public class CommitOrderActivity extends BaseActivity {
                             i.putExtra("sumMoney", sumMoney + "");
                             i.putExtra("orderNumber", jsonObject.getString("msg1"));
                             i.putExtra("time", jsonObject.getString("msg2"));
+                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
                         } else {
                             String errorMsgs = jsonObject.getString("errorMsg");
                             i.putExtra("success", "false");

@@ -3,19 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
-        android:layout_gravity="top"
-        style="@style/titleStytle">
-    <FrameLayout
-        style="@style/framelayou_back_style">
+        style="@style/titleStytle"
+        android:orientation="horizontal"
+        android:background="@color/theme_primary">
         <ImageView
             style="@style/iv_back_style"
-            android:background="@drawable/ic_ab_back_grey"/>
-    </FrameLayout>
-    <TextView
-        style="@style/title_textview_style"
-        android:text="购物车"
-        android:textColor="#333333"
-        /></RelativeLayout>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_outter"
+            android:id="@id/btn_back"
+            android:background="@drawable/ic_ab_back"
+            android:layout_alignParentLeft="true"/>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="64dp"
+            android:layout_marginTop="@dimen/padding_inner"
+            android:layout_marginBottom="@dimen/padding_inner"
+            android:layout_marginRight="48dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="购物车"
+            android:inputType="textPhonetic"
+            android:imeOptions="actionSearch"
+            android:drawablePadding="8dp"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_xlarge"
+            />
+    </RelativeLayout>
     <ExpandableListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,7 +66,7 @@
             android:text="去结算"
             android:includeFontPadding="false"
             android:layout_alignParentRight="true"
-            android:textColor="@color/themecolor"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size_large" />
         </RelativeLayout>
 

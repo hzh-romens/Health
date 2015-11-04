@@ -63,13 +63,11 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId()){
             case R.id.toOrder:
                 Intent intent=new Intent(this,MyOrderActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.toShop:
                 Intent i=new Intent(this,HomeActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 finish();
                 break;
@@ -80,7 +78,6 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK ) {
             Intent i=new Intent(this,HomeActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
         }

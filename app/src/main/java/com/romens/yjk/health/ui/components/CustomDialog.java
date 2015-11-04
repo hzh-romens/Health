@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -181,15 +182,14 @@ public class CustomDialog extends Dialog {
 			dialog.addContentView(layout, new LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			// set the dialog title
+			((TextView) layout.findViewById(R.id.title)).setVisibility(View.GONE);
 			((TextView) layout.findViewById(R.id.title)).setText(title);
 			((TextView) layout.findViewById(R.id.title)).getPaint()
 					.setFakeBoldText(true);
-
 			if (title == null || title.trim().length() == 0) {
 				((TextView) layout.findViewById(R.id.message))
 						.setGravity(Gravity.CENTER);
 			}
-
 			if (neutral_btnText != null && confirm_btnText != null
 					&& cancel_btnText != null) {
 				((Button) layout.findViewById(R.id.confirm_btn))

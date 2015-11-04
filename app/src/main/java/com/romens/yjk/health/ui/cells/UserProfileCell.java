@@ -38,7 +38,7 @@ public class UserProfileCell extends FrameLayoutFixed {
 
     public void setUser(UserEntity userEntity) {
         AvatarDrawable avatarDrawable = new AvatarDrawable(true);
-        avatarDrawable.setInfo(0, userEntity.getName(), "", false);
+        avatarDrawable.setInfo(0, userEntity.getPhone(), "", false);
         avatarDrawable.setColor(ResourcesConfig.primaryColor);
         avatarImage.setImageUrl(userEntity.getAvatar(), "64_64", avatarDrawable);
         nameView.setText(userEntity.getName());

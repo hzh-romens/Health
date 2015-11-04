@@ -824,6 +824,7 @@ public class LoginActivity extends BaseActivity {
                     userConfigData.setOrg(orgCode, orgName);
                     String phoneNumber = currentParams.getString(PhoneView.PARAM_PHONE);
                     userConfigData.setPhoneNumber(phoneNumber);
+                    String userGuid = currentParams.getString("UserGuid");
                     userConfigData.setLogin(userName, passCode);
                     UserConfig.saveConfig(userConfigData);
                     UserConfig.loadConfig();
@@ -1119,6 +1120,7 @@ public class LoginActivity extends BaseActivity {
                     userConfigData.setOrg(orgCode, orgName);
                     String phoneNumber = currentParams.getString(PhoneView.PARAM_PHONE);
                     String userGuid = currentParams.getString("UserGuid");
+                    Log.i("用户Guid====",userGuid);
                     userConfigData.setPhoneNumber(phoneNumber);
                     userConfigData.setLogin(userName, password);
                     userConfigData.setUserGuid(userGuid);
@@ -1872,7 +1874,7 @@ public class LoginActivity extends BaseActivity {
                 public void onResult(Message msg, Message errorMsg) {
                     nextPressed = false;
                     needHideProgress();
-                 //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
+                   //Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
                     if (errorMsg == null) {
                         ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
                         LinkedTreeMap<String, String> result = response.getResponse();

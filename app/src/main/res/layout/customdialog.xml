@@ -29,6 +29,7 @@
             android:gravity="center"
             android:layout_marginBottom="10dp"
             android:minHeight="40dp"
+            android:id="@+id/layout_message"
             android:orientation="vertical" >
 
             <TextView

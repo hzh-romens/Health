@@ -202,7 +202,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     //获取购物车数量
     private void requestShopCarCountData() {
         if (UserConfig.isClientLogined()) {
-
+            Log.i("用户guid",UserConfig.getClientUserEntity().getGuid());
             Map<String, String> args = new FacadeArgs.MapBuilder()
                     .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
