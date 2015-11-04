@@ -1665,9 +1665,7 @@ public class LoginActivity extends BaseActivity {
 
         public PhoneView(Context context) {
             super(context);
-
             setOrientation(VERTICAL);
-
             LinearLayout linearLayout = new LinearLayout(context);
             linearLayout.setOrientation(HORIZONTAL);
             addView(linearLayout);
@@ -1874,7 +1872,7 @@ public class LoginActivity extends BaseActivity {
                 public void onResult(Message msg, Message errorMsg) {
                     nextPressed = false;
                     needHideProgress();
-                  //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
+                 //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
                     if (errorMsg == null) {
                         ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
                         LinkedTreeMap<String, String> result = response.getResponse();
@@ -1954,7 +1952,7 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void onTokenTimeout(Message msg) {
                     needHideProgress();
-                    Log.e("GetBuyCarCount", "ERROR");
+                    Log.e("GetBuyCarCount",msg.msg);
                 }
 
                 @Override
@@ -1972,7 +1970,7 @@ public class LoginActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     } else {
-                        Log.e("GetBuyCarCount", "ERROR");
+                        Log.e("GetBuyCarCount", errorMsg.msg);
                     }
                 }
             });

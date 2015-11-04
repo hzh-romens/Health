@@ -221,7 +221,6 @@ public class UserConfig {
         public void setLogin(String name, String token) {
             this.userName = name == null ? "" : name;
             this.token = token == null ? "" : token;
-            Log.i("用户登录密码------",token);
         }
 
 
