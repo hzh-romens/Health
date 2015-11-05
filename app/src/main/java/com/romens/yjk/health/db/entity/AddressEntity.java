@@ -1,5 +1,8 @@
 package com.romens.yjk.health.db.entity;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.Serializable;
@@ -110,10 +113,11 @@ public class AddressEntity implements Serializable {
         entity.setCONTACTPHONE(item.get("CONTACTPHONE"));
 //        entity.setDISTRCTID(item.get("DISTRCTID"));
         entity.setPROVINCE(item.get("PROVINCE"));
-        entity.setPROVINCE(item.get("CITY"));
-        entity.setPROVINCE(item.get("REGION"));
+        entity.setCITY(item.get("CITY"));
+        entity.setREGION(item.get("REGION"));
         entity.setRECEIVER(item.get("RECEIVER"));
 //        entity.setUSERGUID(item.get("USERGUID"));
+
         return entity;
     }
 }
