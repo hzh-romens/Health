@@ -78,7 +78,6 @@ public class CommitOrderActivity extends BaseActivity {
         getAdressData();
         childData = (HashMap<String, List<ShopCarEntity>>) getIntent().getSerializableExtra("childData");
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
-        Log.i("订单数据长度---",parentData.size()+"");
         getAll(childData);
         adapter = new CommitOrderAdapter(this,parentData.size()+1);
         expandableListView.setAdapter(adapter);
