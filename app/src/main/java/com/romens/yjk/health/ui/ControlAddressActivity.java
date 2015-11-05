@@ -67,6 +67,8 @@ public class ControlAddressActivity extends BaseActivity {
 
     private String userGuid = "3333";
 
+    private String isFromCommitOrderActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +87,9 @@ public class ControlAddressActivity extends BaseActivity {
 
         //同步省市县数据
         LocationAddressHelper.syncServerLocationAddress(this);
+
+        Intent intent = getIntent();
+        isFromCommitOrderActivity = intent.getStringExtra("chose");
 
 //        if (entities == null || entities.size() < 1) {
 //            needShowProgress("正在请求城市信息，请稍等...");
@@ -212,6 +217,17 @@ public class ControlAddressActivity extends BaseActivity {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
+                    if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
+                        Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
+                        AddressEntity entity = null;
+                        for (int j = 0; j < addressListEntitis.size(); j++) {
+                            if (addressListEntitis.get(j).getISDEFAULT().equals(1)) {
+                                entity = addressListEntitis.get(j);
+                            }
+                        }
+                        intent.putExtra("responseCommitEntity", entity);
+                        setResult(2, intent);
+                    }
                     finish();
                 } else if (i == 0) {
                     startActivity(new Intent(ControlAddressActivity.this, NewShoppingAddressActivity.class));

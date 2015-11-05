@@ -2,15 +2,17 @@ package com.romens.yjk.health.db.entity;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.Serializable;
+
 /**
  * Created by anlc on 2015/9/19.
  * 收获地址的实体
  */
-public class AddressEntity {
+public class AddressEntity implements Serializable {
     private String ADDRESSID;
     private String RECEIVER;
     private String CONTACTPHONE;
-//    private String DISTRCTID;
+    //    private String DISTRCTID;
     private String PROVINCE;
     private String CITY;
     private String REGION;
