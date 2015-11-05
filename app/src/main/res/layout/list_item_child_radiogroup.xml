@@ -53,6 +53,8 @@
             android:includeFontPadding="false"
             android:textSize="@dimen/text_size_medium"
            android:layout_marginRight="@dimen/padding_inner"
+            android:button="@null"
+            android:drawableRight="@drawable/btn_allcheck_selector"
             android:text="药店派送" />
 
         <View
@@ -67,6 +69,9 @@
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:textSize="@dimen/text_size_medium"
+            android:button="@null"
+            android:gravity="center_vertical"
+            android:drawableRight="@drawable/btn_allcheck_selector"
            android:layout_marginLeft="@dimen/padding_inner"
             android:text="到店自取" />
     </RadioGroup>
