@@ -26,21 +26,22 @@ public class UserProfileCell extends FrameLayoutFixed {
         setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
         avatarImage = new BackupImageView(context);
         avatarImage.setRoundRadius(AndroidUtilities.dp(30));
-        addView(avatarImage, LayoutHelper.createFrame(64, 64,Gravity.TOP | Gravity.CENTER_HORIZONTAL));
+        addView(avatarImage, LayoutHelper.createFrame(64, 64, Gravity.TOP | Gravity.CENTER_HORIZONTAL));
 
         nameView = new TextView(context);
         nameView.setSingleLine(true);
         nameView.setEllipsize(TextUtils.TruncateAt.END);
         nameView.setTextColor(0xff212121);
         nameView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT,Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 88, 0, 0));
+        nameView.setGravity(Gravity.CENTER);
+        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 80, 0, 0));
     }
 
     public void setUser(UserEntity userEntity) {
         AvatarDrawable avatarDrawable = new AvatarDrawable(true);
-        avatarDrawable.setInfo(0, userEntity.getPhone(), "", false);
+        avatarDrawable.setInfo(0, userEntity.getAvatar(), "", false);
         avatarDrawable.setColor(ResourcesConfig.primaryColor);
         avatarImage.setImageUrl(userEntity.getAvatar(), "64_64", avatarDrawable);
-        nameView.setText(userEntity.getName());
+        nameView.setText(userEntity.getPhone());
     }
 }

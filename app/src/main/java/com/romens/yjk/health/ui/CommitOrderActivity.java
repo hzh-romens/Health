@@ -172,6 +172,7 @@ public class CommitOrderActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(CommitOrderActivity.this, ControlAddressActivity.class);
+                i.putExtra("chose","chose");
                 startActivityForResult(i, 2);
             }
         });
@@ -193,6 +194,10 @@ public class CommitOrderActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
             //对从ControlAddressActivity返回的数据进行处理
+            AddressEntity addressEntity= (AddressEntity) getIntent().getSerializableExtra("responseCommitEntity");
+            person.setText("收货人：" + addressEntity.getRECEIVER()+ " " + addressEntity.getCONTACTPHONE());
+            address.setText(addressEntity.getADDRESS());
+            ADDRESSID = addressEntity.getADDRESSID();
         }
     }
 
