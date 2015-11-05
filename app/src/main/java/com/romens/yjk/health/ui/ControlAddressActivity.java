@@ -218,18 +218,17 @@ public class ControlAddressActivity extends BaseActivity {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
-//                    if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
-                    Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
-                    AddressEntity entity = null;
-                    for (int j = 0; j < addressListEntitis.size(); j++) {
-                        if (addressListEntitis.get(j).getISDEFAULT().equals("1")) {
-                            entity = addressListEntitis.get(j);
+                    if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
+                        Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
+                        AddressEntity entity = null;
+                        for (int j = 0; j < addressListEntitis.size(); j++) {
+                            if (addressListEntitis.get(j).getISDEFAULT().equals("1")) {
+                                entity = addressListEntitis.get(j);
+                            }
                         }
+                        intent.putExtra("responseCommitEntity", entity);
+                        setResult(2, intent);
                     }
-                    intent.putExtra("responseCommitEntity", entity);
-                    setResult(2, intent);
-                    Log.e("tag", "------addressEntity--->" + new Gson().toJson(entity));
-//                    }
                     finish();
                 } else if (i == 0) {
                     startActivity(new Intent(ControlAddressActivity.this, NewShoppingAddressActivity.class));
