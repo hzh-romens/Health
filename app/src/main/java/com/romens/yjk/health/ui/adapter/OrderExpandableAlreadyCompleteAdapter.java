@@ -101,8 +101,6 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             public void onClick(View v) {
                 Toast.makeText(adapterContext, "click-->再来一单", Toast.LENGTH_SHORT).show();
 //                requestToBuy(entity.getOrderPrice(), entity.getOrderId());
-                Log.e("tag", "--userGuid--ccc->" + UserGuidConfig.USER_GUID);
-                Log.e("tag", "--userGuid--ccc->" + userGuid);
                 requestOrderDetailList(UserGuidConfig.USER_GUID, entity.getOrderId());
             }
         });

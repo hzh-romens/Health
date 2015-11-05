@@ -62,8 +62,6 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
     private ImageAndTextCell attachView;
     private int fragmentType;
 
-    private boolean isRefreshLayout = false;
-
     public OrderFragment(int fragmentType) {
         this.fragmentType = fragmentType;
         userGuid = UserGuidConfig.USER_GUID;
@@ -213,20 +211,6 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
     private void refreshView() {
         refershContentView();
         swipeRefreshLayout.setRefreshing(false);
-        if (isRefreshLayout) {
-            switch (fragmentType) {
-                case MyOrderActivity.ORDER_TYPE_COMPLETE:
-                    adapter = (OrderExpandableAlreadyCompleteAdapter) expandableListView.getAdapter();
-                    break;
-                case MyOrderActivity.ORDER_TYPE_EVALUATE:
-                    adapter = (OrderExpandableAdapter) expandableListView.getAdapter();
-                    break;
-                case MyOrderActivity.ORDER_TYPE_BEING:
-                    adapter = (OrderExpandableBeingAdapter) expandableListView.getAdapter();
-                    break;
-            }
-            isRefreshLayout = false;
-        }
         adapter.setOrderEntities(mOrderEntities);
         adapter.notifyDataSetChanged();
 
@@ -256,22 +240,22 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.orderCompleteAdd) {
+            notificationData(MyOrderActivity.ORDER_TYPE_COMPLETE, objects);
+        }
+    }
+
+    public void notificationData(int type, Object... objects) {
         FragmentActivity activity = (FragmentActivity) objects[0];
         FragmentManager manager = activity.getSupportFragmentManager();
         List<Fragment> fragments = manager.getFragments();
 
-        for (Fragment fragment : fragments) {
-            OrderFragment thisFragment = (OrderFragment) fragment;
-            if(thisFragment.getFragmentType()==MyOrderActivity.ORDER_TYPE_COMPLETE){
-                isRefreshLayout = true;
+        for (int j = 1; j < fragments.size(); j++) {
+            OrderFragment thisFragment = (OrderFragment) fragments.get(j);
+            if (thisFragment.getFragmentType() == type) {
                 requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_COMPLETE);
+                return;
             }
-        }
-
-        if (i == AppNotificationCenter.orderCompleteAdd) {
-            Toast.makeText(getActivity(), "complete_change-->", Toast.LENGTH_SHORT).show();
-            isRefreshLayout = true;
-            requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_COMPLETE);
         }
     }
 }

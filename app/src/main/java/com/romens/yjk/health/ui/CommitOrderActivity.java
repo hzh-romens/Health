@@ -194,7 +194,7 @@ public class CommitOrderActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
             //对从ControlAddressActivity返回的数据进行处理
-            AddressEntity addressEntity= (AddressEntity) getIntent().getSerializableExtra("responseCommitEntity");
+            AddressEntity addressEntity= (AddressEntity)data.getSerializableExtra("responseCommitEntity");
             person.setText("收货人：" + addressEntity.getRECEIVER()+ " " + addressEntity.getCONTACTPHONE());
             address.setText(addressEntity.getADDRESS());
             ADDRESSID = addressEntity.getADDRESSID();

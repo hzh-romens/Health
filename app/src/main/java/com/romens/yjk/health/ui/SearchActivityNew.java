@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -75,6 +76,8 @@ public class SearchActivityNew extends BaseActivity {
     private int searchDiseaseProgressRow;
     private int searchDiseaseEmptyRow;
 
+    private TextView clearSearchKeywordTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +141,7 @@ public class SearchActivityNew extends BaseActivity {
                 String searchText = var1.getText().toString().trim();
                 if (!searchText.equals("") && searchText != null) {
                     search(searchText);
+                    saveHistoryKeyword(searchText);
                 }
             }
         });
@@ -185,6 +189,16 @@ public class SearchActivityNew extends BaseActivity {
         updateLayoutFlag(LAYOUT_FLAG_HISTORY);
         refreshSearchHistoryKeywords();
         updateAdapter();
+
+        clearSearchKeywordTextView = (TextView) findViewById(R.id.search_history_clear);
+        clearSearchKeywordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchHistoryDao dao = DBInterface.instance().openReadableDb().getSearchHistoryDao();
+                dao.deleteAll();
+                refreshSearchHistoryKeywords();
+            }
+        });
     }
 
     private void search(String queryText) {

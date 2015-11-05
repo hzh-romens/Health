@@ -10,10 +10,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -27,6 +30,7 @@ import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -87,6 +91,11 @@ public class OrderEvaluateActivity extends BaseActivity {
         submitBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("tag", "-----userGuid----->" + userGuid);
+                Log.e("tag", "-----getOrderId----->" + entity.getOrderId());
+                Log.e("tag", "-----qualityEvaluateLevel----->" + qualityEvaluateLevel+"");
+                Log.e("tag", "----speedEvaluateLevel------>" + speedEvaluateLevel+"");
+                Log.e("tag", "----opinionEditText.getText()------>" + opinionEditText.getText().toString());
                 requestAssessMerch(userGuid, entity.getOrderId(), qualityEvaluateLevel + "", speedEvaluateLevel + "", opinionEditText.getText().toString());
             }
         });
