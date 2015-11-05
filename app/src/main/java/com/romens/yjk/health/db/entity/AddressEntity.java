@@ -10,7 +10,10 @@ public class AddressEntity {
     private String ADDRESSID;
     private String RECEIVER;
     private String CONTACTPHONE;
-    private String DISTRCTID;
+//    private String DISTRCTID;
+    private String PROVINCE;
+    private String CITY;
+    private String REGION;
     private String ADDRESS;
     private String ISDEFAULT;
     private String ADDRESSTYPE;
@@ -48,12 +51,28 @@ public class AddressEntity {
         this.CONTACTPHONE = CONTACTPHONE;
     }
 
-    public String getDISTRCTID() {
-        return DISTRCTID;
+    public String getPROVINCE() {
+        return PROVINCE;
     }
 
-    public void setDISTRCTID(String DISTRCTID) {
-        this.DISTRCTID = DISTRCTID;
+    public void setPROVINCE(String PROVINCE) {
+        this.PROVINCE = PROVINCE;
+    }
+
+    public String getCITY() {
+        return CITY;
+    }
+
+    public void setCITY(String CITY) {
+        this.CITY = CITY;
+    }
+
+    public String getREGION() {
+        return REGION;
+    }
+
+    public void setREGION(String REGION) {
+        this.REGION = REGION;
     }
 
     public String getADDRESS() {
@@ -87,7 +106,10 @@ public class AddressEntity {
         entity.setADDRESSID(item.get("ADDRESSID"));
         entity.setADDRESSTYPE(item.get("ADDRESSTYPE"));
         entity.setCONTACTPHONE(item.get("CONTACTPHONE"));
-        entity.setDISTRCTID(item.get("DISTRCTID"));
+//        entity.setDISTRCTID(item.get("DISTRCTID"));
+        entity.setPROVINCE(item.get("PROVINCE"));
+        entity.setPROVINCE(item.get("CITY"));
+        entity.setPROVINCE(item.get("REGION"));
         entity.setRECEIVER(item.get("RECEIVER"));
 //        entity.setUSERGUID(item.get("USERGUID"));
         return entity;

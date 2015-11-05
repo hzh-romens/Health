@@ -73,6 +73,8 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
     private boolean isExecutInitList = false;
     private String userGuid = "3333";
 
+    private String[] guids;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,9 +83,9 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
         setContentView(R.layout.activity_shopping_address, R.id.action_bar);
         actionBarEven();
 
-        queryDb();
+//        queryDb();
         initView();
-        initProvinces();
+//        initProvinces();
     }
 
     @Override
@@ -110,35 +112,37 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
                     String receiver = editUserView.getValue();
                     String contectPhone = editPhoneView.getValue();
                     String AddressDetail = editAddressDetailView.getValue();
-                    String districtGuid = "";
-                    if (isExecutInitList) {
-                        districtGuid = districtList.get(districtView.getCurrentItem()).getGuid();
-                        if (districtGuid == null && districtGuid.equals("")) {
-                            districtGuid = cityList.get(cityView.getCurrentItem()).getGuid();
-                        }
-                    }
+//                    String districtGuid = "";
+//                    if (isExecutInitList) {
+//                        districtGuid = districtList.get(districtView.getCurrentItem()).getGuid();
+//                        if (districtGuid == null && districtGuid.equals("")) {
+//                            districtGuid = cityList.get(cityView.getCurrentItem()).getGuid();
+//                        }
+//                    }
                     if (receiver == null || receiver.equals("")) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请输入联系人", Toast.LENGTH_SHORT).show();
                     } else if (contectPhone == null || contectPhone.equals("")) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请输入联系方式", Toast.LENGTH_SHORT).show();
-                    } else if (districtGuid == null || districtGuid.equals("")) {
+                    } else if (guids == null) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请选择地址", Toast.LENGTH_SHORT).show();
                     } else if (AddressDetail == null || AddressDetail.equals("")) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请输入详细地址", Toast.LENGTH_SHORT).show();
                     } else {
-                        saveAddress2Sevice(receiver, contectPhone, districtGuid, AddressDetail);
+                        saveAddress2Sevice(receiver, contectPhone, guids, AddressDetail);
                     }
                 }
             }
         });
     }
 
-    private void saveAddress2Sevice(String receiver, String contectPhone, String distrctId, String AddressDetail) {
+    private void saveAddress2Sevice(String receiver, String contectPhone, String[] guids, String AddressDetail) {
         AddressEntity entity = new AddressEntity();
         entity.setADDRESSID("");
         entity.setRECEIVER(receiver);
         entity.setCONTACTPHONE(contectPhone);
-        entity.setDISTRCTID(distrctId);
+        entity.setPROVINCE(guids[0]);
+        entity.setCITY(guids[0]);
+        entity.setREGION(guids[0]);
         entity.setADDRESS(AddressDetail);
         entity.setISDEFAULT("0");
         entity.setADDRESSTYPE("1");
@@ -205,7 +209,7 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
             @Override
             public void onClick(View v) {
 
-                if (!LocationAddressHelper.openLocationAddress(NewShoppingAddressActivity.this, 0,"所在地区选择")) {
+                if (!LocationAddressHelper.openLocationAddress(NewShoppingAddressActivity.this, 0, "所在地区选择")) {
                     LocationAddressHelper.syncServerLocationAddress(NewShoppingAddressActivity.this);
                 }
                 //chooseCityPopupWindow(editAddressIdView);
@@ -400,6 +404,7 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
                     locationAddress = locationAddress.substring(0, locationAddress.length() - 1);
                 }
                 editAddressIdView.changeValue(locationAddress);
+                guids = values;
             }
         }
     }
