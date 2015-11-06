@@ -14,7 +14,13 @@ import com.romens.android.log.FileLog;
  * Created by zhoulisi on 15/4/23.
  */
 public abstract class BaseFragment extends Fragment {
+    protected String fragmentTypeBase;
+
     protected AlertDialog visibleDialog = null;
+
+    public String getFragmentTypeBase() {
+        return fragmentTypeBase;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

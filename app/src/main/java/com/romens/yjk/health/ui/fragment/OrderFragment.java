@@ -50,7 +50,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/10/22.
  */
-public class OrderFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class OrderFragment extends BaseFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ExpandableListView expandableListView;
@@ -65,6 +65,7 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
     public OrderFragment(int fragmentType) {
         this.fragmentType = fragmentType;
         userGuid = UserGuidConfig.USER_GUID;
+        fragmentTypeBase = fragmentType + "";
     }
 
     @Override
@@ -143,12 +144,10 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
 
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.orderCompleteAdd);
     }
 
     @Override
     public void onDestroy() {
-        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.orderCompleteAdd);
         super.onDestroy();
     }
 
@@ -238,24 +237,23 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
         return fragmentType;
     }
 
-    @Override
-    public void didReceivedNotification(int i, Object... objects) {
-        if (i == AppNotificationCenter.orderCompleteAdd) {
-            notificationData(MyOrderActivity.ORDER_TYPE_COMPLETE, objects);
-        }
+    public void setmOrderEntities(List<AllOrderEntity> mOrderEntities) {
+        this.mOrderEntities = mOrderEntities;
     }
 
-    public void notificationData(int type, Object... objects) {
-        FragmentActivity activity = (FragmentActivity) objects[0];
-        FragmentManager manager = activity.getSupportFragmentManager();
-        List<Fragment> fragments = manager.getFragments();
+    public void clearListEntities() {
+        mOrderEntities.clear();
+    }
 
-        for (int j = 1; j < fragments.size(); j++) {
-            OrderFragment thisFragment = (OrderFragment) fragments.get(j);
-            if (thisFragment.getFragmentType() == type) {
-                requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_COMPLETE);
-                return;
+    public static Fragment getThisFragment(FragmentActivity context, String type) {
+        FragmentManager manager = context.getSupportFragmentManager();
+        List<Fragment> fragments = manager.getFragments();
+        for (int i = 0; i < fragments.size(); i++) {
+            BaseFragment baseFragment = (BaseFragment) fragments.get(i);
+            if (baseFragment.getFragmentTypeBase() != null && baseFragment.getFragmentTypeBase().equals(type)) {
+                return fragments.get(i);
             }
         }
+        return null;
     }
 }

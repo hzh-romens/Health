@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,23 +85,22 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
-//      dateTextView.setText("2015-12-15 08:09");
         TransformDateUitls.getDate(entity.getCreateDate());
         dateTextView.setText(entity.getCreateDate());
         evaluateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
-//              Intent intent = new Intent(adapterContext, intentActivity);
+                intent.putExtra("fragmentIndex", 2);
                 intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
                 adapterContext.startActivity(intent);
+                ((FragmentActivity) adapterContext).finish();
             }
         });
         buyAgainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(adapterContext, "click-->再来一单", Toast.LENGTH_SHORT).show();
-//                requestToBuy(entity.getOrderPrice(), entity.getOrderId());
                 requestOrderDetailList(UserGuidConfig.USER_GUID, entity.getOrderId());
             }
         });

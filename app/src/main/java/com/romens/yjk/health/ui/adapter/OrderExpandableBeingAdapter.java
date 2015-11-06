@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -201,15 +202,15 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
 
                         Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
                         intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
+                        intent.putExtra("fragmentIndex", 1);
+                        ((FragmentActivity) adapterContext).finish();
                         adapterContext.startActivity(intent);
-                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.orderCompleteAdd, adapterContext);
                     } else {
                         Toast.makeText(adapterContext, "确认收获错误", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (errorMsg == null) {
                 } else {
-                    Log.e("reqGetAllUsers", "ERROR");
                     Toast.makeText(adapterContext, "出现未知错误", Toast.LENGTH_SHORT).show();
                     Log.e("tag", "ERROR---->" + errorMsg.msg);
                 }
