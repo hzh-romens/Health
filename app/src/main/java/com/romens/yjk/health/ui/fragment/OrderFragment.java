@@ -50,7 +50,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/10/22.
  */
-public class OrderFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class OrderFragment extends BaseFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ExpandableListView expandableListView;
@@ -144,12 +144,10 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
 
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.orderCompleteAdd);
     }
 
     @Override
     public void onDestroy() {
-        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.orderCompleteAdd);
         super.onDestroy();
     }
 
@@ -245,16 +243,6 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
 
     public void clearListEntities() {
         mOrderEntities.clear();
-    }
-
-    @Override
-    public void didReceivedNotification(int i, Object... objects) {
-        if (i == AppNotificationCenter.orderCompleteAdd) {
-            Fragment fragment = getThisFragment((FragmentActivity) objects[0], MyOrderActivity.ORDER_TYPE_COMPLETE + "");
-            if (fragment != null) {
-                ((OrderFragment) fragment).requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_COMPLETE);
-            }
-        }
     }
 
     public static Fragment getThisFragment(FragmentActivity context, String type) {

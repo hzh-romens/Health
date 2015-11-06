@@ -205,14 +205,12 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                         intent.putExtra("fragmentIndex", 1);
                         ((FragmentActivity) adapterContext).finish();
                         adapterContext.startActivity(intent);
-//                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.orderCompleteAdd, adapterContext);
                     } else {
                         Toast.makeText(adapterContext, "确认收获错误", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (errorMsg == null) {
                 } else {
-                    Log.e("reqGetAllUsers", "ERROR");
                     Toast.makeText(adapterContext, "出现未知错误", Toast.LENGTH_SHORT).show();
                     Log.e("tag", "ERROR---->" + errorMsg.msg);
                 }
