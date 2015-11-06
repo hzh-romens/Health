@@ -2,6 +2,9 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -20,6 +23,9 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
+import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.fragment.BaseFragment;
+import com.romens.yjk.health.ui.fragment.OrderFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,10 +90,6 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-//        if (groupPosition == typeEntitiesList.size() + 1) {
-//            return 0;
-//        }
-//        return groupPosition % 2 == 0 ? typeEntitiesList.get(groupPosition / 2).size() : 0;
         return typeEntitiesList.get(groupPosition).size();
     }
 
@@ -98,7 +100,6 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-//        return typeEntitiesList.get(groupPosition / 2).get(childPosition);
         return typeEntitiesList.get(groupPosition).get(childPosition);
     }
 
@@ -126,11 +127,6 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         return null;
     }
-
-//    @Override
-//    public int getGroupType(int groupPosition) {
-//        return groupPosition % 2;
-//    }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -185,7 +181,6 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
                 }
                 if (errorMsg == null) {
                 } else {
-//                    setRefreshOver();
                     android.util.Log.e("reqGetAllUsers", "ERROR");
                 }
             }
@@ -193,16 +188,21 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
     }
 
     public void setOrderData(List<LinkedTreeMap<String, String>> response) {
-        int count = response == null ? 0 : response.size();
-        if (count <= 0) {
+        int count = response == null ? -1 : response.size();
+        if (count < 0) {
             return;
+        } else if (count == 0) {
+            Fragment fragment = OrderFragment.getThisFragment((FragmentActivity) adapterContext, MyOrderActivity.ORDER_TYPE_BEING + "");
+            OrderFragment orderFragment = (OrderFragment) fragment;
+            orderFragment.clearListEntities();
+            orderFragment.refershContentView();
         }
-        List<AllOrderEntity> mOrderEntities = new ArrayList<>();
+        List<AllOrderEntity> orderEntities = new ArrayList<>();
         for (LinkedTreeMap<String, String> item : response) {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
-            mOrderEntities.add(entity);
+            orderEntities.add(entity);
         }
-        setOrderEntities(mOrderEntities);
+        setOrderEntities(orderEntities);
         notifyDataSetChanged();
     }
 }

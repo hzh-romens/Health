@@ -65,6 +65,7 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
     public OrderFragment(int fragmentType) {
         this.fragmentType = fragmentType;
         userGuid = UserGuidConfig.USER_GUID;
+        fragmentTypeBase = fragmentType + "";
     }
 
     @Override
@@ -238,24 +239,33 @@ public class OrderFragment extends BaseFragment implements AppNotificationCenter
         return fragmentType;
     }
 
+    public void setmOrderEntities(List<AllOrderEntity> mOrderEntities) {
+        this.mOrderEntities = mOrderEntities;
+    }
+
+    public void clearListEntities() {
+        mOrderEntities.clear();
+    }
+
     @Override
     public void didReceivedNotification(int i, Object... objects) {
         if (i == AppNotificationCenter.orderCompleteAdd) {
-            notificationData(MyOrderActivity.ORDER_TYPE_COMPLETE, objects);
+            Fragment fragment = getThisFragment((FragmentActivity) objects[0], MyOrderActivity.ORDER_TYPE_COMPLETE + "");
+            if (fragment != null) {
+                ((OrderFragment) fragment).requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_COMPLETE);
+            }
         }
     }
 
-    public void notificationData(int type, Object... objects) {
-        FragmentActivity activity = (FragmentActivity) objects[0];
-        FragmentManager manager = activity.getSupportFragmentManager();
+    public static Fragment getThisFragment(FragmentActivity context, String type) {
+        FragmentManager manager = context.getSupportFragmentManager();
         List<Fragment> fragments = manager.getFragments();
-
-        for (int j = 1; j < fragments.size(); j++) {
-            OrderFragment thisFragment = (OrderFragment) fragments.get(j);
-            if (thisFragment.getFragmentType() == type) {
-                requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_COMPLETE);
-                return;
+        for (int i = 0; i < fragments.size(); i++) {
+            BaseFragment baseFragment = (BaseFragment) fragments.get(i);
+            if (baseFragment.getFragmentTypeBase() != null && baseFragment.getFragmentTypeBase().equals(type)) {
+                return fragments.get(i);
             }
         }
+        return null;
     }
 }
