@@ -54,6 +54,7 @@
         android:layout_height="48dp"
         android:textColorHint="#999999"
         android:textSize="@dimen/text_size_medium"
+        android:enabled="false"
         android:background="@drawable/edittext_background_radiu" />
     </LinearLayout>
     <View

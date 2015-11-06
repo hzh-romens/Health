@@ -52,8 +52,8 @@ import widget.adapters.ArrayWheelAdapter;
  */
 public class PersonalInformationActivity extends BaseActivity implements View.OnClickListener, OnWheelChangedListener, View.OnFocusChangeListener {
     private ImageView iv_back;
-    private TextView choiceSex, choiceBirthday, choiceHeredopathia, choiceDisease, choiceAllergy,editor_name,editor_food;
-    private EditText editor_work, editor_rest, editor_other;
+    private TextView choiceSex, choiceBirthday, choiceHeredopathia, choiceDisease, choiceAllergy, editor_name, editor_food, editor_rest, editor_other;
+    private EditText editor_work;
     private LinearLayout btn_save;
     private PersonalEntity personalEntity;
     private WheelView YearView, MonthView, DayView;
@@ -158,7 +158,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             @Override
             public void onTokenTimeout(Message msg) {
                 needHideProgress();
-                Log.e("个人信息", msg.msg);
+                Log.e("person message", msg.msg);
             }
 
             @Override
@@ -171,7 +171,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                     personalEntity = gson.fromJson(response, PersonalEntity.class);
                     setValue();
                 } else {
-                    Log.e("个人信息", errorMsg.msg);
+                    Log.e("person message", errorMsg.msg);
                 }
             }
         });
@@ -179,7 +179,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     }
 
     private void initView() {
-        btn_commit= (TextView) findViewById(R.id.btn_commit);
+        btn_commit = (TextView) findViewById(R.id.btn_commit);
         iv_back = (ImageView) findViewById(R.id.back);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,12 +200,12 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         editor_name = (TextView) findViewById(R.id.editor_name);
         editor_work = (EditText) findViewById(R.id.editor_work);
         editor_food = (TextView) findViewById(R.id.editor_food);
-        editor_rest = (EditText) findViewById(R.id.editor_rest);
-        editor_other = (EditText) findViewById(R.id.editor_other);
+        editor_rest = (TextView) findViewById(R.id.editor_rest);
+        editor_other = (TextView) findViewById(R.id.editor_other);
         btn_save = (LinearLayout) findViewById(R.id.btn_save);
         editor_food.setOnClickListener(this);
-        editor_other.setOnFocusChangeListener(this);
-        editor_rest.setOnFocusChangeListener(this);
+        editor_other.setOnClickListener(this);
+        editor_rest.setOnClickListener(this);
         editor_work.setOnFocusChangeListener(this);
         editor_name.setOnClickListener(this);
         btn_save.setOnClickListener(this);
@@ -229,9 +229,9 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
         switch (v.getId()) {
             case R.id.choiceAllergy:
-                btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                btn_commit.setText("提交");
-                getPopWindowInstance(has, choiceAllergy, 0);
+                Intent allergyIntent = new Intent(this, SetDiseaseActivity.class);
+                allergyIntent.putExtra("flag", "allergy");
+                startActivityForResult(allergyIntent, 8);
                 break;
             case R.id.choiceBirthday:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
@@ -239,34 +239,38 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 getPopWindowInstance(has, choiceBirthday, 1);
                 break;
             case R.id.choiceDisease:
-             //   btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-               // btn_commit.setText("提交");
-                //跳转到病史选择页面
-                //getPopWindowInstance(has, choiceDisease, 0);
-                Intent dieaseIntent=new Intent(this,SetDiseaseActivity.class);
+                Intent dieaseIntent = new Intent(this, SetDiseaseActivity.class);
+                dieaseIntent.putExtra("flag","diease");
                 startActivityForResult(dieaseIntent, 3);
                 break;
             case R.id.choiceHeredopathia:
-                btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                btn_commit.setText("提交");
-                getPopWindowInstance(has, choiceHeredopathia, 0);
+                Intent heredopathiaIntent = new Intent(this, SetDiseaseActivity.class);
+                heredopathiaIntent.putExtra("flag","Heredopathia");
+                startActivityForResult(heredopathiaIntent, 7);
 
                 break;
             case R.id.choiceSex:
-               // btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                //btn_commit.setText("提交");
-                //跳转到性别选择页面
-               // getPopWindowInstance(sex, choiceSex, 0);
-                Intent sexIntent=new Intent(this,SetSexActivity.class);
-                startActivityForResult(sexIntent,2);
+                Intent sexIntent = new Intent(this, SetSexActivity.class);
+                startActivityForResult(sexIntent, 2);
                 break;
             case R.id.editor_name:
-                Intent nameIntent=new Intent(this,SetNameActivity.class);
-                startActivityForResult(nameIntent,1);
+                Intent nameIntent = new Intent(this, SetNameActivity.class);
+                startActivityForResult(nameIntent, 1);
                 break;
             case R.id.editor_food:
-                Intent foodIntent=new Intent(this,SetDietActivity.class);
-                startActivityForResult(foodIntent,4);
+                Intent foodIntent = new Intent(this, SetDietActivity.class);
+                foodIntent.putExtra("flag","diet");
+                startActivityForResult(foodIntent, 4);
+                break;
+            case R.id.editor_rest:
+                Intent restIntent = new Intent(this, SetDietActivity.class);
+                restIntent.putExtra("flag","rest");
+                startActivityForResult(restIntent, 5);
+                break;
+            case R.id.editor_other:
+                Intent otherIntent = new Intent(this, SetDietActivity.class);
+                otherIntent.putExtra("flag","other");
+                startActivityForResult(otherIntent, 6);
                 break;
             case R.id.btn_save:
                 try {
@@ -288,10 +292,11 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
         }
     }
+
     //保存信息
     private void SaveInfor() {
-        PersonalEntity entity=new PersonalEntity();
-        entity.setPERSONNAME(editor_name.getText().toString()+"");
+        PersonalEntity entity = new PersonalEntity();
+        entity.setPERSONNAME(editor_name.getText().toString() + "");
         entity.setBIRTHDAY(choiceBirthday.getText().toString());
         if ("男".equals(choiceSex.getText().toString())) {
             entity.setGENDER("1");
@@ -318,11 +323,11 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         entity.setJOB(editor_work.getText().toString());
         entity.setOTHER(editor_other.getText().toString());
         entity.setSLEEPHOBBY(editor_rest.getText().toString());
-        Gson gson=new Gson();
+        Gson gson = new Gson();
         final String jsonData = gson.toJson(entity);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
-                .put("JSONDATA",jsonData)
+                .put("JSONDATA", jsonData)
                 .build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SaveUserInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
@@ -343,16 +348,16 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
                     try {
-                        JSONObject jsonObject=new JSONObject(response);
-                        if ("yes".equals(jsonObject.getString("success"))){
-                            Toast.makeText(PersonalInformationActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                        JSONObject jsonObject = new JSONObject(response);
+                        if ("yes".equals(jsonObject.getString("success"))) {
+                            Toast.makeText(PersonalInformationActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    Log.e("个人信息错误日志",errorMsg.msg);
+                    Log.e("个人信息错误日志", errorMsg.msg);
                 }
             }
         });
@@ -361,7 +366,9 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
+        btn_commit.setText("提交");
+        switch (requestCode) {
             case 1:
                 String namevalue = data.getStringExtra("namevalue");
                 editor_name.setText(namevalue);
@@ -376,7 +383,26 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 break;
             case 4:
                 String foodvalue = data.getStringExtra("foodvalue");
-                editor_food.setText(foodvalue);
+                String substring = foodvalue.substring(0, foodvalue.lastIndexOf(","));
+                editor_food.setText(substring);
+                break;
+            case 5:
+                String restvalue = data.getStringExtra("restvalue");
+                String substring1 = restvalue.substring(0, restvalue.lastIndexOf(","));
+                editor_rest.setText(substring1);
+                break;
+            case 6:
+                String othervalue = data.getStringExtra("othervalue");
+                String substring2 = othervalue.substring(0, othervalue.lastIndexOf(","));
+                editor_other.setText(substring2);
+                break;
+            case 7:
+                String Heredopathiavalue = data.getStringExtra("Heredopathiavalue");
+                choiceHeredopathia.setText(Heredopathiavalue);
+                break;
+            case 8:
+                String allergyvalue = data.getStringExtra("allergyvalue");
+                choiceAllergy.setText(allergyvalue);
                 break;
         }
     }
@@ -475,7 +501,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
             MonthView = (WheelView) view.findViewById(R.id.MonthView);
             MonthView.setBackgroundColor(Color.WHITE);
-           setMonthValue();
+            setMonthValue();
 
             DayView = (WheelView) view.findViewById(R.id.DayView);
             DayView.setBackgroundColor(Color.WHITE);
@@ -513,7 +539,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
     //设置日期数据
     private void setDayValue(int Year, int Month) {
-       // cal.clear();    //在使用set方法之前，必须先clear一下，否则很多信息会继承自系统当前时间
+        // cal.clear();    //在使用set方法之前，必须先clear一下，否则很多信息会继承自系统当前时间
         cal.set(Calendar.YEAR, Year);
         cal.set(Calendar.MONTH, Month - 1);  //Calendar对象默认一月为0
         int endday = cal.getActualMaximum(Calendar.DAY_OF_MONTH);//获得本月天数
@@ -536,7 +562,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
         int month = cal.get(Calendar.MONTH);
         int CurrentMonth = 0;
         for (int i = 0; i < Month.length; i++) {
-            if (Integer.parseInt(Month[i].substring(0, Month[i].indexOf("月"))) == month+1) {
+            if (Integer.parseInt(Month[i].substring(0, Month[i].indexOf("月"))) == month + 1) {
                 CurrentMonth = i;
             }
         }
@@ -568,7 +594,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
 
     @Override
     public void onChanged(WheelView wheel, int oldValue, int newValue) {
-        if (YearView!=null&&MonthView!=null&&DayView!=null) {
+        if (YearView != null && MonthView != null && DayView != null) {
             String choiceYear = Year[YearView.getCurrentItem()];
             String choiceMonth = Month[MonthView.getCurrentItem()];
             setDayValue(Integer.parseInt(choiceYear.substring(0, choiceYear.indexOf("年"))), Integer.parseInt(choiceMonth.substring(0, choiceMonth.indexOf("月"))));
@@ -578,18 +604,6 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
-            case R.id.editor_other:
-                if (hasFocus) {
-                    btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                    btn_commit.setText("提交");
-                }
-                break;
-            case R.id.editor_rest:
-                if (hasFocus) {
-                    btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
-                    btn_commit.setText("提交");
-                }
-                break;
             case R.id.editor_work:
                 if (hasFocus) {
                     btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));

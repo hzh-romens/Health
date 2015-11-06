@@ -18,10 +18,12 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
     private CheckBox cb_dy,cb_dz,cb_dt,cb_gy,cb_gz,cb_gt;
     private ImageView btn_back;
     private String[] hobby;
+    private  String flag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setdiet);
+        flag = getIntent().getStringExtra("flag");
         hobby=new String[6];
         initView();
     }
@@ -33,6 +35,30 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
         cb_gy= (CheckBox) findViewById(R.id.cb4);
         cb_gz= (CheckBox) findViewById(R.id.cb5);
         cb_gt= (CheckBox) findViewById(R.id.cb6);
+        //Distinguishing mark(flag)
+        if("diet".equals(flag)){
+            cb_dy.setText("低盐");
+            cb_dz.setText("低脂");
+            cb_dt.setText("低糖");
+            cb_gy.setText("高盐");
+            cb_gz.setText("高脂");
+            cb_gt.setText("高糖");
+
+        }else if("rest".equals(flag)){
+            cb_dy.setText("早起早睡");
+            cb_dz.setText("早起晚睡");
+            cb_dt.setText("晚起早睡");
+            cb_gy.setText("晚起晚睡");
+            cb_gz.setText("熬夜经常");
+            cb_gt.setText("作息不规律");
+        }else if("other".equals(flag)){
+            cb_dy.setText("抽烟");
+            cb_dz.setText("喝酒");
+            cb_dt.setText("不吃早餐");
+            cb_gy.setText("饱食");
+            cb_gz.setVisibility(View.GONE);
+            cb_gt.setVisibility(View.GONE);
+        }
         cb_dt.setOnCheckedChangeListener(this);
         cb_dy.setOnCheckedChangeListener(this);
         cb_dz.setOnCheckedChangeListener(this);
@@ -51,18 +77,45 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
                     }
                 }
                 String result = null;
-                if (!sb.toString().equals("")) {
-                    result = sb.toString();
-                  //  result = result.substring(0, result.lastIndexOf(","));
-                    Intent it = new Intent();
-                    it.putExtra("foodvalue", result);
-                    setResult(4, it);
-                    finish();
-                } else {
-                    Intent it = new Intent();
-                    it.putExtra("foodvalue", "");
-                    setResult(4, it);
-                    finish();
+                if("diet".equals(flag)) {
+                    if (!sb.toString().equals("")) {
+                        result = sb.toString();
+                        Intent it = new Intent();
+                        it.putExtra("foodvalue", result);
+                        setResult(4, it);
+                        finish();
+                    } else {
+                        Intent it = new Intent();
+                        it.putExtra("foodvalue", "");
+                        setResult(4, it);
+                        finish();
+                    }
+                }else if("rest".equals(flag)){
+                    if (!sb.toString().equals("")) {
+                        result = sb.toString();
+                        Intent it = new Intent();
+                        it.putExtra("restvalue", result);
+                        setResult(5, it);
+                        finish();
+                    } else {
+                        Intent it = new Intent();
+                        it.putExtra("restvalue", "");
+                        setResult(5, it);
+                        finish();
+                    }
+                }else if("other".equals(flag)){
+                    if (!sb.toString().equals("")) {
+                        result = sb.toString();
+                        Intent it = new Intent();
+                        it.putExtra("othervalue", result);
+                        setResult(6, it);
+                        finish();
+                    } else {
+                        Intent it = new Intent();
+                        it.putExtra("othervalue", "");
+                        setResult(6, it);
+                        finish();
+                    }
                 }
             }
         });
@@ -127,18 +180,45 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
                 }
             }
             String result = null;
-            if (!sb.toString().equals("")) {
-                result = sb.toString();
-                //  result = result.substring(0, result.lastIndexOf(","));
-                Intent it = new Intent();
-                it.putExtra("foodvalue", result);
-                setResult(4, it);
-                finish();
-            } else {
-                Intent it = new Intent();
-                it.putExtra("foodvalue", "");
-                setResult(4, it);
-                finish();
+            if("diet".equals(flag)) {
+                if (!sb.toString().equals("")) {
+                    result = sb.toString();
+                    Intent it = new Intent();
+                    it.putExtra("foodvalue", result);
+                    setResult(4, it);
+                    finish();
+                } else {
+                    Intent it = new Intent();
+                    it.putExtra("foodvalue", "");
+                    setResult(4, it);
+                    finish();
+                }
+            }else if("rest".equals(flag)){
+                if (!sb.toString().equals("")) {
+                    result = sb.toString();
+                    Intent it = new Intent();
+                    it.putExtra("restvalue", result);
+                    setResult(5, it);
+                    finish();
+                } else {
+                    Intent it = new Intent();
+                    it.putExtra("restvalue", "");
+                    setResult(5, it);
+                    finish();
+                }
+            }else if("other".equals(flag)){
+                if (!sb.toString().equals("")) {
+                    result = sb.toString();
+                    Intent it = new Intent();
+                    it.putExtra("othervalue", result);
+                    setResult(6, it);
+                    finish();
+                } else {
+                    Intent it = new Intent();
+                    it.putExtra("othervalue", "");
+                    setResult(6, it);
+                    finish();
+                }
             }
             return true;
         }
