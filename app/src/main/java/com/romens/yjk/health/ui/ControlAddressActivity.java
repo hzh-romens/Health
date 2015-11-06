@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -400,5 +401,23 @@ public class ControlAddressActivity extends BaseActivity {
     public void queryDb() {
         CitysDao dao = DBInterface.instance().openReadableDb().getCitysDao();
         entities = dao.queryBuilder().list();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
+                Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
+                AddressEntity entity = null;
+                for (int j = 0; j < addressListEntitis.size(); j++) {
+                    if (addressListEntitis.get(j).getISDEFAULT().equals("1")) {
+                        entity = addressListEntitis.get(j);
+                    }
+                }
+                intent.putExtra("responseCommitEntity", entity);
+                setResult(2, intent);
+            }
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
