@@ -156,7 +156,7 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
         progressDialog = null;
     }
 
-    public void requestOrderList(String userGuid, int fragmentType) {
+    public void requestOrderList(String userGuid, final int fragmentType) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERSTATUS", fragmentType + "");
@@ -177,7 +177,7 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
             public void onResult(Message msg, Message errorMsg) {
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    setOrderData(responseProtocol.getResponse());
+                    setOrderData(responseProtocol.getResponse(),fragmentType);
                 }
                 if (errorMsg == null) {
                 } else {
@@ -187,12 +187,12 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
         });
     }
 
-    public void setOrderData(List<LinkedTreeMap<String, String>> response) {
+    public void setOrderData(List<LinkedTreeMap<String, String>> response,int fragmentType) {
         int count = response == null ? -1 : response.size();
         if (count < 0) {
             return;
         } else if (count == 0) {
-            Fragment fragment = OrderFragment.getThisFragment((FragmentActivity) adapterContext, MyOrderActivity.ORDER_TYPE_BEING + "");
+            Fragment fragment = OrderFragment.getThisFragment((FragmentActivity) adapterContext, fragmentType + "");
             OrderFragment orderFragment = (OrderFragment) fragment;
             orderFragment.clearListEntities();
             orderFragment.refershContentView();

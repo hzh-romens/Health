@@ -26,6 +26,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
+import com.romens.yjk.health.ui.fragment.OrderFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +57,7 @@ public class OrderEvaluateActivity extends BaseActivity {
     private int speedEvaluateLevel;
 
     private String userGuid = "";
+    private int fragmentIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,7 @@ public class OrderEvaluateActivity extends BaseActivity {
     private void viewSetData() {
         Intent intent = getIntent();
         entity = (AllOrderEntity) intent.getSerializableExtra("orderEntity");
+        fragmentIndex = intent.getIntExtra("fragmentIndex", 0);
         if (null != entity) {
             titleTextView.setText(entity.getGoodsName());
             moneyTextView.setText("x" + entity.getOrderPrice());
@@ -91,11 +94,6 @@ public class OrderEvaluateActivity extends BaseActivity {
         submitBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("tag", "-----userGuid----->" + userGuid);
-                Log.e("tag", "-----getOrderId----->" + entity.getOrderId());
-                Log.e("tag", "-----qualityEvaluateLevel----->" + qualityEvaluateLevel+"");
-                Log.e("tag", "----speedEvaluateLevel------>" + speedEvaluateLevel+"");
-                Log.e("tag", "----opinionEditText.getText()------>" + opinionEditText.getText().toString());
                 requestAssessMerch(userGuid, entity.getOrderId(), qualityEvaluateLevel + "", speedEvaluateLevel + "", opinionEditText.getText().toString());
             }
         });
@@ -164,6 +162,9 @@ public class OrderEvaluateActivity extends BaseActivity {
                     }
                     if (requestCode.equals("yes")) {
                         Toast.makeText(OrderEvaluateActivity.this, "发表评论成功", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(OrderEvaluateActivity.this, MyOrderActivity.class);
+                        intent.putExtra("fragmentIndex", fragmentIndex);
+                        startActivity(intent);
                         finish();
                     } else {
                         Toast.makeText(OrderEvaluateActivity.this, "发表失败", Toast.LENGTH_SHORT).show();

@@ -35,6 +35,7 @@ public class MyOrderActivity extends BaseActivity {
     public final static int ORDER_TYPE_COMPLETE = 3;
     public final static int ORDER_TYPE_EVALUATE = 4;
 
+    private int fragmentInde = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,9 @@ public class MyOrderActivity extends BaseActivity {
         slidingFixTabLayout.setSelectedIndicatorColors(Color.WHITE);
         slidingFixTabLayout.setDistributeEvenly(true);
         slidingFixTabLayout.setViewPager(viewPager);
+
+        fragmentInde = getIntent().getIntExtra("fragmentIndex", 0);
+        viewPager.setCurrentItem(fragmentInde);
     }
 
     private List<Fragment> initFragment() {
