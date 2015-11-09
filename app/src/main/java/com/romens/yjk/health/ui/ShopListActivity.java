@@ -58,6 +58,7 @@ import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.ShopListAdapter;
 import com.romens.yjk.health.ui.adapter.ShopListNoPictureAdapter;
 import com.romens.yjk.health.ui.cells.PopWindowCell;
+import com.romens.yjk.health.ui.components.ReviseRadioButton;
 import com.romens.yjk.health.ui.utils.UIHelper;
 import com.romens.yjk.health.ui.utils.UIUtils;
 
@@ -89,7 +90,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     private LinearLayoutManager linearLayoutManager;
     private int lastVisibleItem;
     private RadioGroup radioGroup;
-    private RadioButton rb_all, rb_price, rb_sale;
+    private RadioButton rb_all;
+    private ReviseRadioButton rb_price, rb_sale;
     private int PRICE_FLAG = 0;
     private int SALE_FLAG = 5;
     private String EDITEXT = "";
@@ -217,8 +219,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshLayout);
         radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
         rb_all = (RadioButton) findViewById(R.id.rb_all);
-        rb_price = (RadioButton) findViewById(R.id.rb_price);
-        rb_sale = (RadioButton) findViewById(R.id.rb_sale);
+        rb_price = (ReviseRadioButton) findViewById(R.id.rb_price);
+        rb_sale = (ReviseRadioButton) findViewById(R.id.rb_sale);
         rb_price.setOnClickListener(this);
         rb_sale.setOnClickListener(this);
         rb_all.setOnClickListener(this);
@@ -243,10 +245,13 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 requestSearchData(EDITEXT, KEY);
                 break;
             case R.id.rb_price:
+                rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
+                SALE_FLAG=5;
                 if (PRICE_FLAG == 0) {
                   //  rb_price.setText("按价格从高到低");
                     KEY = "priceDown";
                     requestSearchData(EDITEXT, KEY);
+                    rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
                     PRICE_FLAG = 1;
                     return;
                 }
@@ -254,28 +259,34 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     //rb_price.setText("按价格从低到高");
                     KEY = "priceUp";
                     requestSearchData(EDITEXT, KEY);
+                    rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
                     PRICE_FLAG = 2;
                     return;
                 }
                 if (PRICE_FLAG == 2) {
                     //rb_price.setText("按价格从高到低");
                     KEY = "priceDown";
+                    rb_price.setCompoundDrawablesWithIntrinsicBounds(null,null,getResources().getDrawable(R.drawable.ic_arrow_down),null);
                     requestSearchData(EDITEXT, KEY);
                     PRICE_FLAG = 1;
                     return;
                 }
                 break;
             case R.id.rb_sale:
+                rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
+                PRICE_FLAG=0;
                 if (SALE_FLAG == 5) {
                     KEY = "saleDown";
                   //  rb_sale.setText("按销量从高到低");
                     requestSearchData(EDITEXT, KEY);
+                    rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
                     SALE_FLAG = 6;
                     return;
                 }
                 if (SALE_FLAG == 6) {
                    // rb_sale.setText("按销量从低到高");
                     KEY = "saleUp";
+                    rb_sale.setCompoundDrawablesWithIntrinsicBounds(null,null,getResources().getDrawable(R.drawable.ic_arrow_up),null);
                     SALE_FLAG = 7;
                     requestSearchData(EDITEXT, KEY);
                     return;
@@ -284,6 +295,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                   //  rb_sale.setText("按销量从高到低");
                     KEY = "saleDown";
                     SALE_FLAG = 6;
+                    rb_sale.setCompoundDrawablesWithIntrinsicBounds(null,null,getResources().getDrawable(R.drawable.ic_arrow_down),null);
                     requestSearchData(EDITEXT, KEY);
                     return;
                 }

@@ -67,28 +67,29 @@
             android:gravity="center"
             android:textSize="@dimen/text_size_medium"
             />
-        <RadioButton
+        <com.romens.yjk.health.ui.components.ReviseRadioButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="价格"
             android:button="@null"
             android:id="@+id/rb_price"
+            android:drawableRight="@drawable/ic_arrow"
             android:textColor="@color/tab_text_color_state"
             android:textSize="@dimen/text_size_medium"
-            android:gravity="center"
+            android:gravity="right|center_vertical"
             />
-        <!--android:drawableRight="@drawable/ic_arrow"-->
-        <RadioButton
+        <com.romens.yjk.health.ui.components.ReviseRadioButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="销量"
+            android:drawableRight="@drawable/ic_arrow"
             android:button="@null"
             android:id="@+id/rb_sale"
             android:textColor="@color/tab_text_color_state"
             android:textSize="@dimen/text_size_medium"
-            android:gravity="center"
+            android:gravity="right|center_vertical"
             />
     </RadioGroup>
         <RelativeLayout
