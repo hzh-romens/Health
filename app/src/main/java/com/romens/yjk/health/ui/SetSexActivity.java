@@ -24,11 +24,14 @@ public class SetSexActivity extends BaseActivity{
     private PopAdapter popAdapter;
     private List<ChoiceEntity> result;
     private String sexValue;
+    private String value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setsex);
+        value=getIntent().getStringExtra("value");
+        sexValue=value;
         listView= (ListView) findViewById(R.id.listView);
         btn_back= (ImageView) findViewById(R.id.back);
         getData();
@@ -62,17 +65,57 @@ public class SetSexActivity extends BaseActivity{
     private void getData() {
         result=new ArrayList<ChoiceEntity>();
         ChoiceEntity ce1 = new ChoiceEntity();
-        ce1.setChoice("男");
-        ce1.setFlag(false);
-        result.add(ce1);
         ChoiceEntity ce2 = new ChoiceEntity();
-        ce2.setChoice("女");
-        ce2.setFlag(false);
-        result.add(ce2);
         ChoiceEntity ce3 = new ChoiceEntity();
-        ce3.setChoice("保密");
-        ce3.setFlag(false);
-        result.add(ce3);
+        if ("男".equals(value)) {
+            ce1.setChoice("男");
+            ce1.setFlag(true);
+            result.add(ce1);
+
+            ce2.setChoice("女");
+            ce2.setFlag(false);
+            result.add(ce2);
+
+            ce3.setChoice("保密");
+            ce3.setFlag(false);
+            result.add(ce3);
+        }else if("女".equals(value)){
+            ce1.setChoice("男");
+            ce1.setFlag(false);
+            result.add(ce1);
+
+            ce2.setChoice("女");
+            ce2.setFlag(true);
+            result.add(ce2);
+
+            ce3.setChoice("保密");
+            ce3.setFlag(false);
+            result.add(ce3);
+        }else if("保密".equals(value)){
+            ce1.setChoice("男");
+            ce1.setFlag(false);
+            result.add(ce1);
+
+            ce2.setChoice("女");
+            ce2.setFlag(false);
+            result.add(ce2);
+
+            ce3.setChoice("保密");
+            ce3.setFlag(true);
+            result.add(ce3);
+        }else{
+            ce1.setChoice("男");
+            ce1.setFlag(false);
+            result.add(ce1);
+
+            ce2.setChoice("女");
+            ce2.setFlag(false);
+            result.add(ce2);
+
+            ce3.setChoice("保密");
+            ce3.setFlag(false);
+            result.add(ce3);
+        }
     }
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 

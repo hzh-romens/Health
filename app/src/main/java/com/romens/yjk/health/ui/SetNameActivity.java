@@ -20,10 +20,12 @@ import com.romens.yjk.health.R;
 public class SetNameActivity extends BaseActivity{
     private EditText edit_name;
     private ImageView btn_clear,btn_back;
+    private String value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setname);
+        value=getIntent().getStringExtra("value");
         btn_back= (ImageView) findViewById(R.id.back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,6 +37,7 @@ public class SetNameActivity extends BaseActivity{
             }
         });
         edit_name= (EditText) findViewById(R.id.edit_name);
+        edit_name.setText(value);
         btn_clear= (ImageView) findViewById(R.id.btn_clear);
         btn_clear.setOnClickListener(new View.OnClickListener() {
             @Override
