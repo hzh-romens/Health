@@ -85,7 +85,7 @@ public class ControlAddressActivity extends BaseActivity {
         } else {
             setNoHaveAddressView();
         }
-        queryDb();
+//        queryDb();
 
         //同步省市县数据
         LocationAddressHelper.syncServerLocationAddress(this);
