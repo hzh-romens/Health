@@ -35,6 +35,7 @@ import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
+import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -280,9 +281,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             int type = getItemViewType(position);
             if (type == 0) {
                 if (view == null) {
-                    view = new UserProfileCell(adapterContext);
+                    view = new NewUserProfileCell(adapterContext);
                 }
-                UserProfileCell cell = (UserProfileCell) view;
+                NewUserProfileCell cell = (NewUserProfileCell) view;
                 cell.setUser(userEntity);
             } else if (type == 1) {
                 if (view == null) {
