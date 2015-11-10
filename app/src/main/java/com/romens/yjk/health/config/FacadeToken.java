@@ -29,13 +29,14 @@ public class FacadeToken {
 
     public void init() {
         synchronized (sync) {
-            authToken=UserConfig.createToken();
+            authToken = UserConfig.createToken();
         }
     }
 
     public void expired() {
         synchronized (sync) {
             authToken = null;
+            Instance = null;
         }
     }
 

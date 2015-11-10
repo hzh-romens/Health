@@ -110,9 +110,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
                 } else if (position == exitRow) {
                     //TODO 退出登录的修改，清空购物车图标的数量
-                    FacadeToken.getInstance().expired();
                     UserConfig.clearUser();
                     UserConfig.clearConfig();
+                    FacadeToken.getInstance().expired();
                     userEntity = null;
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
