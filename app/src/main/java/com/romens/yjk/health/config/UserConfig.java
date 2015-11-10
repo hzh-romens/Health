@@ -6,7 +6,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -30,6 +29,10 @@ public class UserConfig {
     private static AppChannel appChannel;
     private static Data config;
 
+    static {
+        appChannel = loadAppChannel();
+    }
+
     public static String getOrgCode() {
         return config == null ? null : config.orgCode;
     }
@@ -42,16 +45,20 @@ public class UserConfig {
         return config == null ? null : config.token;
     }
 
+
     public static String createToken() {
-        if (config == null) {
-            return null;
-        }
-       // final String token = config.token;
-      //  String md5Token = TextUtils.isEmpty(token) ? "" : MD5Helper.createMD5(token + "0");
-      //  md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
+        // final String token = config.token;
+        //  String md5Token = TextUtils.isEmpty(token) ? "" : MD5Helper.createMD5(token + "0");
+        //  md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
         //md5Token = Base64Helper.encodeBase64String(md5Token);
-        String md5Token=MD5Helper.createMD5(config.token);
-        md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
+        String md5Token;
+        if (config == null) {
+            md5Token = String.format("%s|@%s|@%s", appChannel.orgCode, "", "");
+        } else {
+            md5Token = MD5Helper.createMD5(config.token);
+            md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
+        }
+
         md5Token = Base64Helper.encodeBase64String(md5Token);
         return md5Token;
 
@@ -161,7 +168,7 @@ public class UserConfig {
                 userValues.put("UserName", data.userName);
                 userValues.put("Token", data.token);
                 //TODO 增加UserGuid
-                userValues.put("UserGuid",data.userGuid);
+                userValues.put("UserGuid", data.userGuid);
                 String json = new Gson().toJson(userValues);
                 byte[] jsonBytes = json.getBytes(Charset.forName("utf-8"));
                 String userString = Base64.encodeToString(jsonBytes, Base64.DEFAULT);
@@ -202,7 +209,7 @@ public class UserConfig {
     public static UserEntity getClientUserEntity() {
         UserEntity userEntity = null;
         if (isClientLogined()) {
-         //   userEntity = new UserEntity(0, "", config.userName, "", config.phoneNumber, "", "", 0);
+            //   userEntity = new UserEntity(0, "", config.userName, "", config.phoneNumber, "", "", 0);
             userEntity = new UserEntity(0, config.userGuid, config.userName, "", config.phoneNumber, "", "", 0);
         }
         return userEntity;
@@ -223,7 +230,6 @@ public class UserConfig {
             this.userName = name == null ? "" : name;
             this.token = token == null ? "" : token;
         }
-
 
 
         public void setOrg(String code, String name) {

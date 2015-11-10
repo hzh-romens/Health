@@ -1,5 +1,9 @@
 package com.romens.yjk.health.model;
 
+import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
+
 /**
  * Created by siery on 15/8/14.
  */
@@ -17,5 +21,16 @@ public class ADFunctionEntity {
 
     public void setActionValue(String value) {
         actionValue = value;
+    }
+
+    public void onAction(Context context) {
+        if (!TextUtils.isEmpty(actionValue)) {
+            if (actionValue.startsWith("http")) {
+
+            } else {
+                Intent intent = new Intent(actionValue);
+                context.startActivity(intent);
+            }
+        }
     }
 }
