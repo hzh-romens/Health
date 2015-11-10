@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="250dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center" >
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginBottom="10dp"
-            android:minHeight="40dp"
+            android:minHeight="50dp"
             android:id="@+id/layout_message"
             android:orientation="vertical" >
 
