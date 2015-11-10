@@ -320,7 +320,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == collectRow) {
                     cell.setIconTextAndNav(R.drawable.ic_favorite, "我的收藏", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == historyRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_history, "历史游览", R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_history, "历史浏览", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == feedbackRow) {
                     cell.setIconTextAndNav(R.drawable.ic_advice, "意见反馈", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == helpRow) {
