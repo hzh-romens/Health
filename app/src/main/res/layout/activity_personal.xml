@@ -26,7 +26,7 @@
             android:includeFontPadding="false"
             android:text="个人信息"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_xlarge" />
+            android:textSize="@dimen/text_size_title" />
     </FrameLayout>
 
     <ScrollView
@@ -345,7 +345,7 @@
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:padding="@dimen/padding_inner"
-                    android:text="有无过敏"
+                    android:text="是否过敏"
                     android:textColor="@color/md_black_1000"
                     android:textSize="@dimen/text_size_medium"
                     android:typeface="normal" />

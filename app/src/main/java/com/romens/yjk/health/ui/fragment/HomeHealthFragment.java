@@ -186,6 +186,7 @@ public class HomeHealthFragment extends BaseFragment {
         }
         if (needDb.size() > 0) {
             DrugGroupDao userDao = DBInterface.instance().openWritableDb().getDrugGroupDao();
+           // userDao.deleteAll();
             userDao.insertOrReplaceInTx(needDb);
         }
         onDataChanged();

@@ -5,29 +5,31 @@
     android:background="#f9f9f9"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
         style="@style/titleStytle"
-        android:background="#f9f9f9"
+        android:background="@color/theme_primary"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/back"
             style="@style/iv_back_style"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical|left"
             android:layout_marginLeft="@dimen/padding_outter"
-            android:background="@drawable/ic_ab_back_grey" />
+            android:background="@drawable/ic_ab_back"
+            />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:includeFontPadding="false"
             android:text="饮食偏好选择"
-            android:textColor="@color/titlecolor"
-            android:textSize="@dimen/text_size_xlarge" />
-    </RelativeLayout>
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="64dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_title" />
+    </FrameLayout>
+
 
     <CheckBox
         android:layout_width="match_parent"
