@@ -293,12 +293,12 @@ public class CustomDialog extends Dialog {
 								LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT));
 			}
+			dialog.setContentView(layout);
 			WindowManager.LayoutParams attributes = dialog.getWindow().getAttributes();
 			WindowManager systemService = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-			attributes.width=systemService.getDefaultDisplay().getWidth()/2;
-			attributes.height=systemService.getDefaultDisplay().getHeight()/5;
+			attributes.width=2*systemService.getDefaultDisplay().getWidth()/3;
+			attributes.height=LayoutParams.WRAP_CONTENT;
 			dialog.getWindow().setAttributes(attributes);
-			dialog.setContentView(layout);
 			return dialog;
 		}
 
