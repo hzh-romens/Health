@@ -332,10 +332,11 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 if(!flag) {
                                     count++;
                                     controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
-                                    count++;
+
                                     //If it is from the vicinity of the details of the pharmacy to enter, do not show a nearby pharmacy module
                                     if (nearResult != null && !("".equals(nearResult))) {
                                         for (int i = 0; i < nearResult.size(); i++) {
+                                            count++;
                                             controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getMERCHANDISEID()));
                                         }
                                     }
@@ -345,7 +346,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 AddToHistory(weiShopEntity);
                             } else {
                                 //show emptyPage
-                                Log.i("-----------","药品详情数据为空");
                               controls.append(0,new ADErrorControl().bindModel("该药店未能查询到该药品"));
                             }
 

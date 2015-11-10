@@ -74,6 +74,10 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter<ADHolder>{
 
     @Override
     public int getItemViewType(int position) {
-        return adBaseControls.get(position).getType();
+        if(!("".equals(adBaseControls.get(position).getType()))) {
+            return adBaseControls.get(position).getType();
+        }else{
+            return ControlType.TYPE_EMPTY;
+        }
     }
 }

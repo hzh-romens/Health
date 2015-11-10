@@ -29,7 +29,7 @@
                 android:text="111111111"
                 android:id="@+id/nameValue"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_medium" />
+                android:textSize="15sp" />
         </FrameLayout>
 
         <LinearLayout
