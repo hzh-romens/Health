@@ -19,8 +19,8 @@
             android:layout_marginLeft="20dp"
             android:paddingTop="5dp"
             android:text="name"
-            android:textColor="@color/theme_sub_title"
-            android:textSize="@dimen/abc_text_size_body_2_material"
+            android:textColor="@color/theme_title"
+            android:textSize="@dimen/title_text_size"
             android:textStyle="normal"/>
 
 
@@ -31,7 +31,7 @@
             android:layout_marginLeft="20dp"
             android:text="tel"
             android:textColor="@color/theme_title"
-            android:textSize="@dimen/abc_text_size_body_2_material"
+            android:textSize="@dimen/title_text_size"
             android:textStyle="normal"/>
     </LinearLayout>
 
@@ -44,7 +44,7 @@
         android:paddingBottom="10dp"
         android:text="adress"
         android:textColor="@color/theme_sub_title"
-        android:textSize="@dimen/abc_text_size_body_2_material"
+        android:textSize="@dimen/title_text_size"
         android:textStyle="normal"/>
 
     <RelativeLayout

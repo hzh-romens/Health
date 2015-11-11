@@ -93,10 +93,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
-                if (id == -1) {
+               /* if (id == -1) {
                     startActivity(new Intent(HomeActivity.this, FamilyDrugGroupActivity.class));
-                } else if (id == 0) {
-                    startActivity(new Intent(HomeActivity.this, FamilyMemberActivity.class));
+                } else*/ if (id == 0) {
+                    startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 1) {
                     if (UserConfig.isClientLogined()) {
                         startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
