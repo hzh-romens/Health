@@ -38,7 +38,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:text="bbbbbbbb"
-        android:textColor="@color/theme_sub_title"
+        android:textColor="@color/order_money_color"
         android:textSize="@dimen/body_size"/>
 
     <TextView
@@ -46,11 +46,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:visibility="gone"
         android:layout_below="@id/order_money"
         android:layout_marginBottom="5dp"
         android:text="bb"
         android:textColor="@color/theme_sub_title"
-        android:textSize="@dimen/body_size"/>
+        android:textSize="@dimen/body_size"
+        android:visibility="gone"/>
 
 </RelativeLayout>

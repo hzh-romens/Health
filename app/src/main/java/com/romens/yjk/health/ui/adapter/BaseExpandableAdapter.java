@@ -19,11 +19,13 @@ import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 import com.romens.yjk.health.ui.fragment.BaseFragment;
 import com.romens.yjk.health.ui.fragment.OrderFragment;
 
@@ -120,7 +122,21 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        return null;
+//        int type = getGroupType(groupPosition);
+//        if (type == 0) {
+        if (convertView == null) {
+            convertView = new KeyAndViewCell(adapterContext);
+        }
+        KeyAndViewCell cell = (KeyAndViewCell) convertView;
+        cell.setKeyAndRightText("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
+        cell.setTextViewColor(adapterContext.getResources().getColor(R.color.order_statu_color));
+        cell.setKeyTextColor(adapterContext.getResources().getColor(R.color.theme_title));
+//        } else if (type == 1) {
+//            if (convertView == null) {
+//                convertView = new ShadowSectionCell(adapterContext);
+//            }
+//        }
+        return convertView;
     }
 
     @Override

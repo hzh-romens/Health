@@ -78,12 +78,9 @@ public class OrderFragment extends BaseFragment {
                 break;
             case MyOrderActivity.ORDER_TYPE_EVALUATE:
                 adapter = new OrderExpandableAdapter(getActivity(), mOrderEntities);
-//                requestOrderList(userGuid);
                 break;
             case MyOrderActivity.ORDER_TYPE_BEING:
                 adapter = new OrderExpandableBeingAdapter(getActivity(), mOrderEntities);
-//                requestOrderList(userGuid);
-//                AppNotificationCenter.getInstance().addObserver(getActivity(), AppNotificationCenter.orderCompleteAdd);
                 break;
         }
     }
@@ -99,8 +96,7 @@ public class OrderFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mOrderEntities = new ArrayList<>();
-                requestOrderList(userGuid, fragmentType);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
         requestOrderList(userGuid, fragmentType);

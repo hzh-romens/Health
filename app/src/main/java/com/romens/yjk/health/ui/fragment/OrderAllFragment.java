@@ -202,20 +202,22 @@ public class OrderAllFragment extends BaseFragment {
         public void onBindViewHolder(ADHolder holder, int position) {
             int type = getItemViewType(position);
             if (type == 0) {
+                holder.itemView.setBackgroundColor(Color.WHITE);
                 final int index = position / 2;
-                ItemViewHolder viewHolder = (ItemViewHolder) holder;
+                final ItemViewHolder viewHolder = (ItemViewHolder) holder;
                 viewHolder.titleView.setText("订单编号：" + orderEntities.get(index).getOrderNo());
                 viewHolder.evaluateState.setText(orderEntities.get(index).getOrderStatuster());
                 viewHolder.dateView.setText(orderEntities.get(index).getCreateDate());
                 viewHolder.moneyView.setText("￥" + orderEntities.get(index).getOrderPrice());
 
                 viewHolder.cardViewLayout.setOnClickListener(new View.OnClickListener() {
-
                     @Override
                     public void onClick(View v) {
+                        viewHolder.itemView.setBackgroundColor(getContext().getResources().getColor(R.color.line_color));
                         Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
                         intent.putExtra("orderId", orderEntities.get(index).getOrderId());
                         startActivity(intent);
+                        notifyDataSetChanged();
                     }
                 });
                 viewHolder.goodsName.setText(orderEntities.get(index).getGoodsName());

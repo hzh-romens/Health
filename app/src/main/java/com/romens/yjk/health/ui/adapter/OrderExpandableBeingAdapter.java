@@ -28,6 +28,7 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
+import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 import com.romens.yjk.health.ui.fragment.OrderFragment;
 
 import org.json.JSONException;
@@ -47,24 +48,6 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-//        int type = getGroupType(groupPosition);
-//        if (type == 0) {
-        if (convertView == null) {
-            convertView = new TextSettingsCell(adapterContext);
-        }
-        TextSettingsCell cell = (TextSettingsCell) convertView;
-        cell.setTextAndValue("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
-        cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-//        } else if (type == 1) {
-//            if (convertView == null) {
-//                convertView = new ShadowSectionCell(adapterContext);
-//            }
-//        }
-        return convertView;
-    }
-
-    @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         View view = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
@@ -72,9 +55,11 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
 
-        Button buyAgainBtn = (Button) view.findViewById(R.id.order_all_buy_again);
-        Button evaluateBtn = (Button) view.findViewById(R.id.order_all_evaluate_btn);
-        Button cancelBtn = (Button) view.findViewById(R.id.order_all_buy_cancel);
+        TextView buyAgainBtn = (TextView) view.findViewById(R.id.order_all_buy_again);
+        TextView evaluateBtn = (TextView) view.findViewById(R.id.order_all_evaluate_btn);
+        TextView cancelBtn = (TextView) view.findViewById(R.id.order_all_buy_cancel);
+        cancelBtn.setText("取消订单");
+        evaluateBtn.setText("确认收获");
         cancelBtn.setVisibility(View.VISIBLE);
 
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
@@ -82,7 +67,6 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
         dateTextView.setText(entity.getCreateDate());
-        evaluateBtn.setBackgroundResource(R.drawable.order_complete);
         evaluateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

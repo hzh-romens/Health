@@ -11,6 +11,7 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
+import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,24 +24,6 @@ public class OrderExpandableAdapter extends BaseExpandableAdapter {
 
     public OrderExpandableAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
         super(adapterContext, orderEntities);
-    }
-
-    @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-//        int type = getGroupType(groupPosition);
-//        if (type == 0) {
-            if (convertView == null) {
-                convertView = new TextSettingsCell(adapterContext);
-            }
-            TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setTextAndValue("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
-            cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-//        } else if (type == 1) {
-//            if (convertView == null) {
-//                convertView = new ShadowSectionCell(adapterContext);
-//            }
-//        }
-        return convertView;
     }
 
     @Override

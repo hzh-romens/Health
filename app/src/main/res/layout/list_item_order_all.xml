@@ -27,7 +27,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:text="bbb"
-        android:textColor="@color/theme_sub_title"
+        android:textColor="@color/order_statu_color"
         android:textSize="@dimen/body_size"/>
 
     <TextView
@@ -69,7 +69,7 @@
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/order_all_hint"
         android:text="bbb"
-        android:textColor="@color/md_pink_300"
+        android:textColor="@color/order_money_color"
         android:textSize="@dimen/body_size"/>
 
     <ImageView
@@ -92,7 +92,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="aaaa"
-        android:textColor="@color/theme_title"
+        android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
 

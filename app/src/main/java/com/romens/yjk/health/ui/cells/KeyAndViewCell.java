@@ -194,6 +194,14 @@ public class KeyAndViewCell extends LinearLayout {
         setWillNotDraw(!needDivider);
     }
 
+    public void setTextViewColor(int color) {
+        rightTextView.setTextColor(color);
+    }
+
+    public void setKeyTextColor(int color) {
+        keyTextView.setTextColor(color);
+    }
+
     public void changeRadioState(boolean flag) {
         if (flag) {
             radioViewMan.setImgViewSource(R.drawable.check_choice);

@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
+import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
 import org.json.JSONArray;
@@ -54,24 +56,6 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-//        int type = getGroupType(groupPosition);
-//        if (type == 0) {
-        if (convertView == null) {
-            convertView = new TextSettingsCell(adapterContext);
-        }
-        TextSettingsCell cell = (TextSettingsCell) convertView;
-        cell.setTextAndValue("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
-        cell.setValueTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-//        } else if (type == 1) {
-//            if (convertView == null) {
-//                convertView = new ShadowSectionCell(adapterContext);
-//            }
-//        }
-        return convertView;
-    }
-
-    @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         View view = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
@@ -79,8 +63,10 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
 
-        Button buyAgainBtn = (Button) view.findViewById(R.id.order_all_buy_again);
-        Button evaluateBtn = (Button) view.findViewById(R.id.order_all_evaluate_btn);
+        TextView buyAgainBtn = (TextView) view.findViewById(R.id.order_all_buy_again);
+        TextView evaluateBtn = (TextView) view.findViewById(R.id.order_all_evaluate_btn);
+        buyAgainBtn.setText("再来一单");
+        evaluateBtn.setText(" 评    价 ");
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
@@ -100,7 +86,6 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         buyAgainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(adapterContext, "click-->再来一单", Toast.LENGTH_SHORT).show();
                 requestOrderDetailList(UserGuidConfig.USER_GUID, entity.getOrderId());
             }
         });
@@ -127,7 +112,6 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
-
                     setOrderData(responseEntity.getResponse());
                 }
                 if (errorMsg != null) {
