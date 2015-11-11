@@ -35,6 +35,7 @@ import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
+import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.UserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -109,9 +110,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
                 } else if (position == exitRow) {
                     //TODO 退出登录的修改，清空购物车图标的数量
-                    FacadeToken.getInstance().expired();
                     UserConfig.clearUser();
                     UserConfig.clearConfig();
+                    FacadeToken.getInstance().expired();
                     userEntity = null;
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
@@ -280,9 +281,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             int type = getItemViewType(position);
             if (type == 0) {
                 if (view == null) {
-                    view = new UserProfileCell(adapterContext);
+                    view = new NewUserProfileCell(adapterContext);
                 }
-                UserProfileCell cell = (UserProfileCell) view;
+                NewUserProfileCell cell = (NewUserProfileCell) view;
                 cell.setUser(userEntity);
             } else if (type == 1) {
                 if (view == null) {
@@ -319,7 +320,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == collectRow) {
                     cell.setIconTextAndNav(R.drawable.ic_favorite, "我的收藏", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == historyRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_history, "历史游览", R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_history, "历史浏览", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == feedbackRow) {
                     cell.setIconTextAndNav(R.drawable.ic_advice, "意见反馈", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == helpRow) {

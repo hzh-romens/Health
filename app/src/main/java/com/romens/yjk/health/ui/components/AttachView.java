@@ -79,11 +79,9 @@ public class AttachView extends FrameLayout {
             addView(attachButton, LayoutHelper.createFrame(85, 90, Gravity.LEFT | Gravity.TOP));
             attachButton.setTag(a);
             views.add(attachButton);
-            final int finalA = a;
             attachButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DiscoveryCollection.onFocusItemAction(getContext(), items[finalA]);
                     if (delegate != null) {
                         delegate.didPressedButton((Integer) v.getTag());
                     }

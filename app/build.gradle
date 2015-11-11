@@ -12,10 +12,10 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 151028
-        versionName "1.2.1"
+        versionCode 151110
+        versionName "1.2.2"
         multiDexEnabled true
-        manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens",IM_SDK_APPKEY: "romens#kfly20jp"]
+        manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens", IM_SDK_APPKEY: "romens#kfly20jp"]
 
     }
 
@@ -28,13 +28,10 @@ android {
 
     productFlavors {
         channel_yjk {
-            manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens",IM_SDK_APPKEY: "romens#kfly20jp"]
-
-
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens", IM_SDK_APPKEY: "romens#kfly20jp"]
         }
         channel_nj_xszk {
-            manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens",IM_SDK_APPKEY: "romens#kfly20jp"]
-
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens", IM_SDK_APPKEY: "romens#kfly20jp"]
         }
     }
     signingConfigs {
@@ -55,10 +52,12 @@ android {
 
     buildTypes {
         debug {
+            manifestPlaceholders = [LOCATION_SDK_KEY: "7827d8503aac9c36d00ccae581aa84a6"]
             debuggable true
             signingConfig signingConfigs.debug
         }
         release {
+            manifestPlaceholders = [LOCATION_SDK_KEY: "f22aabde9a3424ab5ac5e23bafaf5bad"]
             minifyEnabled true
             shrinkResources true
             signingConfig signingConfigs.release

@@ -3,16 +3,20 @@ package com.romens.yjk.health.ui.components;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.utils.UIUtils;
 
 public class CustomDialog extends Dialog {
 
@@ -179,8 +183,7 @@ public class CustomDialog extends Dialog {
 			dialog.setCanceledOnTouchOutside(false);
 			dialog.setCancelable(false);
 			View layout = inflater.inflate(R.layout.customdialog, null);
-			dialog.addContentView(layout, new LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		//	dialog.addContentView(layout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			// set the dialog title
 			((TextView) layout.findViewById(R.id.title)).setVisibility(View.GONE);
 			((TextView) layout.findViewById(R.id.title)).setText(title);
@@ -291,6 +294,11 @@ public class CustomDialog extends Dialog {
 								LayoutParams.WRAP_CONTENT));
 			}
 			dialog.setContentView(layout);
+			WindowManager.LayoutParams attributes = dialog.getWindow().getAttributes();
+			WindowManager systemService = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+			attributes.width=2*systemService.getDefaultDisplay().getWidth()/3;
+			attributes.height=LayoutParams.WRAP_CONTENT;
+			dialog.getWindow().setAttributes(attributes);
 			return dialog;
 		}
 

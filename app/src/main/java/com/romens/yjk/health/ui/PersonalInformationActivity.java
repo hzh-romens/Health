@@ -231,6 +231,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             case R.id.choiceAllergy:
                 Intent allergyIntent = new Intent(this, SetDiseaseActivity.class);
                 allergyIntent.putExtra("flag", "allergy");
+                allergyIntent.putExtra("value",choiceAllergy.getText().toString());
                 startActivityForResult(allergyIntent, 8);
                 break;
             case R.id.choiceBirthday:
@@ -241,20 +242,24 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             case R.id.choiceDisease:
                 Intent dieaseIntent = new Intent(this, SetDiseaseActivity.class);
                 dieaseIntent.putExtra("flag","diease");
+                dieaseIntent.putExtra("value",choiceDisease.getText().toString());
                 startActivityForResult(dieaseIntent, 3);
                 break;
             case R.id.choiceHeredopathia:
                 Intent heredopathiaIntent = new Intent(this, SetDiseaseActivity.class);
                 heredopathiaIntent.putExtra("flag","Heredopathia");
+                heredopathiaIntent.putExtra("value",choiceHeredopathia.getText().toString());
                 startActivityForResult(heredopathiaIntent, 7);
 
                 break;
             case R.id.choiceSex:
                 Intent sexIntent = new Intent(this, SetSexActivity.class);
+                sexIntent.putExtra("value",choiceSex.getText().toString());
                 startActivityForResult(sexIntent, 2);
                 break;
             case R.id.editor_name:
                 Intent nameIntent = new Intent(this, SetNameActivity.class);
+                nameIntent.putExtra("value",editor_name.getText().toString());
                 startActivityForResult(nameIntent, 1);
                 break;
             case R.id.editor_food:
@@ -383,17 +388,33 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 break;
             case 4:
                 String foodvalue = data.getStringExtra("foodvalue");
-                String substring = foodvalue.substring(0, foodvalue.lastIndexOf(","));
+                String substring="";
+                if("".equals(foodvalue)){
+
+                }else {
+                    substring = foodvalue.substring(0, foodvalue.lastIndexOf(","));
+                }
                 editor_food.setText(substring);
                 break;
             case 5:
                 String restvalue = data.getStringExtra("restvalue");
-                String substring1 = restvalue.substring(0, restvalue.lastIndexOf(","));
+                String substring1="";
+                if("".equals(restvalue)){
+
+                }else {
+
+                    substring1 = restvalue.substring(0, restvalue.lastIndexOf(","));
+                }
                 editor_rest.setText(substring1);
                 break;
             case 6:
                 String othervalue = data.getStringExtra("othervalue");
-                String substring2 = othervalue.substring(0, othervalue.lastIndexOf(","));
+                String substring2="";
+                if("".equals(othervalue)){
+
+                }else {
+                    substring2 = othervalue.substring(0, othervalue.lastIndexOf(","));
+                }
                 editor_other.setText(substring2);
                 break;
             case 7:

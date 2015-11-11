@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.romens.yjk.health.R;
 
@@ -19,6 +20,8 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
     private ImageView btn_back;
     private String[] hobby;
     private  String flag;
+    private TextView tv_title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,7 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
         cb_gy= (CheckBox) findViewById(R.id.cb4);
         cb_gz= (CheckBox) findViewById(R.id.cb5);
         cb_gt= (CheckBox) findViewById(R.id.cb6);
+        tv_title= (TextView) findViewById(R.id.title);
         //Distinguishing mark(flag)
         if("diet".equals(flag)){
             cb_dy.setText("低盐");
@@ -43,6 +47,7 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
             cb_gy.setText("高盐");
             cb_gz.setText("高脂");
             cb_gt.setText("高糖");
+            tv_title.setText("饮食习惯选择");
 
         }else if("rest".equals(flag)){
             cb_dy.setText("早起早睡");
@@ -51,7 +56,9 @@ public class SetDietActivity extends BaseActivity implements CompoundButton.OnCh
             cb_gy.setText("晚起晚睡");
             cb_gz.setText("熬夜经常");
             cb_gt.setText("作息不规律");
+            tv_title.setText("作息习惯选择");
         }else if("other".equals(flag)){
+            tv_title.setText("其他习惯选择");
             cb_dy.setText("抽烟");
             cb_dz.setText("喝酒");
             cb_dt.setText("不吃早餐");

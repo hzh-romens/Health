@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.model.ADFunctionEntity;
@@ -31,7 +32,7 @@ public class ADFunctionControl extends ADBaseControl {
     }
 
     @Override
-    public void bindViewHolder(Context context, ADHolder holder) {
+    public void bindViewHolder(final Context context, ADHolder holder) {
         AttachView cell = (AttachView) holder.itemView;
         int size = adFunctionEntities.size();
         CharSequence[] items = new CharSequence[size];
@@ -41,6 +42,13 @@ public class ADFunctionControl extends ADBaseControl {
             itemIcons[i] = adFunctionEntities.get(i).iconResId;
         }
         cell.bindData(itemIcons, items);
+        cell.setDelegate(new AttachView.AttachViewDelegate() {
+            @Override
+            public void didPressedButton(int button) {
+                ADFunctionEntity entity = adFunctionEntities.get(button);
+                entity.onAction(context);
+            }
+        });
     }
 
     @Override
