@@ -138,7 +138,7 @@ public class HelpAnswerActivity extends BaseActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (position == 0) {
                 KeyAndImgCell cell = new KeyAndImgCell(context);
-                cell.setCellBackgroudColor(Color.WHITE);
+                cell.setBackgroundColor(Color.WHITE);
                 cell.setInfo(data.get(position).get("question"), true, false);
                 return cell;
             } else if (position < data.size()) {
@@ -152,7 +152,7 @@ public class HelpAnswerActivity extends BaseActivity {
                     convertView = new KeyAndImgCell(context);
                 }
                 KeyAndImgCell cell = (KeyAndImgCell) convertView;
-                cell.setCellBackgroudColor(Color.WHITE);
+                cell.setBackgroundColor(Color.WHITE);
                 if (position == data.size() + 1) {
                     cell.setInfo("没有您的问题？", true, true);
                     cell.setDivider(true, AndroidUtilities.dp(16), AndroidUtilities.dp(16));

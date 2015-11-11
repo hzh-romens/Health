@@ -37,10 +37,12 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,10 +80,14 @@ public class SearchActivityNew extends BaseActivity {
 
     private TextView clearSearchKeywordTextView;
 
+    private boolean isFromFamilyDrugGroup = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search, R.id.action_bar);
+
+        isFromFamilyDrugGroup = isFromFamilyDrugGroup();
 
         searchHistoryContainer = findViewById(R.id.search_history_container);
         historyLayout = (FlowLayout) findViewById(R.id.search_history_list);
@@ -94,7 +100,12 @@ public class SearchActivityNew extends BaseActivity {
         searchResultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (isDrugSearchResultRow(position)) {
+                if (isFromFamilyDrugGroup) {
+                    Intent intent = new Intent(SearchActivityNew.this, FamilyDrugGroupActivity.class);
+                    intent.putExtra("searchDrugEntity", searchDrugResult.get(position - (searchDrugSession + 1)));
+                    setResult(UserGuidConfig.RESPONSE_SEARCH_TO_DRUGGROUP, intent);
+                    finish();
+                } else if (isDrugSearchResultRow(position)) {
                     //跳转药品页面
                     Intent intent = new Intent(SearchActivityNew.this, MedicinalDetailActivity.class);
                     intent.putExtra("guid", searchDrugResult.get(position - (searchDrugSession + 1)).guid);
@@ -201,6 +212,12 @@ public class SearchActivityNew extends BaseActivity {
         });
     }
 
+    private boolean isFromFamilyDrugGroup() {
+        Intent intent = getIntent();
+        intent.getStringExtra("fromFramilyDrugGroupTag");
+        return intent.getBooleanExtra("fromFramilyDrugGroupTag", false);
+    }
+
     private void search(String queryText) {
         updateLayoutFlag(LAYOUT_FLAG_RESULT);
 
@@ -300,7 +317,7 @@ public class SearchActivityNew extends BaseActivity {
             return;
         }
         for (LinkedTreeMap<String, String> item : response) {
-            searchDiseaseResult.add(new SearchResultEntity("", item.get("DISEASENAME")));
+            searchDiseaseResult.add(new SearchResultEntity("", item.get("DISEASENAME"), ""));
         }
         updateAdapter();
         searchResultList.smoothScrollToPosition(0);
@@ -350,7 +367,7 @@ public class SearchActivityNew extends BaseActivity {
             return;
         }
         for (LinkedTreeMap<String, String> item : response) {
-            searchDrugResult.add(new SearchResultEntity(item.get("MERCHANDISEID"), item.get("MEDICINENAME")));
+            searchDrugResult.add(new SearchResultEntity(item.get("MERCHANDISEID"), item.get("MEDICINENAME"), item.get("MEDICINESPEC")));
         }
         updateAdapter();
         searchResultList.smoothScrollToPosition(0);
@@ -516,13 +533,15 @@ public class SearchActivityNew extends BaseActivity {
         }
     }
 
-    class SearchResultEntity {
+    class SearchResultEntity implements Serializable {
         public final String guid;
         public final String name;
+        public final String spec;
 
-        public SearchResultEntity(String guid, String name) {
+        public SearchResultEntity(String guid, String name, String spec) {
             this.guid = guid;
             this.name = name;
+            this.spec = spec;
         }
     }
 }

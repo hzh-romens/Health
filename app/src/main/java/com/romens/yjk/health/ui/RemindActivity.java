@@ -11,17 +11,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
-import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
@@ -75,7 +71,7 @@ public class RemindActivity extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 1) {
-                    startActivity(new Intent(RemindActivity.this, AddRemindActivityNew.class));
+                    startActivity(new Intent(RemindActivity.this, AddNewRemindActivity.class));
                 }
             }
         });

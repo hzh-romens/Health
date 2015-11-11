@@ -52,7 +52,8 @@ public class KeyAndImgCell extends LinearLayout {
         rightImageView.setImageResource(R.drawable.y);
         LayoutParams imgParams = new LayoutParams(AndroidUtilities.dp(24), AndroidUtilities.dp(24));
         imgParams.gravity = Gravity.CENTER_VERTICAL;
-        addView(rightImageView, imgParams);
+        rightImageView.setLayoutParams(imgParams);
+        addView(rightImageView);
     }
 
     public void setInfo(String leftViewText, boolean hideRightImg, boolean needDivider) {
@@ -64,8 +65,21 @@ public class KeyAndImgCell extends LinearLayout {
         setWillNotDraw(!needDivider);
     }
 
-    public void setCellBackgroudColor(int backgroudColor) {
-        setBackgroundColor(backgroudColor);
+    public void setInfo(String leftViewText, int rightImgResource, boolean needDivider) {
+        this.needDivider = needDivider;
+        LayoutParams layoutParams = (LayoutParams) rightImageView.getLayoutParams();
+        layoutParams.width = AndroidUtilities.dp(40);
+        layoutParams.height = AndroidUtilities.dp(40);
+        rightImageView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+        rightImageView.setLayoutParams(layoutParams);
+        rightImageView.setImageResource(rightImgResource);
+        leftTextView.setText(leftViewText);
+        setWillNotDraw(!needDivider);
+    }
+
+    public void setKeyColor(int color) {
+        leftTextView.setTextColor(color);
+        invalidate();
     }
 
     @Override

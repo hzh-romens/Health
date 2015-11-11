@@ -30,6 +30,8 @@ public class DaoMaster extends AbstractDaoMaster {
         EatDrugUserDao.createTable(db, ifNotExists);
         ShopCarDao.createTable(db,ifNotExists);
         CitysDao.createTable(db,ifNotExists);
+        FamilyMemberDao.createTable(db, ifNotExists);
+        FamilyDrugGroupDao.createTable(db, ifNotExists);
         HistoryDao.createTable(db, ifNotExists);
     }
     
@@ -44,6 +46,8 @@ public class DaoMaster extends AbstractDaoMaster {
         EatDrugUserDao.dropTable(db, ifExists);
         ShopCarDao.dropTable(db,ifExists);
         CitysDao.dropTable(db, ifExists);
+        FamilyMemberDao.dropTable(db,ifExists);
+        FamilyDrugGroupDao.dropTable(db,ifExists);
         HistoryDao.dropTable(db,ifExists);
     }
 
@@ -57,6 +61,8 @@ public class DaoMaster extends AbstractDaoMaster {
         EatDrugUserDao.upgradeTable(db, oldVersion, newVersion);
         ShopCarDao.upgradeTable(db,oldVersion,newVersion);
         CitysDao.upgradeTable(db,oldVersion,newVersion);
+        FamilyMemberDao.upgradeTable(db, oldVersion, newVersion);
+        FamilyDrugGroupDao.upgradeTable(db, oldVersion, newVersion);
         HistoryDao.upgradeTable(db, oldVersion, newVersion);
     }
     
@@ -97,6 +103,8 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(EatDrugUserDao.class);
         registerDaoClass(ShopCarDao.class);
         registerDaoClass(CitysDao.class);
+        registerDaoClass(FamilyMemberDao.class);
+        registerDaoClass(FamilyDrugGroupDao.class);
         registerDaoClass(HistoryDao.class);
     }
     

@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.model.RemindTimesDailogCallBack;
 import com.romens.yjk.health.ui.AddRemindActivity;
 import com.romens.yjk.health.ui.AddRemindActivityNew;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
@@ -28,11 +29,11 @@ public class AddRemindTimesDailog {
     private List<String> timesData;
     private int timesInDay;
     private AddRemindTimesDailog dailogInstace;
-    private AddRemindActivityNew addRemindActivity;
+    private RemindTimesDailogCallBack addRemindActivity;
 
     public AddRemindTimesDailog(Context context, List<String> timesData, int timesInDay) {
         dailogInstace = this;
-        addRemindActivity = (AddRemindActivityNew) context;
+        addRemindActivity = (RemindTimesDailogCallBack) context;
         this.context = context;
         this.timesData = timesData;
         this.timesInDay = timesInDay;
@@ -80,7 +81,6 @@ public class AddRemindTimesDailog {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addRemindActivity.setTimesInDay(timesInDay);
                 timesCountDialog.dismiss();
             }
         });
@@ -89,7 +89,6 @@ public class AddRemindTimesDailog {
             public void onClick(View v) {
                 timesInDay = timesData.size();
                 addRemindActivity.setTimesData(timesData);
-                addRemindActivity.setTimesInDay(timesInDay);
                 timesCountDialog.dismiss();
             }
         });

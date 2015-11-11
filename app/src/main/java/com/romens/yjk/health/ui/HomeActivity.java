@@ -31,6 +31,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.db.dao.FamilyDrugGroupDao;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
@@ -92,17 +93,16 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
-               /* if (key == -1) {
-                    startActivity(new Intent(HomeActivity.this, RemindActivity.class));
-                }else*/
-                if (id == 0) {
-                    startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
+                if (id == -1) {
+                    startActivity(new Intent(HomeActivity.this, FamilyDrugGroupActivity.class));
+                } else if (id == 0) {
+                    startActivity(new Intent(HomeActivity.this, FamilyMemberActivity.class));
                 } else if (id == 1) {
                     if (UserConfig.isClientLogined()) {
                         startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                    }else{
+                    } else {
                         //跳转至登录页面
-                        Toast.makeText(HomeActivity.this,"请您先登录",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(HomeActivity.this, LoginActivity.class));
                     }
                 }/*  else if (key == 2) {
@@ -164,8 +164,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             int count = (int) args[0];
             sumCount = sumCount + count;
             //updateShoppingCartCount(count);
-            if(sumCount<0){
-                sumCount=0;
+            if (sumCount < 0) {
+                sumCount = 0;
             }
             updateShoppingCartCount(sumCount);
         }
@@ -200,7 +200,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     //获取购物车数量
     private void requestShopCarCountData() {
         if (UserConfig.isClientLogined()) {
-            Log.i("用户guid",UserConfig.getClientUserEntity().getGuid());
+            Log.i("用户guid", UserConfig.getClientUserEntity().getGuid());
             Map<String, String> args = new FacadeArgs.MapBuilder()
                     .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
@@ -234,7 +234,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     }
                 }
             });
-        }else{
+        } else {
 
         }
     }

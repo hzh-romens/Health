@@ -7,6 +7,8 @@ import com.romens.yjk.health.db.entity.DataCacheEntity;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.EatDrugUserEntity;
+import com.romens.yjk.health.db.entity.FamilyDrugGroupEntity;
+import com.romens.yjk.health.db.entity.FamilyMemberEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
@@ -57,9 +59,14 @@ public class DaoSession extends AbstractDaoSession {
     private final CitysDao citysDao;
     private final DaoConfig cityDaoConfig;
 
+    private final FamilyMemberDao familyMemberDao;
+    private final DaoConfig familyMemberDaoConfig;
+
+    private final FamilyDrugGroupDao familyDrugGroupDao;
+    private final DaoConfig familyDrugGroupDaoConfig;
+
     private final HistoryDao historyDao;
     private final DaoConfig historyDaoConfig;
-
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -111,6 +118,16 @@ public class DaoSession extends AbstractDaoSession {
         citysDao = new CitysDao(cityDaoConfig, this);
         registerDao(CitysEntity.class, citysDao);
 
+        familyMemberDaoConfig = daoConfigMap.get(FamilyMemberDao.class).clone();
+        familyMemberDaoConfig.initIdentityScope(type);
+        familyMemberDao = new FamilyMemberDao(familyMemberDaoConfig, this);
+        registerDao(FamilyMemberEntity.class, familyMemberDao);
+
+        familyDrugGroupDaoConfig = daoConfigMap.get(FamilyDrugGroupDao.class).clone();
+        familyDrugGroupDaoConfig.initIdentityScope(type);
+        familyDrugGroupDao = new FamilyDrugGroupDao(familyDrugGroupDaoConfig, this);
+        registerDao(FamilyDrugGroupEntity.class, familyDrugGroupDao);
+
         historyDaoConfig = daoConfigMap.get(HistoryDao.class).clone();
         historyDaoConfig.initIdentityScope(type);
         historyDao = new HistoryDao(historyDaoConfig, this);
@@ -127,6 +144,8 @@ public class DaoSession extends AbstractDaoSession {
         eatDrugUserDaoConfig.getIdentityScope().clear();
         shopCarDaoConfig.getIdentityScope().clear();
         cityDaoConfig.getIdentityScope().clear();
+        familyMemberDaoConfig.getIdentityScope().clear();
+        familyDrugGroupDaoConfig.getIdentityScope().clear();
         historyDaoConfig.getIdentityScope().clear();
     }
 
@@ -169,5 +188,13 @@ public class DaoSession extends AbstractDaoSession {
 
     public HistoryDao getHistoryDao() {
         return historyDao;
+    }
+
+    public FamilyMemberDao getFamilyMemberDao() {
+        return familyMemberDao;
+    }
+
+    public FamilyDrugGroupDao getFamilyDrugGroupDao() {
+        return familyDrugGroupDao;
     }
 }
