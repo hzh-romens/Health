@@ -88,6 +88,7 @@ public class OrderAllFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
                 mOrderEntities = new ArrayList<>();
                 requestOrderList(userGuid);
             }

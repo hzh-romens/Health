@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -265,6 +266,8 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
         args.put("USERGUID", userGuid);
         args.put("ADVICE", feedBackInfo);
         args.put("JSONDATA", tags);
+        Gson gson=new Gson();
+        Log.e("tag", "--feedback___args--->" + gson.toJson(args));
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "Feedback", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -297,7 +300,8 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                     }
                 }
                 if (errorMsg != null) {
-                    Log.e("reqGetAllUsers", "ERROR");
+                    Log.e("reqGetAllUsers", "ERROR" + errorMsg.msg);
+                    Toast.makeText(FeedBackActivity.this, "反馈未成功", Toast.LENGTH_SHORT).show();
                 }
                 needHideProgress();
                 submitBtn.setClickable(true);

@@ -135,6 +135,7 @@ public class ControlAddressActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
                 requestDataChanged(userGuid, "0");
             }
         });

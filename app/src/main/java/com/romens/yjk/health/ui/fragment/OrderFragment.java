@@ -114,14 +114,14 @@ public class OrderFragment extends BaseFragment {
                 return true;
             }
         });
-//        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-//            @Override
-//            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long key) {
-//                parent.expandGroup(groupPosition);
-//                Log.e("tag", "-------->" + groupPosition);
-//                return true;
-//            }
-//        });
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long key) {
+                parent.expandGroup(groupPosition);
+                Log.e("tag", "-------->" + groupPosition);
+                return true;
+            }
+        });
 
         addCellView(content);
         refershContentView();

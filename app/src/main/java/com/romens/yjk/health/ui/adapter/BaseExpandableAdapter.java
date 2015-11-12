@@ -5,9 +5,11 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -19,6 +21,7 @@ import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -122,21 +125,37 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-//        int type = getGroupType(groupPosition);
-//        if (type == 0) {
         if (convertView == null) {
-            convertView = new KeyAndViewCell(adapterContext);
+            convertView = new CustomGroupView(adapterContext);
         }
-        KeyAndViewCell cell = (KeyAndViewCell) convertView;
-        cell.setKeyAndRightText("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
-        cell.setTextViewColor(adapterContext.getResources().getColor(R.color.order_statu_color));
-        cell.setKeyTextColor(adapterContext.getResources().getColor(R.color.theme_title));
-//        } else if (type == 1) {
-//            if (convertView == null) {
-//                convertView = new ShadowSectionCell(adapterContext);
-//            }
-//        }
+        CustomGroupView groupView = (CustomGroupView) convertView;
+        groupView.setInfor(groupPosition);
         return convertView;
+    }
+
+    class CustomGroupView extends LinearLayout {
+        KeyAndViewCell cell;
+        ShadowSectionCell lineCell;
+
+        public CustomGroupView(Context context) {
+            super(context);
+            setOrientation(LinearLayout.VERTICAL);
+            lineCell = new ShadowSectionCell(adapterContext);
+            addView(lineCell);
+            cell = new KeyAndViewCell(adapterContext);
+            addView(cell);
+        }
+
+        public void setInfor(int groupPosition) {
+            if (groupPosition == 0) {
+                lineCell.setVisibility(GONE);
+            } else {
+                lineCell.setVisibility(VISIBLE);
+            }
+            cell.setKeyAndRightText("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
+            cell.setTextViewColor(adapterContext.getResources().getColor(R.color.order_statu_color));
+            cell.setKeyTextColor(adapterContext.getResources().getColor(R.color.theme_title));
+        }
     }
 
     @Override
@@ -193,7 +212,7 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
             public void onResult(Message msg, Message errorMsg) {
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    setOrderData(responseProtocol.getResponse(),fragmentType);
+                    setOrderData(responseProtocol.getResponse(), fragmentType);
                 }
                 if (errorMsg == null) {
                 } else {
@@ -203,7 +222,7 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
         });
     }
 
-    public void setOrderData(List<LinkedTreeMap<String, String>> response,int fragmentType) {
+    public void setOrderData(List<LinkedTreeMap<String, String>> response, int fragmentType) {
         int count = response == null ? -1 : response.size();
         if (count < 0) {
             return;
