@@ -10,6 +10,15 @@ public class FamilyMemberEntity {
     private String sex;
     private String birthday;
     private String age;
+    private int isDefault = 0;
+
+    public int isDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(int isDefault) {
+        this.isDefault = isDefault;
+    }
 
     public long getId() {
         return id;

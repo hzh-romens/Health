@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -124,6 +126,12 @@ public class FamilyMemberActivity extends BaseActivity {
     }
 
     private void deleteDb(FamilyMemberEntity entity) {
+        Log.e("tag", "------>" + entity.isDefault());
+        if (entity.isDefault() == 1) {
+        Log.e("tag", "-22----->" + entity.isDefault());
+            Toast.makeText(this, "默认成员不能删除", Toast.LENGTH_SHORT).show();
+            return;
+        }
         FamilyMemberDao familyMemberDao = DBInterface.instance().openWritableDb().getFamilyMemberDao();
         familyMemberDao.delete(entity);
         entitiesList = familyMemberDao.loadAll();
@@ -140,6 +148,7 @@ public class FamilyMemberActivity extends BaseActivity {
             entity.setSex("男");
             entity.setBirthday(TransformDateUitls.getYearDate(new Date().getTime()) + "日出生");
             entity.setAge("0");
+            entity.setIsDefault(1);
             familyMemberDao.insert(entity);
             entitiesList = familyMemberDao.loadAll();
         }

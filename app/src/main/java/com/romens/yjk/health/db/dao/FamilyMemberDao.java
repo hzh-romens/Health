@@ -30,7 +30,8 @@ public class FamilyMemberDao extends AbstractDao<FamilyMemberEntity, Long> {
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
         public final static Property Sex = new Property(2, String.class, "sex", false, "SEX");
         public final static Property Birthday = new Property(3, String.class, "birthday", false, "BIRTHDAY");
-        public final static Property Age = new Property(4, String.class, "age", false, "AGE");
+        public final static Property IsDefault = new Property(4, int.class, "isDefault", false, "ISDEFAULT");
+        public final static Property Age = new Property(5, String.class, "age", false, "AGE");
     }
 
     public FamilyMemberDao(DaoConfig config) {
@@ -51,6 +52,7 @@ public class FamilyMemberDao extends AbstractDao<FamilyMemberEntity, Long> {
                 "'NAME' TEXT NOT NULL ," + // 2: user
                 "'SEX' TEXT NOT NULL ," + // 3: drug
                 "'BIRTHDAY' TEXT NOT NULL ," + // 4: count
+                "'ISDEFAULT' INTEGER NOT NULL ," + // 4: count
                 "'AGE' TEXT NOT NULL );"); // 11: times
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_FamilyMember_KEY ON " + TABLENAME +
@@ -80,7 +82,8 @@ public class FamilyMemberDao extends AbstractDao<FamilyMemberEntity, Long> {
         stmt.bindString(2, entity.getName());
         stmt.bindString(3, entity.getSex());
         stmt.bindString(4, entity.getBirthday());
-        stmt.bindString(5, entity.getAge());
+        stmt.bindLong(5, entity.isDefault());
+        stmt.bindString(6, entity.getAge());
     }
 
     /**
@@ -101,7 +104,8 @@ public class FamilyMemberDao extends AbstractDao<FamilyMemberEntity, Long> {
         entity.setName(cursor.getString(offset + 1));// user
         entity.setSex(cursor.getString(offset + 2)); // drug
         entity.setBirthday(cursor.getString(offset + 3)); // count
-        entity.setAge(cursor.getString(offset + 4)); // count
+        entity.setIsDefault(cursor.getInt(offset + 4)); // count
+        entity.setAge(cursor.getString(offset + 5)); // count
         return entity;
     }
 
@@ -114,7 +118,8 @@ public class FamilyMemberDao extends AbstractDao<FamilyMemberEntity, Long> {
         entity.setName(cursor.getString(offset + 1));// user
         entity.setSex(cursor.getString(offset + 2)); // drug
         entity.setBirthday(cursor.getString(offset + 3)); // count
-        entity.setAge(cursor.getString(offset + 4)); // count
+        entity.setIsDefault(cursor.getInt(offset + 4)); // count
+        entity.setAge(cursor.getString(offset + 5)); // count
     }
 
     /**
