@@ -26,7 +26,6 @@
             android:text="购物车"
             android:inputType="textPhonetic"
             android:imeOptions="actionSearch"
-            android:drawablePadding="8dp"
             android:layout_height="match_parent"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_xlarge"
