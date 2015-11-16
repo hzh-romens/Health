@@ -315,6 +315,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                 } else {
                     int index = position - remindTimeRow - 1;
                     cell.setKeyAndRightText("提醒时间", timesData.get(index), true);
+                    cell.setOnTextViewClickListener(null);
                 }
             } else if (type == 1) {
                 if (convertView == null) {

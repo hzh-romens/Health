@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -88,6 +89,7 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
                 return true;
             }
         });
+        convertView.setBackgroundColor(Color.WHITE);
         return convertView;
     }
 
