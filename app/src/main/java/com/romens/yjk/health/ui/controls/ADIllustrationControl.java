@@ -32,7 +32,7 @@ public class ADIllustrationControl extends ADBaseControl{
             @Override
             public void ToIllustration() {
                 //跳转到药品说明页面
-                Toast.makeText(context, "跳转到药品说明页面", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context, "跳转到药品说明页面", Toast.LENGTH_SHORT).show();
                // context.startActivity(new Intent(context, PersonalInformationActivity.class));
             }
         });

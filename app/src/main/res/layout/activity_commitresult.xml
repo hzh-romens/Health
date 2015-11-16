@@ -8,19 +8,19 @@
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:background="@color/theme_primary"
         android:gravity="center_vertical"
         android:paddingLeft="64dp"
         android:text="Title"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_large" />
+        android:textSize="@dimen/text_size_xlarge" />
 
     <LinearLayout
         android:id="@+id/first_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="52dp"
         android:orientation="vertical"
         android:visibility="visible">
 

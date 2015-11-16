@@ -174,14 +174,15 @@ public class MedicinalDetailActivity extends BaseActivity {
         ask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(MedicinalDetailActivity.this,"功能暂未开通...",Toast.LENGTH_SHORT).show();
                 //弹出一个PopWindow
-                getPopWindowInstance();
-                int[] location = new int[2];
-                v.getLocationInWindow(location);
-                WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                Rect rect = new Rect();
-                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                mPopupWindow.showAtLocation(v, Gravity.LEFT | Gravity.BOTTOM, location[0], v.getHeight() + getWindow().getDecorView().getHeight() - wm.getDefaultDisplay().getHeight());
+//                getPopWindowInstance();
+//                int[] location = new int[2];
+//                v.getLocationInWindow(location);
+//                WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+//                Rect rect = new Rect();
+//                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+//                mPopupWindow.showAtLocation(v, Gravity.LEFT | Gravity.BOTTOM, location[0], v.getHeight() + getWindow().getDecorView().getHeight() - wm.getDefaultDisplay().getHeight());
             }
         });
 
@@ -308,7 +309,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                     tv_favorite.setEnabled(true);
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
-                    Log.i("药品详情数据",response);
                     data = new ArrayList<TestEntity>();
                     if (response != null) {
                         try {
