@@ -1,16 +1,23 @@
 package com.romens.yjk.health.ui.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.library.datetimepicker.time.RadialPickerLayout;
 import com.romens.android.library.datetimepicker.time.TimePickerDialog;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.model.TimesAdapterCallBack;
 import com.romens.yjk.health.ui.AddRemindActivityNew;
 import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
@@ -28,10 +35,10 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
     private Context context;
     public static final String TIMEPICKER_TAG = "timepicker";
     private int index;
-    private AddRemindTimesDailog dailog;
+    private TimesAdapterCallBack dailog;
 
-    public TimesAdapter(List<String> data, Context context,AddRemindTimesDailog dailog) {
-        this.dailog=dailog;
+    public TimesAdapter(List<String> data, Context context, TimesAdapterCallBack callBack) {
+        this.dailog = callBack;
         this.data = data;
         this.context = context;
     }
@@ -72,17 +79,52 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
                 timePickerDialog.setCloseOnSingleTapMinute(false);
                 timePickerDialog.show(((BaseActivity) context).getSupportFragmentManager(), TIMEPICKER_TAG);
                 index = position;
-                Toast.makeText(context, "-->" + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                removeDialogView(position);
+                return true;
             }
         });
         return convertView;
+    }
+
+    public void removeDialogView(final int position) {
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        TextView textView = new TextView(context);
+
+        textView.setBackgroundResource(R.drawable.bg_white);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView.setSingleLine(true);
+        textView.setGravity(Gravity.CENTER);
+        textView.setText("删除");
+        textView.setTextColor(context.getResources().getColor(R.color.theme_primary));
+        textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(8), AndroidUtilities.dp(32), AndroidUtilities.dp(8));
+        LinearLayout.LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+        infoViewParams.weight = 1;
+        infoViewParams.gravity = Gravity.CENTER;
+        textView.setLayoutParams(infoViewParams);
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.remove(position);
+                notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.setContentView(textView);
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
         String minuteStr = minute + "";
         if (minute < 10) {
-            minuteStr="0"+minute;
+            minuteStr = "0" + minute;
         }
         data.set(index, hourOfDay + ":" + minuteStr);
         dailog.setTimesData(data);

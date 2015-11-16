@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.RemindTimesDailogCallBack;
+import com.romens.yjk.health.model.TimesAdapterCallBack;
 import com.romens.yjk.health.ui.AddRemindActivity;
 import com.romens.yjk.health.ui.AddRemindActivityNew;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
@@ -21,7 +22,7 @@ import java.util.List;
  * Created by anlc on 2015/9/1.
  * 添加新的用药提醒中的选择时间的dialog
  */
-public class AddRemindTimesDailog {
+public class AddRemindTimesDailog implements TimesAdapterCallBack {
 
     private Context context;
     private Dialog timesCountDialog;

@@ -135,6 +135,7 @@ dependencies {
     compile project(':citys')
     compile files('libs/easemobchat_2.2.3.jar')
     compile 'com.commit451:PhotoView:1.2.4'
+    compile 'com.melnykov:floatingactionbutton:1.0.7'
 }
 
 repositories {

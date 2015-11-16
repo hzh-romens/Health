@@ -175,6 +175,10 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
             user = data.getStringExtra("remindUser");
         } else if (resultCode == UserGuidConfig.RESPONSE_DRUGGROUP_TO_REMIND) {
             drug = data.getStringExtra("drugGroup_drug");
+        } else if (resultCode == UserGuidConfig.RESPONSE_REMIND_TIMES_TO_NEW_REMIND) {
+            this.timesDataTemp = data.getStringArrayListExtra("resultTimesDataList");
+            setRow();
+            adapter.setTimesData(timesDataTemp);
         }
         adapter.notifyDataSetChanged();
     }
@@ -323,7 +327,10 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new AddRemindTimesDailog(context, timesData, oldTimes).show();
+//                        new AddRemindTimesDailog(context, timesData, oldTimes).show();
+                        Intent intent = new Intent(context, AddRemindTimesActivity.class);
+                        intent.putStringArrayListExtra("timesDataList", (ArrayList<String>) timesData);
+                        startActivityForResult(intent, UserGuidConfig.REQUEST_NEW_REMIND_TO_REMIND_TIMES);
                     }
                 });
             }
