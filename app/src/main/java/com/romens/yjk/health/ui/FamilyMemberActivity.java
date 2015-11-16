@@ -126,9 +126,7 @@ public class FamilyMemberActivity extends BaseActivity {
     }
 
     private void deleteDb(FamilyMemberEntity entity) {
-        Log.e("tag", "------>" + entity.isDefault());
         if (entity.isDefault() == 1) {
-        Log.e("tag", "-22----->" + entity.isDefault());
             Toast.makeText(this, "默认成员不能删除", Toast.LENGTH_SHORT).show();
             return;
         }
