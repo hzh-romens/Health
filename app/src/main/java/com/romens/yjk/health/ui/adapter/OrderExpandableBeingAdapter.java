@@ -59,7 +59,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         TextView evaluateBtn = (TextView) view.findViewById(R.id.order_all_evaluate_btn);
         TextView cancelBtn = (TextView) view.findViewById(R.id.order_all_buy_cancel);
         cancelBtn.setText("取消订单");
-        evaluateBtn.setText("确认收获");
+        evaluateBtn.setText("确认收货");
         cancelBtn.setVisibility(View.VISIBLE);
 
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
@@ -181,7 +181,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                         e.printStackTrace();
                     }
                     if (requestCode.equals("yes")) {
-                        Toast.makeText(adapterContext, "确认收获", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(adapterContext, "确认收货", Toast.LENGTH_SHORT).show();
                         requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_BEING);
 
                         Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
@@ -190,7 +190,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                         ((FragmentActivity) adapterContext).finish();
                         adapterContext.startActivity(intent);
                     } else {
-                        Toast.makeText(adapterContext, "确认收获错误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(adapterContext, "确认收货错误", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (errorMsg == null) {
