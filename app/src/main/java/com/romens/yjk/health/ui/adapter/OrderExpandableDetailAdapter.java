@@ -123,7 +123,7 @@ public class OrderExpandableDetailAdapter extends BaseExpandableListAdapter {
         GoodsListEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
         titleTextView.setText(entity.getShopName());
         countTextView.setText("x" + entity.getBuyCount());
-        moneyTextView.setText(entity.getGoodsPrice());
+        moneyTextView.setText("￥"+entity.getGoodsPrice());
         specTextView.setText(entity.getSpec());
         leftImg.setImageUrl(entity.getGoodsUrl(), "64_64", null);
         return view;

@@ -198,10 +198,10 @@ public class OrderDetailActivity extends BaseActivity {
                 KeyAndValueCell cell = new KeyAndValueCell(context);
                 if (position == dataRow) {
                     cell.setKeyAndValue(orderListEntity.getCreateTime() + "  下单", orderListEntity.getOrderStatusStr(), true);
-                    cell.setValueTextColor(0xfff06292);
+                    cell.setValueTextColor(context.getResources().getColor(R.color.order_statu_color));
                 } else if (position == totalPriceRow) {
                     cell.setKeyAndValue("总计", "￥" + orderListEntity.getOrderPrice(), false);
-                    cell.setValueTextColor(0xfff06292);
+                    cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == payWayRow) {
 //                    String result = "";
 //                    if (orderListEntity.getDeliverType().equals("1")) {
@@ -226,7 +226,6 @@ public class OrderDetailActivity extends BaseActivity {
                 cell.setTextColor(getResources().getColor(R.color.theme_title));
                 if (position == consigneeTitleRow) {
                     cell.setText("收货人信息");
-                    cell.setTextColor(ResourcesConfig.primaryColor);
                 }
                 if (position == orderNumRow) {
                     cell.setText("订单编号：" + orderListEntity.getOrderNo());
@@ -292,7 +291,7 @@ public class OrderDetailActivity extends BaseActivity {
             @Override
             public void onResult(Message msg, Message errorMsg) {
                 if (msg != null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
 
                     setOrderData(responseEntity.getResponse());

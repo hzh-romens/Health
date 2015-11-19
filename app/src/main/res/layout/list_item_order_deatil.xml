@@ -20,14 +20,26 @@
         android:layout_toRightOf="@id/order_select_img"/>
 
     <TextView
+        android:id="@+id/order_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:text="bbbbbbbb"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/body_size"/>
+
+
+    <TextView
         android:id="@+id/order_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/order_money"
         android:layout_toRightOf="@id/order_img"
-        android:ellipsize="end"
-        android:maxLines="3"
+        android:ellipsize="marquee"
+        android:maxLines="2"
         android:text="aaaaaaaaaaaaaaaaa"
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
@@ -47,16 +59,6 @@
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
-    <TextView
-        android:id="@+id/order_money"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
-        android:text="bbbbbbbb"
-        android:textColor="@color/theme_sub_title"
-        android:textSize="@dimen/body_size"/>
 
     <TextView
         android:id="@+id/order_count"
