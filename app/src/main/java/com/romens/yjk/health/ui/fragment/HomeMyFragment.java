@@ -17,7 +17,6 @@ import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
-import com.romens.android.ui.cells.GreySectionCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextIconCell;
 import com.romens.android.ui.cells.TextInfoCell;
@@ -36,7 +35,6 @@ import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
-import com.romens.yjk.health.ui.cells.UserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 /**
@@ -318,7 +316,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == myOrderRow) {
                     cell.setIconTextAndNav(R.drawable.ic_order, "我的订单", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == collectRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_favorite, "我的收藏", R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_favorite_person, "我的收藏", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == historyRow) {
                     cell.setIconTextAndNav(R.drawable.ic_history, "历史浏览", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == feedbackRow) {

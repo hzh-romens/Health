@@ -1,89 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="45dp"
-        >
-    <com.romens.android.ui.ActionBar.ActionBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/action_bar"
-        android:layout_gravity="top"
-       />
+        android:layout_marginBottom="48dp">
+
+        <com.romens.android.ui.ActionBar.ActionBar
+            android:id="@+id/action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top" />
 
         <android.support.v7.widget.RecyclerView
-            android:layout_below="@+id/action_bar"
+            android:id="@id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@id/recyclerview"
-            android:layout_marginTop="41dp"
+            android:layout_below="@+id/action_bar"
+            android:layout_gravity="center"
             android:layout_marginBottom="9dp"
-            android:layout_gravity="center" />
+            android:layout_marginTop="41dp" />
     </FrameLayout>
 
-
+    <!--android:background="#333333"-->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
         android:id="@+id/ll"
-        android:background="#333333"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="#333334"
         android:orientation="horizontal">
-        <TextView
+
+        <FrameLayout
+            android:id="@+id/ask"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/ask"
-            android:text="咨询"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@android:color/white"
-            android:gravity="center_horizontal|bottom"
-            android:drawablePadding="1dip"
-            android:paddingBottom="2dp"
-            android:layout_marginBottom="2dp"
-            android:drawableTop="@drawable/ic_person_outline_white_24dp"
-            />
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/ic_consult"
+                android:layout_width="24dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_horizontal|top"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_consult" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:text="咨询"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_small" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/favorite"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/ic_favorite"
+                android:layout_width="24dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_horizontal|top"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_favorite" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="收藏"
+                android:id="@+id/tv_favorite"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_small"
+
+                />
+        </FrameLayout>
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/favorite"
-            android:text="收藏"
-            android:layout_marginBottom="2dp"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@android:color/white"
-            android:gravity="center_horizontal|bottom"
-            android:drawablePadding="1dip"
-            android:paddingBottom="2dp"
-            android:drawableTop="@drawable/ic_star_outline_white_24dp"
-            />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
             android:id="@id/shopcar"
-            android:textSize="@dimen/text_size_medium"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawablePadding="2dip"
+            android:drawableTop="@drawable/shopcar_bgc"
+            android:gravity="center_horizontal|bottom"
+            android:paddingBottom="2dp"
             android:text="库存"
             android:textColor="@android:color/white"
-            android:gravity="center_horizontal|bottom"
-            android:drawablePadding="2dip"
-            android:paddingBottom="2dp"
-            android:visibility="gone"
-            android:drawableTop="@drawable/shopcar_bgc"
-            />
+            android:textSize="@dimen/text_size_medium"
+            android:visibility="gone" />
+
         <TextView
+            android:id="@+id/tv_buy"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:id="@+id/tv_buy"
-            android:text="加入购物车"
-            android:textSize="@dimen/text_size_large"
-            android:textColor="@android:color/white"
             android:background="@color/themecolor"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:text="加入购物车"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_large" />
     </LinearLayout>
 </RelativeLayout>

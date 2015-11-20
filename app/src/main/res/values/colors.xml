@@ -3,6 +3,7 @@
 
     <color name="hangout_green">#0f9d58</color>
     <color name="theme_primary">@color/hangout_green</color>
+    <!--<color name="theme_primary">#96bd2c</color>-->
     <color name="theme_primary_dark">@color/hangout_green</color>
     <color name="theme_primary_light">@color/hangout_green</color>
 
@@ -34,4 +35,6 @@
     <color name="second_title">#f0f0f0</color>
     <color name="themecolor">#96bd2c</color>
     <color name="titlecolor">#333333</color>
+    <color name="new_grey">#f6f6f6</color>
+
 </resources>
