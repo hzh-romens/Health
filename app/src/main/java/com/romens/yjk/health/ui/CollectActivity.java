@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -38,6 +39,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
+import com.romens.yjk.health.db.dao.CollectDataDao;
 import com.romens.yjk.health.db.entity.CitysEntity;
 import com.romens.yjk.health.model.CollectDataEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
@@ -196,6 +198,7 @@ public class CollectActivity extends BaseActivity {
             @Override
             public void rightBtnClick() {
                 entities = adapter.getEntities();
+                deleteDb(entities);
                 requestDelFavour(userGuid, delItem(entities));
                 adapter.setEntities(entities);
                 adapter.notifyDataSetChanged();
@@ -332,6 +335,7 @@ public class CollectActivity extends BaseActivity {
             return;
         }
         entities.clear();
+        CollectDataDao dao = DBInterface.instance().openWritableDb().getCollectDataDao();
         try {
             JSONArray array = new JSONArray(response);
             for (int i = 0; i < array.length(); i++) {
@@ -348,14 +352,24 @@ public class CollectActivity extends BaseActivity {
                 entity.setMemberPrice(item.getString("MEMBERPRICE"));
                 entity.setAssessCount(item.getString("ASSESSCOUNT"));
                 entity.setSaleCount(item.getString("SALECOUNT"));
-                entities.add(entity);
+//                entities.add(entity);
+                dao.insert(entity);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        entities = dao.loadAll();
         refreshContentView();
         adapter.setEntities(entities);
         adapter.notifyDataSetChanged();
+    }
+
+    //从本地删除收藏
+    private void deleteDb(List<CollectDataEntity> entityList) {
+        CollectDataDao dataDao = DBInterface.instance().openWritableDb().getCollectDataDao();
+        for (CollectDataEntity entity : entityList) {
+            dataDao.delete(entity);
+        }
     }
 
     //访问删除收藏

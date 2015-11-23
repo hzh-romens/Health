@@ -6,6 +6,7 @@ import com.google.gson.internal.LinkedTreeMap;
  * Created by anlc on 2015/10/22.
  */
 public class CollectDataEntity {
+    private long id;
     private String merchandiseId;//商品id
     private String medicineName;//商品名称
     private String medicineSpec;//商品规格
@@ -18,7 +19,24 @@ public class CollectDataEntity {
     private String assessCount;//评论总数
     private String saleCount;//销量
 
+    private String date;//时间
     private boolean isSelect;//是否选中
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getMerchandiseId() {
         return merchandiseId;

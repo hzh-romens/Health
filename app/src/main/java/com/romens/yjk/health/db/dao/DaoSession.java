@@ -13,6 +13,7 @@ import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
+import com.romens.yjk.health.model.CollectDataEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 
 import java.util.Map;
@@ -67,6 +68,9 @@ public class DaoSession extends AbstractDaoSession {
 
     private final HistoryDao historyDao;
     private final DaoConfig historyDaoConfig;
+
+    private final CollectDataDao collectDataDao;
+    private final DaoConfig collectDataDaoConfig;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -132,6 +136,11 @@ public class DaoSession extends AbstractDaoSession {
         historyDaoConfig.initIdentityScope(type);
         historyDao = new HistoryDao(historyDaoConfig, this);
         registerDao(HistoryEntity.class, historyDao);
+
+        collectDataDaoConfig = daoConfigMap.get(CollectDataDao.class).clone();
+        collectDataDaoConfig.initIdentityScope(type);
+        collectDataDao = new CollectDataDao(collectDataDaoConfig, this);
+        registerDao(CollectDataEntity.class, collectDataDao);
     }
 
     public void clear() {
@@ -147,6 +156,7 @@ public class DaoSession extends AbstractDaoSession {
         familyMemberDaoConfig.getIdentityScope().clear();
         familyDrugGroupDaoConfig.getIdentityScope().clear();
         historyDaoConfig.getIdentityScope().clear();
+        collectDataDaoConfig.getIdentityScope().clear();
     }
 
     public DataCacheDao getDataCacheDao() {
@@ -196,5 +206,9 @@ public class DaoSession extends AbstractDaoSession {
 
     public FamilyDrugGroupDao getFamilyDrugGroupDao() {
         return familyDrugGroupDao;
+    }
+
+    public CollectDataDao getCollectDataDao() {
+        return collectDataDao;
     }
 }
