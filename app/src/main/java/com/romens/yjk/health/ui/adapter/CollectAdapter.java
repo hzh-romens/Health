@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -76,7 +78,11 @@ public class CollectAdapter extends BaseAdapter {
         }
         holder = (CollectViewHolder) convertView.getTag();
         final CollectDataEntity entity = entities.get(position);
-        holder.imageView.setImageUrl(entity.getPicBig(), "64_64", null);
+        if (entity.getPicBig() == null || entity.getPicBig().equals("") || entity.getPicBig().equals("null")) {
+            holder.imageView.setImageResource(R.drawable.no_img_upload);
+        } else {
+            holder.imageView.setImageUrl(entity.getPicBig(), "64_64", null);
+        }
         holder.drugNameTextView.setText(entity.getMedicineName());
         holder.moneyTextView.setText("￥" + entity.getPrice());
         holder.moneyTextView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);

@@ -161,6 +161,12 @@ public class CollectActivity extends BaseActivity {
         LinearLayout.LayoutParams refreshlayoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
         refreshlayoutParams.weight = 1;
         refreshLayout.setLayoutParams(refreshlayoutParams);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLayout.setRefreshing(false);
+            }
+        });
         container.addView(refreshLayout);
 
         listView = new ListView(this);
