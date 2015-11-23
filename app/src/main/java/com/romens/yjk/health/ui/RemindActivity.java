@@ -141,7 +141,6 @@ public class RemindActivity extends BaseActivity {
         public void setData(List<RemindEntity> data) {
             this.data = data;
         }
-
         public RemindAdapter(List<RemindEntity> data, Context context) {
             this.data = data;
             this.context = context;

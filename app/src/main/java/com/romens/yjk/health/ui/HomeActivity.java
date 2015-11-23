@@ -29,9 +29,8 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.db.dao.FamilyDrugGroupDao;
+import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
@@ -59,9 +58,11 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         super.onCreate(savedInstanceState);
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
+
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         slidingFixTabLayout = new SlidingFixTabLayout(this);
-        slidingFixTabLayout.setBackgroundResource(R.color.theme_primary);
+       slidingFixTabLayout.setBackgroundResource(R.color.theme_primary);
+       // slidingFixTabLayout.setBackgroundResource(R.color.new_grey);
         content.addView(slidingFixTabLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -73,8 +74,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         viewPager.setAdapter(pagerAdapter);
 
         slidingFixTabLayout.setCustomTabView(R.layout.widget_tab_indicator, android.R.id.text1);
+        //slidingFixTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
         slidingFixTabLayout.setTabStripBottomBorderThicknessPadding(AndroidUtilities.dp(2));
         slidingFixTabLayout.setSelectedIndicatorColors(Color.WHITE);
+        //slidingFixTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.themecolor));
         slidingFixTabLayout.setDistributeEvenly(true);
         slidingFixTabLayout.setViewPager(viewPager);
 

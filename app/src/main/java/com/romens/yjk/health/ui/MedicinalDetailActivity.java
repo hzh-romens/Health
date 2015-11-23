@@ -2,26 +2,22 @@ package com.romens.yjk.health.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -34,26 +30,21 @@ import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.location.core.AMapLocException;
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.extend.scanner.Intents;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.model.ADPagerEntity;
@@ -61,7 +52,6 @@ import com.romens.yjk.health.model.GoodSpicsEntity;
 import com.romens.yjk.health.model.NearByOnSaleEntity;
 import com.romens.yjk.health.model.TestEntity;
 import com.romens.yjk.health.model.WeiShopEntity;
-
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.adapter.MedicinalDetailAdapter;
 import com.romens.yjk.health.ui.cells.PopWindowCell;
@@ -69,7 +59,6 @@ import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
 import com.romens.yjk.health.ui.controls.ADErrorControl;
 import com.romens.yjk.health.ui.controls.ADGroupNameControls;
-import com.romens.yjk.health.ui.controls.ADHorizontalScrollControl;
 import com.romens.yjk.health.ui.controls.ADIllustrationControl;
 import com.romens.yjk.health.ui.controls.ADMedicinalDetailControl;
 import com.romens.yjk.health.ui.controls.ADMoreControl;
@@ -86,7 +75,8 @@ import java.util.Map;
 
 public class MedicinalDetailActivity extends BaseActivity {
     private RecyclerView recyclerView;
-    private TextView tv_favorite, tv_buy, ask;
+    private TextView tv_buy, tv_color;
+    private FrameLayout tv_consult, tv_favorite;
     private TextView shopcar;
     private LinearLayout menu_bottom;
     private ABaseLinearLayoutManager layoutManager;
@@ -100,7 +90,8 @@ public class MedicinalDetailActivity extends BaseActivity {
     private double LONGITUDE;
     private double LATITUDE;
     private List<NearByOnSaleEntity> nearResult;
-    private boolean flag=false;
+    private boolean flag = false;
+    private ImageView iv_favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +102,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         requestNearbyData();
 
     }
+
     //获取intent传递过来的值
     private void initIntentValue() {
         //测试数据
@@ -122,12 +114,12 @@ public class MedicinalDetailActivity extends BaseActivity {
             GUID = "851823b0-75fc-4795-8c2f-4554ec5402cf";
         }
         String mark = getIntent().getStringExtra("flag");
-        if("".equals(mark)||mark ==null){
-             flag=false;
-        }else if("true".equals(mark)){
-            flag=true;
-        }else{
-            flag=false;
+        if ("".equals(mark) || mark == null) {
+            flag = false;
+        } else if ("true".equals(mark)) {
+            flag = true;
+        } else {
+            flag = false;
         }
     }
 
@@ -139,7 +131,8 @@ public class MedicinalDetailActivity extends BaseActivity {
     ActionBar actionBar;
 
     private void initView() {
-
+        iv_favorite = (ImageView) findViewById(R.id.ic_favorite);
+        tv_color = (TextView) findViewById(R.id.tv_favorite);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         if (Build.VERSION.SDK_INT >= 9) {
@@ -148,13 +141,20 @@ public class MedicinalDetailActivity extends BaseActivity {
         recyclerView.setClipToPadding(false);
         initLayoutManager();
 
-        tv_favorite = (TextView) findViewById(R.id.favorite);
+        tv_favorite = (FrameLayout) findViewById(R.id.favorite);
         tv_favorite.setEnabled(false);
         tv_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //后期
                 if (UserConfig.isClientLogined()) {
-                    addtoFavorite();
+                    if ("已收藏".equals(tv_color.getText().toString())) {
+                        //cancel favorite
+                        deleteFavorite();
+                    } else {
+                        //add to favorite
+                        addtoFavorite();
+                    }
                 } else {
                     Toast.makeText(MedicinalDetailActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
                 }
@@ -166,15 +166,15 @@ public class MedicinalDetailActivity extends BaseActivity {
         tv_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    requestBuy();
+                requestBuy();
             }
         });
 
-        ask = (TextView) findViewById(R.id.ask);
-        ask.setOnClickListener(new View.OnClickListener() {
+        tv_consult = (FrameLayout) findViewById(R.id.ask);
+        tv_consult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MedicinalDetailActivity.this,"功能暂未开通...",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MedicinalDetailActivity.this, "功能暂未开通...", Toast.LENGTH_SHORT).show();
                 //弹出一个PopWindow
 //                getPopWindowInstance();
 //                int[] location = new int[2];
@@ -199,10 +199,64 @@ public class MedicinalDetailActivity extends BaseActivity {
             }
         });
 
+
     }
+    //取消收藏
+    private void deleteFavorite() {
+        if (UserConfig.isClientLogined()) {
+            Map<String, String> args = new FacadeArgs.MapBuilder().build();
+            args.put("MERCHANDISEID", GUID);
+            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+            Message message = new Message.MessageBuilder()
+                    .withProtocol(protocol)
+                    .build();
+            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+                @Override
+                public void onTokenTimeout(Message msg) {
+                    Log.e("addtofarvite", "ERROR");
+                }
+
+                @Override
+                public void onResult(Message msg, Message errorMsg) {
+                    if (errorMsg == null) {
+                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                        String response = responseProtocol.getResponse();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String returnMsg = jsonObject.getString("success");
+                            Log.i("取消收藏夹数据----",returnMsg);
+                            if ("no".equals(returnMsg)) {
+                                Toast.makeText(MedicinalDetailActivity.this, "取消收藏", Toast.LENGTH_SHORT).show();
+                                iv_favorite.setImageResource(R.drawable.ic_favorite);
+                                tv_color.setText("收藏");
+                                tv_color.setTextColor(getResources().getColor(R.color.white));
+                            } else {
+                                iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
+                                Toast.makeText(MedicinalDetailActivity.this, "取消收藏失败", Toast.LENGTH_SHORT).show();
+                                tv_color.setTextColor(getResources().getColor(R.color.themecolor));
+                                tv_color.setText("已收藏");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
+                        Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
+                    }
+                }
+            });
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
+    }
+
     //添加收藏夹
     private void addtoFavorite() {
-        if(UserConfig.isClientLogined()) {
+        if (UserConfig.isClientLogined()) {
             Map<String, String> args = new FacadeArgs.MapBuilder().build();
             args.put("MERCHANDISEID", GUID);
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
@@ -228,8 +282,14 @@ public class MedicinalDetailActivity extends BaseActivity {
                             String returnMsg = jsonObject.getString("success");
                             if ("yes".equals(returnMsg)) {
                                 Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹成功", Toast.LENGTH_SHORT).show();
+                                iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
+                                tv_color.setText("已收藏");
+                                tv_color.setTextColor(getResources().getColor(R.color.themecolor));
                             } else {
+                                iv_favorite.setImageResource(R.drawable.ic_favorite);
                                 Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
+                                tv_color.setTextColor(getResources().getColor(R.color.white));
+                                tv_color.setText("收藏");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -240,7 +300,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                     }
                 }
             });
-        }else{
+        } else {
             startActivity(new Intent(this, LoginActivity.class));
         }
 
@@ -329,7 +389,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getSHORTDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
                                 count++;
                                 controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
-                                if(!flag) {
+                                if (!flag) {
                                     count++;
                                     controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
 
@@ -346,7 +406,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 AddToHistory(weiShopEntity);
                             } else {
                                 //show emptyPage
-                              controls.append(0,new ADErrorControl().bindModel("该药店未能查询到该药品"));
+                                controls.append(0, new ADErrorControl().bindModel("该药店未能查询到该药品"));
                             }
 
                         } catch (JSONException e) {
@@ -387,7 +447,7 @@ public class MedicinalDetailActivity extends BaseActivity {
             FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
                 @Override
                 public void onTokenTimeout(Message msg) {
-                    Log.e("InsertIntoCar",msg.msg);
+                    Log.e("InsertIntoCar", msg.msg);
                 }
 
                 @Override
@@ -406,10 +466,11 @@ public class MedicinalDetailActivity extends BaseActivity {
                     }
                 }
             });
-        }else{
-            Toast.makeText(this,"请您先登录",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "请您先登录", Toast.LENGTH_SHORT).show();
         }
     }
+
     public void AddToHistory(WeiShopEntity weiShopEntity) {
         HistoryEntity historyEntity = new HistoryEntity();
         historyEntity.setShopName(weiShopEntity.getSHOPNAME());
@@ -555,7 +616,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                         if (errorMsg == null) {
                                             ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                                             String response = responseProtocol.getResponse();
-                                            Log.i("附近有售数据----",response);
+                                            Log.i("附近有售数据----", response);
                                             Gson gson = new Gson();
                                             nearResult = gson.fromJson(response, new TypeToken<List<NearByOnSaleEntity>>() {
                                             }.getType());

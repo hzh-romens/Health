@@ -3,11 +3,9 @@ package com.romens.yjk.health.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,61 +13,34 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.CheckedTextView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.github.materialdrawer.model.DividerDrawerItem;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
-import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.viewholder.PaddingDividerItemDecoration;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.entity.UserEntity;
-import com.romens.yjk.health.model.ChoiceEntity;
 import com.romens.yjk.health.model.GoodListEntity;
-import com.romens.yjk.health.model.GoodsEntity;
-import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.ShopListAdapter;
 import com.romens.yjk.health.ui.adapter.ShopListNoPictureAdapter;
-import com.romens.yjk.health.ui.cells.PopWindowCell;
 import com.romens.yjk.health.ui.components.ReviseRadioButton;
 import com.romens.yjk.health.ui.utils.UIHelper;
-import com.romens.yjk.health.ui.utils.UIUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 
 /**
@@ -148,6 +119,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
                 PAGE = 1;
+             //Log.i("是否为空----",("".equals(EDITEXT))+"------"+("".equals(KEY)));
                 if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
                     requestData();
                 } else {
@@ -328,7 +300,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
                 EDITEXT = et_search.getText().toString();
                 if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
-                    Toast.makeText(ShopListActivity.this, "请输入查询信息", Toast.LENGTH_SHORT);
+                  requestData();
                 } else {
                     requestSearchData(EDITEXT, KEY);
                 }
