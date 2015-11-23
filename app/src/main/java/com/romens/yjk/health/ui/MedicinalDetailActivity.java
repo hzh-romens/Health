@@ -227,7 +227,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String returnMsg = jsonObject.getString("success");
-                            Log.i("取消收藏夹数据----",returnMsg);
                             if ("no".equals(returnMsg)) {
                                 Toast.makeText(MedicinalDetailActivity.this, "取消收藏", Toast.LENGTH_SHORT).show();
                                 iv_favorite.setImageResource(R.drawable.ic_favorite);
@@ -369,7 +368,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                     tv_favorite.setEnabled(true);
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
-                    data = new ArrayList<TestEntity>();
                     if (response != null) {
                         try {
                             JSONArray jsonArray2 = new JSONArray(response);
@@ -386,7 +384,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 int count = 0;
                                 controls.append(count, new ADPagerControl().bindModel(adPagerEntities));
                                 count++;
-                                controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getSHORTDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
+                                controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getDETAILDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
                                 count++;
                                 controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
                                 if (!flag) {
@@ -616,7 +614,6 @@ public class MedicinalDetailActivity extends BaseActivity {
                                         if (errorMsg == null) {
                                             ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                                             String response = responseProtocol.getResponse();
-                                            Log.i("附近有售数据----", response);
                                             Gson gson = new Gson();
                                             nearResult = gson.fromJson(response, new TypeToken<List<NearByOnSaleEntity>>() {
                                             }.getType());

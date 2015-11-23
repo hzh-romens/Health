@@ -30,6 +30,24 @@ public class WeiShopEntity {
     private String SHOPNAME;
     private String SHOPADDRESS;
     private String STORECOUNT;
+    private String DETAILDESCRIPTION;
+    private String manufacturerId;
+
+    public String getDETAILDESCRIPTION() {
+        return DETAILDESCRIPTION;
+    }
+
+    public void setDETAILDESCRIPTION(String DETAILDESCRIPTION) {
+        this.DETAILDESCRIPTION = DETAILDESCRIPTION;
+    }
+
+    public String getManufacturerId() {
+        return manufacturerId;
+    }
+
+    public void setManufacturerId(String manufacturerId) {
+        this.manufacturerId = manufacturerId;
+    }
 
     public String getSTORECOUNT() {
         return STORECOUNT;
