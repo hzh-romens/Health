@@ -41,6 +41,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
+import com.romens.yjk.health.model.SearchResultEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -533,15 +534,15 @@ public class SearchActivityNew extends BaseActivity {
         }
     }
 
-    class SearchResultEntity implements Serializable {
-        public final String guid;
-        public final String name;
-        public final String spec;
-
-        public SearchResultEntity(String guid, String name, String spec) {
-            this.guid = guid;
-            this.name = name;
-            this.spec = spec;
-        }
-    }
+//    class SearchResultEntity implements Serializable {
+//        public final String guid;
+//        public final String name;
+//        public final String spec;
+//
+//        public SearchResultEntity(String guid, String name, String spec) {
+//            this.guid = guid;
+//            this.name = name;
+//            this.spec = spec;
+//        }
+//    }
 }

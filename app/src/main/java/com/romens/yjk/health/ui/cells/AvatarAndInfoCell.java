@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,6 +78,15 @@ public class AvatarAndInfoCell extends LinearLayout {
         rightImage.setLayoutParams(imgParams);
         rightImage.setVisibility(GONE);
         addView(rightImage);
+
+        rightImage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onRightViewClickListener != null) {
+                    onRightViewClickListener.onClick(rightImage);
+                }
+            }
+        });
     }
 
     public void setTitleAndSubTitle(String titleStr, String subTitleStr, boolean needDivider) {
@@ -114,5 +124,15 @@ public class AvatarAndInfoCell extends LinearLayout {
         dividerLeftPadding = leftPadding;
         dividerRightPadding = rightPadding;
         setWillNotDraw(!divider);
+    }
+
+    private OnRightViewClickListener onRightViewClickListener;
+
+    public void setOnRightViewClickListener(OnRightViewClickListener onRightViewClickListener) {
+        this.onRightViewClickListener = onRightViewClickListener;
+    }
+
+    public interface OnRightViewClickListener {
+        void onClick(View view);
     }
 }

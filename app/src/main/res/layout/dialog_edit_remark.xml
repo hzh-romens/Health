@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/remark_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="修改备注"
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/title_size"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/remark_edit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/remark_title"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:hint="退烧、止痛"
+        android:textColor="@color/theme_sub_title"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <TextView
+        android:id="@+id/remark_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/remark_edit"
+        android:padding="16dp"
+        android:text="取消"
+        android:textColor="@color/theme_primary"
+        android:textSize="@dimen/title_sub_size"/>
+
+    <TextView
+        android:id="@+id/remark_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/remark_edit"
+        android:padding="16dp"
+        android:layout_toLeftOf="@id/remark_cancel"
+        android:text="确定"
+        android:textColor="@color/theme_primary"
+        android:textSize="@dimen/title_sub_size"/>
+
+</RelativeLayout>

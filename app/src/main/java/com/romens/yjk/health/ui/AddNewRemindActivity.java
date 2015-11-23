@@ -202,7 +202,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         }
         rowCount++;
         timersRow = rowCount++;
-        remarkRow = rowCount++;
+        remarkRow = -1;
     }
 
     @Override
@@ -359,7 +359,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
     private TextView dosageTextView;
 
     public void showChooseDosageDialog() {
-        final Dialog dialog = new AlertDialog.Builder(this).create();
+        final AlertDialog dialog = new AlertDialog.Builder(this).create();
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choose_dosage, null);
         dosageTextView = (TextView) view.findViewById(R.id.remind_dosage);
         dosageTextView.setOnClickListener(new View.OnClickListener() {
@@ -380,8 +380,8 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                 dialog.dismiss();
             }
         });
+        dialog.setView(view);
         dialog.show();
-        dialog.getWindow().setContentView(view);
     }
 
     public void showChoosDosageView(View view) {
