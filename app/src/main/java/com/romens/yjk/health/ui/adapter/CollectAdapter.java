@@ -1,7 +1,9 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.CollectDataEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
+import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.components.CollectionView;
 
 import java.util.List;
@@ -100,12 +103,11 @@ public class CollectAdapter extends BaseAdapter {
         holder.addShopCarImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "addShopCarClick", Toast.LENGTH_SHORT).show();
                 requestToBuy(entity.getMemberPrice(), entity.getMerchandiseId());
             }
         });
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+        holder.isSelectImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (entities.get(position).isSelect()) {
@@ -114,6 +116,15 @@ public class CollectAdapter extends BaseAdapter {
                     entities.get(position).setIsSelect(true);
                 }
                 notifyDataSetChanged();
+            }
+        });
+        convertView.setBackgroundColor(Color.WHITE);
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MedicinalDetailActivity.class);
+                intent.putExtra("guid", entity.getMerchandiseId());
+                context.startActivity(intent);
             }
         });
 

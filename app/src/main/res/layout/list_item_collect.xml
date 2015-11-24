@@ -7,10 +7,10 @@
     <ImageView
         android:id="@+id/collect_select_img"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:src="@drawable/control_address_undeafult"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <com.romens.android.ui.Image.BackupImageView
         android:id="@+id/collect_img"
