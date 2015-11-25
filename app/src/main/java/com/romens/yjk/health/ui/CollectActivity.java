@@ -225,6 +225,12 @@ public class CollectActivity extends BaseActivity {
         return array.toString();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
+
     private void initData() {
         entities = new ArrayList<>();
         requestCollectData(userGuid);
