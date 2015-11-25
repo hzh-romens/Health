@@ -51,7 +51,7 @@ public static class Properties {
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: key
-                "'MERCHANDISEID' TEXT NOT NULL ," + // 2: user
+                "'MERCHANDISEID' TEXT NOT NULL UNIQUE ," + // 2: user
                 "'MEDICINENAME' TEXT NOT NULL ," + // 3: drug
                 "'MEDICINESPEC' TEXT NOT NULL ," + // 4: count
                 "'SHOPID' TEXT NOT NULL ," + // 4: count

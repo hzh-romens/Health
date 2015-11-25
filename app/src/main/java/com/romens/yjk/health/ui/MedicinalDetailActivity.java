@@ -143,6 +143,16 @@ public class MedicinalDetailActivity extends BaseActivity {
 
         tv_favorite = (FrameLayout) findViewById(R.id.favorite);
         tv_favorite.setEnabled(false);
+        boolean favorite = DBInterface.instance().getFavorite(GUID);
+        if(favorite){
+            iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
+            tv_color.setText("已收藏");
+            tv_color.setTextColor(getResources().getColor(R.color.themecolor));
+        }else {
+            iv_favorite.setImageResource(R.drawable.ic_favorite);
+            tv_color.setText("收藏");
+            tv_color.setTextColor(getResources().getColor(R.color.white));
+        }
         tv_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +166,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                         addtoFavorite();
                     }
                 } else {
-                    Toast.makeText(MedicinalDetailActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MedicinalDetailActivity.this, LoginActivity.class));
                 }
             }
         });
@@ -204,49 +214,59 @@ public class MedicinalDetailActivity extends BaseActivity {
     //取消收藏
     private void deleteFavorite() {
         if (UserConfig.isClientLogined()) {
-            Map<String, String> args = new FacadeArgs.MapBuilder().build();
-            args.put("MERCHANDISEID", GUID);
-            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+            JSONArray array = new JSONArray();
+                    try {
+                        JSONObject object = new JSONObject();
+                        object.put("MERCHANDISEID", weiShopEntity.getGUID());
+                        array.put(object);
+                        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+                        args.put("MERCHANDISEID", GUID);
+                        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+                        args.put("JSONDATA", array.toString());
 
-            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
-            protocol.withToken(FacadeToken.getInstance().getAuthToken());
-            Message message = new Message.MessageBuilder()
-                    .withProtocol(protocol)
-                    .build();
-            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-                    Log.e("addtofarvite", "ERROR");
-                }
-
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    if (errorMsg == null) {
-                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                        String response = responseProtocol.getResponse();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String returnMsg = jsonObject.getString("success");
-                            if ("no".equals(returnMsg)) {
-                                Toast.makeText(MedicinalDetailActivity.this, "取消收藏", Toast.LENGTH_SHORT).show();
-                                iv_favorite.setImageResource(R.drawable.ic_favorite);
-                                tv_color.setText("收藏");
-                                tv_color.setTextColor(getResources().getColor(R.color.white));
-                            } else {
-                                iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
-                                Toast.makeText(MedicinalDetailActivity.this, "取消收藏失败", Toast.LENGTH_SHORT).show();
-                                tv_color.setTextColor(getResources().getColor(R.color.themecolor));
-                                tv_color.setText("已收藏");
+                        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
+                        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+                        Message message = new Message.MessageBuilder()
+                                .withProtocol(protocol)
+                                .build();
+                        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+                            @Override
+                            public void onTokenTimeout(Message msg) {
+                                Log.e("addtofarvite", "ERROR");
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
-                        Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
+
+                            @Override
+                            public void onResult(Message msg, Message errorMsg) {
+                                if (errorMsg == null) {
+                                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                                    String response = responseProtocol.getResponse();
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        String returnMsg = jsonObject.getString("success");
+                                        if ("yes".equals(returnMsg)) {
+                                            Toast.makeText(MedicinalDetailActivity.this, "取消收藏", Toast.LENGTH_SHORT).show();
+                                            iv_favorite.setImageResource(R.drawable.ic_favorite);
+                                            tv_color.setText("收藏");
+                                            tv_color.setTextColor(getResources().getColor(R.color.white));
+                                            DBInterface.instance().DeleteFavorite(weiShopEntity);
+                                        } else {
+                                            iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
+                                            Toast.makeText(MedicinalDetailActivity.this, "取消收藏失败", Toast.LENGTH_SHORT).show();
+                                            tv_color.setTextColor(getResources().getColor(R.color.themecolor));
+                                            tv_color.setText("已收藏");
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
+                                    Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
+                                }
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }
-            });
         } else {
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -284,6 +304,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
                                 tv_color.setText("已收藏");
                                 tv_color.setTextColor(getResources().getColor(R.color.themecolor));
+                                DBInterface.instance().InsertToCollect(weiShopEntity);
                             } else {
                                 iv_favorite.setImageResource(R.drawable.ic_favorite);
                                 Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();

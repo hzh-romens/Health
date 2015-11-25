@@ -32,6 +32,24 @@ public class WeiShopEntity {
     private String STORECOUNT;
     private String DETAILDESCRIPTION;
     private String manufacturerId;
+    private String ASSESSCOUNT;
+    private String TOTLESALEDCOUNT;
+
+    public String getTOTLESALEDCOUNT() {
+        return TOTLESALEDCOUNT;
+    }
+
+    public void setTOTLESALEDCOUNT(String TOTLESALEDCOUNT) {
+        this.TOTLESALEDCOUNT = TOTLESALEDCOUNT;
+    }
+
+    public String getASSESSCOUNT() {
+        return ASSESSCOUNT;
+    }
+
+    public void setASSESSCOUNT(String ASSESSCOUNT) {
+        this.ASSESSCOUNT = ASSESSCOUNT;
+    }
 
     public String getDETAILDESCRIPTION() {
         return DETAILDESCRIPTION;

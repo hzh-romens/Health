@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
@@ -105,7 +104,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                         startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
                     } else {
                         //跳转至登录页面
-                        Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(HomeActivity.this, LoginActivity.class));
                     }
                 }/*  else if (key == 2) {

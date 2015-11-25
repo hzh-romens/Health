@@ -7,16 +7,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADPagerEntity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADPagerCell;
-import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +34,8 @@ public class ADPagerControl extends ADBaseControl {
 
     public static ADHolder createViewHolder(Context context) {
         ADPagerCell adPagerCell = new ADPagerCell(context);
-        adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(80)));
+        //adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(80)));
+        adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 250));
         return new ADHolder(adPagerCell);
     }
 

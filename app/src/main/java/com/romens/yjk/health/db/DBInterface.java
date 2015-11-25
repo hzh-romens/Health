@@ -2,22 +2,23 @@ package com.romens.yjk.health.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
+import com.romens.yjk.health.db.dao.CollectDataDao;
 import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
-import com.romens.yjk.health.db.dao.DataCacheDao;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.dao.HistoryDao;
-import com.romens.yjk.health.db.dao.LocationAddressDao;
 import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
-import com.romens.yjk.health.db.entity.LocationAddressEntity;
+import com.romens.yjk.health.model.CollectDataEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
+import com.romens.yjk.health.model.WeiShopEntity;
 
 import java.util.List;
 
@@ -200,5 +201,41 @@ public class DBInterface {
                 .orderAsc(HistoryDao.Properties.Id)
                 .list();
         return result;
+    }
+
+    //Determine whether or not
+    public boolean getFavorite(String guid) {
+        CollectDataDao dataDao = openReadableDb().getCollectDataDao();
+        List<CollectDataEntity> list = dataDao.queryBuilder().orderAsc(CollectDataDao.Properties.Id).list();
+        for (int i = 0; i < list.size(); i++) {
+            CollectDataEntity collectDataEntity = list.get(i);
+            if (guid.equals(collectDataEntity.getMerchandiseId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void InsertToCollect(WeiShopEntity shopEntity) {
+        CollectDataEntity collectDataEntity = new CollectDataEntity();
+        collectDataEntity.setMerchandiseId(shopEntity.getGUID());
+        collectDataEntity.setMedicineName(shopEntity.getNAME());
+        collectDataEntity.setAssessCount(shopEntity.getASSESSCOUNT());
+        collectDataEntity.setMedicineSpec(shopEntity.getSPEC());
+        collectDataEntity.setShopName(shopEntity.getSHOPNAME());
+        collectDataEntity.setShopId(shopEntity.getSHOPID());
+        collectDataEntity.setPicBig(shopEntity.getURL());
+        collectDataEntity.setPicSmall(shopEntity.getURL());
+        collectDataEntity.setPrice(shopEntity.getUSERPRICE());
+        collectDataEntity.setMemberPrice(shopEntity.getMARKETPRICE());
+        collectDataEntity.setSaleCount(shopEntity.getTOTLESALEDCOUNT());
+        CollectDataDao collectDataDao = openWritableDb().getCollectDataDao();
+        collectDataDao.insert(collectDataEntity);
+    }
+    public void DeleteFavorite(WeiShopEntity shopEntity){
+        CollectDataDao collectDataDao = openWritableDb().getCollectDataDao();
+        DeleteQuery<CollectDataEntity> collectDataEntityDeleteQuery = collectDataDao.queryBuilder().where(CollectDataDao.Properties.MerchandiseId.eq(shopEntity.getGUID())).buildDelete();
+        collectDataEntityDeleteQuery.executeDeleteWithoutDetachingEntities();
+        Log.i("数据库长度----",collectDataDao.loadAll().size()+"");
     }
 }
