@@ -79,22 +79,24 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
         String qualiStr = evaluateDatailsEntity.getQualityStar();
         int qualiLevel = 0;
         if (qualiStr != null && !qualiStr.equals("")) {
-            qualiLevel = Integer.getInteger(qualiStr);
+            qualiLevel = Integer.parseInt(qualiStr);
         }
         String dileveryStr = evaluateDatailsEntity.getDileveryStar();
         int dileveryLevel = 0;
         if (dileveryStr != null && !dileveryStr.equals("")) {
-            dileveryLevel = Integer.getInteger(dileveryStr);
+            dileveryLevel = Integer.parseInt(dileveryStr);
         }
         qualityRatingBar.setRating(qualiLevel);
         speedRatingBar.setRating(dileveryLevel);
         opinionTextView.setText(evaluateDatailsEntity.getAdvice());
         Log.e("tag", "--evaluateDeatil-->" + qualiLevel + "::" + dileveryLevel + "::" + evaluateDatailsEntity.getAdvice());
+//        opinionTextView.invalidate();
     }
 
     //访问商品评价信息
     private void requestAssessDetail(String userGuid, String merchandiseId) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        Log.e("tag", "-----merchandiseId----->" + merchandiseId);
         args.put("MERCHANDISEID", merchandiseId);
         args.put("USERGUID", userGuid);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAssessment", args);
@@ -138,8 +140,8 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
             entity.setAdvice(item.getString("ADVICE"));
             entity.setIsAppend(item.getString("ISAPPEND"));
             entity.setAssessData(item.getString("ASSESSDATE"));
-            entity.setDileveryStar(item.getString("DILEVERYSTAR"));
-            entity.setQualityStar(item.getString("QUALITYSTAR"));
+            entity.setDileveryStar(item.getString("DILEVERYLEVEL"));
+            entity.setQualityStar(item.getString("QUALITYLEVEL"));
             viewSetData(entity);
         } catch (JSONException e) {
             Log.e("tag", "--setData-json_error->");

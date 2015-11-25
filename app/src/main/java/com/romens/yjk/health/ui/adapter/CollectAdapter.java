@@ -81,10 +81,10 @@ public class CollectAdapter extends BaseAdapter {
         }
         holder = (CollectViewHolder) convertView.getTag();
         final CollectDataEntity entity = entities.get(position);
-        if (entity.getPicBig() == null || entity.getPicBig().equals("") || entity.getPicBig().equals("null")) {
+        if (entity.getPicSmall() == null || entity.getPicSmall().equals("") || entity.getPicSmall().equals("null")) {
             holder.imageView.setImageResource(R.drawable.no_img_upload);
         } else {
-            holder.imageView.setImageUrl(entity.getPicBig(), "64_64", null);
+            holder.imageView.setImageUrl(entity.getPicSmall(), "64_64", null);
         }
         holder.drugNameTextView.setText(entity.getMedicineName());
         holder.moneyTextView.setText("￥" + entity.getPrice());
