@@ -2,7 +2,6 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -28,9 +26,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.CollectDataEntity;
-import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.components.CollectionView;
 
 import java.util.List;
 import java.util.Map;
@@ -58,7 +54,7 @@ public class CollectAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return entities.size();
+        return entities==null?0:entities.size();
     }
 
     @Override
