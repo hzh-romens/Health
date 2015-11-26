@@ -45,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,7 +116,7 @@ public class CollectActivity extends BaseActivity {
 //        setContentView(container);
         actionBarEvent(actionBar);
 //        addFragment(container);
-       // initData();
+        // initData();
         addCellView(container);
         refreshContentView();
 
@@ -297,8 +298,10 @@ public class CollectActivity extends BaseActivity {
 
     //请求收藏
     private void requestCollectData(String userGuid) {
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        int lastTime = DBInterface.instance().getCollectDataLastTime();
+        Map<String, Object> args = new HashMap<>();
         args.put("USERGUID", userGuid);
+        args.put("LASTTIME", lastTime);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "MyFavourite", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -347,6 +350,7 @@ public class CollectActivity extends BaseActivity {
                 entity.setMemberPrice(item.getString("MEMBERPRICE"));
                 entity.setAssessCount(item.getString("ASSESSCOUNT"));
                 entity.setSaleCount(item.getString("SALECOUNT"));
+                entity.setUpdated(item.getInt("CREATEDATE"));
 //                entities.add(entity);
                 dao.insert(entity);
             }
