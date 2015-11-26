@@ -144,11 +144,11 @@ public class MedicinalDetailActivity extends BaseActivity {
         tv_favorite = (FrameLayout) findViewById(R.id.favorite);
         tv_favorite.setEnabled(false);
         boolean favorite = DBInterface.instance().getFavorite(GUID);
-        if(favorite){
+        if (favorite) {
             iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
             tv_color.setText("已收藏");
             tv_color.setTextColor(getResources().getColor(R.color.themecolor));
-        }else {
+        } else {
             iv_favorite.setImageResource(R.drawable.ic_favorite);
             tv_color.setText("收藏");
             tv_color.setTextColor(getResources().getColor(R.color.white));
@@ -211,62 +211,63 @@ public class MedicinalDetailActivity extends BaseActivity {
 
 
     }
+
     //取消收藏
     private void deleteFavorite() {
         if (UserConfig.isClientLogined()) {
             JSONArray array = new JSONArray();
-                    try {
-                        JSONObject object = new JSONObject();
-                        object.put("MERCHANDISEID", weiShopEntity.getGUID());
-                        array.put(object);
-                        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-                        args.put("MERCHANDISEID", GUID);
-                        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
-                        args.put("JSONDATA", array.toString());
+            try {
+                JSONObject object = new JSONObject();
+                object.put("MERCHANDISEID", weiShopEntity.getGUID());
+                array.put(object);
+                Map<String, String> args = new FacadeArgs.MapBuilder().build();
+                args.put("MERCHANDISEID", GUID);
+                args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+                args.put("JSONDATA", array.toString());
 
-                        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
-                        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-                        Message message = new Message.MessageBuilder()
-                                .withProtocol(protocol)
-                                .build();
-                        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-                            @Override
-                            public void onTokenTimeout(Message msg) {
-                                Log.e("addtofarvite", "ERROR");
-                            }
-
-                            @Override
-                            public void onResult(Message msg, Message errorMsg) {
-                                if (errorMsg == null) {
-                                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                                    String response = responseProtocol.getResponse();
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(response);
-                                        String returnMsg = jsonObject.getString("success");
-                                        if ("yes".equals(returnMsg)) {
-                                            Toast.makeText(MedicinalDetailActivity.this, "取消收藏", Toast.LENGTH_SHORT).show();
-                                            iv_favorite.setImageResource(R.drawable.ic_favorite);
-                                            tv_color.setText("收藏");
-                                            tv_color.setTextColor(getResources().getColor(R.color.white));
-                                            DBInterface.instance().DeleteFavorite(weiShopEntity);
-                                        } else {
-                                            iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
-                                            Toast.makeText(MedicinalDetailActivity.this, "取消收藏失败", Toast.LENGTH_SHORT).show();
-                                            tv_color.setTextColor(getResources().getColor(R.color.themecolor));
-                                            tv_color.setText("已收藏");
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
-                                    Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
-                                }
-                            }
-                        });
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
+                protocol.withToken(FacadeToken.getInstance().getAuthToken());
+                Message message = new Message.MessageBuilder()
+                        .withProtocol(protocol)
+                        .build();
+                FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+                    @Override
+                    public void onTokenTimeout(Message msg) {
+                        Log.e("addtofarvite", "ERROR");
                     }
+
+                    @Override
+                    public void onResult(Message msg, Message errorMsg) {
+                        if (errorMsg == null) {
+                            ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                            String response = responseProtocol.getResponse();
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                String returnMsg = jsonObject.getString("success");
+                                if ("yes".equals(returnMsg)) {
+                                    Toast.makeText(MedicinalDetailActivity.this, "取消收藏", Toast.LENGTH_SHORT).show();
+                                    iv_favorite.setImageResource(R.drawable.ic_favorite);
+                                    tv_color.setText("收藏");
+                                    tv_color.setTextColor(getResources().getColor(R.color.white));
+                                    DBInterface.instance().DeleteFavorite(weiShopEntity);
+                                } else {
+                                    iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
+                                    Toast.makeText(MedicinalDetailActivity.this, "取消收藏失败", Toast.LENGTH_SHORT).show();
+                                    tv_color.setTextColor(getResources().getColor(R.color.themecolor));
+                                    tv_color.setText("已收藏");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
+                            Log.e("addtofarvite", errorMsg.toString() + "====" + errorMsg.msg);
+                        }
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -409,19 +410,23 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 count++;
                                 controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
                                 if (!flag) {
-                                    count++;
-                                    controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
-
                                     //If it is from the vicinity of the details of the pharmacy to enter, do not show a nearby pharmacy module
-                                    if (nearResult != null && !("".equals(nearResult))) {
+                                    if (nearResult != null && !("".equals(nearResult))&&nearResult.size()!=0) {
+                                        count++;
+                                        controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
                                         for (int i = 0; i < nearResult.size(); i++) {
                                             count++;
                                             controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getMERCHANDISEID()));
                                         }
+                                        count++;
+                                        controls.append(count, new ADMoreControl());
                                     }
-                                    count++;
-                                    controls.append(count, new ADMoreControl());
+
                                 }
+                                //count++;
+                                //controls.append(count, new ADTextIconControl().bindModel("累计评价 (2)", R.drawable.ic_chevron_right_grey600_24dp, false));
+                                //count++;
+                                //controls.append(count, new ADCommentControl().bindModle("4", "还不错", "hzh", "2015-11-26 16:00"));
                                 AddToHistory(weiShopEntity);
                             } else {
                                 //show emptyPage

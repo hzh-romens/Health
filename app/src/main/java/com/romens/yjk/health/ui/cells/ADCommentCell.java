@@ -22,9 +22,13 @@ public class ADCommentCell extends FrameLayout{
         tv_name= (TextView) view.findViewById(R.id.tv_name);
         tv_time= (TextView) view.findViewById(R.id.tv_time);
         ratingBar= (FlexibleRatingBar) view.findViewById(R.id.ratingbar);
+        ratingBar.setDesiredCount(30);
         addView(view, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT));
     }
     public void SetValue(String level,String commnet,String name,String time){
-        //设定值
+        tv_time.setText(time);
+        tv_name.setText(name);
+        tv_comment.setText(commnet);
+        ratingBar.setRating(Float.parseFloat(level));
     }
 }

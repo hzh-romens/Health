@@ -5,7 +5,6 @@
     android:background="@color/white">
     <RelativeLayout
         style="@style/titleStytle"
-        android:orientation="horizontal"
         android:background="@color/theme_primary">
         <ImageView
             style="@style/iv_back_style"

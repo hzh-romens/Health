@@ -20,6 +20,7 @@ public class ADCommentControl extends ADBaseControl{
     @Override
     public void bindViewHolder(Context context, ADHolder holder) {
         ADCommentCell adCommentCell= (ADCommentCell) holder.itemView;
+        adCommentCell.SetValue(mLevel,mComment,mName,mTime);
         //绑定值
 
     }

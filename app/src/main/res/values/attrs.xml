@@ -130,6 +130,7 @@
         <attr name="polygonVertices" format="integer" />
         <attr name="polygonRotation" format="integer" />
         <attr name="strokeWidth" format="dimension" />
+        <attr name="desiredCount" format="integer"/>
     </declare-styleable>
 
 </resources>

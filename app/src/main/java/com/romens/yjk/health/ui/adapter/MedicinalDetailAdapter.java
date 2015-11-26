@@ -2,12 +2,12 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
+import com.romens.yjk.health.ui.controls.ADCommentControl;
 import com.romens.yjk.health.ui.controls.ADEmptyControl;
 import com.romens.yjk.health.ui.controls.ADErrorControl;
 import com.romens.yjk.health.ui.controls.ADGroupControl;
@@ -18,9 +18,8 @@ import com.romens.yjk.health.ui.controls.ADMedicinalDetailControl;
 import com.romens.yjk.health.ui.controls.ADMoreControl;
 import com.romens.yjk.health.ui.controls.ADPagerControl;
 import com.romens.yjk.health.ui.controls.ADStoreControls;
+import com.romens.yjk.health.ui.controls.ADTextIconControl;
 import com.romens.yjk.health.ui.controls.ControlType;
-
-import java.util.LinkedList;
 
 /**
  * Created by AUSU on 2015/10/14.
@@ -58,6 +57,11 @@ public class MedicinalDetailAdapter extends RecyclerView.Adapter<ADHolder>{
             return ADHorizontalScrollControl.createViewHolder(mContext);
         }else if(viewType==-2){
             return ADErrorControl.createViewHolder(mContext);
+        }
+        else if(viewType==14){
+            return ADCommentControl.createViewHolder(mContext);
+        }else if(viewType==15){
+            return ADTextIconControl.createViewHolder(mContext);
         }
         return ADEmptyControl.createViewHolder(mContext);
     }
