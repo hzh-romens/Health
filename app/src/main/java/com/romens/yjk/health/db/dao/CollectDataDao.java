@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.CollectDataEntity;
 
 import de.greenrobot.dao.AbstractDao;
@@ -33,7 +34,8 @@ public static class Properties {
     public final static Property Price = new Property(8, String.class, "price", false, "PRICE");
     public final static Property MemberPrice = new Property(9, String.class, "memberPrice", false, "MEMBERPRICE");
     public final static Property AssessCount = new Property(10, String.class, "assessCount", false, "ASSESSCOUNT");
-    public final static Property SaleCount = new Property(11, String.class, "saleCount", false, "SALECOUNT");
+    public final static Property Updated = new Property(11, int.class, "updated", false, "UPDATED");
+    public final static Property SaleCount = new Property(12, String.class, "saleCount", false, "SALECOUNT");
 }
 
     public CollectDataDao(DaoConfig config) {
@@ -61,6 +63,7 @@ public static class Properties {
                 "'PRICE' TEXT NOT NULL ," + // 4: count
                 "'MEMBERPRICE' TEXT NOT NULL ," + // 4: count
                 "'ASSESSCOUNT' TEXT NOT NULL ," + // 4: count
+                "'UPDATED' INTEGER NOT NULL ," +
                 "'SALECOUNT' TEXT NOT NULL );"); // 11: times
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_CollectData_KEY ON " + TABLENAME +
@@ -97,7 +100,8 @@ public static class Properties {
         stmt.bindString(9, entity.getPrice());
         stmt.bindString(10, entity.getMemberPrice());
         stmt.bindString(11, entity.getAssessCount());
-        stmt.bindString(12, entity.getSaleCount());
+        stmt.bindLong(12, entity.getUpdated());
+        stmt.bindString(13, entity.getSaleCount());
     }
 
     /**
@@ -125,7 +129,8 @@ public static class Properties {
         entity.setPrice(cursor.getString(offset + 8)); // count
         entity.setMemberPrice(cursor.getString(offset + 9)); // count
         entity.setAssessCount(cursor.getString(offset + 10)); // count
-        entity.setSaleCount(cursor.getString(offset + 11)); // count
+        entity.setUpdated(cursor.getInt(offset + 11));
+        entity.setSaleCount(cursor.getString(offset + 12)); // count
         return entity;
     }
 
@@ -145,7 +150,8 @@ public static class Properties {
         entity.setPrice(cursor.getString(offset + 8)); // count
         entity.setMemberPrice(cursor.getString(offset + 9)); // count
         entity.setAssessCount(cursor.getString(offset + 10)); // count
-        entity.setSaleCount(cursor.getString(offset + 11)); // count
+        entity.setUpdated(cursor.getInt(offset + 11));
+        entity.setSaleCount(cursor.getString(offset + 12)); // count
     }
 
     /**

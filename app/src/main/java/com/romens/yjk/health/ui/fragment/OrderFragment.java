@@ -104,16 +104,6 @@ public class OrderFragment extends BaseFragment {
         swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         expandableListView.setAdapter(adapter);
         expandableListView.setGroupIndicator(null);
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Intent intent = new Intent(getActivity(), OrderEvaluateDetailActivity.class);
-                AllOrderEntity entity = (AllOrderEntity) adapter.getChild(groupPosition, childPosition);
-                intent.putExtra("evaluateDetailEntity", entity);
-                startActivity(intent);
-                return true;
-            }
-        });
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long key) {

@@ -19,15 +19,24 @@ public class CollectDataEntity {
     private String assessCount;//评论总数
     private String saleCount;//销量
 
-    private String date;//时间
+    private int created;
+    private int updated;
     private boolean isSelect;//是否选中
 
-    public String getDate() {
-        return date;
+    public int getCreated() {
+        return created;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setCreated(int created) {
+        this.created = created;
+    }
+
+    public int getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
     }
 
     public long getId() {

@@ -161,6 +161,19 @@ public class DBInterface {
         }
     }
 
+    public int getCollectDataLastTime() {
+        CollectDataDao dao = openReadableDb().getCollectDataDao();
+        CollectDataEntity entity = dao.queryBuilder()
+                .orderDesc(CollectDataDao.Properties.Updated)
+                .limit(1)
+                .unique();
+        if (entity == null) {
+            return 0;
+        } else {
+            return entity.getUpdated();
+        }
+    }
+
     public List<DiscoveryEntity> loadAllDiscovery() {
         DiscoveryDao dao = openReadableDb().getDiscoveryDao();
         List<DiscoveryEntity> result = dao.queryBuilder()

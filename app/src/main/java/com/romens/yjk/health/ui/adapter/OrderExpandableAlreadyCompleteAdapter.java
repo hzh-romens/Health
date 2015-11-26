@@ -56,8 +56,10 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
     }
 
     @Override
-    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        View view = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view, ViewGroup parent) {
+        if (view == null) {
+            view = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
+        }
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
