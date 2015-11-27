@@ -26,6 +26,7 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
+import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -189,26 +190,19 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
             @Override
             public void rightBtnClick() {
                 entities = adapter.getEntities();
-                requestDelFavour(userGuid, delItem(entities), entities);
-//                CollectHelper.getInstance().delCollectListEntity(CollectActivity.this, (ArrayList<CollectDataEntity>) entities);
+                CollectHelper.getInstance().delCollect(CollectActivity.this, delEntity(entities));
             }
         });
     }
 
-    private String delItem(List<CollectDataEntity> entities) {
-        JSONArray array = new JSONArray();
+    private ArrayList<CollectDataEntity> delEntity(List<CollectDataEntity> entities) {
+        ArrayList<CollectDataEntity> result = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
             if (entities.get(i).isSelect()) {
-                try {
-                    JSONObject object = new JSONObject();
-                    object.put("MERCHANDISEID", entities.get(i).getMerchandiseId());
-                    array.put(object);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                result.add(entities.get(i));
             }
         }
-        return array.toString();
+        return result;
     }
 
     @Override
@@ -279,12 +273,14 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
 
     @Override
     public void delSuccess() {
+        Toast.makeText(MyApplication.applicationContext, "删除成功", Toast.LENGTH_SHORT).show();
+        entities = DBInterface.instance().openReadableDb().getCollectDataDao().loadAll();
         adapter.setEntities(entities);
     }
 
     @Override
     public void delError() {
-
+        Toast.makeText(MyApplication.applicationContext, "删除错误", Toast.LENGTH_SHORT).show();
     }
 
     class CollectPagerAdapter extends FragmentViewPagerAdapter {
@@ -300,131 +296,5 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
         public String getPageTitle(int position) {
             return mPageTitle.get(position);
         }
-    }
-
-//    //请求收藏
-//    private void requestCollectData(String userGuid) {
-//        int lastTime = DBInterface.instance().getCollectDataLastTime();
-//        Map<String, Object> args = new HashMap<>();
-//        args.put("USERGUID", userGuid);
-//        args.put("LASTTIME", 0);
-//        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "MyFavouriteBy", args);
-//        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-//        Message message = new Message.MessageBuilder()
-//                .withProtocol(protocol)
-////                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-////                }))
-//                .build();
-//        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-//            @Override
-//            public void onTokenTimeout(Message msg) {
-//                Toast.makeText(CollectActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onResult(Message msg, Message errorMsg) {
-//                if (msg != null) {
-//                    Log.e("tag", "----ok------>");
-//                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-//                    setQueryData(responseProtocol.getResponse());
-//                }
-//                if (errorMsg != null) {
-//                    Log.e("reqGetAllUsers", "ERROR"+errorMsg.msg);
-//                }
-//            }
-//        });
-//    }
-//
-//    private void setQueryData(String response) {
-//        if (response == null || response.length() < 0) {
-//            return;
-//        }
-//        Log.e("tag", "----setQueryData------>");
-//        entities.clear();
-//        CollectDataDao dao = DBInterface.instance().openWritableDb().getCollectDataDao();
-//        try {
-//            JSONArray array = new JSONArray(response);
-//            for (int i = 0; i < array.length(); i++) {
-//                JSONObject item = array.getJSONObject(i);
-//                CollectDataEntity entity = new CollectDataEntity();
-//                entity.setMerchandiseId(item.getString("MERCHANDISEID"));
-//                entity.setMedicineName(item.getString("MEDICINENAME"));
-//                entity.setMedicineSpec(item.getString("MEDICINESPEC"));
-//                entity.setShopId(item.getString("SHOPID"));
-//                entity.setShopName(item.getString("SHOPNAME"));
-//                entity.setPicBig(item.getString("PICBIG"));
-//                entity.setPicSmall(item.getString("PICSMALL"));
-//                entity.setPrice(item.getString("PRICE"));
-//                entity.setMemberPrice(item.getString("MEMBERPRICE"));
-//                entity.setAssessCount(item.getString("ASSESSCOUNT"));
-//                entity.setUpdated(item.getInt("CREATEDATE"));
-//                entity.setSaleCount(item.getString("SALECOUNT"));
-////                entities.add(entity);
-//                dao.insert(entity);
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        entities = dao.loadAll();
-//        refreshContentView();
-//        adapter.setEntities(entities);
-//        adapter.notifyDataSetChanged();
-//    }
-
-    //从本地删除收藏
-    private void deleteDb(List<CollectDataEntity> entityList) {
-        CollectDataDao dataDao = DBInterface.instance().openWritableDb().getCollectDataDao();
-        for (CollectDataEntity entity : entityList) {
-            dataDao.delete(entity);
-        }
-        entities = dataDao.loadAll();
-        adapter.setEntities(entities);
-        refreshContentView();
-    }
-
-    //访问删除收藏
-    private void requestDelFavour(final String userGuid, String jsonData, final List<CollectDataEntity> entities) {
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", userGuid);
-        args.put("JSONDATA", jsonData);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(CollectActivity.this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Toast.makeText(CollectActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (msg != null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.e("tag", "--collect--->" + responseProtocol.getResponse());
-                    String requestCode = "";
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-                        requestCode = jsonObject.getString("success");
-                        Log.e("tag", "--requestCode--->" + requestCode);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (requestCode.equals("yes")) {
-                        Toast.makeText(CollectActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                        deleteDb(entities);
-                    } else {
-                        Toast.makeText(CollectActivity.this, "删除错误", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                if (errorMsg == null) {
-                } else {
-                    Log.e("reqGetAllUsers", "ERROR");
-                    Log.e("tag", "--collect--ERROR-->" + errorMsg.msg);
-                }
-                needHideProgress();
-            }
-        });
     }
 }

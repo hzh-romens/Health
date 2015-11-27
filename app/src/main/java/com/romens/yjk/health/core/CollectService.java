@@ -33,6 +33,8 @@ import java.util.Map;
  */
 public class CollectService extends IntentService {
 
+    private CollectDelCallback callback;
+
     public CollectService() {
         super("CollectService");
     }
@@ -44,16 +46,6 @@ public class CollectService extends IntentService {
         if (type.equals("add")) {
             if (clientUserEntity != null) {
                 requestCollectData(clientUserEntity.getGuid());
-            }
-        } else if (type.equals("del")) {
-            String serviceMerchandiseId = intent.getStringExtra("serviceMerchandiseId");
-            if (serviceMerchandiseId != null && !serviceMerchandiseId.equals("")) {
-                CollectDataDao dao = DBInterface.instance().openReadableDb().getCollectDataDao();
-                List<CollectDataEntity> entities = dao.queryRaw("where MerchandiseId = ", serviceMerchandiseId);
-                requestDelFavour(clientUserEntity.getGuid(), getJSONArray(serviceMerchandiseId), entities);
-            } else {
-                ArrayList<CollectDataEntity> entities = intent.getParcelableArrayListExtra("serviceListEntity");
-                requestDelFavour(clientUserEntity.getGuid(), getJSONArray(entities), entities);
             }
         }
     }
@@ -152,60 +144,5 @@ public class CollectService extends IntentService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-
-    //从本地删除收藏
-    private void deleteDb(List<CollectDataEntity> entityList) {
-        CollectDataDao dataDao = DBInterface.instance().openWritableDb().getCollectDataDao();
-        for (CollectDataEntity entity : entityList) {
-            dataDao.delete(entity);
-        }
-    }
-
-    //访问删除收藏
-    private void requestDelFavour(final String userGuid, String jsonData, final List<CollectDataEntity> entities) {
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", userGuid);
-        args.put("JSONDATA", jsonData);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(MyApplication.applicationContext, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Toast.makeText(MyApplication.applicationContext, msg.msg, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (msg != null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.e("tag", "--collect--->" + responseProtocol.getResponse());
-                    String requestCode = "";
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-                        requestCode = jsonObject.getString("success");
-                        Log.e("tag", "--requestCode--->" + requestCode);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (requestCode.equals("yes")) {
-                        Toast.makeText(MyApplication.applicationContext, "删除成功", Toast.LENGTH_SHORT).show();
-                        deleteDb(entities);
-                    } else {
-                        Toast.makeText(MyApplication.applicationContext, "删除错误", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                if (errorMsg == null) {
-                } else {
-                    Log.e("reqGetAllUsers", "ERROR");
-                    Log.e("tag", "--collect--ERROR-->" + errorMsg.msg);
-                }
-//                needHideProgress();
-            }
-        });
     }
 }
