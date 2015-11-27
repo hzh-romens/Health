@@ -56,6 +56,7 @@ public class FlexibleRatingBar extends RatingBar {
     private final float dp = getResources().getDisplayMetrics().density;
     private float starSize;
     private Bitmap colorsJoined;
+    private int desiredCount=50;
 
 
     public FlexibleRatingBar(Context context) {
@@ -84,7 +85,7 @@ public class FlexibleRatingBar extends RatingBar {
 
     @Override
     protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int desiredWidth = (int) (50 * dp * getNumStars());
+        int desiredWidth = (int) (desiredCount * dp * getNumStars());
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -228,6 +229,7 @@ public class FlexibleRatingBar extends RatingBar {
             polygonVertices = a.getInteger(R.styleable.FlexibleRatingBar_polygonVertices, 5);
             polygonRotation = a.getInteger(R.styleable.FlexibleRatingBar_polygonRotation, 0);
             strokeWidth = (int) a.getDimension(R.styleable.FlexibleRatingBar_strokeWidth, -1);
+            desiredCount=(int) a.getDimension(R.styleable.FlexibleRatingBar_desiredCount, 40);
         } finally {
             a.recycle();
         }
@@ -277,4 +279,11 @@ public class FlexibleRatingBar extends RatingBar {
         this.interiorAngleModifier = interiorAngleModifier;
     }
 
+    public int getDesiredCount() {
+        return desiredCount;
+    }
+
+    public void setDesiredCount(int desiredCount) {
+        this.desiredCount = desiredCount;
+    }
 }

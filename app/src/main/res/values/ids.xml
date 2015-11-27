@@ -12,4 +12,7 @@
     <item name="discountPrice" type="id">false</item>
     <item name="edit" type="id">false</item>
     <item name="title_background" type="id">false</item>
+    <item name="tv_comment" type="id">false</item>
+    <item name="tv_name" type="id">false</item>
+    <item name="tv_time" type="id">false</item>
 </resources>
