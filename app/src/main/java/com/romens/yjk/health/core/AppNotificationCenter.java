@@ -14,7 +14,8 @@ public class AppNotificationCenter extends NotificationCenter {
     public static final int appConfigChanged = appTotalEvents++;
 
     //order
-    public static final int orderCompleteAdd = appTotalEvents++;
+    public static final int collectAddChange = appTotalEvents++;
+    public static final int collectDelChange = appTotalEvents++;
 
     public static final int onLocationAddressChanged = appTotalEvents++;
 

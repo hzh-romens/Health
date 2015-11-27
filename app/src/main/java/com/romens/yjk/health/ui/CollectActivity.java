@@ -30,6 +30,8 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.CollectDelCallback;
+import com.romens.yjk.health.core.CollectHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CollectDataDao;
 import com.romens.yjk.health.model.CollectDataEntity;
@@ -53,7 +55,7 @@ import java.util.Map;
  * Created by anlc on 2015/10/14.
  * 收藏页面
  */
-public class CollectActivity extends BaseActivity {
+public class CollectActivity extends BaseActivity implements CollectDelCallback {
 
     private SlidingFixTabLayout tabLayout;
     private ViewPager viewPager;
@@ -182,16 +184,13 @@ public class CollectActivity extends BaseActivity {
                     entities.get(i).setIsSelect(isSelect);
                 }
                 adapter.setEntities(entities);
-                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void rightBtnClick() {
                 entities = adapter.getEntities();
-                deleteDb(entities);
-                requestDelFavour(userGuid, delItem(entities));
-                adapter.setEntities(entities);
-                adapter.notifyDataSetChanged();
+                requestDelFavour(userGuid, delItem(entities), entities);
+//                CollectHelper.getInstance().delCollectListEntity(CollectActivity.this, (ArrayList<CollectDataEntity>) entities);
             }
         });
     }
@@ -200,8 +199,6 @@ public class CollectActivity extends BaseActivity {
         JSONArray array = new JSONArray();
         for (int i = 0; i < entities.size(); i++) {
             if (entities.get(i).isSelect()) {
-//                entities.remove(i);
-//                i--;
                 try {
                     JSONObject object = new JSONObject();
                     object.put("MERCHANDISEID", entities.get(i).getMerchandiseId());
@@ -211,7 +208,6 @@ public class CollectActivity extends BaseActivity {
                 }
             }
         }
-        Log.e("tag", "--delCollect-->" + array.toString());
         return array.toString();
     }
 
@@ -222,8 +218,10 @@ public class CollectActivity extends BaseActivity {
     }
 
     private void initData() {
-        entities = new ArrayList<>();
-        requestCollectData(userGuid);
+        CollectDataDao dao = DBInterface.instance().openReadableDb().getCollectDataDao();
+        entities = dao.loadAll();
+        refreshContentView();
+        adapter.setEntities(entities);
     }
 
     private void addFragment(ActionBarLayout.LinearLayoutContainer container) {
@@ -251,8 +249,6 @@ public class CollectActivity extends BaseActivity {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setBackgroundResource(R.color.theme_primary);
         actionBar.setMinimumHeight(AndroidUtilities.dp(100));
-//        ActionBarMenu actionBarMenu = actionBar.createMenu();
-//        actionBarMenu.addItem(0, R.drawable.filter_right_img);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
@@ -281,6 +277,16 @@ public class CollectActivity extends BaseActivity {
         return titles;
     }
 
+    @Override
+    public void delSuccess() {
+        adapter.setEntities(entities);
+    }
+
+    @Override
+    public void delError() {
+
+    }
+
     class CollectPagerAdapter extends FragmentViewPagerAdapter {
         private final List<String> mPageTitle = new ArrayList<>();
 
@@ -296,72 +302,74 @@ public class CollectActivity extends BaseActivity {
         }
     }
 
-    //请求收藏
-    private void requestCollectData(String userGuid) {
-        int lastTime = DBInterface.instance().getCollectDataLastTime();
-        Map<String, Object> args = new HashMap<>();
-        args.put("USERGUID", userGuid);
-        args.put("LASTTIME", lastTime);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "MyFavourite", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-//                }))
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Toast.makeText(CollectActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (msg != null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    setQueryData(responseProtocol.getResponse());
-                }
-                if (errorMsg != null) {
-                    Log.e("reqGetAllUsers", "ERROR");
-                }
-            }
-        });
-    }
-
-    private void setQueryData(String response) {
-        if (response == null || response.length() < 0) {
-            return;
-        }
-        entities.clear();
-        CollectDataDao dao = DBInterface.instance().openWritableDb().getCollectDataDao();
-        try {
-            JSONArray array = new JSONArray(response);
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject item = array.getJSONObject(i);
-                CollectDataEntity entity = new CollectDataEntity();
-                entity.setMerchandiseId(item.getString("MERCHANDISEID"));
-                entity.setMedicineName(item.getString("MEDICINENAME"));
-                entity.setMedicineSpec(item.getString("MEDICINESPEC"));
-                entity.setShopId(item.getString("SHOPID"));
-                entity.setShopName(item.getString("SHOPNAME"));
-                entity.setPicBig(item.getString("PICBIG"));
-                entity.setPicSmall(item.getString("PICSMALL"));
-                entity.setPrice(item.getString("PRICE"));
-                entity.setMemberPrice(item.getString("MEMBERPRICE"));
-                entity.setAssessCount(item.getString("ASSESSCOUNT"));
-                entity.setSaleCount(item.getString("SALECOUNT"));
-                entity.setUpdated(item.getInt("CREATEDATE"));
-//                entities.add(entity);
-                dao.insert(entity);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        entities = dao.loadAll();
-        refreshContentView();
-        adapter.setEntities(entities);
-        adapter.notifyDataSetChanged();
-    }
+//    //请求收藏
+//    private void requestCollectData(String userGuid) {
+//        int lastTime = DBInterface.instance().getCollectDataLastTime();
+//        Map<String, Object> args = new HashMap<>();
+//        args.put("USERGUID", userGuid);
+//        args.put("LASTTIME", 0);
+//        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "MyFavouriteBy", args);
+//        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+//        Message message = new Message.MessageBuilder()
+//                .withProtocol(protocol)
+////                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+////                }))
+//                .build();
+//        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message msg) {
+//                Toast.makeText(CollectActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//                if (msg != null) {
+//                    Log.e("tag", "----ok------>");
+//                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+//                    setQueryData(responseProtocol.getResponse());
+//                }
+//                if (errorMsg != null) {
+//                    Log.e("reqGetAllUsers", "ERROR"+errorMsg.msg);
+//                }
+//            }
+//        });
+//    }
+//
+//    private void setQueryData(String response) {
+//        if (response == null || response.length() < 0) {
+//            return;
+//        }
+//        Log.e("tag", "----setQueryData------>");
+//        entities.clear();
+//        CollectDataDao dao = DBInterface.instance().openWritableDb().getCollectDataDao();
+//        try {
+//            JSONArray array = new JSONArray(response);
+//            for (int i = 0; i < array.length(); i++) {
+//                JSONObject item = array.getJSONObject(i);
+//                CollectDataEntity entity = new CollectDataEntity();
+//                entity.setMerchandiseId(item.getString("MERCHANDISEID"));
+//                entity.setMedicineName(item.getString("MEDICINENAME"));
+//                entity.setMedicineSpec(item.getString("MEDICINESPEC"));
+//                entity.setShopId(item.getString("SHOPID"));
+//                entity.setShopName(item.getString("SHOPNAME"));
+//                entity.setPicBig(item.getString("PICBIG"));
+//                entity.setPicSmall(item.getString("PICSMALL"));
+//                entity.setPrice(item.getString("PRICE"));
+//                entity.setMemberPrice(item.getString("MEMBERPRICE"));
+//                entity.setAssessCount(item.getString("ASSESSCOUNT"));
+//                entity.setUpdated(item.getInt("CREATEDATE"));
+//                entity.setSaleCount(item.getString("SALECOUNT"));
+////                entities.add(entity);
+//                dao.insert(entity);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        entities = dao.loadAll();
+//        refreshContentView();
+//        adapter.setEntities(entities);
+//        adapter.notifyDataSetChanged();
+//    }
 
     //从本地删除收藏
     private void deleteDb(List<CollectDataEntity> entityList) {
@@ -369,10 +377,13 @@ public class CollectActivity extends BaseActivity {
         for (CollectDataEntity entity : entityList) {
             dataDao.delete(entity);
         }
+        entities = dataDao.loadAll();
+        adapter.setEntities(entities);
+        refreshContentView();
     }
 
     //访问删除收藏
-    private void requestDelFavour(final String userGuid, String jsonData) {
+    private void requestDelFavour(final String userGuid, String jsonData, final List<CollectDataEntity> entities) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("JSONDATA", jsonData);
@@ -402,7 +413,7 @@ public class CollectActivity extends BaseActivity {
                     }
                     if (requestCode.equals("yes")) {
                         Toast.makeText(CollectActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                        requestCollectData(userGuid);
+                        deleteDb(entities);
                     } else {
                         Toast.makeText(CollectActivity.this, "删除错误", Toast.LENGTH_SHORT).show();
                     }

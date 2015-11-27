@@ -29,6 +29,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.core.CollectHelper;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
@@ -122,6 +123,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         });
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.collectAddChange);
+        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectAddChange, 0);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.collectDelChange);
+        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectDelChange, 0);
         requestShopCarCountData();
         setupConfig();
     }
@@ -170,6 +175,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 sumCount = 0;
             }
             updateShoppingCartCount(sumCount);
+        }else if(id==AppNotificationCenter.collectAddChange){
+            CollectHelper.getInstance().addCollect(this);
         }
     }
 

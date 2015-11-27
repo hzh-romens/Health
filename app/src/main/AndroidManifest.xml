@@ -407,7 +407,11 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
-
+        <service android:name=".core.CollectService">
+            <intent-filter>
+                <action android:name="com.romens.yjk.health.core.myService"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

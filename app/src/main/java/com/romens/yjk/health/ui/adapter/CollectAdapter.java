@@ -46,6 +46,7 @@ public class CollectAdapter extends BaseAdapter {
 
     public void setEntities(List<CollectDataEntity> entities) {
         this.entities = entities;
+        notifyDataSetChanged();
     }
 
     public List<CollectDataEntity> getEntities() {

@@ -1,11 +1,14 @@
 package com.romens.yjk.health.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.internal.LinkedTreeMap;
 
 /**
  * Created by anlc on 2015/10/22.
  */
-public class CollectDataEntity {
+public class CollectDataEntity implements Parcelable {
     private long id;
     private String merchandiseId;//商品id
     private String medicineName;//商品名称
@@ -22,6 +25,38 @@ public class CollectDataEntity {
     private int created;
     private int updated;
     private boolean isSelect;//是否选中
+
+    public CollectDataEntity() {
+    }
+
+    protected CollectDataEntity(Parcel in) {
+        id = in.readLong();
+        merchandiseId = in.readString();
+        medicineName = in.readString();
+        medicineSpec = in.readString();
+        shopId = in.readString();
+        shopName = in.readString();
+        picBig = in.readString();
+        picSmall = in.readString();
+        price = in.readString();
+        memberPrice = in.readString();
+        assessCount = in.readString();
+        saleCount = in.readString();
+        created = in.readInt();
+        updated = in.readInt();
+    }
+
+    public static final Creator<CollectDataEntity> CREATOR = new Creator<CollectDataEntity>() {
+        @Override
+        public CollectDataEntity createFromParcel(Parcel in) {
+            return new CollectDataEntity(in);
+        }
+
+        @Override
+        public CollectDataEntity[] newArray(int size) {
+            return new CollectDataEntity[size];
+        }
+    };
 
     public int getCreated() {
         return created;
@@ -157,5 +192,28 @@ public class CollectDataEntity {
         entity.setAssessCount(item.get("ASSESSCOUNT"));
         entity.setSaleCount(item.get("SALECOUNT"));
         return entity;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(merchandiseId);
+        dest.writeString(medicineName);
+        dest.writeString(medicineSpec);
+        dest.writeString(shopId);
+        dest.writeString(shopName);
+        dest.writeString(picBig);
+        dest.writeString(picSmall);
+        dest.writeString(price);
+        dest.writeString(memberPrice);
+        dest.writeString(assessCount);
+        dest.writeString(saleCount);
+        dest.writeInt(created);
+        dest.writeInt(updated);
     }
 }
