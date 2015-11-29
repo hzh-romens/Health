@@ -305,7 +305,8 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
                                 tv_color.setText("已收藏");
                                 tv_color.setTextColor(getResources().getColor(R.color.themecolor));
-                                DBInterface.instance().InsertToCollect(weiShopEntity);
+                                //DBInterface.instance().InsertToCollect(weiShopEntity);
+                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectAddChange,1);
                             } else {
                                 iv_favorite.setImageResource(R.drawable.ic_favorite);
                                 Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
