@@ -48,7 +48,7 @@ public class CollectHelper {
     }
 
     public void addCollect(Context context) {
-        Intent intent = new Intent("com.romens.yjk.health.core.myService");
+        Intent intent = new Intent(context,CollectService.class);
         intent.putExtra("serviceType", "add");
         context.startService(intent);
     }
