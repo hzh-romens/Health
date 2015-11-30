@@ -336,6 +336,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
+                    Log.i("列表数据----",response);
                     Gson gson = new Gson();
                     List<GoodListEntity> result = new ArrayList<GoodListEntity>();
                     result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {

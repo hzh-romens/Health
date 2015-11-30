@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/sliding_overlay_blur_size"
        >
-     <ImageView
+     <com.romens.android.ui.Image.BackupImageView
          android:layout_width="48dp"
          android:layout_height="48dp"
          android:src="@drawable/picture_fail"

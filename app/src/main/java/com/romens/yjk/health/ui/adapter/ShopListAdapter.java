@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,9 +26,7 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.model.GoodListEntity;
-import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 
 import java.util.ArrayList;
@@ -39,30 +36,33 @@ import java.util.Map;
 /**
  * Created by AUSU on 2015/9/24.
  */
-public class ShopListAdapter extends RecyclerView.Adapter{
+public class ShopListAdapter extends RecyclerView.Adapter {
     private Context mContext;
-    private final List<GoodListEntity> mResult=new ArrayList<GoodListEntity>();
+    private final List<GoodListEntity> mResult = new ArrayList<GoodListEntity>();
 
-    public ShopListAdapter(Context context){
-        this.mContext=context;
+    public ShopListAdapter(Context context) {
+        this.mContext = context;
     }
-    public void BindData(List<GoodListEntity> result){
+
+    public void BindData(List<GoodListEntity> result) {
         mResult.clear();
-        if(result!=null||result.size()>0){
+        if (result != null || result.size() > 0) {
             mResult.addAll(result);
         }
         notifyDataSetChanged();
     }
-    public void addData(List<GoodListEntity> nextResult){
-        if(nextResult.size()>0||nextResult!=null){
+
+    public void addData(List<GoodListEntity> nextResult) {
+        if (nextResult.size() > 0 || nextResult != null) {
             mResult.addAll(nextResult);
         }
         notifyDataSetChanged();
     }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = View.inflate(mContext, R.layout.list_item_shop_list, null);
-        ItemHolder itemHolder=new ItemHolder(view);
+        ItemHolder itemHolder = new ItemHolder(view);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
         return itemHolder;
@@ -70,19 +70,23 @@ public class ShopListAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        ItemHolder itemHolder= (ItemHolder) holder;
+        ItemHolder itemHolder = (ItemHolder) holder;
         final GoodListEntity goodListEntity = mResult.get(position);
-        if(goodListEntity.getPICBIG()!=null){
+
+        if (goodListEntity.getPICBIG() != null && !("".equals(goodListEntity.getPICBIG()))) {
             itemHolder.iv.setImageBitmap(ImageUtils.bindLocalImage(goodListEntity.getPICBIG()));
+            Drawable defaultDrawables = itemHolder.iv.getDrawable();
+            ImageManager.loadForView(mContext, itemHolder.iv, goodListEntity.getPICBIG(), defaultDrawables, defaultDrawables);
+        } else {
+            itemHolder.iv.setImageDrawable(mContext.getResources().getDrawable(R.drawable.picture_fail));
         }
-        Drawable defaultDrawables =  itemHolder.iv.getDrawable();
-        ImageManager.loadForView(mContext, itemHolder.iv, goodListEntity.getPICBIG(), defaultDrawables, defaultDrawables);
+
         itemHolder.name.setText(goodListEntity.getMEDICINENAME());
-        if("".equals(goodListEntity.getPRICE())||goodListEntity==null){
+        if ("".equals(goodListEntity.getPRICE()) || goodListEntity == null) {
             itemHolder.realPrice.setVisibility(View.INVISIBLE);
             itemHolder.discountPrice.setVisibility(View.INVISIBLE);
-           // itemHolder.shop.setVisibility(View.INVISIBLE);
-        }else {
+            // itemHolder.shop.setVisibility(View.INVISIBLE);
+        } else {
             itemHolder.realPrice.setVisibility(View.VISIBLE);
             itemHolder.discountPrice.setVisibility(View.VISIBLE);
             itemHolder.shop.setVisibility(View.VISIBLE);
@@ -96,11 +100,11 @@ public class ShopListAdapter extends RecyclerView.Adapter{
         itemHolder.shop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(UserConfig.isClientLogined()) {
+                if (UserConfig.isClientLogined()) {
                     requestToBuy(mResult.get(position).getPRICE(), mResult.get(position).getMERCHANDISEID());
-                }else{
+                } else {
                     //跳转至登录页面
-                    Toast.makeText(mContext,"请您先登录",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "请您先登录", Toast.LENGTH_SHORT).show();
                     mContext.startActivity(new Intent(mContext, LoginActivity.class));
                 }
             }
@@ -108,69 +112,71 @@ public class ShopListAdapter extends RecyclerView.Adapter{
         itemHolder.linear_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(mContext, MedicinalDetailActivity.class);
-                i.putExtra("guid",goodListEntity.getMERCHANDISEID());
+                Intent i = new Intent(mContext, MedicinalDetailActivity.class);
+                i.putExtra("guid", goodListEntity.getMERCHANDISEID());
                 mContext.startActivity(i);
             }
         });
     }
-    public void requestToBuy(String PRICE,String GUID){
-            int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
-            Map<String, String> args = new FacadeArgs.MapBuilder().build();
-            args.put("GOODSGUID",GUID);
-            args.put("USERGUID",UserConfig.getClientUserEntity().getGuid());
-            args.put("BUYCOUNT", "1");
-            args.put("PRICE", PRICE);
 
-            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
-            protocol.withToken(FacadeToken.getInstance().getAuthToken());
-            Message message = new Message.MessageBuilder()
-                    .withProtocol(protocol)
-                    .build();
-            FacadeClient.request(mContext, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-                    android.util.Log.e("InsertIntoCar", msg.msg);
-                }
+    public void requestToBuy(String PRICE, String GUID) {
+        int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("GOODSGUID", GUID);
+        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+        args.put("BUYCOUNT", "1");
+        args.put("PRICE", PRICE);
 
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    if (errorMsg == null) {
-                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                        String response = responseProtocol.getResponse();
-                        if ("ERROE".equals(response)) {
-                            Toast.makeText(mContext, "加入购物车异常", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(mContext, "成功加入购物车", Toast.LENGTH_SHORT).show();
-                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged,1);
-                        }
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(mContext, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                android.util.Log.e("InsertIntoCar", msg.msg);
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String response = responseProtocol.getResponse();
+                    if ("ERROE".equals(response)) {
+                        Toast.makeText(mContext, "加入购物车异常", Toast.LENGTH_SHORT).show();
                     } else {
-                        android.util.Log.e("InsertIntoCar",errorMsg.msg);
+                        Toast.makeText(mContext, "成功加入购物车", Toast.LENGTH_SHORT).show();
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
                     }
+                } else {
+                    android.util.Log.e("InsertIntoCar", errorMsg.msg);
                 }
-            });
+            }
+        });
 
 
     }
 
     @Override
     public int getItemCount() {
-        return mResult.size()==0?0:mResult.size();
+        return mResult.size() == 0 ? 0 : mResult.size();
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder{
-        private ImageView iv,shop;
-        private TextView name,discountPrice,realPrice,comment;
+    public class ItemHolder extends RecyclerView.ViewHolder {
+        private ImageView iv, shop;
+        private TextView name, discountPrice, realPrice, comment;
         private LinearLayout linear_item;
-        public ItemHolder(View view){
+
+        public ItemHolder(View view) {
             super(view);
-            iv= (ImageView) view.findViewById(R.id.iv);
-            shop= (ImageView) view.findViewById(R.id.shop);
-            name= (TextView) view.findViewById(R.id.name);
-            discountPrice= (TextView) view.findViewById(R.id.discountPrice);
-            realPrice= (TextView) view.findViewById(R.id.realPrice);
-            comment= (TextView) view.findViewById(R.id.comment);
-            linear_item= (LinearLayout) view.findViewById(R.id.linear_item);
+            iv = (ImageView) view.findViewById(R.id.iv);
+            shop = (ImageView) view.findViewById(R.id.shop);
+            name = (TextView) view.findViewById(R.id.name);
+            discountPrice = (TextView) view.findViewById(R.id.discountPrice);
+            realPrice = (TextView) view.findViewById(R.id.realPrice);
+            comment = (TextView) view.findViewById(R.id.comment);
+            linear_item = (LinearLayout) view.findViewById(R.id.linear_item);
         }
     }
 }
