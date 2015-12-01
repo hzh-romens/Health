@@ -119,7 +119,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
                 PAGE = 1;
-             //Log.i("是否为空----",("".equals(EDITEXT))+"------"+("".equals(KEY)));
                 if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
                     requestData();
                 } else {
@@ -220,7 +219,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
                 SALE_FLAG=5;
                 if (PRICE_FLAG == 0) {
-                  //  rb_price.setText("按价格从高到低");
                     KEY = "priceDown";
                     requestSearchData(EDITEXT, KEY);
                     rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
@@ -228,7 +226,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 if (PRICE_FLAG == 1) {
-                    //rb_price.setText("按价格从低到高");
                     KEY = "priceUp";
                     requestSearchData(EDITEXT, KEY);
                     rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
@@ -236,7 +233,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 if (PRICE_FLAG == 2) {
-                    //rb_price.setText("按价格从高到低");
                     KEY = "priceDown";
                     rb_price.setCompoundDrawablesWithIntrinsicBounds(null,null,getResources().getDrawable(R.drawable.ic_arrow_down),null);
                     requestSearchData(EDITEXT, KEY);
@@ -249,14 +245,12 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 PRICE_FLAG=0;
                 if (SALE_FLAG == 5) {
                     KEY = "saleDown";
-                  //  rb_sale.setText("按销量从高到低");
                     requestSearchData(EDITEXT, KEY);
                     rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
                     SALE_FLAG = 6;
                     return;
                 }
                 if (SALE_FLAG == 6) {
-                   // rb_sale.setText("按销量从低到高");
                     KEY = "saleUp";
                     rb_sale.setCompoundDrawablesWithIntrinsicBounds(null,null,getResources().getDrawable(R.drawable.ic_arrow_up),null);
                     SALE_FLAG = 7;
@@ -264,7 +258,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 if (SALE_FLAG == 7) {
-                  //  rb_sale.setText("按销量从高到低");
                     KEY = "saleDown";
                     SALE_FLAG = 6;
                     rb_sale.setCompoundDrawablesWithIntrinsicBounds(null,null,getResources().getDrawable(R.drawable.ic_arrow_down),null);
@@ -272,7 +265,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 break;
-            //切换Adapter;
+            //Switch Adapter;
             case R.id.btn_switch:
                 if(ADAPTERFLAG==1){
                     ADAPTERFLAG=2;
@@ -316,13 +309,12 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         args.put("GUID", GUID);
         args.put("PAGE", PAGE);
         args.put("COUNT", COUNT);
+        args.put("SORTFIELD", "default");
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
                 .build();
-//        .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-//        }))
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
@@ -369,18 +361,24 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         args.put("COUNT", COUNT);
         if (key != null && !("".equals(key))) {
             args.put("KEY", key);
+
         }
         if (sortfiled != null && !("".equals(sortfiled))) {
             args.put("SORTFIELD", sortfiled);
         }
+        FacadeProtocol protocol;
+        if (key != null && !("".equals(key))) {
 
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "SearchSort", args);
+            protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
+        }else{
+
+            protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "SearchSort", args);
+        }
+
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
                 .build();
-//        .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-//        }))
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
