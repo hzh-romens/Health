@@ -73,6 +73,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.dao.query.DeleteQuery;
+
 public class MedicinalDetailActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private TextView tv_buy, tv_color;
@@ -306,7 +308,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 tv_color.setText("已收藏");
                                 tv_color.setTextColor(getResources().getColor(R.color.themecolor));
                                 //DBInterface.instance().InsertToCollect(weiShopEntity);
-                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectAddChange,1);
+                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectAddChange, 1);
                             } else {
                                 iv_favorite.setImageResource(R.drawable.ic_favorite);
                                 Toast.makeText(MedicinalDetailActivity.this, "加入收藏夹失败", Toast.LENGTH_SHORT).show();
@@ -407,7 +409,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 int count = 0;
                                 controls.append(count, new ADPagerControl().bindModel(adPagerEntities));
                                 count++;
-                                controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getDETAILDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME()));
+                                controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getDETAILDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME(),goodspics.get(0).getURL()));
                                 count++;
                                 controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
                                 if (!flag) {
@@ -508,8 +510,10 @@ public class MedicinalDetailActivity extends BaseActivity {
         historyEntity.setCommentCount(weiShopEntity.getSTORECOUNT());
         historyEntity.setGuid(weiShopEntity.getGUID());
         historyEntity.setShopIp(weiShopEntity.getSHOPID());
-        HistoryDao historyDao = DBInterface.instance().openReadableDb().getHistoryDao();
-        historyDao.insert(historyEntity);
+        HistoryDao historyDao = DBInterface.instance().openWritableDb().getHistoryDao();
+        DeleteQuery<HistoryEntity> historyEntityDeleteQuery = historyDao.queryBuilder().where(HistoryDao.Properties.Guid.eq(weiShopEntity.getGUID())).buildDelete();
+        historyEntityDeleteQuery.executeDeleteWithoutDetachingEntities();
+        historyDao.insertOrReplace(historyEntity);
     }
 
 

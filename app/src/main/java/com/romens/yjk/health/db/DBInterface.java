@@ -2,7 +2,6 @@ package com.romens.yjk.health.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
@@ -229,26 +228,10 @@ public class DBInterface {
         return false;
     }
 
-    public void InsertToCollect(WeiShopEntity shopEntity) {
-        CollectDataEntity collectDataEntity = new CollectDataEntity();
-        collectDataEntity.setMerchandiseId(shopEntity.getGUID());
-        collectDataEntity.setMedicineName(shopEntity.getNAME());
-        collectDataEntity.setAssessCount(shopEntity.getASSESSCOUNT());
-        collectDataEntity.setMedicineSpec(shopEntity.getSPEC());
-        collectDataEntity.setShopName(shopEntity.getSHOPNAME());
-        collectDataEntity.setShopId(shopEntity.getSHOPID());
-        collectDataEntity.setPicBig(shopEntity.getURL());
-        collectDataEntity.setPicSmall(shopEntity.getURL());
-        collectDataEntity.setPrice(shopEntity.getUSERPRICE());
-        collectDataEntity.setMemberPrice(shopEntity.getMARKETPRICE());
-        collectDataEntity.setSaleCount(shopEntity.getTOTLESALEDCOUNT());
-        CollectDataDao collectDataDao = openWritableDb().getCollectDataDao();
-        collectDataDao.insert(collectDataEntity);
-    }
     public void DeleteFavorite(WeiShopEntity shopEntity){
         CollectDataDao collectDataDao = openWritableDb().getCollectDataDao();
         DeleteQuery<CollectDataEntity> collectDataEntityDeleteQuery = collectDataDao.queryBuilder().where(CollectDataDao.Properties.MerchandiseId.eq(shopEntity.getGUID())).buildDelete();
         collectDataEntityDeleteQuery.executeDeleteWithoutDetachingEntities();
-        Log.i("数据库长度----",collectDataDao.loadAll().size()+"");
+
     }
 }
