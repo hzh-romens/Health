@@ -112,7 +112,11 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data.remove(position);
+                if (data.size() > 1) {
+                    data.remove(position);
+                } else {
+                    Toast.makeText(context, "默认选项不能删除", Toast.LENGTH_SHORT).show();
+                }
                 notifyDataSetChanged();
                 dialog.dismiss();
             }

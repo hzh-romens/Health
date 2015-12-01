@@ -33,6 +33,7 @@
         android:layout_marginTop="32dp"
         android:layout_toLeftOf="@id/remind_dosage"
         android:focusable="true"
+        android:inputType="number"
         android:gravity="center"
         android:text="1"
         android:textColor="@color/theme_sub_title"

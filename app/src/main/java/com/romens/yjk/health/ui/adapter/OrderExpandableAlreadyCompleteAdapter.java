@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,11 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
+        RelativeLayout btnLayout = (RelativeLayout) view.findViewById(R.id.order_btn_layout);
+        btnLayout.setVisibility(View.GONE);
+        if (childPosition == getChildrenCount(groupPosition)-1) {
+            btnLayout.setVisibility(View.VISIBLE);
+        }
 
         TextView buyAgainBtn = (TextView) view.findViewById(R.id.order_all_buy_again);
         TextView evaluateBtn = (TextView) view.findViewById(R.id.order_all_evaluate_btn);
