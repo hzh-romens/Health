@@ -2,10 +2,12 @@ package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +24,7 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
@@ -57,6 +60,10 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         listView = new ListView(this);
         listView.setVerticalScrollBarEnabled(false);
         listView.setSelection(R.drawable.list_selector);
+        TextInfoCell cell=new TextInfoCell(this);
+        cell.setBackgroundColor(Color.WHITE);
+        cell.setText("长按删除单条记录");
+        listView.addFooterView(cell);
         timesAdapter = new TimesAdapter(timesData, this, this);
         listView.setAdapter(timesAdapter);
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -81,8 +88,6 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         actionButton.setLayoutParams(actionButtonLp);
         frameLayout.addView(actionButton);
     }
-
-
 
     private void initData() {
         timesData = getIntent().getStringArrayListExtra("timesDataList");
