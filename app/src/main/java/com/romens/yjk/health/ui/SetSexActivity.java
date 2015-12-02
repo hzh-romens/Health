@@ -49,17 +49,25 @@ public class SetSexActivity extends BaseActivity{
                 popAdapter.notifyDataSetChanged();
                 String choice = result.get(position).getChoice();
                 sexValue=choice;
+                FinishIntent(sexValue);
             }
         });
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it = new Intent();
-                it.putExtra("sexvalue",sexValue);
-                setResult(2, it);
-                finish();
+//                Intent it = new Intent();
+//                it.putExtra("sexvalue",sexValue);
+//                setResult(2, it);
+//                finish();
+                FinishIntent(sexValue);
             }
         });
+    }
+    private void FinishIntent(String value){
+        Intent it = new Intent();
+        it.putExtra("sexvalue",sexValue);
+        setResult(2, it);
+        finish();
     }
 
     private void getData() {
@@ -121,10 +129,11 @@ public class SetSexActivity extends BaseActivity{
 
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) {
-            Intent it = new Intent();
-            it.putExtra("sexvalue",sexValue);
-            setResult(2, it);
-            finish();
+//            Intent it = new Intent();
+//            it.putExtra("sexvalue",sexValue);
+//            setResult(2, it);
+//            finish();
+            FinishIntent(sexValue);
             return true;
         }
         return super.onKeyDown(keyCode, event);

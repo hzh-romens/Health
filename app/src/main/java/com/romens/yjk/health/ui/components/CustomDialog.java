@@ -3,12 +3,9 @@ package com.romens.yjk.health.ui.components;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Rect;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -16,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.utils.UIUtils;
 
 public class CustomDialog extends Dialog {
 
@@ -296,7 +292,8 @@ public class CustomDialog extends Dialog {
 			dialog.setContentView(layout);
 			WindowManager.LayoutParams attributes = dialog.getWindow().getAttributes();
 			WindowManager systemService = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-			attributes.width=2*systemService.getDefaultDisplay().getWidth()/3;
+			attributes.horizontalMargin=0;
+			attributes.width=(int)(systemService.getDefaultDisplay().getWidth()/1.2);
 			attributes.height=LayoutParams.WRAP_CONTENT;
 			dialog.getWindow().setAttributes(attributes);
 			return dialog;
