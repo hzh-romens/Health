@@ -228,6 +228,11 @@ public class ControlAddressActivity extends BaseActivity {
                                 entity = addressListEntitis.get(j);
                             }
                         }
+                        if (entity == null) {
+                            if (addressListEntitis.size() > 1) {
+                                entity = addressListEntitis.get(i);
+                            }
+                        }
                         intent.putExtra("responseCommitEntity", entity);
                         setResult(2, intent);
                     }
