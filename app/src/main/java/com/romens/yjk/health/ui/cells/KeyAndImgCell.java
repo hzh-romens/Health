@@ -51,6 +51,7 @@ public class KeyAndImgCell extends LinearLayout {
         rightImageView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         rightImageView.setImageResource(R.drawable.y);
         LayoutParams imgParams = new LayoutParams(AndroidUtilities.dp(24), AndroidUtilities.dp(24));
+        imgParams.setMargins(0,0,AndroidUtilities.dp(8),0);
         imgParams.gravity = Gravity.CENTER_VERTICAL;
         rightImageView.setLayoutParams(imgParams);
         addView(rightImageView);
