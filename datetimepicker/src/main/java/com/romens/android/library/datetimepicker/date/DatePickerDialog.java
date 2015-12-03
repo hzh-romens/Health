@@ -21,6 +21,8 @@ import com.romens.android.library.datetimepicker.R;
 import com.romens.android.library.datetimepicker.Utils;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -75,7 +77,8 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 
 	private TextView mDayOfWeekView;
 	private DayPickerView mDayPickerView;
-	private Button mDoneButton;
+//	private Button mDoneButton;
+	private TextView mDoneButton;
 	private LinearLayout mMonthAndDayView;
 	private TextView mSelectedDayTextView;
 	private TextView mSelectedMonthTextView;
@@ -296,7 +299,7 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 		outAlphaAnimation.setDuration(300L);
 		mAnimator.setOutAnimation(outAlphaAnimation);
 
-		mDoneButton = ((Button) view.findViewById(R.id.done));
+		mDoneButton = ((TextView) view.findViewById(R.id.done));
 		mDoneButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
                 onDoneButtonClick();
