@@ -7,14 +7,12 @@ import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 
 /**
@@ -63,7 +61,7 @@ public class IsSelectCell extends LinearLayout {
         setOrientation(HORIZONTAL);
 
         isSelectImgView = new ImageView(context);
-        isSelectImgView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
+        isSelectImgView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         isSelectImgView.setImageResource(R.drawable.control_address_undeafult);
         flag = false;
         LayoutParams imgParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
