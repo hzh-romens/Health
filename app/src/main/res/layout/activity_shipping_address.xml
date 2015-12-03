@@ -48,6 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/no_address_hint"
+            android:includeFontPadding="false"
+            android:textColor="#666666"
             android:layout_gravity="center_horizontal"
             android:textSize="@dimen/abc_text_size_menu_material" />
 
@@ -56,14 +58,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/bg_white"
-            android:paddingBottom="5dp"
-            android:paddingLeft="35dp"
-            android:paddingRight="35dp"
-            android:paddingTop="5dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="4dp"
             android:text="@string/add"
-            android:textSize="@dimen/abc_text_size_large_material" />
+            android:includeFontPadding="false"
+            android:textSize="@dimen/text_size_xlarge" />
     </LinearLayout>
 
 

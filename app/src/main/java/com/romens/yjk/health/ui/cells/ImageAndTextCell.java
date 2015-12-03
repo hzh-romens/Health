@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -39,6 +38,7 @@ public class ImageAndTextCell extends LinearLayout {
         textView.setGravity(Gravity.CENTER);
         textView.setTextColor(0xff757575);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        textView.setIncludeFontPadding(false);
         LayoutParams textParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT);
         textParams.setMargins(AndroidUtilities.dp(0), AndroidUtilities.dp(16), AndroidUtilities.dp(0), AndroidUtilities.dp(0));
         textView.setLayoutParams(textParams);
