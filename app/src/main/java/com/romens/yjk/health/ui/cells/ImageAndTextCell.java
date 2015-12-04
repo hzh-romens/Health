@@ -27,7 +27,7 @@ public class ImageAndTextCell extends LinearLayout {
         super(context, attrs, defStyleAttr);
         setOrientation(VERTICAL);
         imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         LayoutParams imgParams = LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
         imgParams.gravity = Gravity.CENTER;
         imageView.setLayoutParams(imgParams);

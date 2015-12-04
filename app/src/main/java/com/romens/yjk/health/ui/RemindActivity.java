@@ -77,7 +77,7 @@ public class RemindActivity extends BaseActivity {
         });
 
         imgAndTxtCell = (ImageAndTextCell) findViewById(R.id.remind_no_item);
-        imgAndTxtCell.setImageAndText(R.drawable.remind_no_item_bg, "您还没有添加提醒\n\n点击右上角添加提醒");
+        imgAndTxtCell.setImageAndText(R.drawable.remind_no_item_bg, "您还没有添加提醒  点击右上角添加提醒");
         LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
         layoutParams.gravity = Gravity.CENTER;
         imgAndTxtCell.setPadding(AndroidUtilities.dp(0), AndroidUtilities.dp(100), AndroidUtilities.dp(0), AndroidUtilities.dp(0));

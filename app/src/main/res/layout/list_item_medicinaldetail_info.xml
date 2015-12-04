@@ -1,109 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
-        android:background="@color/md_grey_200"/>
+        android:background="@color/md_grey_200" />
+
     <TextView
+        android:id="@+id/tv_owner_medicinalName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_outter"
-        android:textSize="@dimen/text_size_large"
-        android:textColor="@color/titlecolor"
         android:includeFontPadding="false"
-        android:text="999 感冒灵胶囊   12粒*1板"
-        android:id="@+id/tv_owner_medicinalName"
         android:paddingBottom="@dimen/padding_inner"
-        android:paddingTop="@dimen/padding_inner"/>
+        android:paddingTop="@dimen/padding_inner"
+        android:text="999 感冒灵胶囊   12粒*1板"
+        android:textColor="@color/titlecolor"
+        android:textSize="@dimen/text_size_large" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/sliding_overlay_blur_size"
-       >
-     <com.romens.android.ui.Image.BackupImageView
-         android:layout_width="48dp"
-         android:layout_height="48dp"
-         android:src="@drawable/picture_fail"
-         android:id="@+id/iv_owner_store"
-         android:layout_marginLeft="12dp"
-         android:scaleType="fitXY"/>
+        android:padding="@dimen/sliding_overlay_blur_size">
+
+        <com.romens.android.ui.Image.BackupImageView
+            android:id="@+id/iv_owner_store"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="12dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/picture_fail" />
+
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:layout_marginLeft="60dp"
-            android:orientation="vertical"
-           android:gravity="center_vertical"
-            android:layout_height="48dp">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/sliding_overlay_blur_size"
-                >
+                android:layout_margin="@dimen/sliding_overlay_blur_size">
+
                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_medium"
-              android:layout_gravity="left"
-                android:id="@+id/tv_owner_storeName"
+                    android:id="@+id/tv_owner_storeName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="48dp"
+                    android:ellipsize="end"
                     android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:text="某某某大药房"
                     android:textColor="@color/theme_title"
-                    android:layout_marginRight="48dp"
-                    android:singleLine="true"
-                    android:ellipsize="end"
-                android:text="某某某大药房"/>
+                    android:textSize="@dimen/text_size_medium" />
+
                 <TextView
+                    android:id="@+id/tv_owner_medicinalPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_medium"
-                  android:layout_gravity="right"
-                    android:textColor="@color/themecolor"
-                    android:id="@+id/tv_owner_medicinalPrice"
+                    android:layout_gravity="right"
                     android:includeFontPadding="false"
-                    android:text="¥19"/>
-                </FrameLayout>
+                    android:text="¥19"
+                    android:textColor="@color/themecolor"
+                    android:textSize="@dimen/text_size_medium" />
+            </FrameLayout>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/sliding_overlay_blur_size"
-                >
+                android:layout_margin="@dimen/sliding_overlay_blur_size">
+
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_medium"
-                   android:layout_gravity="left"
                     android:id="@+id/tv_owner_storeAddress"
-                    android:includeFontPadding="false"
-                    android:layout_marginRight="48dp"
-                    android:singleLine="true"
-                    android:ellipsize="end"
-                    android:textColor="#666666"
-                    android:text="安定门外大街418"/>
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_medium"
-                   android:layout_gravity="right"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="56dp"
+                    android:ellipsize="end"
                     android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:text="安定门外大街418"
                     android:textColor="#666666"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <TextView
                     android:id="@+id/tv_owner_inventory"
-                    android:text="库存55件"/>
+                    android:layout_width="56dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:gravity="center_vertical|right"
+                    android:text="库存55件"
+                    android:textColor="#666666"
+                    android:textSize="@dimen/text_size_medium" />
             </FrameLayout>
         </LinearLayout>
     </FrameLayout>
+
     <TextView
+        android:id="@+id/tv_owner_medicinalDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:textSize="@dimen/text_size_medium"
-        android:textColor="@color/theme_title"
-        android:text="感冒引发的....."
-        android:id="@+id/tv_owner_medicinalDetail"
-        android:layout_marginTop="@dimen/sliding_overlay_blur_size"
-        android:layout_marginLeft="@dimen/padding_outter"
         android:layout_marginBottom="@dimen/padding_inner"
-        />
+        android:layout_marginLeft="@dimen/padding_outter"
+        android:layout_marginTop="@dimen/sliding_overlay_blur_size"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="感冒引发的....."
+        android:textColor="@color/theme_title"
+        android:textSize="@dimen/text_size_medium" />
 </LinearLayout>

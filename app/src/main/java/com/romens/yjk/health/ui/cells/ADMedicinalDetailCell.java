@@ -35,7 +35,7 @@ public class ADMedicinalDetailCell extends FrameLayout {
         tv_owner_storeAddress.setText(owner_storeAddress);
         tv_owner_storeName.setText(owner_storeName);
         tv_owner_medicinalName.setText(owner_medicinalName);
-        tv_owner_inventory.setText("库存量"+owner_inventory);
+        tv_owner_inventory.setText("库存:"+owner_inventory);
         tv_owner_medicinalPrice.setText("¥"+owner_medicinalPrice);
         tv_owner_medicinalDetail.setText(owner_medicinalDetail);
         if("".equals(url)||url==null){
