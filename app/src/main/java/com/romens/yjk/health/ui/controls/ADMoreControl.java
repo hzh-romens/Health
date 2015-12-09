@@ -11,9 +11,15 @@ import com.romens.yjk.health.ui.cells.ADMoreCell;
  * Created by AUSU on 2015/10/14.
  */
 public class ADMoreControl extends ADBaseControl{
+    private String mValue;
+    public  ADMoreControl bindModle(String value){
+        this.mValue=value;
+        return this;
+    }
     @Override
     public void bindViewHolder(Context context, ADHolder holder) {
         ADMoreCell adMoreCell= (ADMoreCell) holder.itemView;
+        adMoreCell.SetValue(mValue);
     }
     public static ADHolder createViewHolder(Context context) {
         ADMoreCell adMoreCell=new ADMoreCell(context);

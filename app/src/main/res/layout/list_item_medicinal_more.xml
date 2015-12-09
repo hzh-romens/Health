@@ -17,4 +17,8 @@
         android:textSize="@dimen/text_size_medium"
         android:gravity="center"
         android:padding="4dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/md_grey_200"/>
 </LinearLayout>

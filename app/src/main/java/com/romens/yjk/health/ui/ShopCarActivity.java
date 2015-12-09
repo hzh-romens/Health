@@ -1,8 +1,6 @@
 package com.romens.yjk.health.ui;
 
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +8,6 @@ import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +21,6 @@ import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
-import com.romens.extend.scanner.FinishListener;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -39,15 +35,11 @@ import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.components.CustomDialog;
-import com.romens.yjk.health.ui.utils.DialogUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -154,7 +146,7 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 ibuilder = new CustomDialog.Builder(ShopCarActivity.this);
-               // ibuilder.setTitle(R.string.prompt);
+                // ibuilder.setTitle(R.string.prompt);
                 ibuilder.setMessage("是否删除？");
                 ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     @Override
@@ -222,7 +214,7 @@ public class ShopCarActivity extends BaseActivity {
                                 }
                             }
 
-                        }else{
+                        } else {
                             return;
                         }
                     }

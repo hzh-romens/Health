@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by HZH on 2015/10/30.
  */
-public class SetSexActivity extends BaseActivity{
+public class SetSexActivity extends BaseActivity {
     private ListView listView;
     private ImageView btn_back;
     private PopAdapter popAdapter;
@@ -30,12 +30,12 @@ public class SetSexActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setsex);
-        value=getIntent().getStringExtra("value");
-        sexValue=value;
-        listView= (ListView) findViewById(R.id.listView);
-        btn_back= (ImageView) findViewById(R.id.back);
+        value = getIntent().getStringExtra("value");
+        sexValue = value;
+        listView = (ListView) findViewById(R.id.listView);
+        btn_back = (ImageView) findViewById(R.id.back);
         getData();
-        popAdapter=new PopAdapter(this,result);
+        popAdapter = new PopAdapter(this, result);
         listView.setAdapter(popAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -48,7 +48,7 @@ public class SetSexActivity extends BaseActivity{
                 result.get(position).setFlag(!result.get(position).isFlag());
                 popAdapter.notifyDataSetChanged();
                 String choice = result.get(position).getChoice();
-                sexValue=choice;
+                sexValue = choice;
                 FinishIntent(sexValue);
             }
         });
@@ -63,15 +63,16 @@ public class SetSexActivity extends BaseActivity{
             }
         });
     }
-    private void FinishIntent(String value){
+
+    private void FinishIntent(String value) {
         Intent it = new Intent();
-        it.putExtra("sexvalue",sexValue);
+        it.putExtra("sexvalue", sexValue);
         setResult(2, it);
         finish();
     }
 
     private void getData() {
-        result=new ArrayList<ChoiceEntity>();
+        result = new ArrayList<ChoiceEntity>();
         ChoiceEntity ce1 = new ChoiceEntity();
         ChoiceEntity ce2 = new ChoiceEntity();
         ChoiceEntity ce3 = new ChoiceEntity();
@@ -87,7 +88,7 @@ public class SetSexActivity extends BaseActivity{
             ce3.setChoice("保密");
             ce3.setFlag(false);
             result.add(ce3);
-        }else if("女".equals(value)){
+        } else if ("女".equals(value)) {
             ce1.setChoice("男");
             ce1.setFlag(false);
             result.add(ce1);
@@ -99,7 +100,7 @@ public class SetSexActivity extends BaseActivity{
             ce3.setChoice("保密");
             ce3.setFlag(false);
             result.add(ce3);
-        }else if("保密".equals(value)){
+        } else if ("保密".equals(value)) {
             ce1.setChoice("男");
             ce1.setFlag(false);
             result.add(ce1);
@@ -111,7 +112,7 @@ public class SetSexActivity extends BaseActivity{
             ce3.setChoice("保密");
             ce3.setFlag(true);
             result.add(ce3);
-        }else{
+        } else {
             ce1.setChoice("男");
             ce1.setFlag(false);
             result.add(ce1);
@@ -125,6 +126,7 @@ public class SetSexActivity extends BaseActivity{
             result.add(ce3);
         }
     }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         if (keyCode == KeyEvent.KEYCODE_BACK

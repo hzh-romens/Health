@@ -2,9 +2,6 @@ package com.romens.yjk.health.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +28,6 @@ import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.location.core.AMapLocException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -48,6 +44,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.model.ADPagerEntity;
+import com.romens.yjk.health.model.CommentEntity;
 import com.romens.yjk.health.model.GoodSpicsEntity;
 import com.romens.yjk.health.model.NearByOnSaleEntity;
 import com.romens.yjk.health.model.TestEntity;
@@ -57,6 +54,7 @@ import com.romens.yjk.health.ui.adapter.MedicinalDetailAdapter;
 import com.romens.yjk.health.ui.cells.PopWindowCell;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
+import com.romens.yjk.health.ui.controls.ADCommentControl;
 import com.romens.yjk.health.ui.controls.ADErrorControl;
 import com.romens.yjk.health.ui.controls.ADGroupNameControls;
 import com.romens.yjk.health.ui.controls.ADIllustrationControl;
@@ -94,6 +92,10 @@ public class MedicinalDetailActivity extends BaseActivity {
     private List<NearByOnSaleEntity> nearResult;
     private boolean flag = false;
     private ImageView iv_favorite;
+    private int lastVisibleItem;
+    private int PAGE = 1;
+    private final int COUNT = 5;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -333,43 +335,33 @@ public class MedicinalDetailActivity extends BaseActivity {
     private void initLayoutManager() {
         layoutManager = new ABaseLinearLayoutManager(MedicinalDetailActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDraw(c, parent, state);
-            }
-
-            @Override
-            public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDrawOver(c, parent, state);
-                Paint paint = new Paint();
-                int childCount = parent.getChildCount();
-                for (int i = 0; i < childCount; i++) {
-                    View child = parent.getChildAt(i);
-                    float x = child.getWidth() + child.getX();
-                    float y = child.getHeight() + child.getY();
-//                    c.drawLine(child.getX(),
-//                            y,
-//                            child.getX() + child.getWidth(),
-//                            y,
-//                            paint);
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int itemCount = 0;
+                if (medicinalDetailAdapter != null) {
+                    itemCount = medicinalDetailAdapter.getItemCount();
+                }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                        && lastVisibleItem + 1 == itemCount) {
+                    PAGE++;
 
                 }
-
             }
 
             @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.bottom = AndroidUtilities.dp(1);
-                super.getItemOffsets(outRect, view, parent, state);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
-
     }
 
 
     private List<WeiShopEntity> result;
+    private MedicinalDetailAdapter medicinalDetailAdapter;
+    private int count = 0;
 
     //药品详情信息数据请求
     private void requestStoreData() {
@@ -406,30 +398,53 @@ public class MedicinalDetailActivity extends BaseActivity {
                                 for (int i = 0; i < goodspics.size(); i++) {
                                     adPagerEntities.add(new ADPagerEntity("", "", goodspics.get(i).getURL()));
                                 }
-                                int count = 0;
+
                                 controls.append(count, new ADPagerControl().bindModel(adPagerEntities));
                                 count++;
-                                controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getDETAILDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME(),goodspics.get(0).getURL()));
+                                controls.append(count, new ADMedicinalDetailControl().bindModle(weiShopEntity.getSTORECOUNT(), weiShopEntity.getDETAILDESCRIPTION(), weiShopEntity.getNAME(), weiShopEntity.getUSERPRICE(), weiShopEntity.getSHOPADDRESS(), weiShopEntity.getSHOPNAME(), goodspics.get(0).getURL()));
                                 count++;
                                 controls.append(count, new ADIllustrationControl().bindModel("正品保证", "免运费", "货到付款"));
                                 if (!flag) {
                                     //If it is from the vicinity of the details of the pharmacy to enter, do not show a nearby pharmacy module
-                                    if (nearResult != null && !("".equals(nearResult))&&nearResult.size()!=0) {
+                                    if (nearResult != null && !("".equals(nearResult)) && nearResult.size() != 0) {
                                         count++;
                                         controls.append(count, new ADGroupNameControls().bindModel("附近药店", false));
-                                        for (int i = 0; i < nearResult.size(); i++) {
+                                        if (nearResult.size() > 5) {
+                                            for (int i = 0; i < nearResult.size(); i++) {
+                                                count++;
+                                                controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getMERCHANDISEID()));
+                                            }
                                             count++;
-                                            controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getMERCHANDISEID()));
+                                            controls.append(count, new ADMoreControl().bindModle("查看更多附近药店"));
+                                        } else {
+                                            for (int i = 0; i < nearResult.size(); i++) {
+                                                count++;
+                                                controls.append(count, new ADStoreControls().bindModel(nearResult.get(i).getTOTLESALEDCOUNT(), nearResult.get(i).getADDRESS(), nearResult.get(i).getPRICE(), nearResult.get(i).getSHOPNAME(), nearResult.get(i).getDISTANCE(), nearResult.get(i).getMERCHANDISEID()));
+                                            }
                                         }
-                                        count++;
-                                        controls.append(count, new ADMoreControl());
                                     }
 
                                 }
-                                //count++;
-                                //controls.append(count, new ADTextIconControl().bindModel("累计评价 (2)", R.drawable.ic_chevron_right_grey600_24dp, false));
-                                //count++;
-                                //controls.append(count, new ADCommentControl().bindModle("4", "还不错", "hzh", "2015-11-26 16:00"));
+                                if (commentEntities != null && commentEntities.size() != 0) {
+                                    count++;
+                                    controls.append(count, new ADGroupNameControls().bindModel("累计评论", false));
+                                    if (commentEntities.size() == 0) {
+                                        for (int i = 0; i < 5; i++) {
+                                            count++;
+                                            CommentEntity commentEntity = commentEntities.get(i);
+                                            controls.append(count, new ADCommentControl().bindModle(commentEntity.getQUALITYLEVEL(), commentEntity.getADVICE(), commentEntity.getMEMBERID(), commentEntity.getASSESSDATE()));
+                                        }
+                                        count++;
+                                        controls.append(count, new ADMoreControl().bindModle("查看更多评论"));
+                                    } else {
+                                        for (int i = 0; i < commentEntities.size(); i++) {
+                                            count++;
+                                            CommentEntity commentEntity = commentEntities.get(i);
+                                            controls.append(count, new ADCommentControl().bindModle(commentEntity.getQUALITYLEVEL(), commentEntity.getADVICE(), commentEntity.getMEMBERID(), commentEntity.getASSESSDATE()));
+                                        }
+                                    }
+
+                                }
                                 AddToHistory(weiShopEntity);
                             } else {
                                 //show emptyPage
@@ -449,9 +464,9 @@ public class MedicinalDetailActivity extends BaseActivity {
                     controls.append(0, new ADErrorControl().bindModel("该药品不存在"));
 
                 }
-                MedicinalDetailAdapter medicinalDetailAdapter2 = new MedicinalDetailAdapter(MedicinalDetailActivity.this);
-                medicinalDetailAdapter2.bindData(controls);
-                recyclerView.setAdapter(medicinalDetailAdapter2);
+                medicinalDetailAdapter = new MedicinalDetailAdapter(MedicinalDetailActivity.this);
+                medicinalDetailAdapter.bindData(controls);
+                recyclerView.setAdapter(medicinalDetailAdapter);
             }
         });
     }
@@ -648,7 +663,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                             Gson gson = new Gson();
                                             nearResult = gson.fromJson(response, new TypeToken<List<NearByOnSaleEntity>>() {
                                             }.getType());
-                                            requestStoreData();
+                                            getCommentData();
                                         } else {
                                             Log.e("附近有售数据", errorMsg.msg);
                                         }
@@ -679,4 +694,41 @@ public class MedicinalDetailActivity extends BaseActivity {
                     }
                 });
     }
+
+    private List<CommentEntity> commentEntities;
+
+    private void getCommentData() {
+        int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("MERCHANDISEID", GUID);
+        //args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+        args.put("PAGE", PAGE + "");
+        args.put("COUNT", COUNT + "");
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetAssessment", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Log.e("InsertIntoCar", msg.msg);
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String response = responseProtocol.getResponse();
+                    Gson gson = new Gson();
+                    commentEntities = gson.fromJson(response, new TypeToken<List<CommentEntity>>() {
+                    }.getType());
+                    requestStoreData();
+                } else {
+                    Log.e("InsertIntoCar", errorMsg.toString() + "====" + errorMsg.msg);
+                }
+            }
+        });
+    }
+
 }

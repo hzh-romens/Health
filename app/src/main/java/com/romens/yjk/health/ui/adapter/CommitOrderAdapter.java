@@ -1,56 +1,51 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.romens.android.AndroidUtilities;
+import com.avast.android.dialogs.fragment.ListDialogFragment;
+import com.avast.android.dialogs.iface.IListDialogListener;
 import com.romens.android.io.image.ImageManager;
-import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.model.DeliverytypeEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
-import com.romens.yjk.health.ui.ShopCarActivity;
-
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.List;
-
-import static android.view.ViewGroup.*;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Created by AUSU on 2015/9/20.
  * 订单提交的Adapter
  */
 
-public class CommitOrderAdapter extends BaseExpandableListAdapter {
+public class CommitOrderAdapter extends BaseExpandableListAdapter implements IListDialogListener{
     private List<ParentEntity> mFatherData;
     private HashMap<String, List<ShopCarEntity>> mChildData;
     private Context mContext;
     private CheckDataCallBack checkDataCallBack;
     private int sendFlag;
+    private String DeliverytypeStr = "";
 
     public void setCheckDataChangeListener(CheckDataCallBack checkDataCallBack) {
         this.checkDataCallBack = checkDataCallBack;
+    }
+
+    @Override
+    public void onListItemSelected(CharSequence value, int number, int requestCode) {
+        if (requestCode == 1 ){
+            Toast.makeText(mContext, "Selected: " + value, Toast.LENGTH_SHORT).show();
+        }
     }
 
     //接口回调，用于数据刷新
@@ -61,6 +56,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     public CommitOrderAdapter(Context context, int realCoutn) {
         this.mContext = context;
         this.sendFlag = realCoutn;
+
 
     }
 
@@ -120,42 +116,48 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
                 parentHolder = new ParentHolder();
                 parentHolder.tv_groupname = (TextView) convertView.findViewById(R.id.group_name);
-                parentHolder.group_name_layout= (FrameLayout) convertView.findViewById(R.id.group_name_layout);
+                parentHolder.group_name_layout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
                 convertView.setTag(parentHolder);
             } else {
                 parentHolder = (ParentHolder) convertView.getTag();
             }
+            convertView.setClickable(true);
             parentHolder.tv_groupname.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
             parentHolder.group_name_layout.setClickable(true);
         } else if (groupType == 1) {
-            SendHolder sendHolder = null;
+            final SendHolder sendHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
                 sendHolder = new SendHolder();
                 sendHolder.tv_groupname = (TextView) convertView.findViewById(R.id.name);
-                sendHolder.rg = (RadioGroup) convertView.findViewById(R.id.rg);
-                sendHolder.rb1 = (RadioButton) convertView.findViewById(R.id.rb1);
-                sendHolder.rb2 = (RadioButton) convertView.findViewById(R.id.rb2);
+                sendHolder.tv_deliverytype = (TextView) convertView.findViewById(R.id.tv_deliverytype);
                 convertView.setTag(sendHolder);
             } else {
                 sendHolder = (SendHolder) convertView.getTag();
             }
+            convertView.setClickable(true);
             sendHolder.tv_groupname.setText("派送方式");
             sendHolder.tv_groupname.setClickable(true);
-            sendHolder.rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    //写一个回调
-                    int checkedRadioButtonId = group.getCheckedRadioButtonId();
-                    if (checkedRadioButtonId == R.id.rb1) {
-                        checkDataCallBack.getCheckData("药店派送");
-                    } else if (checkedRadioButtonId == R.id.rb2) {
-                        checkDataCallBack.getCheckData("到店自取");
-                    }
+                public void onClick(View v) {
+                    ListDialogFragment
+                            .createBuilder(mContext, mFragmentManger)
+                            .setTitle("配送方式")
+                            .setItems(choice)
+                            .setRequestCode(9)
+                            .show();
+
+                    Log.i("000000000====", DeliverytypeStr);
                 }
             });
+
         }
         return convertView;
+    }
+
+    public void SetView(TextView view) {
+
     }
 
     @Override
@@ -174,11 +176,11 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             childHolder = (ChildHolder) convertView.getTag();
         }
         ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID()).get(childPosition);
-        childHolder.tv_price.setText("¥"+shopCarEntity.getGOODSPRICE());
+        childHolder.tv_price.setText("¥" + shopCarEntity.getGOODSPRICE());
         childHolder.tv_name.setText(shopCarEntity.getNAME());
         childHolder.tv_infor.setText(shopCarEntity.getSPEC());
         childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
-        Drawable defaultDrawables =  childHolder.iv.getDrawable();
+        Drawable defaultDrawables = childHolder.iv.getDrawable();
         ImageManager.loadForView(mContext, childHolder.iv, shopCarEntity.getGOODURL(), defaultDrawables, defaultDrawables);
         return convertView;
     }
@@ -190,8 +192,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
     class SendHolder {
         private TextView tv_groupname;
-        private RadioGroup rg;
-        private RadioButton rb1, rb2;
+        private TextView tv_deliverytype;
     }
 
     class ParentHolder {
@@ -200,9 +201,9 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     }
 
     public int getCurrentGroupPosition(int groupPosition) {
-       if(groupPosition<sendFlag-1){
-           return groupPosition;
-       }
+        if (groupPosition < sendFlag - 1) {
+            return groupPosition;
+        }
         return 0;
     }
 
@@ -225,4 +226,22 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     public int getGroupTypeCount() {
         return 2;
     }
+
+    private String[] choice;
+
+    public void SetDeliverytypeData(List<DeliverytypeEntity> deliverytypeResult) {
+        choice = new String[deliverytypeResult.size()];
+        for (int i = 0; i < deliverytypeResult.size(); i++) {
+            choice[i] = deliverytypeResult.get(i).getNAME();
+        }
+
+    }
+
+    private FragmentManager mFragmentManger;
+
+    public void setFragmentManger(FragmentManager fragmentManger) {
+        this.mFragmentManger = fragmentManger;
+    }
+
+
 }
