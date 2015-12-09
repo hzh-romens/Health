@@ -29,7 +29,7 @@ import java.util.List;
  * 订单提交的Adapter
  */
 
-public class CommitOrderAdapter extends BaseExpandableListAdapter implements IListDialogListener{
+public class CommitOrderAdapter extends BaseExpandableListAdapter{
     private List<ParentEntity> mFatherData;
     private HashMap<String, List<ShopCarEntity>> mChildData;
     private Context mContext;
@@ -40,14 +40,6 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter implements ILi
     public void setCheckDataChangeListener(CheckDataCallBack checkDataCallBack) {
         this.checkDataCallBack = checkDataCallBack;
     }
-
-    @Override
-    public void onListItemSelected(CharSequence value, int number, int requestCode) {
-        if (requestCode == 1 ){
-            Toast.makeText(mContext, "Selected: " + value, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     //接口回调，用于数据刷新
     public interface CheckDataCallBack {
         void getCheckData(String flag);
@@ -138,6 +130,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter implements ILi
             convertView.setClickable(true);
             sendHolder.tv_groupname.setText("派送方式");
             sendHolder.tv_groupname.setClickable(true);
+            sendHolder.tv_deliverytype.setText(DeliverytypeStr);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,8 +140,6 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter implements ILi
                             .setItems(choice)
                             .setRequestCode(9)
                             .show();
-
-                    Log.i("000000000====", DeliverytypeStr);
                 }
             });
 
@@ -156,8 +147,9 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter implements ILi
         return convertView;
     }
 
-    public void SetView(TextView view) {
-
+    public void SetValue(String value) {
+        DeliverytypeStr=value;
+        notifyDataSetChanged();
     }
 
     @Override

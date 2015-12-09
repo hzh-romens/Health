@@ -35,8 +35,8 @@ public class DialogUtils {
 
         mQuantityOfGoodsCallBack=quantityOfGoodsCallBack;
         View v = LayoutInflater.from(owner).inflate(R.layout.dialog_shop_count, null);
-        Button dialog_btnCancel= (Button) v.findViewById(R.id.dialog_btnCancel);
-        Button  dialog_btnSure= (Button) v.findViewById(R.id.dialog_btnSure);
+        TextView dialog_btnCancel= (TextView) v.findViewById(R.id.dialog_btnCancel);
+        TextView  dialog_btnSure= (TextView) v.findViewById(R.id.dialog_btnSure);
         final EditText dialog_editextNum= (EditText) v.findViewById(R.id.dialog_editextNum);
         Button  dialog_btnAdd= (Button) v.findViewById(R.id.dialog_btnAdd);
         Button  dialog_btnReduce= (Button) v.findViewById(R.id.dialog_btnReduce);

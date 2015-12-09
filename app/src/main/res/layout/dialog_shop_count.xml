@@ -61,22 +61,24 @@
         android:orientation="horizontal"
         android:layout_marginBottom="8dp"
         android:padding="5dp">
-        <Button
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="取消"
+            android:gravity="center"
             android:id="@+id/dialog_btnCancel"
             android:background="@drawable/btn_cancel_background_selector"
             android:layout_marginRight="8dp"
             android:layout_marginLeft="8dp"
             android:textSize="@dimen/text_size_medium"
             android:textColor="@color/md_black_1000"/>
-        <Button
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="确定"
+            android:gravity="center"
             android:layout_marginRight="8dp"
             android:id="@+id/dialog_btnSure"
             android:background="@drawable/btn_sure_background_selector"

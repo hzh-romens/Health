@@ -375,7 +375,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                     holder.tv_num.setText(num + "");
                     updateMoney(sumMoney + "");
                     updateData();
-
                 } else {
                     num++;
                     entity.setBUYCOUNT(num);

@@ -86,11 +86,13 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
             @Override
             public void getCheckData(String flag) {
-                if ("药店派送".equals(flag)) {
-                    DELIVERYTYPE = "55b30f7d31f2f";
-                } else {
-                    DELIVERYTYPE = "23B70F47-45D6-4ECE-8A3A-13CC92DEA4B1";
-                }
+//                if ("药店派送".equals(flag)) {
+//                    DELIVERYTYPE = "55b30f7d31f2f";
+//                } else {
+//                    DELIVERYTYPE = "23B70F47-45D6-4ECE-8A3A-13CC92DEA4B1";
+//                }
+
+                Log.i("DELIVERYTYPE=======",DELIVERYTYPE);
             }
         });
         //将ExpandAbleListView的每个parentItem展开
@@ -172,7 +174,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(CommitOrderActivity.this, ControlAddressActivity.class);
-                i.putExtra("chose","chose");
+                i.putExtra("chose", "chose");
                 startActivityForResult(i, 2);
             }
         });
@@ -275,36 +277,36 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
 
-                        try {
-                            JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
-                            if (jsonArray.length()==0){
-                                ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
-                                ibuilder.setTitle(R.string.prompt);
-                                ibuilder.setMessage("请填写收货地址");
-                                ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        startActivity(new Intent(CommitOrderActivity.this,NewShoppingAddressActivity.class));
-                                        finish();
-                                    }
-                                });
-                                ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                });
-                                ibuilder.create().show();
-                            }else {
-                                Gson gson = new Gson();
-                                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                                String addressid = jsonObject.getString("ADDRESSID");
-                                person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
-                                address.setText(jsonObject.getString("ADDRESS"));
-                                ADDRESSID = addressid;
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
+                        if (jsonArray.length() == 0) {
+                            ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
+                            ibuilder.setTitle(R.string.prompt);
+                            ibuilder.setMessage("请填写收货地址");
+                            ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(new Intent(CommitOrderActivity.this, NewShoppingAddressActivity.class));
+                                    finish();
+                                }
+                            });
+                            ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            ibuilder.create().show();
+                        } else {
+                            Gson gson = new Gson();
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            String addressid = jsonObject.getString("ADDRESSID");
+                            person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
+                            address.setText(jsonObject.getString("ADDRESS"));
+                            ADDRESSID = addressid;
 
-                            }
-                        } catch (JSONException e) {
+                        }
+                    } catch (JSONException e) {
                             e.printStackTrace();
                         }
                 } else {
@@ -313,6 +315,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             }
         });
     }
+
     private List<DeliverytypeEntity> result;
     public void getSendData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
@@ -357,7 +360,14 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     }
 
     @Override
-    public void onListItemSelected(CharSequence charSequence, int i, int i1) {
-        Log.i("Action----","点击");
+    public void onListItemSelected(CharSequence charSequence, int number, int requestCode) {
+      if(requestCode==9){
+          adapter.SetValue(charSequence.toString());
+          for (int i = 0; i < result.size(); i++) {
+              if(charSequence.toString().equals(result.get(i).getNAME())){
+                  DELIVERYTYPE=result.get(i).getGUID();
+              }
+          }
+      }
     }
 }
