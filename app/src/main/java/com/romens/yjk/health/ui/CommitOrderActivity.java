@@ -11,13 +11,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.avast.android.dialogs.iface.IListDialogListener;
 import com.google.gson.Gson;
-import com.romens.android.core.NotificationCenter;
+import com.google.gson.reflect.TypeToken;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -30,14 +29,13 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.model.CommitOrderEntity;
-import com.romens.yjk.health.model.DeleteEntity;
+import com.romens.yjk.health.model.DeliverytypeEntity;
 import com.romens.yjk.health.model.FilterChildEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.CommitOrderAdapter;
 import com.romens.yjk.health.ui.components.CustomDialog;
 import com.romens.yjk.health.ui.utils.DialogUtils;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +51,7 @@ import java.util.Map;
  * Created by AUSU on 2015/9/20.
  * 订单提交
  */
-public class CommitOrderActivity extends BaseActivity {
+public class CommitOrderActivity extends BaseActivity implements IListDialogListener{
     private ExpandableListView expandableListView;
     private ImageView back;
     private HashMap<String, List<ShopCarEntity>> childData;
@@ -80,17 +78,21 @@ public class CommitOrderActivity extends BaseActivity {
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
         getAll(childData);
         adapter = new CommitOrderAdapter(this,parentData.size()+1);
+        getSendData();
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
         //获取派送方式
+        adapter.setFragmentManger(getSupportFragmentManager());
         adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
             @Override
             public void getCheckData(String flag) {
-                if ("药店派送".equals(flag)) {
-                    DELIVERYTYPE = "55b30f7d31f2f";
-                } else {
-                    DELIVERYTYPE = "23B70F47-45D6-4ECE-8A3A-13CC92DEA4B1";
-                }
+//                if ("药店派送".equals(flag)) {
+//                    DELIVERYTYPE = "55b30f7d31f2f";
+//                } else {
+//                    DELIVERYTYPE = "23B70F47-45D6-4ECE-8A3A-13CC92DEA4B1";
+//                }
+
+                Log.i("DELIVERYTYPE=======",DELIVERYTYPE);
             }
         });
         //将ExpandAbleListView的每个parentItem展开
@@ -147,7 +149,7 @@ public class CommitOrderActivity extends BaseActivity {
             public void onClick(View v) {
                 needShowProgress("正在提交..");
                 if (DELIVERYTYPE != null && !("".equals(DELIVERYTYPE))) {
-                    commitOrder(filteData,sumCount);
+                    commitOrder(filteData, sumCount);
                 } else {
                     needHideProgress();
                     DialogUtils dialogUtils = new DialogUtils();
@@ -172,7 +174,7 @@ public class CommitOrderActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(CommitOrderActivity.this, ControlAddressActivity.class);
-                i.putExtra("chose","chose");
+                i.putExtra("chose", "chose");
                 startActivityForResult(i, 2);
             }
         });
@@ -275,38 +277,70 @@ public class CommitOrderActivity extends BaseActivity {
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
 
-                        try {
-                            JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
-                            if (jsonArray.length()==0){
-                                ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
-                                ibuilder.setTitle(R.string.prompt);
-                                ibuilder.setMessage("请填写收货地址");
-                                ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        startActivity(new Intent(CommitOrderActivity.this,NewShoppingAddressActivity.class));
-                                        finish();
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
+                        if (jsonArray.length() == 0) {
+                            ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
+                            ibuilder.setTitle(R.string.prompt);
+                            ibuilder.setMessage("请填写收货地址");
+                            ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(new Intent(CommitOrderActivity.this, NewShoppingAddressActivity.class));
+                                    finish();
+                                }
+                            });
+                            ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            ibuilder.create().show();
+                        } else {
+                            Gson gson = new Gson();
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            String addressid = jsonObject.getString("ADDRESSID");
+                            person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
+                            address.setText(jsonObject.getString("ADDRESS"));
+                            ADDRESSID = addressid;
 
-                                    }
-                                });
-                                ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                });
-                                ibuilder.create().show();
-                            }else {
-                                Gson gson = new Gson();
-                                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                                String addressid = jsonObject.getString("ADDRESSID");
-                                person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
-                                address.setText(jsonObject.getString("ADDRESS"));
-                                ADDRESSID = addressid;
-                            }
-                        } catch (JSONException e) {
+                        }
+                    } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                } else {
+                    Log.e("GetUserAddressList", errorMsg.msg);
+                }
+            }
+        });
+    }
+
+    private List<DeliverytypeEntity> result;
+    public void getSendData() {
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetTransport", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol).build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Log.e("GetUserAddressList", "ERROR");
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String response = responseProtocol.getResponse();
+                    Gson gson = new Gson();
+                    result = gson.fromJson(response, new TypeToken<List<DeliverytypeEntity>>() {
+                    }.getType());
+                    adapter.SetDeliverytypeData(result);
+
                 } else {
                     Log.e("GetUserAddressList", errorMsg.msg);
                 }
@@ -323,5 +357,17 @@ public class CommitOrderActivity extends BaseActivity {
             overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onListItemSelected(CharSequence charSequence, int number, int requestCode) {
+      if(requestCode==9){
+          adapter.SetValue(charSequence.toString());
+          for (int i = 0; i < result.size(); i++) {
+              if(charSequence.toString().equals(result.get(i).getNAME())){
+                  DELIVERYTYPE=result.get(i).getGUID();
+              }
+          }
+      }
     }
 }

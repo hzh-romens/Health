@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +11,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.romens.android.io.image.ImageManager;
-import com.romens.android.io.image.ImageUtils;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
@@ -316,6 +313,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
         holder.tv_num.setText(entity.getBUYCOUNT()+"");
         holder.tv_discountPrice.setText("¥" + entity.getGOODSPRICE());
+        holder.tv_realPrice.setText("¥" + entity.getGOODSPRICE());
         holder.tv_realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         holder.tv_infor.setText(entity.getNAME());
         holder.tv_store.setText(entity.getSPEC());
@@ -377,7 +375,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                     holder.tv_num.setText(num + "");
                     updateMoney(sumMoney + "");
                     updateData();
-
                 } else {
                     num++;
                     entity.setBUYCOUNT(num);

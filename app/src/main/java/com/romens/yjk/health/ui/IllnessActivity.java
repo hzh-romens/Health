@@ -4,22 +4,18 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
-
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.view.View;
-
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.adapter.IllnessAdapter;
-import com.romens.yjk.health.ui.adapter.StoreAdapter;
 import com.romens.yjk.health.ui.components.ABaseLinearLayoutManager;
 import com.romens.yjk.health.ui.components.OnRecyclerViewScrollListener;
 import com.romens.yjk.health.ui.components.OnRecyclerViewScrollLocationListener;
@@ -28,7 +24,8 @@ import com.romens.yjk.health.ui.fragment.HomeStoreFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.widget.Toast.*;
+import static android.widget.Toast.LENGTH_SHORT;
+import static android.widget.Toast.makeText;
 
 /*
 create 2015.8.14
@@ -36,28 +33,28 @@ hzh
 疾病列表页面,
  */
 public class IllnessActivity extends BaseActivity {
-    public static final String ARGUMENTS_KEY_ID="key_id";
-    public static final String ARGUMENTS_KEY_NAME="key_name";
+    public static final String ARGUMENTS_KEY_ID = "key_id";
+    public static final String ARGUMENTS_KEY_NAME = "key_name";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private List<String> datas;
     private IllnessAdapter illnessAdapter;
 
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             swipeRefreshLayout.setRefreshing(false);
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case HomeStoreFragment.CURRENT:
-                    datas= (ArrayList<String>) msg.obj;
-                    illnessAdapter =new IllnessAdapter(datas,IllnessActivity.this,null);
+                    datas = (ArrayList<String>) msg.obj;
+                    illnessAdapter = new IllnessAdapter(datas, IllnessActivity.this, null);
                     recyclerView.setAdapter(illnessAdapter);
                     break;
                 case HomeStoreFragment.NEXT:
 
-                    ArrayList<String> next= (ArrayList<String>) msg.obj;
+                    ArrayList<String> next = (ArrayList<String>) msg.obj;
                     datas.addAll(next);
                     illnessAdapter.notifyDataSetChanged();
                     break;
@@ -74,7 +71,7 @@ public class IllnessActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_illness,R.id.action_bar);
+        setContentView(R.layout.activity_illness, R.id.action_bar);
 
         ActionBar actionBar = getMyActionBar();
         actionBar.setTitle("某某疾病");
@@ -87,8 +84,8 @@ public class IllnessActivity extends BaseActivity {
                 }
             }
         });
-        swipeRefreshLayout= (SwipeRefreshLayout)findViewById(R.id.swiperefreshlayout);
-        recyclerView= (RecyclerView)findViewById(R.id.recyclerview);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
 
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
@@ -101,7 +98,7 @@ public class IllnessActivity extends BaseActivity {
             }
         });
 
-        final ABaseLinearLayoutManager layoutManager=new ABaseLinearLayoutManager(IllnessActivity.this, LinearLayoutManager.VERTICAL,false);
+        final ABaseLinearLayoutManager layoutManager = new ABaseLinearLayoutManager(IllnessActivity.this, LinearLayoutManager.VERTICAL, false);
 
 
         layoutManager.setOnRecyclerViewScrollLocationListener(recyclerView, new OnRecyclerViewScrollLocationListener() {
@@ -165,7 +162,7 @@ public class IllnessActivity extends BaseActivity {
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.bottom= AndroidUtilities.dp(1);
+                outRect.bottom = AndroidUtilities.dp(1);
                 super.getItemOffsets(outRect, view, parent, state);
             }
         });
@@ -175,30 +172,30 @@ public class IllnessActivity extends BaseActivity {
     //数据获取的方法
     //获取数据的方法，暂定为假数据
     private void initData() {
-        datas=new ArrayList<String>();
-        for (int i=0;i<30;i++){
-            datas.add("item"+i);
+        datas = new ArrayList<String>();
+        for (int i = 0; i < 30; i++) {
+            datas.add("item" + i);
         }
     }
 
     //第一次加载或者下拉刷新
-    private Runnable run=new Runnable() {
+    private Runnable run = new Runnable() {
         @Override
         public void run() {
             initData();
-            handler.sendMessageDelayed(handler.obtainMessage(HomeStoreFragment.CURRENT,datas),0);
+            handler.sendMessageDelayed(handler.obtainMessage(HomeStoreFragment.CURRENT, datas), 0);
         }
     };
     //翻页加载
-    private Runnable nextRun=new Runnable() {
+    private Runnable nextRun = new Runnable() {
         @Override
         public void run() {
             //addData();
-            List<String> second=new ArrayList<String>();
-            for (int i=0;i<10;i++){
-                second.add("item"+(i+30));
+            List<String> second = new ArrayList<String>();
+            for (int i = 0; i < 10; i++) {
+                second.add("item" + (i + 30));
             }
-            handler.sendMessageDelayed(handler.obtainMessage(HomeStoreFragment.NEXT,second),0);
+            handler.sendMessageDelayed(handler.obtainMessage(HomeStoreFragment.NEXT, second), 0);
         }
     };
 

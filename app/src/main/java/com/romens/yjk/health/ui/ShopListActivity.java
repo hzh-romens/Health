@@ -70,7 +70,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     //Used to distinguish between Adapter signs
     private int ADAPTERFLAG = 1;
     private ShopListNoPictureAdapter shopListNoPictureAdapter;
-    private boolean SEARCHDEFAULT=true;
+    private boolean SEARCHDEFAULT = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +123,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
                     requestData();
                 } else {
-                    SEARCHDEFAULT=true;
-                    requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                    SEARCHDEFAULT = true;
+                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                 }
 
             }
@@ -159,8 +159,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
                         requestData();
                     } else {
-                        SEARCHDEFAULT=true;
-                        requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                        SEARCHDEFAULT = true;
+                        requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                     }
                 }
             }
@@ -216,21 +216,21 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.rb_all:
                 KEY = "default";
-                requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                 break;
             case R.id.rb_price:
                 rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
                 SALE_FLAG = 5;
                 if (PRICE_FLAG == 0) {
                     KEY = "priceDown";
-                    requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                     rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
                     PRICE_FLAG = 1;
                     return;
                 }
                 if (PRICE_FLAG == 1) {
                     KEY = "priceUp";
-                    requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                     rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
                     PRICE_FLAG = 2;
                     return;
@@ -238,7 +238,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 if (PRICE_FLAG == 2) {
                     KEY = "priceDown";
                     rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
-                    requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                     PRICE_FLAG = 1;
                     return;
                 }
@@ -248,7 +248,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 PRICE_FLAG = 0;
                 if (SALE_FLAG == 5) {
                     KEY = "saleDown";
-                    requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                     rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
                     SALE_FLAG = 6;
                     return;
@@ -257,14 +257,14 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     KEY = "saleUp";
                     rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
                     SALE_FLAG = 7;
-                    requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                     return;
                 }
                 if (SALE_FLAG == 7) {
                     KEY = "saleDown";
                     SALE_FLAG = 6;
                     rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
-                    requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                     return;
                 }
                 break;
@@ -293,12 +293,12 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 if (inputMethodManager.isActive()) {
                     inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
                 }
-                SEARCHDEFAULT=false;
+                SEARCHDEFAULT = false;
                 EDITEXT = et_search.getText().toString();
-                if(name.equals(EDITEXT)||"".equals(EDITEXT)||EDITEXT==null){
-                    Toast.makeText(ShopListActivity.this,"请输入你需要搜索的商品",Toast.LENGTH_SHORT).show();
+                if (name.equals(EDITEXT) || "".equals(EDITEXT) || EDITEXT == null) {
+                    Toast.makeText(ShopListActivity.this, "请输入你需要搜索的商品", Toast.LENGTH_SHORT).show();
                 }
-                requestSearchData(EDITEXT, KEY,SEARCHDEFAULT);
+                requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
                 return true;
             }
             return false;
@@ -354,7 +354,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     }
 
     //获取用户商品列表
-    private void requestSearchData(String key, String sortfiled,boolean searchType) {
+    private void requestSearchData(String key, String sortfiled, boolean searchType) {
         refreshLayout.setRefreshing(true);
         Map<String, Object> args = new HashMap<>();
         args.put("GUID", GUID);
@@ -369,11 +369,11 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             args.put("SORTFIELD", "default");
         }
         FacadeProtocol protocol;
-        if (key != null && !("".equals(key))&&SEARCHDEFAULT) {
+        if (key != null && !("".equals(key)) && SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
-        } else if(key != null && !("".equals(key))&&!SEARCHDEFAULT){
+        } else if (key != null && !("".equals(key)) && !SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "SearchSort", args);
-        }else{
+        } else {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
         }
 

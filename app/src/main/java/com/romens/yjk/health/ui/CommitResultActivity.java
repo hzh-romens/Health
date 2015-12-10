@@ -17,9 +17,9 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
 
 
     private LinearLayout firstLayout, secondLayout;
-    private TextView tv_orderNumber, date, money,title;
+    private TextView tv_orderNumber, date, money, title;
     private Button toShop, toOrder;
-   private String  sumMoney,orderNumber,time;
+    private String sumMoney, orderNumber, time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,21 +27,21 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_commitresult);
         initVew();
         Intent intent = getIntent();
-        if("true".equals(intent.getStringExtra("success"))) {
+        if ("true".equals(intent.getStringExtra("success"))) {
             title.setText("订单提交成功");
             firstLayout.setVisibility(View.VISIBLE);
             secondLayout.setVisibility(View.GONE);
             sumMoney = intent.getStringExtra("sumMoney");
             orderNumber = intent.getStringExtra("orderNumber");
             time = intent.getStringExtra("time");
-        }else {
+        } else {
             title.setText("订单提交失败");
             firstLayout.setVisibility(View.GONE);
             secondLayout.setVisibility(View.VISIBLE);
         }
-        money.setText("订单总金额：¥"+sumMoney);
-        tv_orderNumber.setText("订单编号："+orderNumber);
-        date.setText("下单时间："+time);
+        money.setText("订单总金额：¥" + sumMoney);
+        tv_orderNumber.setText("订单编号：" + orderNumber);
+        date.setText("下单时间：" + time);
         toShop.setOnClickListener(this);
         toOrder.setOnClickListener(this);
     }
@@ -55,19 +55,19 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         money = (TextView) findViewById(R.id.money);
         toOrder = (Button) findViewById(R.id.toOrder);
         toShop = (Button) findViewById(R.id.toShop);
-        title= (TextView) findViewById(R.id.title);
+        title = (TextView) findViewById(R.id.title);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.toOrder:
-                Intent intent=new Intent(this,MyOrderActivity.class);
+                Intent intent = new Intent(this, MyOrderActivity.class);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.toShop:
-                Intent i=new Intent(this,HomeActivity.class);
+                Intent i = new Intent(this, HomeActivity.class);
                 startActivity(i);
                 finish();
                 break;
@@ -76,8 +76,8 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK ) {
-            Intent i=new Intent(this,HomeActivity.class);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent i = new Intent(this, HomeActivity.class);
             startActivity(i);
             finish();
         }

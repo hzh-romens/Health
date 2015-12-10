@@ -17,10 +17,13 @@ public class DiscoveryCollection {
         }
         if (key.startsWith("intent")) {
             String action = entity.getValue();
-            if (!TextUtils.isEmpty(action)) {
-                context.startActivity(new Intent(action));
-                return true;
+            if(!action.equals(PharmicCounseling.value)){
+                if (!TextUtils.isEmpty(action)) {
+                    context.startActivity(new Intent(action));
+                    return true;
+                }
             }
+
         }
         return false;
     }

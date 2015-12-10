@@ -1,6 +1,5 @@
 package com.romens.yjk.health.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,11 +9,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,13 +29,11 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.model.ChoiceEntity;
 import com.romens.yjk.health.model.PersonalEntity;
-import com.romens.yjk.health.model.PersonalInformationEntity;
 import com.romens.yjk.health.ui.adapter.PersonalInformationAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -231,7 +226,7 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             case R.id.choiceAllergy:
                 Intent allergyIntent = new Intent(this, SetDiseaseActivity.class);
                 allergyIntent.putExtra("flag", "allergy");
-                allergyIntent.putExtra("value",choiceAllergy.getText().toString());
+                allergyIntent.putExtra("value", choiceAllergy.getText().toString());
                 startActivityForResult(allergyIntent, 8);
                 break;
             case R.id.choiceBirthday:
@@ -241,40 +236,40 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 break;
             case R.id.choiceDisease:
                 Intent dieaseIntent = new Intent(this, SetDiseaseActivity.class);
-                dieaseIntent.putExtra("flag","diease");
-                dieaseIntent.putExtra("value",choiceDisease.getText().toString());
+                dieaseIntent.putExtra("flag", "diease");
+                dieaseIntent.putExtra("value", choiceDisease.getText().toString());
                 startActivityForResult(dieaseIntent, 3);
                 break;
             case R.id.choiceHeredopathia:
                 Intent heredopathiaIntent = new Intent(this, SetDiseaseActivity.class);
-                heredopathiaIntent.putExtra("flag","Heredopathia");
-                heredopathiaIntent.putExtra("value",choiceHeredopathia.getText().toString());
+                heredopathiaIntent.putExtra("flag", "Heredopathia");
+                heredopathiaIntent.putExtra("value", choiceHeredopathia.getText().toString());
                 startActivityForResult(heredopathiaIntent, 7);
 
                 break;
             case R.id.choiceSex:
                 Intent sexIntent = new Intent(this, SetSexActivity.class);
-                sexIntent.putExtra("value",choiceSex.getText().toString());
+                sexIntent.putExtra("value", choiceSex.getText().toString());
                 startActivityForResult(sexIntent, 2);
                 break;
             case R.id.editor_name:
                 Intent nameIntent = new Intent(this, SetNameActivity.class);
-                nameIntent.putExtra("value",editor_name.getText().toString());
+                nameIntent.putExtra("value", editor_name.getText().toString());
                 startActivityForResult(nameIntent, 1);
                 break;
             case R.id.editor_food:
                 Intent foodIntent = new Intent(this, SetDietActivity.class);
-                foodIntent.putExtra("flag","diet");
+                foodIntent.putExtra("flag", "diet");
                 startActivityForResult(foodIntent, 4);
                 break;
             case R.id.editor_rest:
                 Intent restIntent = new Intent(this, SetDietActivity.class);
-                restIntent.putExtra("flag","rest");
+                restIntent.putExtra("flag", "rest");
                 startActivityForResult(restIntent, 5);
                 break;
             case R.id.editor_other:
                 Intent otherIntent = new Intent(this, SetDietActivity.class);
-                otherIntent.putExtra("flag","other");
+                otherIntent.putExtra("flag", "other");
                 startActivityForResult(otherIntent, 6);
                 break;
             case R.id.btn_save:
@@ -388,20 +383,20 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 break;
             case 4:
                 String foodvalue = data.getStringExtra("foodvalue");
-                String substring="";
-                if("".equals(foodvalue)){
+                String substring = "";
+                if ("".equals(foodvalue)) {
 
-                }else {
+                } else {
                     substring = foodvalue.substring(0, foodvalue.lastIndexOf(","));
                 }
                 editor_food.setText(substring);
                 break;
             case 5:
                 String restvalue = data.getStringExtra("restvalue");
-                String substring1="";
-                if("".equals(restvalue)){
+                String substring1 = "";
+                if ("".equals(restvalue)) {
 
-                }else {
+                } else {
 
                     substring1 = restvalue.substring(0, restvalue.lastIndexOf(","));
                 }
@@ -409,10 +404,10 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 break;
             case 6:
                 String othervalue = data.getStringExtra("othervalue");
-                String substring2="";
-                if("".equals(othervalue)){
+                String substring2 = "";
+                if ("".equals(othervalue)) {
 
-                }else {
+                } else {
                     substring2 = othervalue.substring(0, othervalue.lastIndexOf(","));
                 }
                 editor_other.setText(substring2);
