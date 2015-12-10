@@ -320,6 +320,7 @@ public class OrderDetailActivity extends BaseActivity {
             orderListEntity.setDeliverType(object.getString("DELIVERYTYPE"));
             orderListEntity.setOrderStatus(object.getString("ORDER_STATUS"));
             orderListEntity.setOrderStatusStr(object.getString("ORDERSTATUSSTR"));
+            orderListEntity.setTelephone(object.getString("TELEPHONE"));
             JSONArray array = object.getJSONArray("GOODSLIST");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject subObjcet = array.getJSONObject(i);
