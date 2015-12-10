@@ -11,9 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.romens.yjk.health.R;
 
@@ -124,19 +122,25 @@ public class DialogUtils {
         dlg.setCanceledOnTouchOutside(false);// 设置用户点击其他区域不关闭
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dlg.setContentView(v);
-        dlg.getWindow().setBackgroundDrawable(
-                new android.graphics.drawable.ColorDrawable(0x00ffffff));
-
-        // /< 如果太宽，限定在左右两侧留20dp
-        v.measure(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        int mWidth = v.getMeasuredWidth();
-        int width = owner.getWindowManager().getDefaultDisplay().getWidth();
-        if (mWidth >= width - 60) {
-            WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
-            lp.width = width - 60;
-            dlg.getWindow().setAttributes(lp);
-        }
+        WindowManager.LayoutParams attributes = dlg.getWindow().getAttributes();
+        WindowManager systemService = (WindowManager) owner.getSystemService(Context.WINDOW_SERVICE);
+        attributes.horizontalMargin = 0;
+        attributes.width = (int) (systemService.getDefaultDisplay().getWidth() / 1.2);
+        attributes.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        dlg.getWindow().setAttributes(attributes);
+//        dlg.getWindow().setBackgroundDrawable(
+//                new android.graphics.drawable.ColorDrawable(0x00ffffff));
+//
+//        // /< 如果太宽，限定在左右两侧留20dp
+//        v.measure(ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT);
+//        int mWidth = v.getMeasuredWidth();
+//        int width = owner.getWindowManager().getDefaultDisplay().getWidth();
+//        if (mWidth >= width - 60) {
+//            WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
+//            lp.width = width - 60;
+//            dlg.getWindow().setAttributes(lp);
+//        }
         dlg.show();
 
         View ok = v.findViewById(R.id.btn_ok);
