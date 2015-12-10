@@ -28,6 +28,7 @@ public class OrderExpandableDetailAdapter extends BaseExpandableListAdapter {
 
     public void setOrderEntities(List<GoodsListEntity> orderEntities) {
         classifyEntity(orderEntities);
+        notifyDataSetChanged();
     }
 
     public OrderExpandableDetailAdapter(Context context) {
