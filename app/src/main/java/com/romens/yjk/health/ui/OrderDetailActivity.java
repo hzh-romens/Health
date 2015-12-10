@@ -16,6 +16,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
@@ -155,6 +156,7 @@ public class OrderDetailActivity extends BaseActivity {
 
         public void setOrderListEntity(OrderListEntity orderListEntity) {
             this.orderListEntity = orderListEntity;
+            notifyDataSetChanged();
         }
 
         public OrderDetailAdapter(Context context) {
@@ -307,6 +309,7 @@ public class OrderDetailActivity extends BaseActivity {
         if (jsonData == null) {
             return;
         }
+        Log.e("tag", "--setOrderData---->" + jsonData);
         goodsListEntities = new ArrayList<>();
         orderListEntity = new OrderListEntity();
         try {
@@ -318,7 +321,7 @@ public class OrderDetailActivity extends BaseActivity {
             orderListEntity.setReceiver(object.getString("RECEIVER"));
             orderListEntity.setAddress(object.getString("ADDRESS"));
             orderListEntity.setDeliverType(object.getString("DELIVERYTYPE"));
-            orderListEntity.setOrderStatus(object.getString("ORDER_STATUS"));
+            orderListEntity.setOrderStatus(object.getString("orderStatus"));
             orderListEntity.setOrderStatusStr(object.getString("ORDERSTATUSSTR"));
             orderListEntity.setTelephone(object.getString("TELEPHONE"));
             JSONArray array = object.getJSONArray("GOODSLIST");
@@ -343,11 +346,9 @@ public class OrderDetailActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.e("tag", "------>" + new Gson().toJson(goodsListEntities));
         subExpandableadapter.setOrderEntities(goodsListEntities);
-        subExpandableadapter.notifyDataSetChanged();
-
         adapter.setOrderListEntity(orderListEntity);
-        adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
     }
 }
