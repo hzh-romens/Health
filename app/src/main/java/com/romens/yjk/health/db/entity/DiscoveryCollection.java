@@ -3,6 +3,7 @@ package com.romens.yjk.health.db.entity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.romens.yjk.health.R;
 
@@ -17,7 +18,7 @@ public class DiscoveryCollection {
         }
         if (key.startsWith("intent")) {
             String action = entity.getValue();
-            if(!action.equals(PharmicCounseling.value)){
+            if (!action.equals(PharmicCounseling.value)) {
                 if (!TextUtils.isEmpty(action)) {
                     context.startActivity(new Intent(action));
                     return true;
@@ -32,28 +33,29 @@ public class DiscoveryCollection {
         if (TextUtils.isEmpty(btnString)) {
             return false;
         }
-        /*if (btnString.equals(PharmicCounseling.name)) {
-            String action = PharmicCounseling.value;
-            if (!TextUtils.isEmpty(action)) {
-                context.startActivity(new Intent(action));
-            }
-        }*/
-        else if (btnString.equals(NearbyPharmacy.name)) {
-            String action = NearbyPharmacy.value;
-            if (!TextUtils.isEmpty(action)) {
-                context.startActivity(new Intent(action));
-            }
-        } else if (btnString.equals(MedicationReminders.name)) {
-            String action = MedicationReminders.value;
-            if (!TextUtils.isEmpty(action)) {
-                context.startActivity(new Intent(action));
-            }
-        } else if (btnString.equals(InformationNews.name)) {
-            String action = InformationNews.value;
-            if (!TextUtils.isEmpty(action)) {
-                context.startActivity(new Intent(action));
-            }
-        }
+
+        context.startActivity(new Intent(btnString.toString()));
+//        if (btnString.equals(FindDrugWithScanner.name)) {
+//            String action = FindDrugWithScanner.value;
+//            if (!TextUtils.isEmpty(action)) {
+//                context.startActivity(new Intent(action));
+//            }
+//        } else if (btnString.equals(NearbyPharmacy.name)) {
+//            String action = NearbyPharmacy.value;
+//            if (!TextUtils.isEmpty(action)) {
+//                context.startActivity(new Intent(action));
+//            }
+//        } else if (btnString.equals(MedicationReminders.name)) {
+//            String action = MedicationReminders.value;
+//            if (!TextUtils.isEmpty(action)) {
+//                context.startActivity(new Intent(action));
+//            }
+//        } else if (btnString.equals(InformationNews.name)) {
+//            String action = InformationNews.value;
+//            if (!TextUtils.isEmpty(action)) {
+//                context.startActivity(new Intent(action));
+//            }
+//        }
         return false;
     }
 

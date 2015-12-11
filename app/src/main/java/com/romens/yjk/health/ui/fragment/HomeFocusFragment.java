@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -81,7 +82,7 @@ public class HomeFocusFragment extends BaseFragment {
             recyclerListView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         }
         content.addView(recyclerListView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
                 return false;
@@ -100,7 +101,7 @@ public class HomeFocusFragment extends BaseFragment {
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
         requestDataChanged();
-       // Log.i("userguid----", UserConfig.getClientUser())
+        // Log.i("userguid----", UserConfig.getClientUser())
     }
 
     private void requestDataChanged() {
@@ -235,6 +236,22 @@ public class HomeFocusFragment extends BaseFragment {
                 } else if (type == 4) {
                     adHealthNewsEntities = createADHealthNewsEntitiesFromJsonObject(itemJsonTemp);
                 }
+            }
+
+            if (adFunctionEntities == null) {
+                adFunctionEntities = new ArrayList<>();
+                ADFunctionEntity nearControl = new ADFunctionEntity("", "附近药店", R.drawable.attach_location_states);
+                nearControl.setActionValue("com.romens.yjk.health.NEARBYPHARMACY");
+                ADFunctionEntity newControl = new ADFunctionEntity("", "最新资讯", R.drawable.attach_new_states);
+                newControl.setActionValue("com.romens.rhealth.INFORMATION_NEWS");
+                ADFunctionEntity sortControl = new ADFunctionEntity("", "扫码识药", R.drawable.attach_sort_states);
+                sortControl.setActionValue("com.romens.yjk.health.QRSCANNER");
+                ADFunctionEntity remindControl = new ADFunctionEntity("", "用药提醒", R.drawable.attach_remind_states);
+                remindControl.setActionValue("com.romens.rhealth.MEDICATIONREMINDERS");
+                adFunctionEntities.add(nearControl);
+                adFunctionEntities.add(newControl);
+                adFunctionEntities.add(sortControl);
+                adFunctionEntities.add(remindControl);
             }
 
             if (adPagerEntities != null && adPagerEntities.size() > 0) {

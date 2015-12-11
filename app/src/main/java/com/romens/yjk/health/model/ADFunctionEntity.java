@@ -3,6 +3,9 @@ package com.romens.yjk.health.model;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.romens.yjk.health.db.entity.DiscoveryCollection;
 
 /**
  * Created by siery on 15/8/14.
@@ -25,12 +28,16 @@ public class ADFunctionEntity {
 
     public void onAction(Context context) {
         if (!TextUtils.isEmpty(actionValue)) {
-            if (actionValue.startsWith("http")) {
-
-            } else {
-                Intent intent = new Intent(actionValue);
-                context.startActivity(intent);
-            }
+            DiscoveryCollection.onFocusItemAction(context, actionValue);
         }
+
+//        if (!TextUtils.isEmpty(actionValue)) {
+//            if (actionValue.startsWith("http")) {
+//
+//            } else {
+//                Intent intent = new Intent(actionValue);
+//                context.startActivity(intent);
+//            }
+//        }
     }
 }
