@@ -36,7 +36,10 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@drawable/shopping_cart_product_num_reduce"
-            android:gravity="center" />
+            android:gravity="center"
+            android:text="-"
+            android:textSize="@dimen/text_size_xlarge"
+            />
 
         <EditText
             android:id="@+id/dialog_editextNum"
@@ -52,6 +55,8 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@drawable/shopping_cart_product_num_add"
+            android:text="+"
+            android:textSize="@dimen/text_size_xlarge"
             android:gravity="center" />
 
     </LinearLayout>

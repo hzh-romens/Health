@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/standard_dlg_bg"
     android:orientation="vertical"
-    android:paddingLeft="20dip"
-    android:paddingRight="20dip" >
+    android:background="@drawable/bg_white"
+    >
+    <!--android:background="@drawable/standard_dlg_bg"-->
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="fill_parent"
-        android:layout_height="38dp"
-        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="52dp"
+        android:gravity="center_vertical"
         android:text="提示"
         android:textColor="#3B3B3B"
-        android:textSize="20sp" >
+        android:layout_marginLeft="@dimen/padding_outter"
+        android:textSize="@dimen/text_size_xlarge" >
     </TextView>
 
     <TextView
         android:id="@+id/tv_tips"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_marginTop="18dp"
+         android:layout_marginLeft="@dimen/padding_outter"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="center_vertical|left"
         android:text=""
         android:textColor="#3B3B3B"
-        android:textSize="14sp" >
+        android:textSize="@dimen/text_size_large" >
     </TextView>
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="48dp" >
 
-        <Button
+
+        <TextView
             android:id="@+id/btn_ok"
             android:layout_width="102dp"
             android:layout_height="30dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/dlg_btn"
             android:text="确定"
-            android:textColor="#3B3B3B"
-            android:textSize="17sp" >
-        </Button>
-    </RelativeLayout>
+            android:layout_gravity="right|bottom"
+            android:textColor="@color/theme_primary"
+            android:gravity="center"
+            android:layout_marginRight="@dimen/padding_inner"
+            android:layout_marginBottom="@dimen/padding_outter"
+            android:textSize="@dimen/text_size_large" >
+        </TextView>
+
 
 </LinearLayout>
