@@ -36,8 +36,8 @@ public class ADPagerControl extends ADBaseControl {
 
     public static ADHolder createViewHolder(Context context) {
         ADPagerCell adPagerCell = new ADPagerCell(context);
-        //adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(80)));
-        adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 250));
+        //adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 176));
         return new ADHolder(adPagerCell);
     }
 

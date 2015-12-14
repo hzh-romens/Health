@@ -11,7 +11,7 @@ import android.provider.MediaStore;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
-import com.romens.android.core.NotificationCenter;
+import com.romens.yjk.health.im.NotificationCenter;
 import com.romens.android.log.FileLog;
 
 import java.io.File;

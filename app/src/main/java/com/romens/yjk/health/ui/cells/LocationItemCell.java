@@ -63,11 +63,11 @@ public class LocationItemCell extends FrameLayout {
         nameParmas.weight = 1;
 
         ditanceTextView = new TextView(context);
-        ditanceTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        ditanceTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         ditanceTextView.setMaxLines(1);
         ditanceTextView.setEllipsize(TextUtils.TruncateAt.END);
         ditanceTextView.setSingleLine(true);
-        ditanceTextView.setTextColor(0xff212121);
+        ditanceTextView.setTextColor(0x8a000000);
         ditanceTextView.setGravity(Gravity.RIGHT);
         Drawable drawable = getResources().getDrawable(R.drawable.address);
         ditanceTextView.setCompoundDrawables(drawable, null, null, null);
@@ -104,11 +104,19 @@ public class LocationItemCell extends FrameLayout {
         setWillNotDraw(!divider);
     }
 
-    public void setNameTextView(String nameText, String address, double ditance, boolean divider, String typeDesc) {
+    public void setLocation(String nameText, String address, double distance, boolean divider, String typeDesc) {
         needDivider = divider;
         nameTextView.setText(nameText);
         addressTextView.setText(address);
-        ditanceTextView.setText(ditance + "km");
+        String distanceText;
+        if (distance < 1) {
+            distance = distance * 1000;
+            distanceText=String.format("%d米", (int) distance);
+        } else {
+            distanceText=String.format("%d千米", (int) distance);
+        }
+        ditanceTextView.setText(distanceText);
+        //ditanceTextView.setText(distance + "km");
         if (avatarDrawable == null) {
             avatarDrawable = new AvatarDrawable();
             avatarDrawable.setSmallStyle(true);

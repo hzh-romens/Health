@@ -57,7 +57,7 @@ import com.easemob.chat.VoiceMessageBody;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.core.ImageReceiver;
-import com.romens.android.core.NotificationCenter;
+import com.romens.yjk.health.im.NotificationCenter;
 import com.romens.android.log.FileLog;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;

@@ -129,7 +129,6 @@ dependencies {
     compile 'com.prolificinteractive:material-calendarview:0.7.0'
     //project
     compile project(':romens.android')
-    compile project(':romens.extend.scanner')
     compile project(':datetimepicker')
     compile project(':MaterialDesign')
     compile project(':citys')
@@ -137,6 +136,7 @@ dependencies {
     compile 'com.commit451:PhotoView:1.2.4'
     compile 'com.melnykov:floatingactionbutton:1.0.7'
     compile 'com.avast:android-styled-dialogs:2.2.0'
+    compile project(':romens.extend.QR')
 }
 
 repositories {

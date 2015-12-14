@@ -18,9 +18,7 @@ import com.romens.yjk.health.R;
 /**
  * Created by siery on 15/5/5.
  */
-public class WebActivity extends AppCompatActivity {
-
-    private ActionBar actionBar;
+public class WebActivity extends LightActionBarActivity {
     private ProgressBarDeterminate mWebProgress;
     private WebView mWebView;
 
@@ -28,9 +26,7 @@ public class WebActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
-        setContentView(content);
-        actionBar = new ActionBar(this);
-        actionBar.setItemsBackground(R.drawable.bar_selector);
+        ActionBar actionBar = new ActionBar(this);
         actionBar.setBackButtonImage(R.drawable.ic_clear_grey600_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -42,7 +38,7 @@ public class WebActivity extends AppCompatActivity {
         });
 
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
+        setContentView(content, actionBar);
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
@@ -66,11 +62,6 @@ public class WebActivity extends AppCompatActivity {
         mWebProgress.setMin(0);
 
         frameLayout.addView(mWebProgress, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP));
-    }
-
-
-    protected ActionBar getMyActionBar() {
-        return actionBar;
     }
 
     protected WebView getWebView() {

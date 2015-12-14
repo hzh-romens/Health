@@ -12,7 +12,7 @@ import com.easemob.util.EMLog;
 import com.easemob.util.ImageUtils;
 import com.easemob.util.PathUtil;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.core.NotificationCenter;
+import com.romens.yjk.health.im.NotificationCenter;
 import com.romens.yjk.health.db.entity.MessageObject;
 
 import java.io.File;

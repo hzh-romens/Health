@@ -27,9 +27,9 @@ public class ADWebActivity extends WebActivity {
         ActionBar actionBar = getMyActionBar();
         if (bundle.containsKey(ARGUMENTS_KEY_TITLE)) {
             String title = bundle.getString(ARGUMENTS_KEY_TITLE);
-            actionBar.setTitle(title, 0xff0f9d58);
+            setActionBarTitle(actionBar, title);
         } else {
-            actionBar.setTitle("");
+            setActionBarTitle(actionBar, "");
         }
 
         WebView webView = getWebView();

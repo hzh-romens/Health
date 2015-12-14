@@ -1,6 +1,8 @@
 package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -8,6 +10,8 @@ import android.widget.ImageView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Components.SimpleTextView;
+import com.romens.android.ui.Image.AvatarDrawable;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 
@@ -20,9 +24,18 @@ public class SendLocationCell extends FrameLayout {
     public SendLocationCell(Context context) {
         super(context);
 
-        ImageView imageView = new ImageView(context);
-        imageView.setImageResource(R.drawable.attach_location);
-        addView(imageView, LayoutHelper.createFrame(50, 50, Gravity.CENTER_VERTICAL | Gravity.LEFT, 16, 0, 0, 0));
+        BackupImageView imageView = new BackupImageView(context);
+        imageView.setRoundRadius(AndroidUtilities.dp(15));
+        imageView.setBackgroundResource(R.drawable.round_grey);
+        imageView.setSize(AndroidUtilities.dp(30), AndroidUtilities.dp(30));
+        imageView.getImageReceiver().setColorFilter(new PorterDuffColorFilter(0xff999999, PorterDuff.Mode.MULTIPLY));
+        addView(imageView, LayoutHelper.createFrame(40, 40, Gravity.CENTER_VERTICAL | Gravity.LEFT, 17, 0, 0, 0));
+
+        AvatarDrawable avatarDrawable = new AvatarDrawable();
+        avatarDrawable.setSmallStyle(true);
+        avatarDrawable.setInfo(0, "我");
+        avatarDrawable.setColor(ResourcesConfig.primaryColor);
+        imageView.setImageDrawable(avatarDrawable);
 
         titleTextView = new SimpleTextView(context);
         titleTextView.setTextSize(16);

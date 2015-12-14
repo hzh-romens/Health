@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import com.romens.android.ui.cells.EmptyCell;
 import com.romens.yjk.health.model.LocationEntity;
 import com.romens.yjk.health.ui.cells.GreySectionCell;
-import com.romens.yjk.health.ui.cells.LocationCell;
 import com.romens.yjk.health.ui.cells.LocationItemCell;
 import com.romens.yjk.health.ui.cells.LocationLoadingCell;
 import com.romens.yjk.health.ui.cells.SendLocationCell;
@@ -99,7 +98,7 @@ public class LocationActivityAdapter extends BaseLocationAdapter {
             }
             LocationItemCell cell = (LocationItemCell) view;
             LocationEntity entity = places.get(i - 3);
-            cell.setNameTextView(entity.name, entity.address, entity.distance, true, entity.typeDesc);
+            cell.setLocation(entity.name, entity.address, entity.distance, true, entity.typeDesc);
         }
         return view;
     }

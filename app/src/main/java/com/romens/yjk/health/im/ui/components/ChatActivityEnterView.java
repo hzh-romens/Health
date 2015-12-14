@@ -27,7 +27,7 @@ import com.easemob.EMError;
 import com.easemob.util.VoiceRecorder;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
-import com.romens.android.core.NotificationCenter;
+import com.romens.yjk.health.im.NotificationCenter;
 import com.romens.android.log.FileLog;
 import com.romens.android.ui.AnimationCompat.AnimatorListenerAdapterProxy;
 import com.romens.android.ui.AnimationCompat.AnimatorSetProxy;

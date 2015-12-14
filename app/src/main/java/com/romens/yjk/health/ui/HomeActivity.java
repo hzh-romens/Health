@@ -31,6 +31,7 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.CollectHelper;
 import com.romens.yjk.health.core.LocationAddressHelper;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
@@ -61,8 +62,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         slidingFixTabLayout = new SlidingFixTabLayout(this);
-       slidingFixTabLayout.setBackgroundResource(R.color.theme_primary);
-       // slidingFixTabLayout.setBackgroundResource(R.color.new_grey);
+        slidingFixTabLayout.setBackgroundResource(R.color.theme_primary);
+        // slidingFixTabLayout.setBackgroundResource(R.color.new_grey);
         content.addView(slidingFixTabLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -98,8 +99,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             public void onItemClick(int id) {
                /* if (id == -1) {
                     startActivity(new Intent(HomeActivity.this, FamilyDrugGroupActivity.class));
-                } else*/ if (id == 0) {
-                    startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
+                } else*/
+                if (id == 0) {
+                    UIOpenHelper.openSearchActivity(HomeActivity.this);
+                    //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 1) {
                     if (UserConfig.isClientLogined()) {
                         startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
@@ -175,7 +178,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 sumCount = 0;
             }
             updateShoppingCartCount(sumCount);
-        }else if(id==AppNotificationCenter.collectAddChange){
+        } else if (id == AppNotificationCenter.collectAddChange) {
             CollectHelper.getInstance().addCollect(this);
         }
     }
