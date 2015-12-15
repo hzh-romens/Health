@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.romens.yjk.health">
+<manifest package="com.romens.yjk.health"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
 
     <!-- zxing -->
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- 震动权限 -->
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <!-- Required for BLE -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <!-- 允许应用使用TYPE_SYSTEM_ALERT来打开窗口，并将窗口显示于其他应用的顶端-->
     <!--允许使用窗体覆盖在window上 -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW"/>
 
     <!-- Map -->
     <!--<uses-permission android:name="android.permission.INTERNET" />-->
@@ -50,7 +50,7 @@
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
-        android:required="false" />
+        android:required="false"/>
 
     <application
         android:name=".MyApplication"
@@ -61,12 +61,12 @@
 
         <meta-data
             android:name="APK_CHANNEL"
-            android:value="${APK_CHANNEL_VALUE}" />
+            android:value="${APK_CHANNEL_VALUE}"/>
 
         <!-- 高德地图 DEBUG KEY-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7827d8503aac9c36d00ccae581aa84a6" />
+            android:value="7827d8503aac9c36d00ccae581aa84a6"/>
 
         <!--高德地图 RELEASE KEY-->
         <!--<meta-data-->
@@ -96,30 +96,30 @@
         <!-- 开机自启动服务 -->
         <receiver android:name="com.easemob.chat.StartServiceReceiver">
             <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </receiver>
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="${IM_SDK_APPKEY}" />
+            android:value="${IM_SDK_APPKEY}"/>
         <!-- 声明sdk所需的service -->
         <service
             android:name="com.easemob.chat.EMChatService"
-            android:exported="true" />
+            android:exported="true"/>
         <!-- 声明sdk所需的receiver -->
         <receiver android:name="com.easemob.chat.EMMonitorReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-                <data android:scheme="package" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package"/>
             </intent-filter>
             <!-- 可选filter -->
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
         <!-- im sdk end-->
@@ -132,9 +132,9 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -142,22 +142,22 @@
             android:name=".ui.activity.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.ScannerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.romens.yjk.health.QRSCANNER" />
+                <action android:name="com.romens.yjk.health.QRSCANNER"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
@@ -165,13 +165,13 @@
             android:name=".ui.activity.SearchActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.SalesPromotionActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.LocationActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -179,9 +179,9 @@
             android:screenOrientation="portrait">
 
             <intent-filter>
-                <action android:name="com.romens.yjk.health.NEARBYPHARMACY" />
+                <action android:name="com.romens.yjk.health.NEARBYPHARMACY"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
@@ -191,13 +191,13 @@
             android:name=".ui.NewShippingAddressActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.activity.LocationAddressSelectActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
 
         <activity
@@ -224,16 +224,16 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.romens.rhealth.INFORMATION_NEWS" />
+                <action android:name="com.romens.rhealth.INFORMATION_NEWS"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.ControlAddressActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.RemindActivity"
@@ -241,27 +241,27 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.romens.rhealth.MEDICATIONREMINDERS" />
+                <action android:name="com.romens.rhealth.MEDICATIONREMINDERS"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.AddRemindActivityNew"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.RemindDetailActivityNew"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <receiver
             android:name=".ui.components.RemindReceiver"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.activity.ADWebActivity"
@@ -269,153 +269,160 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.romens.yjk.health.AD_WEB" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.romens.yjk.health.AD_WEB"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.MyOrderActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.OrderEvaluateActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.OrderEvaluateDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.OrderDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.CommitOrderActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.NewShoppingAddressActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.SearchActivityNew"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.HistoryActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.CollectActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.FeedBackActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.HelpActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.HelpAnswerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.DrugStoryDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.ShopListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.PersonalInformationActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.CommitResultActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
         <activity
             android:name=".ui.SetDiseaseActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.SetNameActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.SetSexActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.SetDietActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.FamilyMemberActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.FamilyMemberAddActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.FamilyDrugGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.AddNewRemindActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
         <activity
             android:name=".ui.AddRemindTimesActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+
+        <activity
+            android:name=".ui.HealthActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
         <service android:name=".core.CollectService">
             <intent-filter>
-                <action android:name="com.romens.yjk.health.core.myService" />
+                <action android:name="com.romens.yjk.health.core.myService"/>
             </intent-filter>
         </service>
     </application>
