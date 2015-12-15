@@ -7,9 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 
 /**
@@ -37,9 +35,10 @@ public class ADIllustrationCell extends FrameLayout{
                 }
             }
         });
-        ShadowSectionCell shadowSectionCell=new ShadowSectionCell(context);
-        container.addView(shadowSectionCell,LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(4), Gravity.BOTTOM));
-        container.addView(view,LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP,0,0,0,AndroidUtilities.dp(4)));
+     //  ShadowSectionCell shadowSectionCell=new ShadowSectionCell(context);
+     //  container.addView(shadowSectionCell,LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(4), Gravity.BOTTOM));
+        //container.addView(view,LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP,0,0,0, AndroidUtilities.dp(4)));
+        container.addView(view,LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP,0,0,0,0));
         addView(container, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
     }
     //传递一个标志过来，判断三个TextView显示哪几个
