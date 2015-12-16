@@ -196,7 +196,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
         content.addView(fragmentView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         setContentView(content, actionBar);
-        actionBar.setBackgroundColor(0xffffffff);
 
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -479,9 +478,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private void updateDate() {
         rowCount = 1;
         if (currMedicineGoodsItem != null) {
-
             goodsImageCell.bindData(currMedicineGoodsItem.largeImages);
-
             goodsEmptyRow = -1;
             goodsMainRow = rowCount++;
             goodsPriceRow = rowCount++;
@@ -513,7 +510,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             serviceCallCenterRow = rowCount++;
         } else {
             goodsImageCell.bindData(new ArrayList<String>());
-            goodsEmptyRow = rowCount++;
+            if (TextUtils.isEmpty(goodsId)) {
+                goodsEmptyRow = rowCount++;
+            }
         }
         adapter.notifyDataSetChanged();
     }

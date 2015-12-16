@@ -185,6 +185,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.activity.GoodsDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
 
         <!-- My -->
         <activity
@@ -418,6 +424,11 @@
                 <action android:name="com.romens.yjk.health.core.myService" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".service.MedicineFavoriteService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

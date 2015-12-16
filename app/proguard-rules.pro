@@ -208,3 +208,12 @@
 -keep class org.bitlet.** {*;}
 -keep class org.slf4j.** {*;}
 -keep class ch.imvs.** {*;}
+
+
+-dontwarn com.romens.android.**
+-keep class com.romens.android.**{*;}
+
+# library com.esotericsoftware.kryo
+-keep class com.esotericsoftware.kryo.** { *; }
+-dontwarn com.esotericsoftware.kryo.**
+-dontwarn org.objenesis.instantiator.sun.**

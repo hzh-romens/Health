@@ -111,7 +111,7 @@ public class ControlAddressActivity extends BaseActivity {
         addAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ControlAddressActivity.this, NewShoppingAddressActivity.class));
+                startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
             }
         });
     }
@@ -238,7 +238,7 @@ public class ControlAddressActivity extends BaseActivity {
                     }
                     finish();
                 } else if (i == 0) {
-                    startActivity(new Intent(ControlAddressActivity.this, NewShoppingAddressActivity.class));
+                    startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
                 }
             }
         });

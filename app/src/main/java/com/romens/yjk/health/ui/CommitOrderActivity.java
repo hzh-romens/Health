@@ -286,7 +286,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                             ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    startActivity(new Intent(CommitOrderActivity.this, NewShoppingAddressActivity.class));
+                                    startActivity(new Intent(CommitOrderActivity.this, NewShippingAddressActivity.class));
                                     finish();
                                 }
                             });
