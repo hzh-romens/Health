@@ -10,13 +10,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -26,12 +23,10 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
-import com.romens.yjk.health.ui.fragment.OrderFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -156,7 +151,6 @@ public class OrderEvaluateActivity extends BaseActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         requestCode = jsonObject.getString("success");
-                        Log.e("tag", "--requestCode--->" + requestCode);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

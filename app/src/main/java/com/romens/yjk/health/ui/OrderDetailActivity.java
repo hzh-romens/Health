@@ -2,7 +2,7 @@ package com.romens.yjk.health.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -16,8 +16,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -32,7 +30,6 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
@@ -264,6 +261,7 @@ public class OrderDetailActivity extends BaseActivity {
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
+            listItem.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }
@@ -309,7 +307,6 @@ public class OrderDetailActivity extends BaseActivity {
         if (jsonData == null) {
             return;
         }
-        Log.e("tag", "--setOrderData---->" + jsonData);
         goodsListEntities = new ArrayList<>();
         orderListEntity = new OrderListEntity();
         try {
@@ -346,7 +343,6 @@ public class OrderDetailActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e("tag", "------>" + new Gson().toJson(goodsListEntities));
         subExpandableadapter.setOrderEntities(goodsListEntities);
         adapter.setOrderListEntity(orderListEntity);
         listView.setAdapter(adapter);
