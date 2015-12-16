@@ -4,30 +4,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
-import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.ui.cells.EditTagCell;
 import com.romens.yjk.health.ui.components.FlowLayout;
 import com.romens.yjk.health.ui.components.FlowLayoutCallback;
 
@@ -36,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -266,8 +257,6 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
         args.put("USERGUID", userGuid);
         args.put("ADVICE", feedBackInfo);
         args.put("JSONDATA", tags);
-        Gson gson=new Gson();
-        Log.e("tag", "--feedback___args--->" + gson.toJson(args));
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "Feedback", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -331,7 +320,6 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
 //                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
 //                    setQueryData(responseProtocol.getResponse());
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.e("tag", "--feedBack-getTag-->" + responseProtocol.getResponse());
                     try {
                         JSONArray array = new JSONArray(responseProtocol.getResponse());
                         for (int i = 0; i < array.length(); i++) {
@@ -345,8 +333,7 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                     }
                 }
                 if (errorMsg != null) {
-                    Log.e("reqGetAllUsers", "ERROR");
-                    Log.e("tag", "---feedbackgettag--error-->" + errorMsg.msg);
+                    Log.e("reqGetAllUsers", "ERROR"+ errorMsg.msg);
                 }
                 tagFlowLayout.updateLayout();
             }
