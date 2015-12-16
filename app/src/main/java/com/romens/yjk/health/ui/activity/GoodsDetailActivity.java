@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +22,7 @@ import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.gc.materialdesign.views.ProgressBarDeterminate;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -43,9 +39,7 @@ import com.romens.android.ui.cells.EmptyCell;
 import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.LoadingCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
-import com.romens.android.ui.cells.TextActionCell;
 import com.romens.android.ui.cells.TextInfoCell;
-import com.romens.android.ui.cells.TextInfoPrivacyCell;
 import com.romens.android.ui.cells.TextSettingSelectCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -56,7 +50,6 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.model.CommentEntity;
 import com.romens.yjk.health.model.GoodsCommentEntity;
 import com.romens.yjk.health.model.MedicineGoodsItem;
 import com.romens.yjk.health.model.MedicineSaleStoreEntity;
@@ -79,7 +72,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by siery on 15/12/14.
@@ -250,6 +242,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             Toast.makeText(GoodsDetailActivity.this, "敬请期待!", Toast.LENGTH_SHORT).show();
         } else if (position == serviceMedicineManualRow) {
             UIOpenHelper.openMedicineManualActivity(GoodsDetailActivity.this, currMedicineGoodsItem.guid, currMedicineGoodsItem.name);
+        } else if (position == otherStoresRow) {
+            expendSaleStores = true;
+            updateDate();
         }
     }
 
@@ -529,9 +524,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             if (saleStoreEntities.size() > 0) {
                 if (expendSaleStores) {
                     otherStoresRow = -1;
-                    otherStoresBeginRow = rowCount++;
-                    rowCount += saleStoreEntities.size() - 1;
-                    otherStoresEndRow = rowCount;
+                    otherStoresBeginRow = rowCount;
+                    rowCount += saleStoreEntities.size();
+                    otherStoresEndRow = rowCount - 1;
                 } else {
                     otherStoresRow = rowCount++;
                 }
@@ -550,8 +545,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 if (goodsCommentEntities.size() <= 0) {
                     commentEmptyRow = rowCount++;
                 } else {
-                    commentBeginRow = rowCount++;
-                    rowCount += goodsCommentEntities.size() - 1;
+                    commentBeginRow = rowCount;
+                    rowCount += goodsCommentEntities.size();
                     commentEndRow = rowCount;
                     commentMoreRow = rowCount++;
                 }
@@ -639,25 +634,23 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 return 5;
             } else if (position == storeSectionRow || position == serviceSectionRow || position == commentSection1Row) {
                 return 6;
-            } else if (position == serviceMedicineManualRow || position == serviceCallCenterRow || position == commentMoreRow) {
+            } else if (position == serviceMedicineManualRow || position == serviceCallCenterRow || position == commentMoreRow || position == otherStoresRow) {
                 return 7;
-            } else if (position == otherStoresRow) {
-                return 8;
             } else if (position == goodsServiceModesRow) {
-                return 9;
+                return 8;
             } else if (position == goodsEmptyRow || position == commentEmptyRow) {
-                return 10;
+                return 9;
             } else if (position == commentLoadingRow) {
-                return 11;
+                return 10;
             } else if (position >= commentBeginRow && position <= commentEndRow) {
-                return 12;
+                return 11;
             }
             return 1;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 13;
+            return 12;
         }
 
         @Override
@@ -667,7 +660,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
         @Override
         public boolean isEnabled(int i) {
-            if (i == serviceMedicineManualRow || i == serviceCallCenterRow) {
+            if (i == serviceMedicineManualRow || i == serviceCallCenterRow || i == otherStoresRow || i == commentMoreRow) {
                 return true;
             }
             return false;
@@ -776,6 +769,11 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     cell.setTextColor(ResourcesConfig.textPrimary);
                     cell.setValueTextColor(ResourcesConfig.bodyText3);
                     cell.setTextAndValue("联系客服", "(敬请期待!)", true, true);
+                } else if (i == otherStoresRow) {
+                    cell.setTextColor(ResourcesConfig.bodyText3);
+                    cell.setValueTextColor(ResourcesConfig.bodyText3);
+                    String value = String.format("(%d家)", saleStoreEntities.size());
+                    cell.setTextAndValue("更多附近在售药店", value, true, true);
                 } else if (i == commentMoreRow) {
                     cell.setTextColor(ResourcesConfig.bodyText3);
                     cell.setValueTextColor(ResourcesConfig.bodyText3);
@@ -783,19 +781,11 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 }
             } else if (viewType == 8) {
                 if (view == null) {
-                    view = new TextActionCell(adapterContext);
-                }
-                TextActionCell cell = (TextActionCell) view;
-                if (i == otherStoresRow) {
-                    cell.setText("查看更多附近药店", true);
-                }
-            } else if (viewType == 9) {
-                if (view == null) {
                     view = new MedicineServiceModesCell(adapterContext);
                 }
                 MedicineServiceModesCell cell = (MedicineServiceModesCell) view;
                 cell.setValue(currMedicineGoodsServiceModes, true);
-            } else if (viewType == 10) {
+            } else if (viewType == 9) {
                 if (view == null) {
                     view = new TextInfoCell(adapterContext);
                 }
@@ -805,11 +795,11 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else if (i == commentEmptyRow) {
                     cell.setText("暂无评论");
                 }
-            } else if (viewType == 11) {
+            } else if (viewType == 10) {
                 if (view == null) {
                     view = new LoadingCell(adapterContext);
                 }
-            } else if (viewType == 12) {
+            } else if (viewType == 11) {
                 if (view == null) {
                     view = new GoodsCommentCell(adapterContext);
                 }
@@ -845,8 +835,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         args.put("MERCHANDISEID", goodsId);
         args.put("LONGITUDE", location.getLongitude());
         args.put("LATITUDE", location.getLatitude());
-        args.put("PAGE", "1");
-        args.put("COUNT", "5");
+        args.put("PAGE", 0);
+        args.put("COUNT", 5);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "SaleInShop", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
