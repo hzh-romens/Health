@@ -1,9 +1,5 @@
 apply plugin: 'com.android.application'
 
-def releaseTime() {
-    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
-}
-
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -67,7 +63,7 @@ android {
                     def file = output.outputFile
                     if (file != null && file.name.endsWith('.apk')) {
                         //def fileName = file.name.replace(".apk", "-v" + versionName + "-c" + versionCode +"_t"+releaseTime()+".apk")
-                        def fileName = file.name.replace(".apk", "_v${defaultConfig.versionName}_c${defaultConfig.versionCode}_${releaseTime()}.apk")
+                        def fileName = file.name.replace(".apk", "_v${defaultConfig.versionName}_c${defaultConfig.versionCode}.apk")
                         output.outputFile = new File(file.parentFile, fileName)
                     }
                 }
@@ -109,6 +105,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:22.+'
     compile 'com.android.support:palette-v7:22.+'
     compile 'com.android.support:recyclerview-v7:22.+'
+    compile 'com.android.support:design:22.+'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.google.guava:guava:16.0.1'
     compile 'de.greenrobot:java-common:2.0.0'

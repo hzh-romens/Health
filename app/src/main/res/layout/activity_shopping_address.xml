@@ -4,57 +4,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.romens.android.ui.ActionBar.ActionBar
-        android:id="@+id/action_bar"
+    <include layout="@layout/layout_actionbar" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
 
-    <com.romens.yjk.health.ui.cells.InputTextCell
-        android:id="@+id/new_shopping_address_user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <com.romens.yjk.health.ui.cells.InputTextCell
-        android:id="@+id/new_shopping_address_user_phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <com.romens.yjk.health.ui.cells.InputTextCell
+                android:id="@+id/new_shopping_address_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    <com.romens.yjk.health.ui.cells.InputTextCell
-        android:id="@+id/new_shopping_address_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <com.romens.yjk.health.ui.cells.InputTextCell
+                android:id="@+id/new_shopping_address_user_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    <com.romens.yjk.health.ui.cells.InputTextCell
-        android:id="@+id/new_shopping_address_detail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="50dp"-->
-    <!--android:orientation="horizontal">-->
+            <com.romens.yjk.health.ui.cells.InputTextCell
+                android:id="@+id/new_shopping_address_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:background="@color/white"-->
-    <!--android:text="详细地址:"-->
-    <!--android:textColor="@color/theme_sub_title"-->
-    <!--android:textSize="@dimen/abc_text_size_body_1_material" />-->
-
-    <!--<EditText-->
-    <!--android:key="@+key/shopping_address_address_detail"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_weight="1"-->
-    <!--android:background="@color/white"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:hint="请输入详细地址信息"-->
-    <!--android:textColor="@color/theme_title"-->
-    <!--android:textSize="@dimen/abc_text_size_body_1_material" />-->
-    <!--</LinearLayout>-->
+            <com.romens.yjk.health.ui.cells.InputTextCell
+                android:id="@+id/new_shopping_address_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

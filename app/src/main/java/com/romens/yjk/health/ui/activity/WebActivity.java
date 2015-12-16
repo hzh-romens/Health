@@ -14,6 +14,7 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.ResourcesConfig;
 
 /**
  * Created by siery on 15/5/5.
@@ -55,7 +56,7 @@ public class WebActivity extends LightActionBarActivity {
 
 
         mWebProgress = new ProgressBarDeterminate(this);
-        mWebProgress.setBackgroundColor(0x800f9d58);
+        mWebProgress.setBackgroundColor(ResourcesConfig.primaryColor);
         mWebProgress.setMinimumHeight(AndroidUtilities.dp(2));
         mWebProgress.setMax(AndroidUtilities.dp(2));
         mWebProgress.setMax(100);

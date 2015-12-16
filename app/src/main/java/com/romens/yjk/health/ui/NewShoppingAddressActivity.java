@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.CitysEntity;
+import com.romens.yjk.health.ui.activity.BaseActivity;
 import com.romens.yjk.health.ui.activity.LocationAddressSelectActivity;
 import com.romens.yjk.health.ui.cells.InputTextCell;
 
@@ -81,6 +83,7 @@ public class NewShoppingAddressActivity extends BaseActivity implements OnWheelC
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onLocationAddressChanged);
         userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_shopping_address, R.id.action_bar);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         actionBarEven();
 
 //        queryDb();

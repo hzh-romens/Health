@@ -10,8 +10,11 @@ public class ResourcesConfig {
     public static int primaryColor;
     public static final int textPrimary;
 
-    static{
-        primaryColor= MyApplication.applicationContext.getResources().getColor(R.color.theme_primary);
+    public static final int bodyText2 = 0x80000000;
+    public static final int bodyText3 = 0x60000000;
+
+    static {
+        primaryColor = MyApplication.applicationContext.getResources().getColor(R.color.theme_primary);
         textPrimary = MyApplication.applicationContext.getResources().getColor(R.color.text_primary);
     }
 }

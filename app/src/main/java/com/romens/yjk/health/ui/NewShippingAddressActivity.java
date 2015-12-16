@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
@@ -40,6 +42,8 @@ public class NewShippingAddressActivity extends BaseActivity {
                 }
             }
         });
+        FrameLayout container = new FrameLayout(this);
+        content.addView(container, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
         listView = new RecyclerListView(this);
         listView.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
@@ -50,8 +54,10 @@ public class NewShippingAddressActivity extends BaseActivity {
                 }
             }
         });
-        listView.setLayoutManager(new LinearLayoutManager(this));
-        content.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        listView.setLayoutManager(layoutManager);
+        listView.setHasFixedSize(true);
+        container.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         adapter = new ListAdapter(this);
         listView.setAdapter(adapter);

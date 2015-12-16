@@ -25,6 +25,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.CollectDataEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
 
@@ -119,9 +120,11 @@ public class CollectAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MedicinalDetailActivity.class);
-                intent.putExtra("guid", entity.getMerchandiseId());
-                context.startActivity(intent);
+//                Intent intent = new Intent(context, MedicinalDetailActivity.class);
+//                intent.putExtra("guid", entity.getMerchandiseId());
+//                context.startActivity(intent);
+
+                UIOpenHelper.openMedicineActivity(context,entity.getMerchandiseId());
             }
         });
 

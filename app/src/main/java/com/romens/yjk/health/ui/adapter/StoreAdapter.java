@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.romens.android.io.image.ImageManager;
 import com.romens.android.io.image.ImageUtils;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.TestEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
 
@@ -153,8 +154,9 @@ public class StoreAdapter extends RecyclerView.Adapter{
 
         @Override
         public void onClick(View v) {
-            Intent i=new Intent(mContext, MedicinalDetailActivity.class);
-            mContext.startActivity(i);
+//            Intent i=new Intent(mContext, MedicinalDetailActivity.class);
+//            mContext.startActivity(i);
+            UIOpenHelper.openMedicineActivity(mContext,"");
         }
 
         @Override

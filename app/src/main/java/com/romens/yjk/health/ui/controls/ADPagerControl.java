@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.ADPagerEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
@@ -120,9 +121,11 @@ public class ADPagerControl extends ADBaseControl {
             String action = entity.getAction();
 
             if (entity != null) {
-                Intent intent = new Intent(context, MedicinalDetailActivity.class);
-                intent.putExtra("guid", entity.id);
-                context.startActivity(intent);
+//                Intent intent = new Intent(context, MedicinalDetailActivity.class);
+//                intent.putExtra("guid", entity.id);
+//                context.startActivity(intent);
+
+                UIOpenHelper.openMedicineActivity(context,entity.id);
             }
 //            if (type == 0) {
 //                if (!TextUtils.isEmpty(action)) {

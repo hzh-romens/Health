@@ -8,6 +8,7 @@ import android.view.TextureView;
 
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADImageListEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
@@ -54,9 +55,11 @@ public class ADImagesControl extends ADBaseControl {
         int type = entity.getType();
         String action = entity.getAction();
         if (entity != null) {
-            Intent intent = new Intent(context, MedicinalDetailActivity.class);
-            intent.putExtra("guid", entity.id);
-            context.startActivity(intent);
+//            Intent intent = new Intent(context, MedicinalDetailActivity.class);
+//            intent.putExtra("guid", entity.id);
+//            context.startActivity(intent);
+
+            UIOpenHelper.openMedicineActivity(context,entity.id);
         }
 
 //        if (type == 0) {

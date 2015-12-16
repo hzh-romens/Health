@@ -21,6 +21,7 @@ import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.HistoryEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.cells.IsSelectCell;
@@ -170,9 +171,11 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         childHolder.childitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(adapterContext,MedicinalDetailActivity.class);
-                i.putExtra("guid",entity.getGuid());
-                adapterContext.startActivity(i);
+//                Intent i=new Intent(adapterContext,MedicinalDetailActivity.class);
+//                i.putExtra("guid",entity.getGuid());
+//                adapterContext.startActivity(i);
+
+                UIOpenHelper.openMedicineActivity(adapterContext,entity.getGuid());
 
             }
         });

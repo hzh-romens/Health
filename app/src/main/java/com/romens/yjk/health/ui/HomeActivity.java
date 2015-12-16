@@ -4,6 +4,7 @@ package com.romens.yjk.health.ui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.location.LocationManagerProxy;
+import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.location.core.AMapLocException;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -31,6 +37,7 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.CollectHelper;
 import com.romens.yjk.health.core.LocationAddressHelper;
+import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
@@ -105,7 +112,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 1) {
                     if (UserConfig.isClientLogined()) {
-                        startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+                        //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
                     } else {
                         //跳转至登录页面
                         //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
@@ -132,6 +140,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectDelChange, 0);
         requestShopCarCountData();
         setupConfig();
+        initLastLocation();
     }
 
     private void setupConfig() {
@@ -185,6 +194,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
     @Override
     public void onDestroy() {
+        stopLocation();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.shoppingCartCountChanged);
         super.onDestroy();
     }
@@ -250,4 +260,57 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
         }
     }
+
+    private LocationManagerProxy mAMapLocationManager;
+
+    private void initLastLocation() {
+        mAMapLocationManager = LocationManagerProxy.getInstance(this);
+        mAMapLocationManager.setGpsEnable(true);
+            /*
+             * mAMapLocManager.setGpsEnable(false);//
+			 * 1.0.2版本新增方法，设置true表示混合定位中包含gps定位，false表示纯网络定位，默认是true
+			 */
+        // Location API定位采用GPS和网络混合定位方式，时间最短是2000毫秒
+        mAMapLocationManager.requestLocationData(
+                LocationProviderProxy.AMapNetwork, -1, 50, new AMapLocationListener() {
+                    @Override
+                    public void onLocationChanged(AMapLocation aMapLocation) {
+                        if (aMapLocation != null) {
+                            AMapLocException exception = aMapLocation.getAMapException();
+                            if (exception == null || exception.getErrorCode() == 0) {
+
+                                LocationHelper.updateLastLocation(HomeActivity.this, aMapLocation);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onLocationChanged(Location location) {
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
+    }
+
+    private void stopLocation() {
+        if (mAMapLocationManager != null) {
+            mAMapLocationManager.destroy();
+        }
+        mAMapLocationManager = null;
+    }
+
 }

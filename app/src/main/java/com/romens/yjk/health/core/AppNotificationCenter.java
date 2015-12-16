@@ -19,4 +19,13 @@ public class AppNotificationCenter extends NotificationCenter {
 
     public static final int onLocationAddressChanged = appTotalEvents++;
 
+    //location
+    public static final int onLastLocationChanged = appTotalEvents++;
+
+    //Medicine
+    public static final int onAddMedicineFavorite = appTotalEvents++;
+    public static final int onRemoveMedicineFavorite = appTotalEvents++;
+
+    //shopping
+    public static final int onShoppingCartChanged = appTotalEvents++;
 }

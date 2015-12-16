@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.amap.api.location.AMapLocation;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
@@ -150,5 +151,37 @@ public class LocationHelper {
             return permission;
         }
         return false;
+    }
+
+    private static final String PREFERENCE_NAME = "last_location";
+
+    public static AMapLocation getLastLocation(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+
+        AMapLocation location = new AMapLocation("network");
+        location.setLatitude(sharedPreferences.getFloat("lat", 0f));
+        location.setLongitude(sharedPreferences.getFloat("lon", 0f));
+        location.setAccuracy(sharedPreferences.getFloat("accuracy", 0f));
+        location.setCityCode(sharedPreferences.getString("cityCode", ""));
+        location.setCity(sharedPreferences.getString("city", ""));
+        location.setAddress(sharedPreferences.getString("address", ""));
+        return location;
+    }
+
+    public static void updateLastLocation(Context context, AMapLocation location) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (location == null) {
+            editor.clear().commit();
+        } else {
+            editor.putFloat("lat", (float) location.getLatitude());
+            editor.putFloat("lon", (float) location.getLongitude());
+            editor.putFloat("accuracy", location.getAccuracy());
+            editor.putString("cityCode", location.getCityCode());
+            editor.putString("city", location.getCity());
+            editor.putString("address", location.getAddress());
+            editor.commit();
+        }
+        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onLastLocationChanged);
     }
 }

@@ -25,6 +25,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
@@ -112,9 +113,10 @@ public class ShopListAdapter extends RecyclerView.Adapter {
         itemHolder.linear_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(mContext, MedicinalDetailActivity.class);
-                i.putExtra("guid", goodListEntity.getMERCHANDISEID());
-                mContext.startActivity(i);
+//                Intent i = new Intent(mContext, MedicinalDetailActivity.class);
+//                i.putExtra("guid", goodListEntity.getMERCHANDISEID());
+//                mContext.startActivity(i);
+                UIOpenHelper.openMedicineActivity(mContext,goodListEntity.getMERCHANDISEID());
             }
         });
     }

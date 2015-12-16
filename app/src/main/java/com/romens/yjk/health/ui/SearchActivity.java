@@ -35,6 +35,7 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.adapter.FlowlayoutAdapter;
 import com.romens.yjk.health.ui.components.FlowLayout;
 
@@ -355,9 +356,10 @@ public class SearchActivity extends BaseActivity {
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(SearchActivity.this, MedicinalDetailActivity.class);
-                            intent.putExtra("guid", drugList.get(position - 1).get("guid"));
-                            startActivity(intent);
+//                            Intent intent = new Intent(SearchActivity.this, MedicinalDetailActivity.class);
+//                            intent.putExtra("guid", drugList.get(position - 1).get("guid"));
+//                            startActivity(intent);
+                            UIOpenHelper.openMedicineActivity(SearchActivity.this,drugList.get(position - 1).get("guid"));
                         }
                     });
                 }

@@ -483,7 +483,7 @@ public class SearchActivity extends BaseActivity {
                     public void onClick(View v) {
                         SearchResultEntity selectedEntity = getItem(position);
                         if (TextUtils.equals(selectedEntity.type, "0")) {
-                            UIOpenHelper.openDrugDetailActivity(SearchActivity.this, selectedEntity.id);
+                            UIOpenHelper.openMedicineActivity(SearchActivity.this, selectedEntity.id);
                             //UIOpenHelper.openDrugDescriptionActivity(SearchActivity.this, selectedEntity.id, selectedEntity.name);
                         }
                     }
