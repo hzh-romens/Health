@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,10 @@ import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.gc.materialdesign.views.ProgressBarDeterminate;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -37,6 +41,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.EmptyCell;
 import com.romens.android.ui.cells.HeaderCell;
+import com.romens.android.ui.cells.LoadingCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextActionCell;
 import com.romens.android.ui.cells.TextInfoCell;
@@ -51,11 +56,14 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.model.CommentEntity;
+import com.romens.yjk.health.model.GoodsCommentEntity;
 import com.romens.yjk.health.model.MedicineGoodsItem;
 import com.romens.yjk.health.model.MedicineSaleStoreEntity;
 import com.romens.yjk.health.model.MedicineServiceModeEntity;
 import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.ShoppingCartUtils;
+import com.romens.yjk.health.ui.cells.GoodsCommentCell;
 import com.romens.yjk.health.ui.cells.MedicineImagesCell;
 import com.romens.yjk.health.ui.cells.MedicineMainCell;
 import com.romens.yjk.health.ui.cells.MedicinePriceCell;
@@ -71,6 +79,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by siery on 15/12/14.
@@ -97,7 +106,10 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     private boolean firstWas = false;
 
-    private int overScrollHeight = AndroidUtilities.displaySize.x;// - AndroidUtilities.getCurrentActionBarHeight() - AndroidUtilities.dp(66);
+    private int overScrollHeight = AndroidUtilities.dp(MedicineImagesCell.CELL_HEIGHT);
+    // AndroidUtilities.displaySize.x;
+    // - AndroidUtilities.getCurrentActionBarHeight() - AndroidUtilities.dp(66);
+
     private int halfHeight;
 
 
@@ -158,6 +170,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         content.addView(topContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         listView = new ListView(this);
+        //解决魅族滑动问题
+        listView.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
         listView.setAdapter(adapter = new GoodsDetailAdapter(this));
         listView.setVerticalScrollBarEnabled(false);
         listView.setDividerHeight(0);
@@ -303,7 +317,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             int height = 0;//(getMyActionBar().getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0) + AndroidUtilities.getCurrentActionBarHeight();
             //int viewHeight = calendarView.getMeasuredHeight();
             int viewHeight = AndroidUtilities.dp(MedicineImagesCell.CELL_HEIGHT);
-
             overScrollHeight = resume ? overScrollHeight : viewHeight - height;
             //overScrollHeight = resume ? overScrollHeight : viewHeight - AndroidUtilities.dp(66) - height;
 
@@ -401,9 +414,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         fixLayoutInternal(true);
     }
 
-    private MedicineGoodsItem currMedicineGoodsItem;
-    private final List<MedicineServiceModeEntity> currMedicineGoodsServiceModes = new ArrayList<>();
-
     private void requestMedicineGoodsData() {
         currMedicineGoodsItem = null;
         currMedicineGoodsServiceModes.clear();
@@ -436,6 +446,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                             initMedicineServiceModes();
                         }
                         loadMedicineSaleStores();
+                        loadCommentData();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -472,11 +483,33 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private int serviceMedicineManualRow;
     private int serviceCallCenterRow;
 
+    private int commentDividerRow;
+    private int commentSection1Row;
+    private int commentLoadingRow;
+    private int commentEmptyRow;
+    private int commentBeginRow;
+    private int commentEndRow;
+    private int commentMoreRow;
+
+    private int bottomDividerRow;
+
+
+    //当前商品对象
+    private MedicineGoodsItem currMedicineGoodsItem;
+    //支持的购买方式
+    private final List<MedicineServiceModeEntity> currMedicineGoodsServiceModes = new ArrayList<>();
+    //附近其他在售药店
     private final List<MedicineSaleStoreEntity> saleStoreEntities = new ArrayList<>();
+    //是否点击查看更多在售药店
     private boolean expendSaleStores = false;
+
+    //相关评论
+    private final List<GoodsCommentEntity> goodsCommentEntities = new ArrayList<>();
+    private boolean loadingGoodsComment = false;
 
     private void updateDate() {
         rowCount = 1;
+        clearRow();
         if (currMedicineGoodsItem != null) {
             goodsImageCell.bindData(currMedicineGoodsItem.largeImages);
             goodsEmptyRow = -1;
@@ -508,13 +541,61 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             serviceSectionRow = rowCount++;
             serviceMedicineManualRow = rowCount++;
             serviceCallCenterRow = rowCount++;
+
+            commentDividerRow = rowCount++;
+            commentSection1Row = rowCount++;
+            if (loadingGoodsComment) {
+                commentLoadingRow = rowCount++;
+            } else {
+                if (goodsCommentEntities.size() <= 0) {
+                    commentEmptyRow = rowCount++;
+                } else {
+                    commentBeginRow = rowCount++;
+                    rowCount += goodsCommentEntities.size() - 1;
+                    commentEndRow = rowCount;
+                    commentMoreRow = rowCount++;
+                }
+            }
+
         } else {
             goodsImageCell.bindData(new ArrayList<String>());
             if (TextUtils.isEmpty(goodsId)) {
                 goodsEmptyRow = rowCount++;
             }
         }
+        bottomDividerRow = rowCount++;
         adapter.notifyDataSetChanged();
+    }
+
+    private void clearRow() {
+        goodsEmptyRow = -1;
+        goodsMainRow = -1;
+        goodsPriceRow = -1;
+        goodsCDRow = -1;
+        goodsSpecRow = -1;
+        goodsServiceModesRow = -1;
+        dividerRow = -1;
+
+        storeSectionRow = -1;
+        storeRow = -1;
+        otherStoresRow = -1;
+        otherStoresBeginRow = -1;
+        otherStoresEndRow = -1;
+        storeDividerRow = -1;
+
+        serviceSectionRow = -1;
+        serviceMedicineManualRow = -1;
+        serviceCallCenterRow = -1;
+
+        commentDividerRow = -1;
+        commentSection1Row = -1;
+        commentLoadingRow = -1;
+        commentEmptyRow = -1;
+        commentBeginRow = -1;
+        commentEndRow = -1;
+        commentMoreRow = -1;
+
+        bottomDividerRow = -1;
     }
 
     class GoodsDetailAdapter extends BaseFragmentAdapter {
@@ -546,7 +627,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
         @Override
         public int getItemViewType(int position) {
-            if (position == 0) {
+            if (position == 0 || position == bottomDividerRow) {
                 return 0;
             } else if (position == goodsMainRow) {
                 return 2;
@@ -556,23 +637,27 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 return 4;
             } else if (position == storeRow || (position >= otherStoresBeginRow && position <= otherStoresEndRow)) {
                 return 5;
-            } else if (position == storeSectionRow || position == serviceSectionRow) {
+            } else if (position == storeSectionRow || position == serviceSectionRow || position == commentSection1Row) {
                 return 6;
-            } else if (position == serviceMedicineManualRow || position == serviceCallCenterRow) {
+            } else if (position == serviceMedicineManualRow || position == serviceCallCenterRow || position == commentMoreRow) {
                 return 7;
             } else if (position == otherStoresRow) {
                 return 8;
             } else if (position == goodsServiceModesRow) {
                 return 9;
-            } else if (position == goodsEmptyRow) {
+            } else if (position == goodsEmptyRow || position == commentEmptyRow) {
                 return 10;
+            } else if (position == commentLoadingRow) {
+                return 11;
+            } else if (position >= commentBeginRow && position <= commentEndRow) {
+                return 12;
             }
             return 1;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 11;
+            return 13;
         }
 
         @Override
@@ -596,117 +681,141 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            if (i == 0) {
+            int viewType = getItemViewType(i);
+            if (viewType == 0) {
                 if (view == null) {
                     view = new EmptyCell(adapterContext);
                 }
-                ((EmptyCell) view).setHeight(overScrollHeight);
-            } else {
-                int viewType = getItemViewType(i);
-                if (viewType == 1) {
-                    if (view == null) {
-                        view = new ShadowSectionCell(adapterContext);
+                EmptyCell cell = (EmptyCell) view;
+                if (i == 0) {
+                    cell.setHeight(overScrollHeight);
+                } else if (i == bottomDividerRow) {
+                    cell.setHeight(AndroidUtilities.dp(32));
+                }
+            } else if (viewType == 1) {
+                if (view == null) {
+                    view = new ShadowSectionCell(adapterContext);
+                }
+            } else if (viewType == 2) {
+                if (view == null) {
+                    view = new MedicineMainCell(adapterContext);
+                }
+                MedicineMainCell cell = (MedicineMainCell) view;
+                boolean isFavorite = DBInterface.instance().getFavorite(goodsId);
+                cell.setValue(currMedicineGoodsItem.name, currMedicineGoodsItem.detailDescription, isFavorite, false);
+                cell.setFavoritesDelegate(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addToFavorite();
                     }
-                } else if (viewType == 2) {
-                    if (view == null) {
-                        view = new MedicineMainCell(adapterContext);
-                    }
-                    MedicineMainCell cell = (MedicineMainCell) view;
-                    boolean isFavorite = DBInterface.instance().getFavorite(goodsId);
-                    cell.setValue(currMedicineGoodsItem.name, currMedicineGoodsItem.detailDescription, isFavorite, false);
-                    cell.setFavoritesDelegate(new View.OnClickListener() {
+                });
+            } else if (viewType == 3) {
+                if (view == null) {
+                    view = new MedicinePriceCell(adapterContext);
+                }
+                MedicinePriceCell cell = (MedicinePriceCell) view;
+                cell.setValue(currMedicineGoodsItem.marketPrice, currMedicineGoodsItem.userPrice, currMedicineGoodsItem.totalSaledCount, true);
+            } else if (viewType == 4) {
+                if (view == null) {
+                    view = new MedicinePropertyCell(adapterContext);
+                }
+                MedicinePropertyCell cell = (MedicinePropertyCell) view;
+                if (i == goodsCDRow) {
+                    cell.setTextAndValue("产地", currMedicineGoodsItem.cd, true);
+                } else if (i == goodsSpecRow) {
+                    cell.setTextAndValue("规格", currMedicineGoodsItem.spec, true);
+                }
+            } else if (viewType == 5) {
+                if (view == null) {
+                    view = new MedicineStoreCell(adapterContext);
+                }
+                MedicineStoreCell cell = (MedicineStoreCell) view;
+                if (i == storeRow) {
+                    cell.setValue("", currMedicineGoodsItem.shopName, currMedicineGoodsItem.shopAddress, currMedicineGoodsItem.storeCount, true);
+                    cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            addToFavorite();
+                            ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCart(currMedicineGoodsItem);
                         }
                     });
-                } else if (viewType == 3) {
-                    if (view == null) {
-                        view = new MedicinePriceCell(adapterContext);
-                    }
-                    MedicinePriceCell cell = (MedicinePriceCell) view;
-                    cell.setValue(currMedicineGoodsItem.marketPrice, currMedicineGoodsItem.userPrice, currMedicineGoodsItem.totalSaledCount, true);
-                } else if (viewType == 4) {
-                    if (view == null) {
-                        view = new MedicinePropertyCell(adapterContext);
-                    }
-                    MedicinePropertyCell cell = (MedicinePropertyCell) view;
-                    if (i == goodsCDRow) {
-                        cell.setTextAndValue("产地", currMedicineGoodsItem.cd, true);
-                    } else if (i == goodsSpecRow) {
-                        cell.setTextAndValue("规格", currMedicineGoodsItem.spec, true);
-                    }
-                } else if (viewType == 5) {
-                    if (view == null) {
-                        view = new MedicineStoreCell(adapterContext);
-                    }
-                    MedicineStoreCell cell = (MedicineStoreCell) view;
-                    if (i == storeRow) {
-                        cell.setValue("", currMedicineGoodsItem.shopName, currMedicineGoodsItem.shopAddress, currMedicineGoodsItem.storeCount, true);
-                        cell.setAddShoppingCartDelegate(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCart(currMedicineGoodsItem);
-                            }
-                        });
-                    } else {
-                        int storeIndex = i - otherStoresBeginRow;
-                        MedicineSaleStoreEntity storeEntity = saleStoreEntities.get(storeIndex);
-                        cell.setValue("", storeEntity.name, storeEntity.address, storeEntity.storeCount, true);
-                        cell.setDistance(storeEntity.distance);
-                        cell.setAddShoppingCartDelegate(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Toast.makeText(GoodsDetailActivity.this, "aaa", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                } else if (viewType == 6) {
-                    if (view == null) {
-                        view = new HeaderCell(adapterContext);
-                    }
-                    HeaderCell cell = (HeaderCell) view;
-                    cell.setTextColor(ResourcesConfig.bodyText3);
-                    if (i == storeSectionRow) {
-                        cell.setText("在售药店");
-                    } else if (i == serviceSectionRow) {
-                        cell.setText("服务");
-                    }
-                } else if (viewType == 7) {
-                    if (view == null) {
-                        view = new TextSettingSelectCell(adapterContext);
-                    }
-                    TextSettingSelectCell cell = (TextSettingSelectCell) view;
+                } else {
+                    int storeIndex = i - otherStoresBeginRow;
+                    MedicineSaleStoreEntity storeEntity = saleStoreEntities.get(storeIndex);
+                    cell.setValue("", storeEntity.name, storeEntity.address, storeEntity.storeCount, true);
+                    cell.setDistance(storeEntity.distance);
+                    cell.setAddShoppingCartDelegate(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //Toast.makeText(GoodsDetailActivity.this, "aaa", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            } else if (viewType == 6) {
+                if (view == null) {
+                    view = new HeaderCell(adapterContext);
+                }
+                HeaderCell cell = (HeaderCell) view;
+                cell.setTextColor(ResourcesConfig.bodyText3);
+                if (i == storeSectionRow) {
+                    cell.setText("在售药店");
+                } else if (i == serviceSectionRow) {
+                    cell.setText("服务");
+                } else if (i == commentSection1Row) {
+                    cell.setText("商品评论");
+                }
+            } else if (viewType == 7) {
+                if (view == null) {
+                    view = new TextSettingSelectCell(adapterContext);
+                }
+                TextSettingSelectCell cell = (TextSettingSelectCell) view;
+                if (i == serviceMedicineManualRow) {
                     cell.setTextColor(ResourcesConfig.textPrimary);
                     cell.setValueTextColor(ResourcesConfig.bodyText3);
-                    if (i == serviceMedicineManualRow) {
-                        cell.setText("药品使用说明书", true, true);
-                    } else if (i == serviceCallCenterRow) {
-                        cell.setTextAndValue("联系客服", "(敬请期待!)", true, true);
-                    }
-                } else if (viewType == 8) {
-                    if (view == null) {
-                        view = new TextActionCell(adapterContext);
-                    }
-                    TextActionCell cell = (TextActionCell) view;
-                    if (i == otherStoresRow) {
-                        cell.setText("查看更多附近药店", true);
-                    }
-                } else if (viewType == 9) {
-                    if (view == null) {
-                        view = new MedicineServiceModesCell(adapterContext);
-                    }
-                    MedicineServiceModesCell cell = (MedicineServiceModesCell) view;
-                    cell.setValue(currMedicineGoodsServiceModes, true);
-                } else if (viewType == 10) {
-                    if (view == null) {
-                        view = new TextInfoCell(adapterContext);
-                    }
-                    TextInfoCell cell = (TextInfoCell) view;
-                    if (i == goodsEmptyRow) {
-                        cell.setText("暂未销售此药品");
-                    }
+                    cell.setText("药品使用说明书", true, true);
+                } else if (i == serviceCallCenterRow) {
+                    cell.setTextColor(ResourcesConfig.textPrimary);
+                    cell.setValueTextColor(ResourcesConfig.bodyText3);
+                    cell.setTextAndValue("联系客服", "(敬请期待!)", true, true);
+                } else if (i == commentMoreRow) {
+                    cell.setTextColor(ResourcesConfig.bodyText3);
+                    cell.setValueTextColor(ResourcesConfig.bodyText3);
+                    cell.setText("查看更多评论", true, true);
                 }
+            } else if (viewType == 8) {
+                if (view == null) {
+                    view = new TextActionCell(adapterContext);
+                }
+                TextActionCell cell = (TextActionCell) view;
+                if (i == otherStoresRow) {
+                    cell.setText("查看更多附近药店", true);
+                }
+            } else if (viewType == 9) {
+                if (view == null) {
+                    view = new MedicineServiceModesCell(adapterContext);
+                }
+                MedicineServiceModesCell cell = (MedicineServiceModesCell) view;
+                cell.setValue(currMedicineGoodsServiceModes, true);
+            } else if (viewType == 10) {
+                if (view == null) {
+                    view = new TextInfoCell(adapterContext);
+                }
+                TextInfoCell cell = (TextInfoCell) view;
+                if (i == goodsEmptyRow) {
+                    cell.setText("暂未销售此药品");
+                } else if (i == commentEmptyRow) {
+                    cell.setText("暂无评论");
+                }
+            } else if (viewType == 11) {
+                if (view == null) {
+                    view = new LoadingCell(adapterContext);
+                }
+            } else if (viewType == 12) {
+                if (view == null) {
+                    view = new GoodsCommentCell(adapterContext);
+                }
+                GoodsCommentCell cell = (GoodsCommentCell) view;
+                GoodsCommentEntity entity = goodsCommentEntities.get(i - commentBeginRow);
+                cell.setValue(entity.qualityLevel, entity.allCount, entity.assessDate, entity.advice, entity.memberId, true);
             }
             return view;
         }
@@ -772,6 +881,50 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     saleStoreEntities.clear();
                     updateDate();
                 }
+            }
+        });
+    }
+
+    private void loadingGoodsComment(boolean loading) {
+        loadingGoodsComment = loading;
+        updateDate();
+    }
+
+    private void loadCommentData() {
+        goodsCommentEntities.clear();
+        loadingGoodsComment(true);
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("MERCHANDISEID", goodsId);
+        args.put("PAGE", 0);
+        args.put("COUNT", 5);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetAssessment", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                loadingGoodsComment(false);
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                loadingGoodsComment(false);
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String response = responseProtocol.getResponse();
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            goodsCommentEntities.add(new GoodsCommentEntity(jsonArray.getJSONObject(i)));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                updateDate();
             }
         });
     }

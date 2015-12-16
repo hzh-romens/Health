@@ -10,6 +10,7 @@ import android.util.Base64;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.romens.yjk.health.MyApplication;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.Base64Helper;
 import com.romens.yjk.health.helper.MD5Helper;
@@ -56,7 +57,7 @@ public class UserConfig {
             md5Token = String.format("%s|@%s|@%s", appChannel.orgCode, "", "");
         } else {
             md5Token = MD5Helper.createMD5(config.token);
-            md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
+            md5Token = String.format("%s|@%s|@%s", appChannel.orgCode, config.userName, md5Token);
         }
 
         md5Token = Base64Helper.encodeBase64String(md5Token);
@@ -108,6 +109,7 @@ public class UserConfig {
             return config != null ? config.userName : null;
         }
     }
+
 
     public static String getClientUserPhone() {
         synchronized (sync) {

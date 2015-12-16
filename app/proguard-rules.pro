@@ -103,16 +103,6 @@
 -keep   class com.google.gson.stream.** { *; }
 -keep   class com.google.gson.reflect.** { *; }
 
-#app
--dontwarn com.romens.yjk.health.web.**
--keep class com.romens.yjk.health.web.**{*;}
-
--dontwarn com.romens.yjk.health.db.**
--keep public class com.romens.yjk.health.db.**{*;}
-
--dontwarn com.romens.yjk.health.ui.components.**
--keep public class com.romens.yjk.health.ui.components.**{*;}
-
 #library
 -dontwarn com.romens.android.library.datetimepicker.**
 -keep public class com.romens.android.library.datetimepicker.**{*;}
@@ -217,3 +207,17 @@
 -keep class com.esotericsoftware.kryo.** { *; }
 -dontwarn com.esotericsoftware.kryo.**
 -dontwarn org.objenesis.instantiator.sun.**
+
+
+
+#----------------- App Begin ------------------#
+-keep class com.romens.yjk.health.model.**{*;}
+
+-dontwarn com.romens.yjk.health.web.**
+-keep class com.romens.yjk.health.web.**{*;}
+
+-dontwarn com.romens.yjk.health.db.**
+-keep public class com.romens.yjk.health.db.**{*;}
+
+-dontwarn com.romens.yjk.health.ui.components.**
+-keep public class com.romens.yjk.health.ui.components.**{*;}

@@ -41,7 +41,9 @@ public class FacadeToken {
     }
 
     public String getAuthToken() {
-        return authToken;
+        synchronized (sync) {
+            return authToken;
+        }
     }
 
 }
