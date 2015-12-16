@@ -38,6 +38,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.HealthActivity;
 import com.romens.yjk.health.ui.cells.DrugCell;
 
 import org.json.JSONArray;
@@ -495,7 +496,7 @@ public class SearchActivity extends BaseActivity {
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getItem(position).onAction();
+                        getItem(position).onAction(adapterContext);
                     }
                 });
             }
@@ -551,7 +552,8 @@ public class SearchActivity extends BaseActivity {
             return null;
         }
 
-        public void onAction() {
+        public void onAction(Context context) {
+            context.startActivity(new Intent(SearchActivity.this, HealthActivity.class));
         }
     }
 }

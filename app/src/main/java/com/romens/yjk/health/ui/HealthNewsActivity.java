@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,7 +149,7 @@ public class HealthNewsActivity extends BaseActivity {
 
     private void bindAdapter(List<HealthNewsEntity> entities) {
         adapter.bindData(entities);
-        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
         changeRefreshState(false);
     }
 
@@ -215,7 +216,7 @@ public class HealthNewsActivity extends BaseActivity {
                             itemTemp = dataInfoJsonArray.getJSONObject(i);
                             if (itemTemp != null) {
                                 entities.add(new HealthNewsEntity(
-                                        itemTemp.getString("key"),
+                                        itemTemp.getString("id"),
                                         itemTemp.getString("text"),
                                         itemTemp.getString("pic"),
                                         itemTemp.getString("title")));
