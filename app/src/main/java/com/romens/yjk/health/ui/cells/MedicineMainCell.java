@@ -58,14 +58,14 @@ public class MedicineMainCell extends FrameLayout {
         nameView.setMaxLines(2);
         nameView.setEllipsize(TextUtils.TruncateAt.END);
         nameView.setGravity(Gravity.LEFT);
-        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL, 17, 10, 56, 10));
+        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL, 17, 10, 64, 10));
 
         favoritesView = new ImageView(context);
         favoritesView.setClickable(true);
         favoritesView.setScaleType(ImageView.ScaleType.CENTER);
         favoritesView.setBackgroundResource(R.drawable.list_selector);
         favoritesView.setColorFilter(0xffe51c23);
-        addView(favoritesView, LayoutHelper.createFrame(56, 56, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
+        addView(favoritesView, LayoutHelper.createFrame(64, 56, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
     }
 
     @Override

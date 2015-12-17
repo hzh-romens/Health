@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created by siery on 15/12/17.
  */
-public class FavoritesActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
+public class FavoritesActivity extends LightActionBarActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView listView;
@@ -50,7 +50,6 @@ public class FavoritesActivity extends BaseActivity implements AppNotificationCe
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        actionBar.setTitle("我的收藏");
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -60,6 +59,8 @@ public class FavoritesActivity extends BaseActivity implements AppNotificationCe
             }
         });
         setContentView(content, actionBar);
+
+        setActionBarTitle(actionBar,"我的收藏");
 
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));

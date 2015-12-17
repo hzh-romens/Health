@@ -5,7 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -20,6 +23,9 @@ import com.romens.android.ui.Image.AvatarDrawable;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 /**
  * Created by siery on 15/12/15.
@@ -90,22 +96,19 @@ public class MedicineStoreCell extends FrameLayout {
         addView(addressTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 72, 30, 16, 0));
 
         LinearLayout bottomContainer = new LinearLayout(context);
-        bottomContainer.setOrientation(LinearLayout.HORIZONTAL);
-        bottomContainer.setGravity(Gravity.CENTER_VERTICAL);
-        addView(bottomContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.BOTTOM, 72, 0, 16, 10));
+        bottomContainer.setOrientation(LinearLayout.VERTICAL);
+        bottomContainer.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+        addView(bottomContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 80, Gravity.BOTTOM, 72, 0, 16, 10));
 
 
         storeCountView = new TextView(context);
-        storeCountView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        storeCountView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         storeCountView.setMaxLines(1);
         storeCountView.setEllipsize(TextUtils.TruncateAt.END);
         storeCountView.setSingleLine(true);
         storeCountView.setTextColor(ResourcesConfig.textPrimary);
         storeCountView.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-        bottomContainer.addView(storeCountView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 8, 8, 0));
-        layoutParams = (LinearLayout.LayoutParams) storeCountView.getLayoutParams();
-        layoutParams.weight = 1;
-        storeCountView.setLayoutParams(layoutParams);
+        bottomContainer.addView(storeCountView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 8, 8, 0));
 
         addShoppingCartView = new Button(context);
         addShoppingCartView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
@@ -114,22 +117,19 @@ public class MedicineStoreCell extends FrameLayout {
         addShoppingCartView.setSingleLine(true);
         addShoppingCartView.setTextColor(ResourcesConfig.textPrimary);
         addShoppingCartView.setBackgroundResource(R.drawable.btn_primary_border);
+        addShoppingCartView.setText("加入购物车");
         addShoppingCartView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(4));
         addShoppingCartView.setGravity(Gravity.CENTER);
-        addShoppingCartView.setText("加入购物车");
-        bottomContainer.addView(addShoppingCartView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT,32, 8, 8, 0, 0));
-        layoutParams = (LinearLayout.LayoutParams) addShoppingCartView.getLayoutParams();
-        layoutParams.weight = 1;
-        addShoppingCartView.setLayoutParams(layoutParams);
+        bottomContainer.addView(addShoppingCartView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, 8, 8, 0, 0));
 
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(104) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(136) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
     }
 
-    public void setValue(String storeIcon, String storeName, String storeAddress, int storeCount, boolean divider) {
+    public void setValue(String storeIcon, String storeName, String storeAddress, int storeCount, BigDecimal price, boolean divider) {
         needDivider = divider;
         nameTextView.setText(storeName);
         addressTextView.setText(storeAddress);
@@ -144,7 +144,38 @@ public class MedicineStoreCell extends FrameLayout {
         distanceTextView.setText("");
         distanceTextView.setVisibility(View.GONE);
 
-        storeCountView.setText(String.format("库存量(%s)", storeCount));
+        String storeCountStr;
+        int storeCountFontColor;
+        int addShoppingCartResId;
+        if (storeCount <= 0) {
+            storeCountStr = "暂时无货";
+            storeCountFontColor = ResourcesConfig.bodyText3;
+            addShoppingCartResId = R.drawable.btn_border_grey;
+        } else if (storeCount < 10) {
+            storeCountStr = String.format("库存紧张 (%d)", storeCount);
+            storeCountFontColor = ResourcesConfig.emergencyText;
+            addShoppingCartResId = R.drawable.btn_border_emergency;
+        } else if (storeCount < 999) {
+            storeCountStr = String.format("现在有货 (%d)", storeCount);
+            storeCountFontColor = ResourcesConfig.textPrimary;
+            addShoppingCartResId = R.drawable.btn_primary_border;
+        } else {
+            storeCountStr = "现在有货";
+            storeCountFontColor = ResourcesConfig.textPrimary;
+            addShoppingCartResId = R.drawable.btn_primary_border;
+        }
+        SpannableString storeCountSpan = new SpannableString(storeCountStr);
+        storeCountSpan.setSpan(new ForegroundColorSpan(storeCountFontColor), 0, storeCountStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        storeCountView.setText(storeCountSpan);
+
+        addShoppingCartView.setBackgroundResource(addShoppingCartResId);
+        addShoppingCartView.setTextColor(storeCountFontColor);
+        DecimalFormat decimalFormat = new DecimalFormat("￥#,###.00");
+        String priceStr = decimalFormat.format(price);
+        String addShoppingCartText = String.format("加入购物车 %s", priceStr);
+        addShoppingCartView.setText(addShoppingCartText);
+
+
         setWillNotDraw(!divider);
     }
 

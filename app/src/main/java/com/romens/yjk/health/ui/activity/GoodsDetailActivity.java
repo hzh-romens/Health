@@ -45,7 +45,6 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
-import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
@@ -56,7 +55,6 @@ import com.romens.yjk.health.model.GoodsCommentEntity;
 import com.romens.yjk.health.model.MedicineGoodsItem;
 import com.romens.yjk.health.model.MedicineSaleStoreEntity;
 import com.romens.yjk.health.model.MedicineServiceModeEntity;
-import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.ShoppingCartUtils;
 import com.romens.yjk.health.ui.cells.GoodsCommentCell;
 import com.romens.yjk.health.ui.cells.MedicineImagesCell;
@@ -185,6 +183,14 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                ActionBar actionBar1 = getMyActionBar();
+                if (actionBar1 != null) {
+                    if (firstVisibleItem > 1) {
+                        setActionBarTitle(actionBar1, currMedicineGoodsItem == null ? "" : currMedicineGoodsItem.name);
+                    } else {
+                        setActionBarTitle(actionBar1, "");
+                    }
+                }
                 if (totalItemCount == 0) {
                     return;
                 }
@@ -358,6 +364,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             }
         }
     }
+
     int sumCount;
 
     private void tryAddMedicineFavorites() {
@@ -784,7 +791,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 }
                 MedicineStoreCell cell = (MedicineStoreCell) view;
                 if (i == storeRow) {
-                    cell.setValue("", currMedicineGoodsItem.shopName, currMedicineGoodsItem.shopAddress, currMedicineGoodsItem.storeCount, true);
+                    cell.setValue("", currMedicineGoodsItem.shopName, currMedicineGoodsItem.shopAddress, currMedicineGoodsItem.storeCount, currMedicineGoodsItem.userPrice, true);
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -794,7 +801,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else {
                     int storeIndex = i - otherStoresBeginRow;
                     MedicineSaleStoreEntity storeEntity = saleStoreEntities.get(storeIndex);
-                    cell.setValue("", storeEntity.name, storeEntity.address, storeEntity.storeCount, i != otherStoresEndRow);
+                    cell.setValue("", storeEntity.name, storeEntity.address, storeEntity.storeCount, currMedicineGoodsItem.userPrice, i != otherStoresEndRow);
                     cell.setDistance(storeEntity.distance);
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
@@ -814,7 +821,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else if (i == serviceSectionRow) {
                     cell.setText("服务");
                 } else if (i == commentSection1Row) {
-                    cell.setText("商品评论");
+                    cell.setText("买家评价");
                 }
             } else if (viewType == 7) {
                 if (view == null) {
@@ -837,7 +844,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else if (i == commentMoreRow) {
                     cell.setTextColor(ResourcesConfig.bodyText3);
                     cell.setValueTextColor(ResourcesConfig.bodyText3);
-                    cell.setText("查看更多评论", true, true);
+                    cell.setText("查看更多评价", true, true);
                 }
             } else if (viewType == 8) {
                 if (view == null) {

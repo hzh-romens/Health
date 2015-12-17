@@ -16,7 +16,7 @@ import java.text.DecimalFormat;
  */
 public class ShoppingHelper {
     public static SpannableString formatPrice(BigDecimal price) {
-        DecimalFormat decimalFormat = new DecimalFormat("￥#.##");
+        DecimalFormat decimalFormat = new DecimalFormat("￥ #.00");
         String priceStr = decimalFormat.format(price);
         SpannableString spannableString = new SpannableString(priceStr);
         int length = priceStr.length();

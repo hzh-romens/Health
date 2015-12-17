@@ -85,7 +85,7 @@ public class MedicineFavoriteService extends IntentService {
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                Log.e("addtofarvite", "ERROR");
+                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onAddMedicineFavorite, medicineID, 0);
             }
 
             @Override
@@ -139,7 +139,11 @@ public class MedicineFavoriteService extends IntentService {
             FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
                 @Override
                 public void onTokenTimeout(Message msg) {
-                    Log.e("addtofarvite", "ERROR");
+                    if(medicineID.size()==1){
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onRemoveMedicineFavorite, medicineID.get(0), 0);
+                    }else{
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onRemoveMedicineFavorite);
+                    }
                 }
 
                 @Override

@@ -15,10 +15,14 @@ public class ResourcesConfig {
     public static final int bodyText2 = 0x80000000;
     public static final int bodyText3 = 0x60000000;
 
-    public static final int priceFontColor=0xffc41411;
+    public static final int emergencyText;
+
+    public static final int priceFontColor=0xffb0120a;
 
     static {
         primaryColor = MyApplication.applicationContext.getResources().getColor(R.color.theme_primary);
         textPrimary = MyApplication.applicationContext.getResources().getColor(R.color.text_primary);
+
+        emergencyText=MyApplication.applicationContext.getResources().getColor(R.color.font_emergency);
     }
 }

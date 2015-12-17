@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,10 +43,27 @@ public class GoodsCommentCell extends LinearLayout {
 
         setOrientation(VERTICAL);
 
-        LinearLayout topContainer = new LinearLayout(context);
-        topContainer.setOrientation(HORIZONTAL);
-        topContainer.setGravity(Gravity.CENTER_VERTICAL);
-        addView(topContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        FrameLayout topContainer = new FrameLayout(context);
+        addView(topContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT,48));
+
+        userView = new TextView(context);
+        userView.setTextColor(ResourcesConfig.bodyText3);
+        userView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        userView.setLines(1);
+        userView.setMaxLines(3);
+        userView.setSingleLine(true);
+        userView.setEllipsize(TextUtils.TruncateAt.END);
+        userView.setGravity(Gravity.LEFT);
+        topContainer.addView(userView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT,LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 16, 4, 160, 0));
+
+        dateView = new TextView(context);
+        dateView.setTextColor(ResourcesConfig.bodyText3);
+        dateView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        dateView.setLines(1);
+        dateView.setMaxLines(1);
+        dateView.setSingleLine(true);
+        dateView.setGravity(Gravity.LEFT);
+        topContainer.addView(dateView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.BOTTOM, 16, 0, 16, 4));
 
         ratingBar = new FlexibleRatingBar(context);
         ratingBar.setEnabled(false);
@@ -58,16 +76,7 @@ public class GoodsCommentCell extends LinearLayout {
         ratingBar.setColorOutlineOn(0xfff57f17);
         ratingBar.setColorOutlinePressed(0xfff57f17);
         ratingBar.setStrokeWidth(AndroidUtilities.dp(2));
-        topContainer.addView(ratingBar, LayoutHelper.createLinear(112, 16, 16, 8, 16, 8));
-
-        dateView = new TextView(context);
-        dateView.setTextColor(ResourcesConfig.bodyText3);
-        dateView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        dateView.setLines(1);
-        dateView.setMaxLines(1);
-        dateView.setSingleLine(true);
-        dateView.setGravity(Gravity.RIGHT);
-        topContainer.addView(dateView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 8, 16, 8));
+        topContainer.addView(ratingBar, LayoutHelper.createFrame(112, 24, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 16, 0, 16, 0));
 
         contentView = new TextView(context);
         contentView.setTextColor(ResourcesConfig.bodyText1);
@@ -77,17 +86,7 @@ public class GoodsCommentCell extends LinearLayout {
         contentView.setSingleLine(true);
         contentView.setEllipsize(TextUtils.TruncateAt.END);
         contentView.setGravity(Gravity.LEFT);
-        addView(contentView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 4, 16, 4));
-
-        userView = new TextView(context);
-        userView.setTextColor(ResourcesConfig.bodyText3);
-        userView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        userView.setLines(1);
-        userView.setMaxLines(3);
-        userView.setSingleLine(true);
-        userView.setEllipsize(TextUtils.TruncateAt.END);
-        userView.setGravity(Gravity.LEFT);
-        addView(userView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 4, 16, 8));
+        addView(contentView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 8, 16, 16));
     }
 
     public void setValue(int rate, int allCount, String dateTime, String content, String user, boolean divider) {
@@ -96,7 +95,7 @@ public class GoodsCommentCell extends LinearLayout {
         ratingBar.setDesiredCount(rate);
         dateView.setText(dateTime);
         contentView.setText(content);
-        userView.setText(String.format("评论者: %s", user));
+        userView.setText(user);
         needDivider = divider;
         setWillNotDraw(!divider);
         requestLayout();
