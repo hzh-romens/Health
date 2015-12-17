@@ -49,6 +49,8 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.HistoryDao;
+import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsCommentEntity;
 import com.romens.yjk.health.model.MedicineGoodsItem;
@@ -72,6 +74,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.greenrobot.dao.query.DeleteQuery;
 
 /**
  * Created by siery on 15/12/14.
@@ -442,6 +446,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                         }
                         loadMedicineSaleStores();
                         loadCommentData();
+                        AddToHistory(currMedicineGoodsItem);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -918,5 +923,14 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             }
         });
     }
+
+    public void AddToHistory(MedicineGoodsItem item) {
+        HistoryEntity historyEntity = HistoryEntity.toEntity(item);
+        HistoryDao historyDao = DBInterface.instance().openWritableDb().getHistoryDao();
+        DeleteQuery<HistoryEntity> historyEntityDeleteQuery = historyDao.queryBuilder().where(HistoryDao.Properties.Guid.eq(item.guid)).buildDelete();
+        historyEntityDeleteQuery.executeDeleteWithoutDetachingEntities();
+        historyDao.insertOrReplace(historyEntity);
+    }
+
 
 }

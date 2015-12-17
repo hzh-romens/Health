@@ -104,7 +104,6 @@ public class MedicinalDetailActivity extends BaseActivity {
         initIntentValue();
         initView();
         requestNearbyData();
-
     }
 
     //获取intent传递过来的值
@@ -139,6 +138,7 @@ public class MedicinalDetailActivity extends BaseActivity {
         tv_color = (TextView) findViewById(R.id.tv_favorite);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
+        //魅族手机滑动问题
         if (Build.VERSION.SDK_INT >= 9) {
             recyclerView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         }

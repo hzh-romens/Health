@@ -1,5 +1,7 @@
 package com.romens.yjk.health.db.entity;
 
+import com.romens.yjk.health.model.MedicineGoodsItem;
+
 /**
  * Created by AUSU on 2015/10/16.
  */
@@ -102,5 +104,19 @@ public class HistoryEntity {
 
     public void setGuid(String guid) {
         this.guid = guid;
+    }
+    public static HistoryEntity toEntity(MedicineGoodsItem item){
+        HistoryEntity historyEntity = new HistoryEntity();
+        historyEntity.setShopName(item.shopName);
+        historyEntity.setImgUrl(item.smallImageUrl);
+        historyEntity.setIsSelect(true);
+        historyEntity.setMedicinalName(item.name);
+        historyEntity.setCurrentPrice(item.userPrice + "");
+        historyEntity.setDiscountPrice(item.marketPrice + "");
+        historyEntity.setSaleCount(item.totalSaledCount + "");
+        historyEntity.setCommentCount(item.storeCount+"");
+        historyEntity.setGuid(item.guid);
+        historyEntity.setShopIp(item.shopId);
+        return historyEntity;
     }
 }
