@@ -354,6 +354,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             }
         }
     }
+    int sumCount;
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
@@ -379,6 +380,10 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         } else if (id == AppNotificationCenter.onShoppingCartChanged) {
             if (shoppingCartItem != null) {
                 int count = (int) args[0];
+                sumCount = sumCount + count;
+                if (sumCount < 0) {
+                    sumCount = 0;
+                }
                 Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(GoodsDetailActivity.this, R.drawable.ic_shopping_cart_grey600_24dp, count);
                 shoppingCartItem.setIcon(shoppingCartCountBitmap);
             }
