@@ -69,7 +69,7 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
     private void loadShoppingCartCount() {
         if (UserConfig.isClientLogined()) {
             Map<String, Object> args = new HashMap<>();
-            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+            args.put("USERGUID", UserConfig.getClientUserId());
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
             Message message = new Message.MessageBuilder()
@@ -90,6 +90,9 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.has("BUYCOUNT")) {
                                 shoppingCartCount = jsonObject.getInt("BUYCOUNT");
+                                if (shoppingCartCount < 0) {
+                                    shoppingCartCount = 0;
+                                }
                                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, shoppingCartCount);
                                 return;
                             }

@@ -55,7 +55,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     private RelativeLayout btn_switch;
     private boolean Expand = false;
     private String choice;
-    private int PAGE = 1;
+    private int PAGE =0;
     private final int COUNT = 10;
     private String GUID, name;
     private LinearLayoutManager linearLayoutManager;
@@ -334,7 +334,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     List<GoodListEntity> result = new ArrayList<GoodListEntity>();
                     result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {
                     }.getType());
-                    if (PAGE == 1) {
+                    if (PAGE == 0) {
                         bindData(result);
                     } else {
                         if (ADAPTERFLAG == 1) {
@@ -399,7 +399,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     Gson gson = new Gson();
                     List<GoodListEntity> result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {
                     }.getType());
-                    if (PAGE == 1) {
+                    if (PAGE == 0) {
                         bindData(result);
                     } else {
                         if (ADAPTERFLAG == 1) {

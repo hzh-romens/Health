@@ -10,6 +10,7 @@ public class ResourcesConfig {
     public static int primaryColor;
     public static final int textPrimary;
 
+    public static final int bodyText1 = 0xff212121;
     public static final int bodyText2 = 0x80000000;
     public static final int bodyText3 = 0x60000000;
 

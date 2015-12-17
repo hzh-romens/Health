@@ -4,4 +4,11 @@
 .DS_Store
 /build
 /captures
+
+
+#
+.idea/
+*.iml
+gradle.properties
+/.idea
 /keystore

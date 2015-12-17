@@ -24,7 +24,7 @@ import java.util.List;
  * Created by siery on 15/12/14.
  */
 public class MedicineImagesCell extends FrameLayout {
-    public static final int CELL_HEIGHT=200;
+    public static final int CELL_HEIGHT=216;
     private GuideViewPager viewPager;
     private TextView pagerCountView;
 
