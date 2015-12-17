@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,11 +20,12 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.yjk.health.R;
@@ -119,7 +119,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
-                PAGE = 1;
+                PAGE = 0;
                 if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
                     requestData();
                 } else {
@@ -206,7 +206,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        PAGE = 1;
+        PAGE = 0;
         switch (v.getId()) {
             case R.id.back:
                 finish();
@@ -316,6 +316,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
+                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+                }))
                 .build();
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
@@ -328,12 +330,13 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             public void onResult(Message msg, Message errorMsg) {
 
                 if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String response = responseProtocol.getResponse();
-                    Gson gson = new Gson();
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
                     List<GoodListEntity> result = new ArrayList<GoodListEntity>();
-                    result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {
-                    }.getType());
+                    for (LinkedTreeMap<String, String> item : response) {
+                        GoodListEntity entity = GoodListEntity.toEntity(item);
+                        result.add(entity);
+                    }
                     if (PAGE == 0) {
                         bindData(result);
                     } else {
@@ -380,6 +383,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
+                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+                }))
                 .build();
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
@@ -393,12 +398,13 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
                 if (errorMsg == null) {
                     refreshLayout.setRefreshing(false);
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String response = responseProtocol.getResponse();
-                    Log.i("Edittext不为空的数据----", response);
-                    Gson gson = new Gson();
-                    List<GoodListEntity> result = gson.fromJson(response, new TypeToken<List<GoodListEntity>>() {
-                    }.getType());
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
+                    List<GoodListEntity> result = new ArrayList<GoodListEntity>();
+                    for (LinkedTreeMap<String, String> item : response) {
+                        GoodListEntity entity = GoodListEntity.toEntity(item);
+                        result.add(entity);
+                    }
                     if (PAGE == 0) {
                         bindData(result);
                     } else {
@@ -411,7 +417,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
                 } else {
                     refreshLayout.setRefreshing(false);
-                    Log.i("errorMsg---", errorMsg.msg);
                     shopListAdapter.BindData(null);
                     Toast.makeText(ShopListActivity.this, "数据为空", Toast.LENGTH_SHORT).show();
                 }

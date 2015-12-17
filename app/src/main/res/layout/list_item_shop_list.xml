@@ -3,14 +3,14 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="96dp"
     >
-    <ImageView
+    <com.romens.android.ui.Image.BackupImageView
         android:layout_width="96dp"
         android:layout_height="96dp"
       android:layout_gravity="center_vertical"
         android:id="@+id/iv"
         style="@style/ImageStyle"
         android:scaleType="fitXY"
-        android:src="@drawable/picture_fail"/> <!--android:layout_marginTop="@dimen/padding_inner"-->
+        android:src="@drawable/picture_fail"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

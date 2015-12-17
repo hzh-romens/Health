@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -29,14 +27,11 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
-import com.romens.yjk.health.ui.IllnessActivity;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.cells.ADDiseaseCell;
 import com.romens.yjk.health.ui.cells.ADDiseaseCell.ADDisease;
 import com.romens.yjk.health.ui.cells.DrugChildCell;
 import com.romens.yjk.health.ui.cells.DrugGroupCell;
-
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,6 +51,8 @@ public class HomeHealthFragment extends BaseFragment {
     private String adDiseaseTitle;
     private String adDiseaseSubTitle;
     private List<ADDisease> adDiseaseList = new ArrayList<>();
+    public static final String ARGUMENTS_KEY_ID = "key_id";
+    public static final String ARGUMENTS_KEY_NAME = "key_name";
 
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,8 +104,8 @@ public class HomeHealthFragment extends BaseFragment {
             //Intent intent = new Intent(getActivity(), IllnessActivity.class);
             Intent intent = new Intent(getActivity(), ShopListActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putString(IllnessActivity.ARGUMENTS_KEY_ID, childNode.getId());
-            arguments.putString(IllnessActivity.ARGUMENTS_KEY_NAME, childNode.getName());
+            arguments.putString(ARGUMENTS_KEY_ID, childNode.getId());
+            arguments.putString(ARGUMENTS_KEY_NAME, childNode.getName());
             intent.putExtras(arguments);
             startActivity(intent);
         }
@@ -153,7 +150,6 @@ public class HomeHealthFragment extends BaseFragment {
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                Log.i("超时信息---",msg.msg);
                 changeRefreshUI(false);
                 bindData(null);
             }
@@ -164,8 +160,6 @@ public class HomeHealthFragment extends BaseFragment {
                 if (errorMsg == null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     bindData(responseProtocol.getResponse());
-                } else {
-                    Log.i("错误----",errorMsg.msg);
                 }
             }
         });
@@ -186,7 +180,6 @@ public class HomeHealthFragment extends BaseFragment {
         }
         if (needDb.size() > 0) {
             DrugGroupDao userDao = DBInterface.instance().openWritableDb().getDrugGroupDao();
-           // userDao.deleteAll();
             userDao.insertOrReplaceInTx(needDb);
         }
         onDataChanged();
@@ -312,7 +305,6 @@ public class HomeHealthFragment extends BaseFragment {
             if (type == 0) {
                 if (convertView == null) {
                     convertView = new DrugGroupCell(getActivity());
-                  //  convertView.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 }
                 DrugGroupEntity groupNode = getGroup(currGroupPosition);
                 DrugGroupCell cell = (DrugGroupCell) convertView;
@@ -321,7 +313,6 @@ public class HomeHealthFragment extends BaseFragment {
             } else if (type == 1) {
                 if (convertView == null) {
                     convertView = new ADDiseaseCell(getActivity());
-                   // convertView.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 }
                 ADDiseaseCell cell = (ADDiseaseCell) convertView;
                 cell.setValue(adDiseaseTitle, adDiseaseSubTitle, adDiseaseList);
@@ -336,7 +327,6 @@ public class HomeHealthFragment extends BaseFragment {
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = new DrugChildCell(getActivity());
-               // convertView.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             }
             final int currGroupPosition = getCurrentGroupPosition(groupPosition);
             DrugGroupEntity childNode = getChild(currGroupPosition, childPosition);
