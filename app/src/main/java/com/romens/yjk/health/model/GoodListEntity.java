@@ -1,5 +1,7 @@
 package com.romens.yjk.health.model;
 
+import com.google.gson.internal.LinkedTreeMap;
+
 /**
  * Created by AUSU on 2015/9/28.
  */
@@ -94,4 +96,18 @@ public class GoodListEntity {
     public String getMEMBERPRICE() {
         return MEMBERPRICE;
     }
+   public static GoodListEntity toEntity(LinkedTreeMap<String, String> goodListMap){
+       GoodListEntity entity=new GoodListEntity();
+       entity.setASSESSCOUNT(goodListMap.get("ASSESSCOUNT"));
+       entity.setMEDICINENAME(goodListMap.get("MEDICINENAME"));
+       entity.setMEDICINESPEC(goodListMap.get("MEDICINESPEC"));
+       entity.setMERCHANDISEID(goodListMap.get("MERCHANDISEID"));
+       entity.setPICBIG(goodListMap.get("PICBIG"));
+       entity.setMEMBERPRICE(goodListMap.get("MEMBERPRICE"));
+       entity.setPICSMALL(goodListMap.get("PICSMALL"));
+       entity.setPRICE(goodListMap.get("PRICE"));
+       entity.setSHOPID(goodListMap.get("SHOPID"));
+       entity.setSHOPNAME(goodListMap.get("SHOPNAME"));
+       return entity;
+   }
 }

@@ -109,7 +109,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == accountRow) {
                     startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
                 } else if (position == exitRow) {
-                    //TODO 退出登录的修改，清空购物车图标的数量
                     UserConfig.clearUser();
                     UserConfig.clearConfig();
                     FacadeToken.getInstance().expired();
@@ -291,7 +290,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 }
             } else if (type == 2) {
                 if (view == null) {
-                    //view = new GreySectionCell(adapterContext);
                     view = new TextIconCell(adapterContext);
                 }
                 TextIconCell cell = (TextIconCell) view;

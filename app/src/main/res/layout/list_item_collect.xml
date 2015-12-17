@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_outter"
-        android:layout_marginRight="48dp"
+        android:layout_marginRight="96dp"
         android:layout_toRightOf="@id/collect_img"
         android:ellipsize="end"
         android:maxLines="1"
@@ -62,13 +62,14 @@
 
     <TextView
         android:id="@+id/collect_spec"
-        android:layout_width="wrap_content"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="4dp"
         android:text="bbbbbbbb"
-        android:maxLines="2"
+        android:maxLines="1"
         android:ellipsize="end"
+        android:gravity="right|center_vertical"
         android:textColor="@color/titlecolor"
         android:textSize="@dimen/text_size_medium"/>
 

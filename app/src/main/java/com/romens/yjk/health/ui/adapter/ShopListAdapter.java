@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +11,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.romens.android.io.image.ImageManager;
-import com.romens.android.io.image.ImageUtils;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodListEntity;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 
 import java.util.ArrayList;
@@ -74,19 +70,17 @@ public class ShopListAdapter extends RecyclerView.Adapter {
         ItemHolder itemHolder = (ItemHolder) holder;
         final GoodListEntity goodListEntity = mResult.get(position);
 
+
         if (goodListEntity.getPICBIG() != null && !("".equals(goodListEntity.getPICBIG()))) {
-            itemHolder.iv.setImageBitmap(ImageUtils.bindLocalImage(goodListEntity.getPICBIG()));
-            Drawable defaultDrawables = itemHolder.iv.getDrawable();
-            ImageManager.loadForView(mContext, itemHolder.iv, goodListEntity.getPICBIG(), defaultDrawables, defaultDrawables);
+            itemHolder.iv_image.setImageUrl(goodListEntity.getPICBIG(), "64_64", null);
         } else {
-            itemHolder.iv.setImageDrawable(mContext.getResources().getDrawable(R.drawable.picture_fail));
+            itemHolder.iv_image.setImageDrawable(mContext.getResources().getDrawable(R.drawable.picture_fail));
         }
 
         itemHolder.name.setText(goodListEntity.getMEDICINENAME());
         if ("".equals(goodListEntity.getPRICE()) || goodListEntity == null) {
             itemHolder.realPrice.setVisibility(View.INVISIBLE);
             itemHolder.discountPrice.setVisibility(View.INVISIBLE);
-            // itemHolder.shop.setVisibility(View.INVISIBLE);
         } else {
             itemHolder.realPrice.setVisibility(View.VISIBLE);
             itemHolder.discountPrice.setVisibility(View.VISIBLE);
@@ -97,14 +91,12 @@ public class ShopListAdapter extends RecyclerView.Adapter {
             itemHolder.shop.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
         }
         itemHolder.comment.setText(goodListEntity.getSHOPNAME());
-        //itemHolder.comment.setVisibility(View.GONE);
         itemHolder.shop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (UserConfig.isClientLogined()) {
                     requestToBuy(mResult.get(position).getPRICE(), mResult.get(position).getMERCHANDISEID());
                 } else {
-                    //跳转至登录页面
                     Toast.makeText(mContext, "请您先登录", Toast.LENGTH_SHORT).show();
                     mContext.startActivity(new Intent(mContext, LoginActivity.class));
                 }
@@ -113,16 +105,12 @@ public class ShopListAdapter extends RecyclerView.Adapter {
         itemHolder.linear_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(mContext, MedicinalDetailActivity.class);
-//                i.putExtra("guid", goodListEntity.getMERCHANDISEID());
-//                mContext.startActivity(i);
                 UIOpenHelper.openMedicineActivity(mContext,goodListEntity.getMERCHANDISEID());
             }
         });
     }
 
     public void requestToBuy(String PRICE, String GUID) {
-        int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("GOODSGUID", GUID);
         args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
@@ -166,13 +154,14 @@ public class ShopListAdapter extends RecyclerView.Adapter {
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder {
-        private ImageView iv, shop;
+        private ImageView shop;
+        private BackupImageView iv_image;
         private TextView name, discountPrice, realPrice, comment;
         private LinearLayout linear_item;
 
         public ItemHolder(View view) {
             super(view);
-            iv = (ImageView) view.findViewById(R.id.iv);
+            iv_image = (BackupImageView) view.findViewById(R.id.iv);
             shop = (ImageView) view.findViewById(R.id.shop);
             name = (TextView) view.findViewById(R.id.name);
             discountPrice = (TextView) view.findViewById(R.id.discountPrice);
