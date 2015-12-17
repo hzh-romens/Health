@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.romens.android.library.datetimepicker.date.DatePickerDialog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -45,7 +46,8 @@ import widget.adapters.ArrayWheelAdapter;
 /**
  * Created by HZH on 2015/10/24.
  */
-public class PersonalInformationActivity extends BaseActivity implements View.OnClickListener, OnWheelChangedListener, View.OnFocusChangeListener {
+public class PersonalInformationActivity extends BaseActivity implements View.OnClickListener,
+        OnWheelChangedListener, View.OnFocusChangeListener, DatePickerDialog.OnDateSetListener {
     private ImageView iv_back;
     private TextView choiceSex, choiceBirthday, choiceHeredopathia, choiceDisease, choiceAllergy, editor_name, editor_food, editor_rest, editor_other;
     private EditText editor_work;
@@ -232,7 +234,8 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
             case R.id.choiceBirthday:
                 btn_save.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_goorder));
                 btn_commit.setText("提交");
-                getPopWindowInstance(has, choiceBirthday, 1);
+//                getPopWindowInstance(has, choiceBirthday, 1);
+                showDatePickerDialog();
                 break;
             case R.id.choiceDisease:
                 Intent dieaseIntent = new Intent(this, SetDiseaseActivity.class);
@@ -627,5 +630,21 @@ public class PersonalInformationActivity extends BaseActivity implements View.On
                 }
                 break;
         }
+    }
+
+    //选择日期的dialog
+    public void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), true);
+        datePickerDialog.setVibrate(true);
+        datePickerDialog.setYearRange(1985, 2028);
+        datePickerDialog.setCloseOnSingleTapDay(false);
+        datePickerDialog.show(getSupportFragmentManager(), "birthday");
+        datePickerDialog.setOnDateSetListener(this);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        choiceBirthday.setText(year + "年" + (month + 1) + "月" + day + "日");
     }
 }
