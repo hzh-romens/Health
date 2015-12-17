@@ -5,19 +5,19 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
-import com.romens.yjk.health.db.dao.CollectDataDao;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
+import com.romens.yjk.health.db.dao.FavoritesDao;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
+import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
-import com.romens.yjk.health.model.CollectDataEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
-import com.romens.yjk.health.model.WeiShopEntity;
 
 import java.util.List;
 
@@ -160,10 +160,10 @@ public class DBInterface {
         }
     }
 
-    public int getCollectDataLastTime() {
-        CollectDataDao dao = openReadableDb().getCollectDataDao();
-        CollectDataEntity entity = dao.queryBuilder()
-                .orderDesc(CollectDataDao.Properties.Updated)
+    public long getFavoritesDataLastTime() {
+        FavoritesDao dao = openReadableDb().getFavoritesDao();
+        FavoritesEntity entity = dao.queryBuilder()
+                .orderDesc(FavoritesDao.Properties.Updated)
                 .limit(1)
                 .unique();
         if (entity == null) {
@@ -216,22 +216,30 @@ public class DBInterface {
     }
 
     //Determine whether or not
-    public boolean getFavorite(String guid) {
-        CollectDataDao dataDao = openReadableDb().getCollectDataDao();
-        List<CollectDataEntity> list = dataDao.queryBuilder().orderAsc(CollectDataDao.Properties.Id).list();
-        for (int i = 0; i < list.size(); i++) {
-            CollectDataEntity collectDataEntity = list.get(i);
-            if (guid.equals(collectDataEntity.getMerchandiseId())) {
-                return true;
-            }
+    public boolean isFavorite(String medicineGuid) {
+        FavoritesDao dataDao = openReadableDb().getFavoritesDao();
+        List<FavoritesEntity> entities = dataDao.queryBuilder()
+                .where(FavoritesDao.Properties.MerchandiseId.eq(medicineGuid))
+                .orderAsc(FavoritesDao.Properties.Updated).list();
+        if (entities != null && entities.size() > 0) {
+            return true;
         }
         return false;
     }
 
-    public void DeleteFavorite(WeiShopEntity shopEntity){
-        CollectDataDao collectDataDao = openWritableDb().getCollectDataDao();
-        DeleteQuery<CollectDataEntity> collectDataEntityDeleteQuery = collectDataDao.queryBuilder().where(CollectDataDao.Properties.MerchandiseId.eq(shopEntity.getGUID())).buildDelete();
-        collectDataEntityDeleteQuery.executeDeleteWithoutDetachingEntities();
+    public void removeFavoriteFromDB(String medicineGuid) {
+        FavoritesDao favoritesDao = openWritableDb().getFavoritesDao();
+        favoritesDao.queryBuilder()
+                .where(FavoritesDao.Properties.MerchandiseId.eq(medicineGuid))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();
+    }
 
+    public void removeFavoriteFromDB(List<String> medicineGuid) {
+        FavoritesDao favoritesDao = openWritableDb().getFavoritesDao();
+        favoritesDao.queryBuilder()
+                .where(FavoritesDao.Properties.MerchandiseId.in(medicineGuid))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();
     }
 }

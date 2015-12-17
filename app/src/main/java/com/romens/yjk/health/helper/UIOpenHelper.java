@@ -8,8 +8,10 @@ import android.support.v4.app.Fragment;
 
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.ShopCarActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
+import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
@@ -87,6 +89,19 @@ public class UIOpenHelper {
         arguments.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, targetUrl);
         intent.putExtras(arguments);
         context.startActivity(intent);
+    }
+
+    public static void openFavoritesActivity(Context context) {
+        Intent intent = new Intent(context, FavoritesActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void syncFavorites(Activity context) {
+        if (UserConfig.isClientLogined()) {
+            Intent service = new Intent(context, MedicineFavoriteService.class);
+            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_ACTION, MedicineFavoriteService.ACTION_SYNC);
+            context.startService(service);
+        }
     }
 
 }

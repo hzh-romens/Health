@@ -1,10 +1,10 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +25,11 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.model.CollectDataEntity;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,30 +39,34 @@ import java.util.Map;
 public class CollectAdapter extends BaseAdapter {
 
     private Context context;
-    private List<CollectDataEntity> entities;
+    private final List<FavoritesEntity> favoritesEntities =new ArrayList<>();
+    private final Map<String,Boolean> favoritesSelects=new HashMap<>();
 
-    public CollectAdapter(Context context, List<CollectDataEntity> entities) {
+    public CollectAdapter(Context context) {
         this.context = context;
-        this.entities = entities;
     }
 
-    public void setEntities(List<CollectDataEntity> entities) {
-        this.entities = entities;
+    public void bindData(List<FavoritesEntity> data) {
+        favoritesEntities.clear();
+        if(data!=null&&data.size()>0){
+            favoritesEntities.addAll(data);
+        }
+        favoritesSelects.clear();
         notifyDataSetChanged();
     }
 
-    public List<CollectDataEntity> getEntities() {
-        return entities;
+    public List<FavoritesEntity> getFavoritesEntities() {
+        return favoritesEntities;
     }
 
     @Override
     public int getCount() {
-        return entities==null?0:entities.size();
+        return favoritesEntities ==null?0: favoritesEntities.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return entities.get(position);
+    public FavoritesEntity getItem(int position) {
+        return favoritesEntities.get(position);
     }
 
     @Override
@@ -78,7 +83,7 @@ public class CollectAdapter extends BaseAdapter {
             convertView.setTag(holder);
         }
         holder = (CollectViewHolder) convertView.getTag();
-        final CollectDataEntity entity = entities.get(position);
+        final FavoritesEntity entity = favoritesEntities.get(position);
         if (entity.getPicSmall() == null || entity.getPicSmall().equals("") || entity.getPicSmall().equals("null")) {
             holder.imageView.setImageResource(R.drawable.no_img_upload);
         } else {
@@ -93,7 +98,7 @@ public class CollectAdapter extends BaseAdapter {
         holder.isSelectImgView.setVisibility(View.VISIBLE);
         String tempCount = entity.getSaleCount() + "件已售  " + entity.getAssessCount() + "条评论";
         holder.sellCountTextView.setText(tempCount);
-        if (entity.isSelect()) {
+        if (isSelect(entity.getId())) {
             holder.isSelectImgView.setImageResource(R.drawable.control_address_deafult);
         } else {
             holder.isSelectImgView.setImageResource(R.drawable.control_address_undeafult);
@@ -101,19 +106,15 @@ public class CollectAdapter extends BaseAdapter {
         holder.addShopCarImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestToBuy(entity.getMemberPrice(), entity.getMerchandiseId());
+                //requestToBuy(entity.getMemberPrice(), entity.getMerchandiseId());
             }
         });
 
         holder.isSelectImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (entities.get(position).isSelect()) {
-                    entities.get(position).setIsSelect(false);
-                } else {
-                    entities.get(position).setIsSelect(true);
-                }
-                notifyDataSetChanged();
+                FavoritesEntity temp=getItem(position);
+                switchSelect(temp.getId());
             }
         });
         convertView.setBackgroundColor(Color.WHITE);
@@ -129,6 +130,21 @@ public class CollectAdapter extends BaseAdapter {
         });
 
         return convertView;
+    }
+
+    public boolean isSelect(String id){
+        if(!favoritesSelects.containsKey(id)) {
+            favoritesSelects.put(id, false);
+        }
+        return favoritesSelects.get(id);
+    }
+
+    public void switchSelect(String id){
+        if(!favoritesSelects.containsKey(id)){
+            favoritesSelects.put(id, false);
+        }
+        favoritesSelects.put(id,!favoritesSelects.get(id));
+        notifyDataSetChanged();
     }
 
     class CollectViewHolder {

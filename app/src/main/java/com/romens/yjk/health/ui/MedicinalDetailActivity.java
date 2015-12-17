@@ -147,7 +147,7 @@ public class MedicinalDetailActivity extends BaseActivity {
 
         tv_favorite = (FrameLayout) findViewById(R.id.favorite);
         tv_favorite.setEnabled(false);
-        boolean favorite = DBInterface.instance().getFavorite(GUID);
+        boolean favorite=false;// = DBInterface.instance().getFavorite(GUID);
         if (favorite) {
             iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
             tv_color.setText("已收藏");
@@ -253,7 +253,7 @@ public class MedicinalDetailActivity extends BaseActivity {
                                     iv_favorite.setImageResource(R.drawable.ic_favorite);
                                     tv_color.setText("收藏");
                                     tv_color.setTextColor(getResources().getColor(R.color.white));
-                                    DBInterface.instance().DeleteFavorite(weiShopEntity);
+                                    //DBInterface.instance().DeleteFavorite(weiShopEntity);
                                 } else {
                                     iv_favorite.setImageResource(R.drawable.ic_favorite_chose);
                                     Toast.makeText(MedicinalDetailActivity.this, "取消收藏失败", Toast.LENGTH_SHORT).show();

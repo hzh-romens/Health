@@ -9,6 +9,7 @@ import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.EatDrugUserEntity;
 import com.romens.yjk.health.db.entity.FamilyDrugGroupEntity;
 import com.romens.yjk.health.db.entity.FamilyMemberEntity;
+import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
@@ -69,8 +70,8 @@ public class DaoSession extends AbstractDaoSession {
     private final HistoryDao historyDao;
     private final DaoConfig historyDaoConfig;
 
-    private final CollectDataDao collectDataDao;
-    private final DaoConfig collectDataDaoConfig;
+    private final FavoritesDao favoritesDao;
+    private final DaoConfig favoritesDataDaoConfig;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -137,10 +138,10 @@ public class DaoSession extends AbstractDaoSession {
         historyDao = new HistoryDao(historyDaoConfig, this);
         registerDao(HistoryEntity.class, historyDao);
 
-        collectDataDaoConfig = daoConfigMap.get(CollectDataDao.class).clone();
-        collectDataDaoConfig.initIdentityScope(type);
-        collectDataDao = new CollectDataDao(collectDataDaoConfig, this);
-        registerDao(CollectDataEntity.class, collectDataDao);
+        favoritesDataDaoConfig = daoConfigMap.get(FavoritesDao.class).clone();
+        favoritesDataDaoConfig.initIdentityScope(type);
+        favoritesDao = new FavoritesDao(favoritesDataDaoConfig, this);
+        registerDao(FavoritesEntity.class, favoritesDao);
     }
 
     public void clear() {
@@ -156,7 +157,7 @@ public class DaoSession extends AbstractDaoSession {
         familyMemberDaoConfig.getIdentityScope().clear();
         familyDrugGroupDaoConfig.getIdentityScope().clear();
         historyDaoConfig.getIdentityScope().clear();
-        collectDataDaoConfig.getIdentityScope().clear();
+        favoritesDataDaoConfig.getIdentityScope().clear();
     }
 
     public DataCacheDao getDataCacheDao() {
@@ -208,7 +209,7 @@ public class DaoSession extends AbstractDaoSession {
         return familyDrugGroupDao;
     }
 
-    public CollectDataDao getCollectDataDao() {
-        return collectDataDao;
+    public FavoritesDao getFavoritesDao() {
+        return favoritesDao;
     }
 }

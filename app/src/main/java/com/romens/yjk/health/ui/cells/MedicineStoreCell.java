@@ -60,7 +60,7 @@ public class MedicineStoreCell extends FrameLayout {
         nameTextView = new TextView(context);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         nameTextView.setMaxLines(1);
-        nameTextView.setEllipsize(TextUtils.TruncateAt.END);
+        nameTextView.setEllipsize(TextUtils.TruncateAt.MIDDLE);
         nameTextView.setSingleLine(true);
         nameTextView.setTextColor(0xff212121);
         nameTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
@@ -83,7 +83,7 @@ public class MedicineStoreCell extends FrameLayout {
         addressTextView = new TextView(context);
         addressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         addressTextView.setMaxLines(1);
-        addressTextView.setEllipsize(TextUtils.TruncateAt.END);
+        addressTextView.setEllipsize(TextUtils.TruncateAt.MIDDLE);
         addressTextView.setSingleLine(true);
         addressTextView.setTextColor(0xff999999);
         addressTextView.setGravity(Gravity.LEFT);
@@ -167,7 +167,7 @@ public class MedicineStoreCell extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         if (needDivider) {
-            canvas.drawLine(AndroidUtilities.dp(17), getHeight() - 1, getWidth(), getHeight() - 1, paint);
+            canvas.drawLine(AndroidUtilities.dp(72), getHeight() - 1, getWidth(), getHeight() - 1, paint);
         }
     }
 }

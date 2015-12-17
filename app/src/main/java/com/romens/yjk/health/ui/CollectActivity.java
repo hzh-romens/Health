@@ -7,56 +7,38 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.romens.android.AndroidUtilities;
-import com.romens.android.network.FacadeArgs;
-import com.romens.android.network.FacadeClient;
-import com.romens.android.network.Message;
-import com.romens.android.network.protocol.FacadeProtocol;
-import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
-import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
-import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.FacadeConfig;
-import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.core.CollectDelCallback;
-import com.romens.yjk.health.core.CollectHelper;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.dao.CollectDataDao;
-import com.romens.yjk.health.model.CollectDataEntity;
+import com.romens.yjk.health.db.dao.FavoritesDao;
+import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.ui.adapter.CollectAdapter;
 import com.romens.yjk.health.ui.cells.CollectDrawerCell;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 import com.romens.yjk.health.ui.cells.IsSelectCell;
-import com.romens.yjk.health.ui.fragment.CollectFragment;
+import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by anlc on 2015/10/14.
  * 收藏页面
  */
-public class CollectActivity extends BaseActivity implements CollectDelCallback {
+public class CollectActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SlidingFixTabLayout tabLayout;
     private ViewPager viewPager;
@@ -68,7 +50,6 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
     private ListView listView;
     private CollectAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private List<CollectDataEntity> entities;
 
     //    private LinearLayout container;
     private ImageAndTextCell attachView;
@@ -80,8 +61,22 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
     private String userGuid;
 
     @Override
+    public void onDestroy() {
+
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onAddMedicineFavorite);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ShoppingServiceFragment.instance(getSupportFragmentManager());
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onAddMedicineFavorite);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
+
         userGuid = UserGuidConfig.USER_GUID;
         contentView = new DrawerLayout(this);
         contentView.addView(subContentView(), new DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.MATCH_PARENT, DrawerLayout.LayoutParams.MATCH_PARENT));
@@ -127,15 +122,15 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
     }
 
     private void refreshContentView() {
-        if (entities != null && entities.size() > 0) {
-            attachView.setVisibility(View.GONE);
-            isSelectCell.setVisibility(View.VISIBLE);
-            refreshLayout.setVisibility(View.VISIBLE);
-        } else {
-            refreshLayout.setVisibility(View.GONE);
-            isSelectCell.setVisibility(View.GONE);
-            attachView.setVisibility(View.VISIBLE);
-        }
+//        if (entities != null && entities.size() > 0) {
+//            attachView.setVisibility(View.GONE);
+//            isSelectCell.setVisibility(View.VISIBLE);
+//            refreshLayout.setVisibility(View.VISIBLE);
+//        } else {
+//            refreshLayout.setVisibility(View.GONE);
+//            isSelectCell.setVisibility(View.GONE);
+//            attachView.setVisibility(View.VISIBLE);
+//        }
 
     }
 
@@ -167,7 +162,7 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
         listView = new ListView(this);
         listView.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         refreshLayout.addView(listView);
-        adapter = new CollectAdapter(this, entities);
+        adapter = new CollectAdapter(this);
         listView.setAdapter(adapter);
 
         isSelectCell = new IsSelectCell(this);
@@ -177,65 +172,28 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
         isSelectCell.setInfo("全选", false);
         isSelectCell.setRightBtnTxt("删除");
         isSelectCell.needTopDivider(true);
-        isSelectCell.setViewClick(new IsSelectCell.onViewClick() {
-            @Override
-            public void onImageViewClick() {
-                boolean isSelect = isSelectCell.changeSelect();
-                for (int i = 0; i < entities.size(); i++) {
-                    entities.get(i).setIsSelect(isSelect);
-                }
-                adapter.setEntities(entities);
-            }
-
-            @Override
-            public void rightBtnClick() {
-                entities = adapter.getEntities();
-                CollectHelper.getInstance().delCollect(CollectActivity.this, delEntity(entities));
-            }
-        });
-    }
-
-    private ArrayList<CollectDataEntity> delEntity(List<CollectDataEntity> entities) {
-        ArrayList<CollectDataEntity> result = new ArrayList<>();
-        for (int i = 0; i < entities.size(); i++) {
-            if (entities.get(i).isSelect()) {
-                result.add(entities.get(i));
-            }
-        }
-        return result;
+//        isSelectCell.setViewClick(new IsSelectCell.onViewClick() {
+//            @Override
+//            public void onImageViewClick() {
+//                boolean isSelect = isSelectCell.changeSelect();
+//                for (int i = 0; i < entities.size(); i++) {
+//                    entities.get(i).setIsSelect(isSelect);
+//                }
+//                adapter.setEntities(entities);
+//            }
+//
+//            @Override
+//            public void rightBtnClick() {
+//                entities = adapter.getFavoritesEntities();
+//                CollectHelper.getInstance().delCollect(CollectActivity.this, delEntity(entities));
+//            }
+//        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initData();
-    }
-
-    private void initData() {
-        CollectDataDao dao = DBInterface.instance().openReadableDb().getCollectDataDao();
-        entities = dao.loadAll();
-        refreshContentView();
-        adapter.setEntities(entities);
-    }
-
-    private void addFragment(ActionBarLayout.LinearLayoutContainer container) {
-        tabLayout = new SlidingFixTabLayout(this);
-        tabLayout.setBackgroundResource(R.color.theme_primary);
-        container.addView(tabLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
-        FrameLayout frameLayout = new FrameLayout(this);
-        viewPager = new ViewPager(this);
-        frameLayout.addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        container.addView(frameLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
-        pagerAdapter = new CollectPagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
-        viewPager.setAdapter(pagerAdapter);
-
-        tabLayout.setCustomTabView(R.layout.widget_tab_indicator, android.R.id.text1);
-        tabLayout.setTabStripBottomBorderThicknessPadding(AndroidUtilities.dp(2));
-        tabLayout.setSelectedIndicatorColors(Color.WHITE);
-        tabLayout.setDistributeEvenly(true);
-        tabLayout.setViewPager(viewPager);
+        updateGoodsFavorites();
     }
 
     private void actionBarEvent(ActionBar actionBar) {
@@ -257,31 +215,26 @@ public class CollectActivity extends BaseActivity implements CollectDelCallback 
         });
     }
 
-    private List<Fragment> initFragment() {
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new CollectFragment(this, DRUG_TYPE));
-        fragments.add(new CollectFragment(this, DRUG_STROY_TYPE));
-        return fragments;
-    }
-
-    private List<String> initPagerTitle() {
-        List<String> titles = new ArrayList<>();
-        titles.add("药品");
-        titles.add("药店");
-        return titles;
+    private void updateGoodsFavorites() {
+        FavoritesDao favoritesDao = DBInterface.instance().openReadableDb().getFavoritesDao();
+        List<FavoritesEntity> favoritesEntities = favoritesDao.loadAll();
+        adapter.bindData(favoritesEntities);
     }
 
     @Override
-    public void delSuccess() {
-        Toast.makeText(MyApplication.applicationContext, "删除成功", Toast.LENGTH_SHORT).show();
-        entities = DBInterface.instance().openReadableDb().getCollectDataDao().loadAll();
-        adapter.setEntities(entities);
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == AppNotificationCenter.onRemoveMedicineFavorite) {
+            needHideProgress();
+            updateGoodsFavorites();
+        } else if (id == AppNotificationCenter.onMedicineFavoriteChanged) {
+            updateGoodsFavorites();
+        }
     }
 
-    @Override
-    public void delError() {
-        Toast.makeText(MyApplication.applicationContext, "删除错误", Toast.LENGTH_SHORT).show();
-    }
+//    private void tryRemoveMedicineFavorites(String... medicineId) {
+//        needShowProgress("正在移除所选收藏商品...");
+//        ShoppingServiceFragment.instance(getSupportFragmentManager()).removeFavoritesList(medicineId);
+//    }
 
     class CollectPagerAdapter extends FragmentViewPagerAdapter {
         private final List<String> mPageTitle = new ArrayList<>();

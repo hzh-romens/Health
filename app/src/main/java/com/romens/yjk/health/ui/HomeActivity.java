@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.amap.api.location.AMapLocation;
@@ -18,11 +17,6 @@ import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.location.core.AMapLocException;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.network.FacadeArgs;
-import com.romens.android.network.FacadeClient;
-import com.romens.android.network.Message;
-import com.romens.android.network.protocol.FacadeProtocol;
-import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -31,11 +25,8 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.FacadeConfig;
-import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.core.CollectHelper;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
@@ -44,13 +35,10 @@ import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class HomeActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
@@ -59,11 +47,15 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private HomePagerAdapter pagerAdapter;
     private ActionBarMenuItem shoppingCartItem;
 
-    private int sumCount;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
+
+        ShoppingServiceFragment.instance(getSupportFragmentManager());
+
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
 
@@ -132,15 +124,11 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 }*/
             }
         });
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.shoppingCartCountChanged);
-        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 0);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.collectAddChange);
-        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectAddChange, 0);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.collectDelChange);
-        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.collectDelChange, 0);
-        requestShopCarCountData();
+
+        //requestShopCarCountData();
         setupConfig();
         initLastLocation();
+        UIOpenHelper.syncFavorites(this);
     }
 
     private void setupConfig() {
@@ -179,29 +167,27 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == AppNotificationCenter.shoppingCartCountChanged) {
-            int count = (int) args[0];
-            sumCount = sumCount + count;
-            //updateShoppingCartCount(count);
-            if (sumCount < 0) {
-                sumCount = 0;
+        if (id == AppNotificationCenter.loginSuccess) {
+            UIOpenHelper.syncFavorites(HomeActivity.this);
+        } else if (id == AppNotificationCenter.onShoppingCartChanged) {
+            if (shoppingCartItem != null) {
+                int count = (int) args[0];
+                updateShoppingCartCount(count);
             }
-            updateShoppingCartCount(sumCount);
-        } else if (id == AppNotificationCenter.collectAddChange) {
-            CollectHelper.getInstance().addCollect(this);
         }
     }
 
     @Override
     public void onDestroy() {
         stopLocation();
-        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.shoppingCartCountChanged);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
         super.onDestroy();
     }
 
     private void updateShoppingCartCount(int count) {
-        Bitmap shoppingCartCount = ShoppingCartUtils.createShoppingCartIcon(this, R.drawable.ic_shopping_cart_white_24dp, count);
-        shoppingCartItem.setIcon(shoppingCartCount);
+        Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(HomeActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
+        shoppingCartItem.setIcon(shoppingCartCountBitmap);
     }
 
     class HomePagerAdapter extends FragmentViewPagerAdapter {
@@ -219,47 +205,47 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         }
     }
 
-    //获取购物车数量
-    private void requestShopCarCountData() {
-        if (UserConfig.isClientLogined()) {
-            Log.i("用户guid", UserConfig.getClientUserEntity().getGuid());
-            Map<String, String> args = new FacadeArgs.MapBuilder()
-                    .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
-            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
-            protocol.withToken(FacadeToken.getInstance().getAuthToken());
-            Message message = new Message.MessageBuilder()
-                    .withProtocol(protocol).build();
-            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-
-                @Override
-                public void onTokenTimeout(Message msg) {
-                    needHideProgress();
-                    Log.e("GetBuyCarCount", "ERROR");
-                }
-
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    needHideProgress();
-                    if (errorMsg == null) {
-                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                        try {
-                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-                            String buycount = jsonObject.getString("BUYCOUNT");
-                            //shoppingCartItem.setIcon(Integer.parseInt(buycount));
-                            sumCount = Integer.parseInt(buycount);
-                            updateShoppingCartCount(sumCount);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.e("GetBuyCarCount", "ERROR");
-                    }
-                }
-            });
-        } else {
-
-        }
-    }
+//    //获取购物车数量
+//    private void requestShopCarCountData() {
+//        if (UserConfig.isClientLogined()) {
+//            Log.i("用户guid", UserConfig.getClientUserEntity().getGuid());
+//            Map<String, String> args = new FacadeArgs.MapBuilder()
+//                    .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+//            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
+//            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+//            Message message = new Message.MessageBuilder()
+//                    .withProtocol(protocol).build();
+//            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+//
+//                @Override
+//                public void onTokenTimeout(Message msg) {
+//                    needHideProgress();
+//                    Log.e("GetBuyCarCount", "ERROR");
+//                }
+//
+//                @Override
+//                public void onResult(Message msg, Message errorMsg) {
+//                    needHideProgress();
+//                    if (errorMsg == null) {
+//                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+//                            String buycount = jsonObject.getString("BUYCOUNT");
+//                            //shoppingCartItem.setIcon(Integer.parseInt(buycount));
+//                            sumCount = Integer.parseInt(buycount);
+//                            updateShoppingCartCount(sumCount);
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        Log.e("GetBuyCarCount", "ERROR");
+//                    }
+//                }
+//            });
+//        } else {
+//
+//        }
+//    }
 
     private LocationManagerProxy mAMapLocationManager;
 

@@ -29,6 +29,9 @@ android {
         channel_nj_xszk {
             manifestPlaceholders = [APK_CHANNEL_VALUE: "4;njxs", IM_SDK_APPKEY: "romens#kfly20jp"]
         }
+        channel_hy_rmtt {
+            manifestPlaceholders = [APK_CHANNEL_VALUE: "20;rmtt", IM_SDK_APPKEY: "romens#yjkim8jrgju"]
+        }
     }
     signingConfigs {
         debug {
@@ -134,6 +137,7 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.0.7'
     compile 'com.avast:android-styled-dialogs:2.2.0'
     compile project(':romens.extend.QR')
+    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
 }
 
 repositories {

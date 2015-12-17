@@ -191,6 +191,12 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.activity.FavoritesActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
 
         <!-- My -->
         <activity

@@ -24,10 +24,13 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.MedicineGoodsItem;
+import com.romens.yjk.health.service.MedicineFavoriteService;
+import com.romens.yjk.health.ui.activity.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,8 +43,6 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
     private ProgressDialog progressDialog;
 
     private int shoppingCartCount = 0;
-
-    private MedicineGoodsItem waitingAddGoodsItem;
 
     public static ShoppingServiceFragment instance(FragmentManager fragmentManager) {
         return getService(ShoppingServiceFragment.class, fragmentManager);
@@ -107,16 +108,18 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
         }
     }
 
-
     public void tryAddToShoppingCart(MedicineGoodsItem goodsItem) {
-        waitingAddGoodsItem = goodsItem;
+        tryAddToShoppingCart(goodsItem.guid, goodsItem.userPrice.doubleValue());
+    }
+
+    public void tryAddToShoppingCart(String guid, double price) {
         if (UserConfig.isClientLogined()) {
             needShowProgress("正在加入购物车...");
             Map<String, Object> args = new HashMap<>();
-            args.put("GOODSGUID", goodsItem.guid);
+            args.put("GOODSGUID", guid);
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
             args.put("BUYCOUNT", "1");
-            args.put("PRICE", goodsItem.userPrice);
+            args.put("PRICE", price);
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
             Message message = new Message.MessageBuilder()
@@ -126,18 +129,12 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
                 @Override
                 public void onTokenTimeout(Message msg) {
                     needHideProgress();
-                    showSnackBar("请求被拒绝,请稍后重试!", "重试", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            tryAddToShoppingCart(waitingAddGoodsItem);
-                        }
-                    });
+                    Toast.makeText(getActivity(), "请求被拒绝", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onResult(Message msg, Message errorMsg) {
                     needHideProgress();
-                    waitingAddGoodsItem = null;
                     if (errorMsg == null) {
                         ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                         String response = responseProtocol.getResponse();
@@ -213,19 +210,46 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_LOGIN_FOR_ADDTOSHOPPINGCART) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (waitingAddGoodsItem != null) {
-                    tryAddToShoppingCart(waitingAddGoodsItem);
-                }
-            }
-        }
     }
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
         if (i == AppNotificationCenter.loginSuccess) {
             loadShoppingCartCount();
+        }
+    }
+
+    //添加收藏夹
+    public void addFavorites(String medicineId) {
+        if (UserConfig.isClientLogined()) {
+            Intent service = new Intent(getActivity(), MedicineFavoriteService.class);
+            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_ACTION, MedicineFavoriteService.ACTION_ADD);
+            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_MEDICINE_ID, medicineId);
+            getActivity().startService(service);
+        } else {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        }
+    }
+
+    public void removeFavorites(String medicineId) {
+        if (UserConfig.isClientLogined()) {
+            Intent service = new Intent(getActivity(), MedicineFavoriteService.class);
+            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_ACTION, MedicineFavoriteService.ACTION_REMOVE);
+            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_MEDICINE_ID, medicineId);
+            getActivity().startService(service);
+        } else {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        }
+    }
+
+    public void removeFavoritesList(ArrayList<String> medicineId) {
+        if (UserConfig.isClientLogined()) {
+            Intent service = new Intent(getActivity(), MedicineFavoriteService.class);
+            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_ACTION, MedicineFavoriteService.ACTION_REMOVE_LIST);
+            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_MEDICINE_ID_LIST, medicineId);
+            getActivity().startService(service);
+        } else {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
         }
     }
 }

@@ -29,6 +29,9 @@ public class CheckBox extends CustomView {
 
 	OnCheckListener onCheckListener;
 
+	public CheckBox(Context context){
+		this(context, null);
+	}
 	public CheckBox(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setAttributes(attrs);
@@ -45,19 +48,19 @@ public class CheckBox extends CustomView {
 
 		// Set background Color
 		// Color by resource
-		int bacgroundColor = attrs.getAttributeResourceValue(ANDROIDXML,
+		int bacgroundColor =attrs==null?-1: attrs.getAttributeResourceValue(ANDROIDXML,
 				"background", -1);
 		if (bacgroundColor != -1) {
 			setBackgroundColor(getResources().getColor(bacgroundColor));
 		} else {
 			// Color by hexadecimal
 			// Color by hexadecimal
-			int background = attrs.getAttributeIntValue(ANDROIDXML, "background", -1);
+			int background = attrs==null?-1:attrs.getAttributeIntValue(ANDROIDXML, "background", -1);
 			if (background != -1)
 				setBackgroundColor(background);
 		}
 
-		final boolean check = attrs.getAttributeBooleanValue(MATERIALDESIGNXML,
+		final boolean check =attrs==null?false: attrs.getAttributeBooleanValue(MATERIALDESIGNXML,
 				"check", false);
 			post(new Runnable() {
 
@@ -79,13 +82,13 @@ public class CheckBox extends CustomView {
 		addView(checkView);
 
         // Adding text view to checkbox
-        int textResource = attrs.getAttributeResourceValue(ANDROIDXML, "text", -1);
+        int textResource = attrs==null?-1:attrs.getAttributeResourceValue(ANDROIDXML, "text", -1);
         String text = null;
 
         if(textResource != -1) {
             text = getResources().getString(textResource);
         } else {
-            text = attrs.getAttributeValue(ANDROIDXML, "text");
+            text =attrs==null?"text":attrs.getAttributeValue(ANDROIDXML, "text");
         }
 
         if(text != null) {

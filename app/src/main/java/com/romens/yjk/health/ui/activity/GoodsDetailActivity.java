@@ -107,12 +107,15 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     private String goodsId;
     private boolean checkNearStore = true;
-    private ActionBarMenuItem shoppingCartItem;
+
+    private ActionBarMenuItem refreshMenuItem;
+    private ActionBarMenuItem shoppingCartMenuItem;
 
 
     @Override
     public void onDestroy() {
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onAddMedicineFavorite);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
         super.onDestroy();
     }
@@ -122,6 +125,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         super.onCreate(savedInstanceState);
         ShoppingServiceFragment.instance(getSupportFragmentManager());
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onAddMedicineFavorite);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
         Bundle arguments = getIntent().getExtras();
         goodsId = arguments.getString(ARGUMENTS_KEY_ID, "");
@@ -216,11 +220,11 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 }
             }
         });
-        shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_grey600_24dp);
-        actionBarMenu.addItem(2, R.drawable.ic_refresh_grey600_24dp);
+        shoppingCartMenuItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_grey600_24dp);
+        refreshMenuItem = actionBarMenu.addItem(2, R.drawable.ic_refresh_grey600_24dp);
         int count = ShoppingServiceFragment.instance(getSupportFragmentManager()).getShoppingCartCount();
         Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(GoodsDetailActivity.this, R.drawable.ic_shopping_cart_grey600_24dp, count);
-        shoppingCartItem.setIcon(shoppingCartCountBitmap);
+        shoppingCartMenuItem.setIcon(shoppingCartCountBitmap);
 
         updateDate();
 
@@ -351,6 +355,18 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         }
     }
 
+    private void tryAddMedicineFavorites() {
+        isFavorites = true;
+        updateDate();
+        ShoppingServiceFragment.instance(getSupportFragmentManager()).addFavorites(goodsId);
+    }
+
+    private void tryRemoveMedicineFavorites() {
+        isFavorites = false;
+        updateDate();
+        ShoppingServiceFragment.instance(getSupportFragmentManager()).removeFavorites(goodsId);
+    }
+
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.onAddMedicineFavorite) {
@@ -364,19 +380,43 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                                 Snackbar.LENGTH_LONG).setAction("重试", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                addToFavorite();
+                                tryAddMedicineFavorites();
                             }
                         }).show();
                     } else {
+                        isFavorites = true;
                         updateDate();
                     }
                 }
             }
+        } else if (id == AppNotificationCenter.onRemoveMedicineFavorite) {
+            if (args.length > 0) {
+                String changedId = args[0].toString();
+                if (TextUtils.equals(goodsId, changedId)) {
+                    int isSuccess = (int) args[1];
+                    if (isSuccess == 0) {
+                        Snackbar.make(getMyActionBar(),
+                                "从收藏夹移除失败",
+                                Snackbar.LENGTH_LONG).setAction("重试", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                tryRemoveMedicineFavorites();
+                            }
+                        }).show();
+                    } else {
+                        isFavorites = false;
+                        updateDate();
+                    }
+                }
+            }
+        } else if (id == AppNotificationCenter.onMedicineFavoriteChanged) {
+            updateGoodsFavorites();
+            updateDate();
         } else if (id == AppNotificationCenter.onShoppingCartChanged) {
-            if (shoppingCartItem != null) {
+            if (shoppingCartMenuItem != null) {
                 int count = (int) args[0];
                 Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(GoodsDetailActivity.this, R.drawable.ic_shopping_cart_grey600_24dp, count);
-                shoppingCartItem.setIcon(shoppingCartCountBitmap);
+                shoppingCartMenuItem.setIcon(shoppingCartCountBitmap);
             }
         }
     }
@@ -438,6 +478,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                         JSONArray jsonArray = new JSONArray(response);
                         if (jsonArray.length() > 0) {
                             currMedicineGoodsItem = new MedicineGoodsItem(jsonArray.getJSONObject(0));
+                            updateGoodsFavorites();
                             initMedicineServiceModes();
                         }
                         loadMedicineSaleStores();
@@ -449,6 +490,10 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 updateDate();
             }
         });
+    }
+
+    private void updateGoodsFavorites() {
+        isFavorites = DBInterface.instance().isFavorite(goodsId);
     }
 
     private void initMedicineServiceModes() {
@@ -491,6 +536,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     //当前商品对象
     private MedicineGoodsItem currMedicineGoodsItem;
+
+    private boolean isFavorites = false;
     //支持的购买方式
     private final List<MedicineServiceModeEntity> currMedicineGoodsServiceModes = new ArrayList<>();
     //附近其他在售药店
@@ -694,12 +741,15 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     view = new MedicineMainCell(adapterContext);
                 }
                 MedicineMainCell cell = (MedicineMainCell) view;
-                boolean isFavorite = DBInterface.instance().getFavorite(goodsId);
-                cell.setValue(currMedicineGoodsItem.name, currMedicineGoodsItem.detailDescription, isFavorite, false);
+                cell.setValue(currMedicineGoodsItem.name, currMedicineGoodsItem.detailDescription, isFavorites, false);
                 cell.setFavoritesDelegate(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        addToFavorite();
+                        if (isFavorites) {
+                            tryRemoveMedicineFavorites();
+                        } else {
+                            tryAddMedicineFavorites();
+                        }
                     }
                 });
             } else if (viewType == 3) {
@@ -734,12 +784,12 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else {
                     int storeIndex = i - otherStoresBeginRow;
                     MedicineSaleStoreEntity storeEntity = saleStoreEntities.get(storeIndex);
-                    cell.setValue("", storeEntity.name, storeEntity.address, storeEntity.storeCount, true);
+                    cell.setValue("", storeEntity.name, storeEntity.address, storeEntity.storeCount, i != otherStoresEndRow);
                     cell.setDistance(storeEntity.distance);
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //Toast.makeText(GoodsDetailActivity.this, "aaa", Toast.LENGTH_SHORT).show();
+                            ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCart(currMedicineGoodsItem);
                         }
                     });
                 }
@@ -808,19 +858,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 cell.setValue(entity.qualityLevel, entity.allCount, entity.assessDate, entity.advice, entity.memberId, true);
             }
             return view;
-        }
-    }
-
-
-    //添加收藏夹
-    private void addToFavorite() {
-        if (UserConfig.isClientLogined()) {
-            Intent service = new Intent(GoodsDetailActivity.this, MedicineFavoriteService.class);
-            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_MEDICINE_ID, goodsId);
-            service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_MEDICINE_TARGET_FAVORITE, true);
-            startService(service);
-        } else {
-            startActivity(new Intent(this, LoginActivity.class));
         }
     }
 

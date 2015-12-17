@@ -25,6 +25,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.CollectActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
@@ -97,7 +98,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == myOrderRow) {
                     startActivity(new Intent(getActivity(), MyOrderActivity.class));
                 } else if (position == collectRow) {
-                    startActivity(new Intent(getActivity(), CollectActivity.class));
+                    //startActivity(new Intent(getActivity(), CollectActivity.class));
+                    UIOpenHelper.openFavoritesActivity(getActivity());
                 } else if (position == historyRow) {
                     startActivity(new Intent(getActivity(), HistoryActivity.class));
                 } else if (position == feedbackRow) {

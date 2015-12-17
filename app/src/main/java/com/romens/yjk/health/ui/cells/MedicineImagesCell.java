@@ -135,6 +135,7 @@ public class MedicineImagesCell extends FrameLayout {
 //
     public void bindData(List<String> images) {
         adapter.bindData(images);
+        viewPager.setCurrentItem(0);
         currPagerIndex = 0;
         pagerCount = (images == null) ? 0 : images.size();
         updatePageCountTag();

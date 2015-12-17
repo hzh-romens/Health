@@ -23,6 +23,7 @@ public class AppNotificationCenter extends NotificationCenter {
     public static final int onLastLocationChanged = appTotalEvents++;
 
     //Medicine
+    public static final int onMedicineFavoriteChanged = appTotalEvents++;
     public static final int onAddMedicineFavorite = appTotalEvents++;
     public static final int onRemoveMedicineFavorite = appTotalEvents++;
 
