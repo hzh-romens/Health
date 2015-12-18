@@ -274,10 +274,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         fatherHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //   List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(groupPosition).getStoreID());
-                // for (int i = 0; i < shopCarEntities.size(); i++) {
-                //   shopCarEntities.get(i).setCHECK("true");
-                //  }
                 SwitchFatherItem(mFatherData.get(groupPosition).getShopID(),
                         !fatherHolder.checkableFrameLayout.isChecked());
             }
@@ -318,7 +314,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         holder.tv_infor.setText(entity.getNAME());
         holder.tv_store.setText(entity.getSPEC());
 
-      //  holder.iv_detail.setImageBitmap(ImageUtils.bindLocalImage("http://img1.imgtn.bdimg.com/it/u=2891821452,2907039089&fm=21&gp=0.jpg"));
         Drawable defaultDrawables =  holder.iv_detail.getDrawable();
         ImageManager.loadForView(mContext, holder.iv_detail,entity.getGOODURL(), defaultDrawables, defaultDrawables);
 

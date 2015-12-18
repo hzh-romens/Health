@@ -82,7 +82,7 @@ public class ShopListAdapter extends RecyclerView.Adapter {
             itemHolder.realPrice.setVisibility(View.INVISIBLE);
             itemHolder.discountPrice.setVisibility(View.INVISIBLE);
         } else {
-            itemHolder.realPrice.setVisibility(View.VISIBLE);
+           // itemHolder.realPrice.setVisibility(View.VISIBLE);
             itemHolder.discountPrice.setVisibility(View.VISIBLE);
             itemHolder.shop.setVisibility(View.VISIBLE);
             itemHolder.realPrice.setText("¥" + goodListEntity.getMEMBERPRICE());
@@ -91,6 +91,7 @@ public class ShopListAdapter extends RecyclerView.Adapter {
             itemHolder.shop.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
         }
         itemHolder.comment.setText(goodListEntity.getSHOPNAME());
+        itemHolder.comment.setVisibility(View.GONE);
         itemHolder.shop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

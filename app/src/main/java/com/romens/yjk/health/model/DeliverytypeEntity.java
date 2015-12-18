@@ -1,5 +1,7 @@
 package com.romens.yjk.health.model;
 
+import com.google.gson.internal.LinkedTreeMap;
+
 /**
  * Created by HZH on 2015/12/9.
  */
@@ -21,5 +23,12 @@ public class DeliverytypeEntity {
 
     public void setNAME(String NAME) {
         this.NAME = NAME;
+    }
+
+    public static DeliverytypeEntity mapToEntity(LinkedTreeMap<String, String> item) {
+        DeliverytypeEntity entity = new DeliverytypeEntity();
+        entity.setGUID(item.get("GUID"));
+        entity.setNAME(item.get("NAME"));
+        return entity;
     }
 }
