@@ -1,17 +1,22 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.gc.materialdesign.views.CheckBox;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.helper.ShoppingHelper;
+import com.romens.yjk.health.ui.cells.FavoritesTipCell;
 import com.romens.yjk.health.ui.cells.MedicineListCell;
 
 import java.math.BigDecimal;
@@ -28,7 +33,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter {
     private FavoritesCellDelegate favoritesCellDelegate;
     private Drawable emptyIcon;
     private final List<FavoritesEntity> favoritesEntities = new ArrayList<>();
-    private final Map<String, Integer> favoritesSelects = new HashMap<>();
 
     static class Holder extends RecyclerView.ViewHolder {
 
@@ -42,7 +46,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter {
 
         void onAddShoppingCart(FavoritesEntity entity);
 
-        void onSelectedChanged();
+        void onRemoveFavorites(FavoritesEntity entity);
     }
 
     public FavoritesAdapter(Context context, FavoritesCellDelegate delegate) {
@@ -51,22 +55,10 @@ public class FavoritesAdapter extends RecyclerView.Adapter {
         emptyIcon = context.getResources().getDrawable(R.drawable.no_img_upload);
     }
 
-    public void bindData(List<FavoritesEntity> data, boolean clear) {
+    public void bindData(List<FavoritesEntity> data) {
         favoritesEntities.clear();
         if (data != null && data.size() > 0) {
             favoritesEntities.addAll(data);
-        }
-        if (clear) {
-            favoritesSelects.clear();
-        } else {
-            int size = favoritesEntities.size();
-            String idTemp;
-            for (int i = 0; i < size; i++) {
-                idTemp = favoritesEntities.get(i).getId();
-                if (favoritesSelects.containsKey(idTemp)) {
-                    favoritesSelects.put(idTemp, i);
-                }
-            }
         }
         notifyDataSetChanged();
     }
@@ -80,10 +72,25 @@ public class FavoritesAdapter extends RecyclerView.Adapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        MedicineListCell cell = new MedicineListCell(viewGroup.getContext());
-        cell.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        return new Holder(cell);
+        if (i == 0) {
+            MedicineListCell cell = new MedicineListCell(viewGroup.getContext());
+            cell.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            return new Holder(cell);
+        } else if (i == 1) {
+            FavoritesTipCell cell = new FavoritesTipCell(viewGroup.getContext());
+            cell.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            return new Holder(cell);
+        }
+        return null;
     }
 
     @Override
@@ -94,31 +101,35 @@ public class FavoritesAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     if (favoritesCellDelegate != null) {
-                        favoritesCellDelegate.onCellClick(i);
+                        favoritesCellDelegate.onCellClick(i - 1);
                     }
                 }
             });
-            FavoritesEntity entity = getItem(i);
-            boolean checked = isSelect(entity.getId());
+            FavoritesEntity entity = getItem(i - 1);
             SpannableStringBuilder priceStr = new SpannableStringBuilder();
             priceStr.append(ShoppingHelper.formatPrice(new BigDecimal(entity.getPrice())));
             priceStr.append(String.format(" (%s)", entity.getMedicineSpec()));
             CharSequence memberPriceStr = ShoppingHelper.createMemberPriceInfo(new BigDecimal(entity.getMemberPrice()));
-            cell.setValue(true, checked, entity.getPicSmall(), emptyIcon, entity.getMedicineName(), "", priceStr, memberPriceStr, true, true);
+            cell.setValue(true, true, entity.getPicSmall(), emptyIcon, entity.getMedicineName(), "", priceStr, memberPriceStr, true, true);
             cell.enableAddShoppingCartBtn(true, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (favoritesCellDelegate != null) {
-                        favoritesCellDelegate.onAddShoppingCart(getItem(i));
+                        favoritesCellDelegate.onAddShoppingCart(getItem(i - 1));
                     }
                 }
             });
-            cell.setCheckBoxDelegate(new CheckBox.OnCheckListener() {
+            cell.setFavoritesDelegate(new View.OnClickListener() {
                 @Override
-                public void onCheck(CheckBox view, boolean check) {
-                    switchSelect(i, check);
+                public void onClick(View v) {
+                    if (favoritesCellDelegate != null) {
+                        favoritesCellDelegate.onRemoveFavorites(getItem(i - 1));
+                    }
                 }
             });
+        } else if (viewHolder.itemView instanceof FavoritesTipCell) {
+            FavoritesTipCell cell = (FavoritesTipCell) viewHolder.itemView;
+            cell.setValue("小提示:点击 [favorites] 可以取消收藏!", "[favorites]", R.drawable.ic_favorite_white_24dp, true);
         }
     }
 
@@ -129,60 +140,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return favoritesEntities == null ? 0 : favoritesEntities.size();
-    }
-
-    public boolean isSelect(String id) {
-        return favoritesSelects.containsKey(id);
-    }
-
-    public void switchSelectAll(boolean selected) {
-        favoritesSelects.clear();
-        if (selected) {
-            final int size = favoritesEntities.size();
-            for (int i = 0; i < size; i++) {
-                favoritesSelects.put(getItem(i).getId(), i);
-            }
-        }
-        if (favoritesCellDelegate != null) {
-            favoritesCellDelegate.onSelectedChanged();
-        }
-        notifyDataSetChanged();
-    }
-
-    public boolean isAllSelected() {
-        int selectedCount = getSelectedItemCount();
-        int allCount = getItemCount();
-        return selectedCount == allCount;
-    }
-
-    public int getSelectedItemCount() {
-        int selectedCount = favoritesSelects.size();
-        return selectedCount;
-    }
-
-    public ArrayList<String> getSelectedItems() {
-        ArrayList<String> items = new ArrayList<>();
-        for (Integer value :
-                favoritesSelects.values()) {
-            items.add(getItem(value).getMerchandiseId());
-        }
-        return items;
-    }
-
-    private void switchSelect(int position, boolean checked) {
-        FavoritesEntity entity = getItem(position);
-        String id = entity.getId();
-        if (!checked) {
-            if (favoritesSelects.containsKey(id)) {
-                favoritesSelects.remove(id);
-            }
-        } else {
-            favoritesSelects.put(id, position);
-        }
-        if (favoritesCellDelegate != null) {
-            favoritesCellDelegate.onSelectedChanged();
-        }
-        //notifyDataSetChanged();
+        int count = favoritesEntities == null ? 0 : favoritesEntities.size();
+        return count > 0 ? (count + 1) : count;
     }
 }

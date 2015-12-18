@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.ResourcesConfig;
 
 /**
  * Created by siery on 15/12/15.
@@ -64,7 +66,7 @@ public class MedicineMainCell extends FrameLayout {
         favoritesView.setClickable(true);
         favoritesView.setScaleType(ImageView.ScaleType.CENTER);
         favoritesView.setBackgroundResource(R.drawable.list_selector);
-        favoritesView.setColorFilter(0xffe51c23);
+        favoritesView.setColorFilter(ResourcesConfig.favoritesColor);
         addView(favoritesView, LayoutHelper.createFrame(64, 56, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
     }
 
@@ -74,11 +76,16 @@ public class MedicineMainCell extends FrameLayout {
     }
 
     public void setValue(CharSequence name, String desc, boolean isFavorites, boolean divider) {
-        String text = name + "-" + desc;
-        SpannableString textSpan = new SpannableString(text);
-        textSpan.setSpan(new ForegroundColorSpan(0xff8a8a8a), name.length(), text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textSpan.setSpan(new AbsoluteSizeSpan(16, true), name.length(), text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        nameView.setText(textSpan);
+        SpannableStringBuilder textSpanBuilder = new SpannableStringBuilder();
+        textSpanBuilder.append(name);
+        if (!TextUtils.isEmpty(desc)) {
+            desc = "-" + desc;
+            SpannableString descSpan = new SpannableString(desc);
+            descSpan.setSpan(new ForegroundColorSpan(0xff8a8a8a), 0, desc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            descSpan.setSpan(new AbsoluteSizeSpan(16, true), 0, desc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            textSpanBuilder.append(descSpan);
+        }
+        nameView.setText(textSpanBuilder);
         favoritesView.setImageResource(isFavorites ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
         needDivider = divider;
         setWillNotDraw(!divider);

@@ -81,7 +81,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         slidingFixTabLayout.setDistributeEvenly(true);
         slidingFixTabLayout.setViewPager(viewPager);
 
-        actionBar.setTitle("要健康");
+        actionBar.setTitle(getString(R.string.app_name));
         actionBar.setBackButtonImage(R.drawable.yaojk_logo);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);

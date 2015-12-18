@@ -28,6 +28,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AddressEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.CommitOrderEntity;
 import com.romens.yjk.health.model.DeliverytypeEntity;
 import com.romens.yjk.health.model.FilterChildEntity;
@@ -286,8 +287,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                             ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    startActivity(new Intent(CommitOrderActivity.this, NewShippingAddressActivity.class));
-                                    finish();
+//                                    startActivity(new Intent(CommitOrderActivity.this, NewShippingAddressActivity.class));
+//                                    finish();
+                                    UIOpenHelper.openShippingAddress(CommitOrderActivity.this, 0);
                                 }
                             });
                             ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

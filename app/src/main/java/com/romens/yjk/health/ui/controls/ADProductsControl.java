@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
+import android.view.Gravity;
 
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.model.ADProductListEntity;
@@ -20,7 +21,7 @@ public class ADProductsControl extends ADBaseControl {
 
     public static ADHolder createViewHolder(Context context) {
         ADProductsCell cell = new ADProductsCell(context);
-        cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 8, 8, 8, 8));
         return new ADHolder(cell);
     }
 

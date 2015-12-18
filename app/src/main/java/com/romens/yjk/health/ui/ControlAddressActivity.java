@@ -41,6 +41,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.CitysEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.adapter.ControlAddressAdapter;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -111,7 +112,8 @@ public class ControlAddressActivity extends BaseActivity {
         addAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
+                //startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
+                UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this,0);
             }
         });
     }
@@ -238,7 +240,8 @@ public class ControlAddressActivity extends BaseActivity {
                     }
                     finish();
                 } else if (i == 0) {
-                    startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
+                    UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this,0);
+                    //startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
                 }
             }
         });

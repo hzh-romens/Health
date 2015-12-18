@@ -1,6 +1,9 @@
 package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -8,11 +11,10 @@ import android.widget.FrameLayout;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.log.FileLog;
-import com.romens.android.ui.Components.FrameLayoutFixed;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.view.GuideViewPager;
 import com.romens.android.ui.view.PagerIndicator;
-import com.romens.yjk.health.model.ADPagerEntity;
+import com.romens.yjk.health.config.CommonConfig;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,8 +30,18 @@ public class ADPagerCell extends FrameLayout {
     private final Object timerSync = new Object();
     private int currPagerIndex = 0;
 
+    private static Paint paint;
+
     public ADPagerCell(Context context) {
         super(context);
+
+        if (paint == null) {
+            paint = new Paint();
+            paint.setColor(0xffd9d9d9);
+            paint.setStrokeWidth(1);
+        }
+
+        setBackgroundColor(Color.WHITE);
         viewPager = new GuideViewPager(context);
         addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         pagerIndicator = new PagerIndicator(context);
@@ -66,6 +78,22 @@ public class ADPagerCell extends FrameLayout {
     public void onDetachedFromWindow() {
         destroyTimer();
         super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawLine(getPaddingLeft(), getHeight() - 1, getWidth() - getPaddingRight(), getHeight() - 1, paint);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = getMeasuredWidth();
+        int height = (int) (width * CommonConfig.pagerScale);
+        if (viewPager.getVisibility() == VISIBLE) {
+            viewPager.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        }
+        setMeasuredDimension(width, height);
     }
 
     public void start() {

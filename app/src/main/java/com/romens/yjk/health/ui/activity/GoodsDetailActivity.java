@@ -100,7 +100,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     private boolean firstWas = false;
 
-    private int overScrollHeight = AndroidUtilities.dp(MedicineImagesCell.CELL_HEIGHT);
+    private int overScrollHeight = MedicineImagesCell.defaultHeight;//AndroidUtilities.dp(MedicineImagesCell.defaultHeight);
     // AndroidUtilities.displaySize.x;
     // - AndroidUtilities.getCurrentActionBarHeight() - AndroidUtilities.dp(66);
 
@@ -125,6 +125,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ShoppingServiceFragment.instance(getSupportFragmentManager());
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onAddMedicineFavorite);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
@@ -325,7 +326,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         if (listView != null) {
             int height = 0;//(getMyActionBar().getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0) + AndroidUtilities.getCurrentActionBarHeight();
             //int viewHeight = calendarView.getMeasuredHeight();
-            int viewHeight = AndroidUtilities.dp(MedicineImagesCell.CELL_HEIGHT);
+            int viewHeight = MedicineImagesCell.defaultHeight;//AndroidUtilities.dp(MedicineImagesCell.defaultHeight);
             overScrollHeight = resume ? overScrollHeight : viewHeight - height;
             //overScrollHeight = resume ? overScrollHeight : viewHeight - AndroidUtilities.dp(66) - height;
 

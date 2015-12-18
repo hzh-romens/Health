@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.helper.FormatHelper;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -101,7 +102,7 @@ public class MedicinePriceCell extends LinearLayout {
         } else {
             marketPriceView.setVisibility(VISIBLE);
         }
-        DecimalFormat decimalFormat = new java.text.DecimalFormat("￥ #.00");
+        DecimalFormat decimalFormat = new java.text.DecimalFormat(FormatHelper.priceFormat);
         String marketPriceStr = decimalFormat.format(marketPrice);
         String userPriceStr = decimalFormat.format(userPrice);
 

@@ -7,6 +7,7 @@ import com.romens.yjk.health.R;
  * Created by siery on 15/8/18.
  */
 public class ResourcesConfig {
+    public static int greyBackground=0xfff9f9f9;
     public static int primaryColor;
     public static int greyColor=0xffeeeeee;
     public static final int textPrimary;
@@ -18,6 +19,8 @@ public class ResourcesConfig {
     public static final int emergencyText;
 
     public static final int priceFontColor=0xffb0120a;
+
+    public static final int favoritesColor=0xffe51c23;
 
     static {
         primaryColor = MyApplication.applicationContext.getResources().getColor(R.color.theme_primary);

@@ -1,9 +1,11 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ADFunctionEntity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.components.AttachView;
@@ -27,6 +29,7 @@ public class ADFunctionControl extends ADBaseControl {
 
     public static ADHolder createViewHolder(Context context) {
         AttachView attachView = new AttachView(context);
+        attachView.setBackgroundColor(Color.WHITE);
         attachView.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         return new ADHolder(attachView);
     }

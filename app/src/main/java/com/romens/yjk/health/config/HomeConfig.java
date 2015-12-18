@@ -30,6 +30,11 @@ public class HomeConfig {
         return timestamp;
     }
 
+    public static void clearCache() {
+        SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        preferences.edit().clear().commit();
+    }
+
     public static String loadConfig() {
         SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         String config = preferences.getString(KEY_DATA, "");

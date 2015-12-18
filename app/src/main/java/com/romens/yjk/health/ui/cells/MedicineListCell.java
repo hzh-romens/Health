@@ -11,10 +11,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gc.materialdesign.views.CheckBox;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
@@ -24,11 +24,7 @@ import com.romens.yjk.health.config.ResourcesConfig;
 /**
  * Created by siery on 15/12/17.
  */
-public class MedicineListCell extends FrameLayout {
-
-    private CheckBox checkBox;
-
-    private LinearLayout cellContainer;
+public class MedicineListCell extends LinearLayout {
     private BackupImageView iconView;
 
     private TextView nameView;
@@ -36,6 +32,8 @@ public class MedicineListCell extends FrameLayout {
     private TextView priceView;
     private TextView priceInfoView;
 
+
+    private ImageView favoritesView;
     private Button addShoppingCartBtn;
 
     private static Paint paint;
@@ -63,16 +61,13 @@ public class MedicineListCell extends FrameLayout {
             paint.setColor(0xffd9d9d9);
             paint.setStrokeWidth(1);
         }
-        checkBox = new CheckBox(context);
-        checkBox.setClickable(true);
-        checkBox.setBackgroundColor(ResourcesConfig.primaryColor);
-        checkBox.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
-        addView(checkBox, LayoutHelper.createFrame(36, 36, Gravity.LEFT | Gravity.CENTER_VERTICAL, 8, 8, 8, 8));
+        setOrientation(VERTICAL);
+        setClickable(true);
+        setBackgroundResource(R.drawable.list_selector);
 
-        cellContainer = new LinearLayout(context);
+        LinearLayout cellContainer = new LinearLayout(context);
         cellContainer.setOrientation(LinearLayout.HORIZONTAL);
-        cellContainer.setClickable(true);
-        cellContainer.setBackgroundResource(R.drawable.list_selector);
+
         addView(cellContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 48, 0, 0, 0));
 
         iconView = new BackupImageView(context);
@@ -81,6 +76,18 @@ public class MedicineListCell extends FrameLayout {
         LinearLayout content = new LinearLayout(context);
         content.setOrientation(LinearLayout.VERTICAL);
         cellContainer.addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 8, 8, 16, 8));
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) content.getLayoutParams();
+        layoutParams.weight = 1;
+        content.setLayoutParams(layoutParams);
+
+
+        favoritesView = new ImageView(context);
+        favoritesView.setClickable(true);
+        favoritesView.setScaleType(ImageView.ScaleType.CENTER);
+        favoritesView.setBackgroundResource(R.drawable.list_selector);
+        favoritesView.setColorFilter(ResourcesConfig.favoritesColor);
+        cellContainer.addView(favoritesView, LayoutHelper.createFrame(48, 48, Gravity.RIGHT | Gravity.TOP));
+
 
         nameView = new TextView(context);
         nameView.setTextColor(ResourcesConfig.bodyText1);
@@ -109,7 +116,7 @@ public class MedicineListCell extends FrameLayout {
         priceView.setSingleLine(true);
         priceView.setEllipsize(TextUtils.TruncateAt.END);
         priceView.setGravity(Gravity.LEFT);
-        content.addView(priceView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT,0,4,0,0));
+        content.addView(priceView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
 
         priceInfoView = new TextView(context);
         priceInfoView.setTextColor(ResourcesConfig.bodyText2);
@@ -121,23 +128,24 @@ public class MedicineListCell extends FrameLayout {
         priceInfoView.setGravity(Gravity.LEFT);
         content.addView(priceInfoView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
+        FrameLayout bottomContainer = new FrameLayout(context);
+        addView(bottomContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
+
+
         addShoppingCartBtn = new Button(context);
         addShoppingCartBtn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         addShoppingCartBtn.setMaxLines(1);
         addShoppingCartBtn.setEllipsize(TextUtils.TruncateAt.END);
         addShoppingCartBtn.setSingleLine(true);
         addShoppingCartBtn.setTextColor(ResourcesConfig.bodyText1);
-        addShoppingCartBtn.setBackgroundResource(R.drawable.add_shopping_cart_states);
+        addShoppingCartBtn.setBackgroundResource(R.drawable.btn_primary_border);
         addShoppingCartBtn.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(4));
         addShoppingCartBtn.setGravity(Gravity.CENTER);
         addShoppingCartBtn.setText("添加到购物车");
-        content.addView(addShoppingCartBtn, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.RIGHT, 8, 8, 8, 0));
+        bottomContainer.addView(addShoppingCartBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 8, 0, 16, 0));
     }
 
-    public void setValue(boolean checkMode, boolean checked, String iconUrl, Drawable defaultIcon, CharSequence name, CharSequence desc, CharSequence price, CharSequence priceInfo, boolean showAdd, boolean divider) {
-        checkBox.setVisibility(checkMode ? View.VISIBLE : View.GONE);
-        checkBox.setChecked(checked);
-
+    public void setValue(boolean enableFavorites, boolean isFavorites, String iconUrl, Drawable defaultIcon, CharSequence name, CharSequence desc, CharSequence price, CharSequence priceInfo, boolean showAdd, boolean divider) {
         iconView.setImageUrl(iconUrl, "64_64", defaultIcon);
         nameView.setText(name);
 
@@ -159,6 +167,8 @@ public class MedicineListCell extends FrameLayout {
             priceInfoView.setText(priceInfo);
         }
 
+        favoritesView.setVisibility(enableFavorites ? View.VISIBLE : View.GONE);
+        favoritesView.setImageResource(isFavorites ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
 
         addShoppingCartBtn.setVisibility(showAdd ? View.VISIBLE : View.GONE);
 
@@ -168,7 +178,7 @@ public class MedicineListCell extends FrameLayout {
     }
 
     public void setCellDelegate(View.OnClickListener delegate) {
-        cellContainer.setOnClickListener(delegate);
+        setOnClickListener(delegate);
     }
 
     public void enableAddShoppingCartBtn(boolean enable, View.OnClickListener delegate) {
@@ -176,8 +186,8 @@ public class MedicineListCell extends FrameLayout {
         addShoppingCartBtn.setOnClickListener(delegate);
     }
 
-    public void setCheckBoxDelegate(CheckBox.OnCheckListener delegate) {
-        checkBox.setOncheckListener(delegate);
+    public void setFavoritesDelegate(View.OnClickListener delegate) {
+        favoritesView.setOnClickListener(delegate);
     }
 
     @Override

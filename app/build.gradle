@@ -8,8 +8,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 151216
-        versionName "1.5.2"
+        versionCode 151218
+        versionName "1.5.3"
         multiDexEnabled true
         manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens", IM_SDK_APPKEY: "romens#kfly20jp"]
 

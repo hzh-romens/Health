@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.service.MedicineFavoriteService;
+import com.romens.yjk.health.ui.ControlAddressActivity;
+import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.activity.FavoritesActivity;
@@ -102,6 +104,16 @@ public class UIOpenHelper {
             service.putExtra(MedicineFavoriteService.ARGUMENTS_KEY_ACTION, MedicineFavoriteService.ACTION_SYNC);
             context.startService(service);
         }
+    }
+
+    public static void openAddShippingAddress(Activity context, int requestCode) {
+        Intent intent = new Intent(context, NewShoppingAddressActivity.class);
+        context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void openShippingAddress(Activity context, int requestCode) {
+        Intent intent = new Intent(context, ControlAddressActivity.class);
+        context.startActivityForResult(intent, requestCode);
     }
 
 }

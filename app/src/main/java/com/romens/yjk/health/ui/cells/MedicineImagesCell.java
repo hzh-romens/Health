@@ -14,8 +14,8 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.view.GuideViewPager;
-import com.romens.android.ui.view.PagerIndicator;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.CommonConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
  * Created by siery on 15/12/14.
  */
 public class MedicineImagesCell extends FrameLayout {
-    public static final int CELL_HEIGHT=216;
+    public static final int defaultHeight = (int) (AndroidUtilities.displayMetrics.widthPixels * CommonConfig.medicinePagerScale);
     private GuideViewPager viewPager;
     private TextView pagerCountView;
 
@@ -39,7 +39,7 @@ public class MedicineImagesCell extends FrameLayout {
         super(context);
         viewPager = new GuideViewPager(context);
         viewPager.setBackgroundColor(0xfff0f0f0);
-        addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, CELL_HEIGHT));
+        addView(viewPager, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, defaultHeight));
 
         pagerCountView = new TextView(context);
         pagerCountView.setBackgroundResource(R.drawable.attach_pager_count);
@@ -175,7 +175,7 @@ public class MedicineImagesCell extends FrameLayout {
         public Object instantiateItem(final ViewGroup container, int position) {
             final String imageUrl = imagesList.get(position);
             BackupImageView pager = viewList.get(position);
-            container.addView(pager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            container.addView(pager, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,defaultHeight));
             pager.setImage(imageUrl, null, null);
             return pager;
         }

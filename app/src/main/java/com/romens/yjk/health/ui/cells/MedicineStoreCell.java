@@ -61,7 +61,7 @@ public class MedicineStoreCell extends FrameLayout {
         LinearLayout topContainer = new LinearLayout(context);
         topContainer.setOrientation(LinearLayout.HORIZONTAL);
         topContainer.setGravity(Gravity.CENTER_VERTICAL);
-        addView(topContainer, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 72, 8, 16, 0));
+        addView(topContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 72, 8, 16, 0));
 
         nameTextView = new TextView(context);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
@@ -71,7 +71,7 @@ public class MedicineStoreCell extends FrameLayout {
         nameTextView.setTextColor(0xff212121);
         nameTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
         nameTextView.setGravity(Gravity.LEFT);
-        topContainer.addView(nameTextView, LayoutHelper.createFrame(0, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 0, 0, 8, 0));
+        topContainer.addView(nameTextView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 0, 0, 8, 0));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameTextView.getLayoutParams();
         layoutParams.weight = 1;
         nameTextView.setLayoutParams(layoutParams);
@@ -84,7 +84,7 @@ public class MedicineStoreCell extends FrameLayout {
         distanceTextView.setTextColor(ResourcesConfig.bodyText2);
         distanceTextView.setGravity(Gravity.RIGHT);
         distanceTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
-        topContainer.addView(distanceTextView, new LinearLayout.LayoutParams(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
+        topContainer.addView(distanceTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
 
         addressTextView = new TextView(context);
         addressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);

@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui.fragment;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -23,6 +24,8 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.HomeConfig;
+import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
 import com.romens.yjk.health.model.ADFunctionEntity;
 import com.romens.yjk.health.model.ADImageEntity;
@@ -39,6 +42,7 @@ import com.romens.yjk.health.ui.controls.ADImagesControl;
 import com.romens.yjk.health.ui.controls.ADNewsControl;
 import com.romens.yjk.health.ui.controls.ADPagerControl;
 import com.romens.yjk.health.ui.controls.ADProductsControl;
+import com.romens.yjk.health.ui.utils.UIHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +60,8 @@ import java.util.Map;
  * Created by siery on 15/8/10.
  */
 public class HomeFocusFragment extends BaseFragment {
+
+    private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerListView;
     private FocusAdapter focusAdapter;
 
@@ -71,6 +77,11 @@ public class HomeFocusFragment extends BaseFragment {
         Context context = getActivity();
         LinearLayout content = new LinearLayout(context);
         content.setOrientation(LinearLayout.VERTICAL);
+        content.setBackgroundColor(ResourcesConfig.greyBackground);
+
+        refreshLayout = new SwipeRefreshLayout(context);
+        UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
+        content.addView(refreshLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         recyclerListView = new RecyclerView(context);
         recyclerListView.setClipToPadding(false);
         recyclerListView.setItemAnimator(null);
@@ -78,7 +89,7 @@ public class HomeFocusFragment extends BaseFragment {
         if (Build.VERSION.SDK_INT >= 9) {
             recyclerListView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         }
-        content.addView(recyclerListView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        refreshLayout.addView(recyclerListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
@@ -92,7 +103,18 @@ public class HomeFocusFragment extends BaseFragment {
 
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                HomeConfig.clearCache();
+                requestDataChanged();
+            }
+        });
         recyclerListView.setAdapter(focusAdapter);
+    }
+
+    private void changeRefresh(boolean refreshing) {
+        refreshLayout.setRefreshing(refreshing);
     }
 
     @Override
@@ -101,12 +123,15 @@ public class HomeFocusFragment extends BaseFragment {
     }
 
     private void requestDataChanged() {
+        changeRefresh(true);
         if (HomeConfig.checkCacheValid()) {
             loadConfigFromCache();
+            changeRefresh(false);
             return;
         }
+
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", "");
+        args.put("USERGUID", UserConfig.getClientUserId());
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetHomeConfig", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -115,11 +140,13 @@ public class HomeFocusFragment extends BaseFragment {
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                changeRefresh(false);
                 loadConfigFromCache();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                changeRefresh(false);
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     handleResponseData(responseProtocol.getResponse(), false);

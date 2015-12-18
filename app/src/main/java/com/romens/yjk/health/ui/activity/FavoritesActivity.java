@@ -1,19 +1,27 @@
 package com.romens.yjk.health.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.gc.materialdesign.views.CheckBox;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
+import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.FavoritesDao;
@@ -24,8 +32,6 @@ import com.romens.yjk.health.ui.cells.AllSelectCell;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,15 +43,13 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
     private RecyclerView listView;
     private FavoritesAdapter adapter;
 
-    private AllSelectCell allSelectCell;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ShoppingServiceFragment.instance(getSupportFragmentManager());
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onAddMedicineFavorite);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onMedicineFavoriteChanged);
 
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
@@ -55,15 +59,28 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
+                } else if (id == 1) {
+                    if (adapter.getItemCount() > 0) {
+                        new AlertDialog.Builder(FavoritesActivity.this)
+                                .setTitle("我的收藏")
+                                .setMessage("是否清空我的收藏?")
+                                .setNegativeButton("清空", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        clearFavorites();
+                                    }
+                                }).setPositiveButton("取消", null).create().show();
+                    } else {
+                        Toast.makeText(FavoritesActivity.this, "我的收藏空空如也...", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
         setContentView(content, actionBar);
 
-        setActionBarTitle(actionBar,"我的收藏");
-
-        FrameLayout frameLayout = new FrameLayout(this);
-        content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        ActionBarMenu actionBarMenu = actionBar.createMenu();
+        actionBarMenu.addItem(1, R.drawable.ic_delete_grey600_24dp);
+        setActionBarTitle(actionBar, "我的收藏");
 
         refreshLayout = new SwipeRefreshLayout(this);
         UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
@@ -72,34 +89,14 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
             public void onRefresh() {
                 changeProgress(false);
                 UIOpenHelper.syncFavorites(FavoritesActivity.this);
-                updateGoodsFavorites(true);
+                updateGoodsFavorites();
             }
         });
-        frameLayout.addView(refreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP, 0, 0, 0, 48));
+        content.addView(refreshLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView = new RecyclerView(this);
         listView.setLayoutManager(new LinearLayoutManager(this));
         refreshLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
-        allSelectCell = new AllSelectCell(this);
-        allSelectCell.setActionDelegate(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (adapter.getSelectedItemCount() > 0) {
-                    ArrayList<String> medicines = adapter.getSelectedItems();
-                    tryRemoveMedicineFavorites(medicines);
-                } else {
-                    Toast.makeText(FavoritesActivity.this, "请选择需要移除收藏的商品!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        allSelectCell.setAllCheckBoxDelegate(new CheckBox.OnCheckListener() {
-            @Override
-            public void onCheck(CheckBox view, boolean check) {
-                adapter.switchSelectAll(check);
-            }
-        });
-        frameLayout.addView(allSelectCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
 
         adapter = new FavoritesAdapter(this, new FavoritesAdapter.FavoritesCellDelegate() {
             @Override
@@ -114,13 +111,12 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
             }
 
             @Override
-            public void onSelectedChanged() {
-                updateAllSelectCell();
+            public void onRemoveFavorites(FavoritesEntity entity) {
+                tryRemoveMedicineFavorites(entity.getMerchandiseId());
             }
         });
         listView.setAdapter(adapter);
-        updateAllSelectCell();
-        updateGoodsFavorites(true);
+        updateGoodsFavorites();
 
         UIOpenHelper.syncFavorites(this);
     }
@@ -129,36 +125,78 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
         refreshLayout.setRefreshing(progress);
     }
 
-    private void updateAllSelectCell() {
-        boolean isAllSelected = adapter.isAllSelected();
-        int selectedCount = adapter.getSelectedItemCount();
-        allSelectCell.setValue(isAllSelected, selectedCount, R.drawable.ic_delete_grey600_24dp, selectedCount > 0 ? 0xffe51c23 : 0, true);
+    private void clearFavorites() {
+        needShowProgress("正在清空我的收藏...");
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DeleteMyFavour", null);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                needHideProgress();
+                Snackbar.make(getMyActionBar(), "清空我的收藏失败",
+                        Snackbar.LENGTH_SHORT).setAction("重试", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clearFavorites();
+                    }
+                }).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String response = responseProtocol.getResponse();
+                    if (TextUtils.isEmpty(response)) {
+                        clearGoodsFavorites();
+                        return;
+                    }
+                }
+                Snackbar.make(getMyActionBar(), "清空我的收藏失败",
+                        Snackbar.LENGTH_SHORT).setAction("重试", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clearFavorites();
+                    }
+                }).show();
+            }
+        });
     }
 
-    private void updateGoodsFavorites(boolean clear) {
+    private void updateGoodsFavorites() {
         FavoritesDao favoritesDao = DBInterface.instance().openReadableDb().getFavoritesDao();
         List<FavoritesEntity> favoritesEntities = favoritesDao.loadAll();
-        adapter.bindData(favoritesEntities, clear);
+        adapter.bindData(favoritesEntities);
+    }
+
+    private void clearGoodsFavorites() {
+        FavoritesDao favoritesDao = DBInterface.instance().openWritableDb().getFavoritesDao();
+        favoritesDao.deleteAll();
+        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onMedicineFavoriteChanged);
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.onRemoveMedicineFavorite) {
             needHideProgress();
-            updateGoodsFavorites(false);
+            updateGoodsFavorites();
         } else if (id == AppNotificationCenter.onMedicineFavoriteChanged) {
-            updateGoodsFavorites(false);
+            updateGoodsFavorites();
         } else if (id == AppNotificationCenter.onMedicineFavoriteChanged) {
-            updateGoodsFavorites(true);
+            updateGoodsFavorites();
         }
     }
 
-    private void tryRemoveMedicineFavorites(ArrayList<String> medicineId) {
-        if (medicineId != null && medicineId.size() <= 0) {
+    private void tryRemoveMedicineFavorites(String medicineId) {
+        if (TextUtils.isEmpty(medicineId)) {
             return;
         }
         needShowProgress("正在移除所选收藏商品...");
-        ShoppingServiceFragment.instance(getSupportFragmentManager()).removeFavoritesList(medicineId);
+        ShoppingServiceFragment.instance(getSupportFragmentManager()).removeFavorites(medicineId);
     }
 
     @Override
@@ -166,7 +204,7 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
 
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onAddMedicineFavorite);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
-        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onMedicineFavoriteChanged);
         super.onDestroy();
     }
 }

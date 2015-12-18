@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class AttachView extends FrameLayout {
             textView.setSingleLine(true);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setEllipsize(TextUtils.TruncateAt.END);
-            textView.setTextColor(0xff757575);
+            textView.setTextColor(0x80000000);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 64, 0, 0));
         }
@@ -76,7 +77,7 @@ public class AttachView extends FrameLayout {
         for (int a = 0; a < size; a++) {
             AttachButton attachButton = new AttachButton(getContext());
             attachButton.setTextAndIcon(items[a], itemIcons[a]);
-            addView(attachButton, LayoutHelper.createFrame(85, 90, Gravity.LEFT | Gravity.TOP));
+            addView(attachButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP));
             attachButton.setTag(a);
             views.add(attachButton);
             attachButton.setOnClickListener(new OnClickListener() {
@@ -103,9 +104,9 @@ public class AttachView extends FrameLayout {
         int diff = (width - AndroidUtilities.dp(85 * 4 + 20)) / 3;
         int size = views.size();
         View childTemp;
-        int t = AndroidUtilities.dp(8);
+        int t = 8;
         for (int a = 0; a < size; a++) {
-            int y = AndroidUtilities.dp(t + 95 * (a / 4));
+            int y = AndroidUtilities.dp(t + (a / 4) * 100);
             int x = AndroidUtilities.dp(8) + (a % 4) * (AndroidUtilities.dp(85) + diff);
             childTemp = views.get(a);
             childTemp.layout(x, y, x + childTemp.getMeasuredWidth(), y + childTemp.getMeasuredHeight());

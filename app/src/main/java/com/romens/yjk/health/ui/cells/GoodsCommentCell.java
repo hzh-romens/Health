@@ -47,7 +47,7 @@ public class GoodsCommentCell extends LinearLayout {
         addView(topContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT,48));
 
         userView = new TextView(context);
-        userView.setTextColor(ResourcesConfig.bodyText3);
+        userView.setTextColor(ResourcesConfig.bodyText1);
         userView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         userView.setLines(1);
         userView.setMaxLines(3);

@@ -38,7 +38,7 @@ public class ADPagerControl extends ADBaseControl {
     public static ADHolder createViewHolder(Context context) {
         ADPagerCell adPagerCell = new ADPagerCell(context);
         //adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 176));
+        adPagerCell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         return new ADHolder(adPagerCell);
     }
 
@@ -125,7 +125,7 @@ public class ADPagerControl extends ADBaseControl {
 //                intent.putExtra("guid", entity.id);
 //                context.startActivity(intent);
 
-                UIOpenHelper.openMedicineActivity(context,entity.id);
+                UIOpenHelper.openMedicineActivity(context, entity.id);
             }
 //            if (type == 0) {
 //                if (!TextUtils.isEmpty(action)) {
