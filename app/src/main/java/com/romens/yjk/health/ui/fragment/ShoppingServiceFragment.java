@@ -52,6 +52,12 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
     public void onCreate(final Bundle state) {
         super.onCreate(state);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
+
+}
+
+    @Override
+    public void onResume() {
+        super.onResume();
         loadShoppingCartCount();
     }
 

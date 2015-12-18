@@ -16,10 +16,12 @@ import android.widget.TextView;
 
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.yjk.health.R;
@@ -52,7 +54,7 @@ import java.util.Map;
  * Created by AUSU on 2015/9/20.
  * 订单提交
  */
-public class CommitOrderActivity extends BaseActivity implements IListDialogListener{
+public class CommitOrderActivity extends BaseActivity implements IListDialogListener {
     private ExpandableListView expandableListView;
     private ImageView back;
     private HashMap<String, List<ShopCarEntity>> childData;
@@ -78,7 +80,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         childData = (HashMap<String, List<ShopCarEntity>>) getIntent().getSerializableExtra("childData");
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
         getAll(childData);
-        adapter = new CommitOrderAdapter(this,parentData.size()+1);
+        adapter = new CommitOrderAdapter(this, parentData.size() + 1);
         getSendData();
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
@@ -87,13 +89,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
             @Override
             public void getCheckData(String flag) {
-//                if ("药店派送".equals(flag)) {
-//                    DELIVERYTYPE = "55b30f7d31f2f";
-//                } else {
-//                    DELIVERYTYPE = "23B70F47-45D6-4ECE-8A3A-13CC92DEA4B1";
-//                }
 
-                Log.i("DELIVERYTYPE=======",DELIVERYTYPE);
             }
         });
         //将ExpandAbleListView的每个parentItem展开
@@ -197,8 +193,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
             //对从ControlAddressActivity返回的数据进行处理
-            AddressEntity addressEntity= (AddressEntity)data.getSerializableExtra("responseCommitEntity");
-            person.setText("收货人：" + addressEntity.getRECEIVER()+ " " + addressEntity.getCONTACTPHONE());
+            AddressEntity addressEntity = (AddressEntity) data.getSerializableExtra("responseCommitEntity");
+            person.setText("收货人：" + addressEntity.getRECEIVER() + " " + addressEntity.getCONTACTPHONE());
             address.setText(addressEntity.getADDRESS());
             ADDRESSID = addressEntity.getADDRESSID();
         }
@@ -306,11 +302,10 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                             person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
                             address.setText(jsonObject.getString("ADDRESS"));
                             ADDRESSID = addressid;
-
                         }
                     } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        e.printStackTrace();
+                    }
                 } else {
                     Log.e("GetUserAddressList", errorMsg.msg);
                 }
@@ -318,14 +313,18 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
     }
 
-    private List<DeliverytypeEntity> result;
+    private List<DeliverytypeEntity> result=new ArrayList<DeliverytypeEntity>();
+
     public void getSendData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetTransport", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
-                .withProtocol(protocol).build();
+                .withProtocol(protocol)
+                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+                }))
+                .build();
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
@@ -336,13 +335,13 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             public void onResult(Message msg, Message errorMsg) {
                 needHideProgress();
                 if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String response = responseProtocol.getResponse();
-                    Gson gson = new Gson();
-                    result = gson.fromJson(response, new TypeToken<List<DeliverytypeEntity>>() {
-                    }.getType());
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol=(ResponseProtocol) msg.protocol;
+                    List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
+                    for (LinkedTreeMap<String,String> item:response) {
+                        DeliverytypeEntity entity = DeliverytypeEntity.mapToEntity(item);
+                        result.add(entity);
+                    }
                     adapter.SetDeliverytypeData(result);
-
                 } else {
                     Log.e("GetUserAddressList", errorMsg.msg);
                 }
@@ -356,20 +355,20 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             Intent i = new Intent(this, ShopCarActivity.class);
             startActivity(i);
             finish();
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public void onListItemSelected(CharSequence charSequence, int number, int requestCode) {
-      if(requestCode==9){
-          adapter.SetValue(charSequence.toString());
-          for (int i = 0; i < result.size(); i++) {
-              if(charSequence.toString().equals(result.get(i).getNAME())){
-                  DELIVERYTYPE=result.get(i).getGUID();
-              }
-          }
-      }
+        if (requestCode == 9) {
+            adapter.SetValue(charSequence.toString());
+            for (int i = 0; i < result.size(); i++) {
+                if (charSequence.toString().equals(result.get(i).getNAME())) {
+                    DELIVERYTYPE = result.get(i).getGUID();
+                }
+            }
+        }
     }
 }
