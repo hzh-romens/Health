@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
@@ -46,13 +47,15 @@ public class FavoritesTipCell extends LinearLayout {
 //        addView(favoritesView, LayoutHelper.createLinear(56, 48));
 
         textView = new TextView(context);
+        textView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+        textView.setBackgroundResource(R.drawable.layout_grey_background);
         textView.setTextColor(ResourcesConfig.bodyText2);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         textView.setLines(1);
         textView.setMaxLines(1);
         textView.setSingleLine(true);
         textView.setGravity(Gravity.CENTER);
-        addView(textView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, 17, 8, 17, 8));
+        addView(textView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, 17, 16, 17, 16));
     }
 
     public void setValue(String text, String tag, int tagResId, boolean divider) {
@@ -78,7 +81,7 @@ public class FavoritesTipCell extends LinearLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         if (needDivider) {
-            canvas.drawLine(getPaddingLeft(), getHeight() - 1, getWidth() - getPaddingRight(), getHeight() - 1, paint);
+            canvas.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1, paint);
         }
     }
 }

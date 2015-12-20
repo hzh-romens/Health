@@ -7,7 +7,7 @@
     <!--android:width="1dp"-->
     <!--android:color="@color/theme_primary" />-->
 
-    <solid android:color="@color/md_green_500" />
+    <solid android:color="@color/md_grey_500" />
 
-    <corners android:radius="4dp" />
+    <corners android:radius="2dp" />
 </shape>

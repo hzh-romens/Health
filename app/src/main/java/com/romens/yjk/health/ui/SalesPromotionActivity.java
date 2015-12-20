@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
@@ -186,7 +185,16 @@ public class SalesPromotionActivity extends BaseActivity implements CollectionVi
         } else {
             ADProductEntity entity = adSalesListEntity.productList.get(indexInGroup);
             ProductCell cell = (ProductCell) view;
+            cell.setProductCellDelegate(new ProductCell.ProductCellDelegate() {
+                @Override
+                public void onCellClick(Bundle arguments) {
+
+                }
+            });
             cell.setValue(entity.icon, entity.name, entity.oldPrice, entity.price);
+            Bundle arguments = new Bundle();
+            arguments.putString("ID", entity.id);
+            cell.setArguments(arguments);
         }
     }
 

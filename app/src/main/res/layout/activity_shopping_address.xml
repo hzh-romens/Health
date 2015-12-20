@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.romens.yjk.health.ui.cells.InputTextCell
+            <com.romens.yjk.health.ui.cells.LocationAddressInputCell
                 android:id="@+id/new_shopping_address_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

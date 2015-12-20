@@ -370,6 +370,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     private void tryAddMedicineFavorites() {
         isFavorites = true;
+        isFavoritesAnim = true;
         updateDate();
         ShoppingServiceFragment.instance(getSupportFragmentManager()).addFavorites(goodsId);
     }
@@ -556,6 +557,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private MedicineGoodsItem currMedicineGoodsItem;
 
     private boolean isFavorites = false;
+    private boolean isFavoritesAnim = false;
     //支持的购买方式
     private final List<MedicineServiceModeEntity> currMedicineGoodsServiceModes = new ArrayList<>();
     //附近其他在售药店
@@ -770,6 +772,10 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                         }
                     }
                 });
+                if (isFavoritesAnim) {
+                    cell.showAddFavoritesAnim();
+                    isFavoritesAnim = false;
+                }
             } else if (viewType == 3) {
                 if (view == null) {
                     view = new MedicinePriceCell(adapterContext);
@@ -912,8 +918,13 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     String response = responseProtocol.getResponse();
                     try {
                         JSONArray jsonArray = new JSONArray(response);
+                        MedicineSaleStoreEntity storeTemp;
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            saleStoreEntities.add(new MedicineSaleStoreEntity(jsonArray.getJSONObject(i)));
+                            storeTemp = new MedicineSaleStoreEntity(jsonArray.getJSONObject(i));
+                            //商品已返回在售药店
+                            if (!TextUtils.equals(storeTemp.id, currMedicineGoodsItem.shopId)) {
+                                saleStoreEntities.add(storeTemp);
+                            }
                         }
                         updateDate();
                     } catch (JSONException e) {

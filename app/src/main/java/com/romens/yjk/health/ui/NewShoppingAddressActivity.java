@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -27,6 +28,7 @@ import com.romens.yjk.health.db.entity.CitysEntity;
 import com.romens.yjk.health.ui.activity.BaseActivity;
 import com.romens.yjk.health.ui.activity.LocationAddressSelectActivity;
 import com.romens.yjk.health.ui.cells.InputTextCell;
+import com.romens.yjk.health.ui.cells.LocationAddressInputCell;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,25 +44,19 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
 
     private InputTextCell editUserView;
     private InputTextCell editPhoneView;
-    private InputTextCell editAddressIdView;
+    private LocationAddressInputCell editAddressIdView;
     private InputTextCell editAddressDetailView;
 
-    private String[] provinces;
-    private String[] citys;
-    private String[] districts;
+    private String[] locationNames;
+    private String[] locationValues;
 
-    private List<CitysEntity> provinceList;
-    private List<CitysEntity> cityList;
-    private List<CitysEntity> districtList;
-
-    private boolean isExecutInitList = false;
     private String userGuid = "3333";
 
-    private String[] guids;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onLocationAddressChanged);
         userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_shopping_address, R.id.action_bar);
@@ -105,12 +101,12 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
                         Toast.makeText(NewShoppingAddressActivity.this, "请输入联系人", Toast.LENGTH_SHORT).show();
                     } else if (contectPhone == null || contectPhone.equals("")) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请输入联系方式", Toast.LENGTH_SHORT).show();
-                    } else if (guids == null) {
+                    } else if (locationValues == null) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请选择地址", Toast.LENGTH_SHORT).show();
                     } else if (AddressDetail == null || AddressDetail.equals("")) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请输入详细地址", Toast.LENGTH_SHORT).show();
                     } else {
-                        saveAddress2Sevice(receiver, contectPhone, guids, AddressDetail);
+                        saveAddress2Sevice(receiver, contectPhone, locationValues, AddressDetail);
                     }
                 }
             }
@@ -176,26 +172,43 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
 
     private void initView() {
         editUserView = (InputTextCell) findViewById(R.id.new_shopping_address_user_name);
-        editUserView.setTextAndValue("联系人:", "", "请输入联系人", true, true);
+        editUserView.setTextAndValue("联系人:", "", "请输入联系人", false, true);
         editPhoneView = (InputTextCell) findViewById(R.id.new_shopping_address_user_phone);
         editPhoneView.setInputType(InputType.TYPE_CLASS_PHONE);
-        editPhoneView.setTextAndValue("联系人电话:", "", "请输入联系人电话", true, true);
+        editPhoneView.setTextAndValue("联系人电话:", "", "请输入联系人电话", false, true);
         editAddressDetailView = (InputTextCell) findViewById(R.id.new_shopping_address_detail);
         editAddressDetailView.setMultilineValue(true);
         editAddressDetailView.setTextAndValue("详细地址:", "", "请输入收货详细地址", false, true);
-        editAddressIdView = (InputTextCell) findViewById(R.id.new_shopping_address_address);
-        editAddressIdView.setMultilineValue(true);
-        editAddressIdView.setInputEnable(false);
-        editAddressIdView.setTextAndValue("所在地区:", "", "点击选择所在地区", false, true);
-        editAddressIdView.setOnCellClickListener(new View.OnClickListener() {
+        editAddressIdView = (LocationAddressInputCell) findViewById(R.id.new_shopping_address_address);
+        editAddressIdView.setTextAndValue("所在地区:", "", "", "", false, true);
+        editAddressIdView.setDelegate(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (!LocationAddressHelper.openLocationAddress(NewShoppingAddressActivity.this, 0, "所在地区选择")) {
                     LocationAddressHelper.syncServerLocationAddress(NewShoppingAddressActivity.this);
                 }
             }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
         });
+        updateLocationAddress();
+//        editAddressIdView.setOnCellClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (!LocationAddressHelper.openLocationAddress(NewShoppingAddressActivity.this, 0, "所在地区选择")) {
+//                    LocationAddressHelper.syncServerLocationAddress(NewShoppingAddressActivity.this);
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -207,21 +220,28 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String[] names = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_NAME);
-                String[] values = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_VALUE);
-                StringBuilder address = new StringBuilder();
-                for (String name :
-                        names) {
-                    address.append(name);
-                    address.append("-");
-                }
-                String locationAddress = address.toString();
-                if (locationAddress.endsWith("-")) {
-                    locationAddress = locationAddress.substring(0, locationAddress.length() - 1);
-                }
-                editAddressIdView.changeValue(locationAddress);
-                guids = values;
+                locationNames = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_NAME);
+                locationValues = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_VALUE);
+                updateLocationAddress();
             }
         }
+    }
+
+    private void updateLocationAddress() {
+        String province = "";
+        String city = "";
+        String county = "";
+        if (locationValues != null) {
+            if (locationValues.length > 0) {
+                province = locationNames[0];
+            }
+            if (locationValues.length > 1) {
+                city = locationNames[1];
+            }
+            if (locationValues.length > 2) {
+                county = locationNames[2];
+            }
+        }
+        editAddressIdView.setTextAndValue("所在地区:", province, city, county, false, true);
     }
 }

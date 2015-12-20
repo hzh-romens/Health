@@ -28,51 +28,27 @@ import java.util.Map;
 /**
  * Created by siery on 15/12/17.
  */
-public class FavoritesAdapter extends RecyclerView.Adapter {
-    private Context context;
-    private FavoritesCellDelegate favoritesCellDelegate;
-    private Drawable emptyIcon;
-    private final List<FavoritesEntity> favoritesEntities = new ArrayList<>();
-
-    static class Holder extends RecyclerView.ViewHolder {
-
-        public Holder(View view) {
-            super(view);
-        }
-    }
-
-    public interface FavoritesCellDelegate {
-        void onCellClick(int position);
-
-        void onAddShoppingCart(FavoritesEntity entity);
-
-        void onRemoveFavorites(FavoritesEntity entity);
-    }
+public class FavoritesAdapter extends FavoritesBaseAdapter {
 
     public FavoritesAdapter(Context context, FavoritesCellDelegate delegate) {
-        this.context = context;
-        favoritesCellDelegate = delegate;
-        emptyIcon = context.getResources().getDrawable(R.drawable.no_img_upload);
+        super(context, delegate);
     }
 
-    public void bindData(List<FavoritesEntity> data) {
-        favoritesEntities.clear();
-        if (data != null && data.size() > 0) {
-            favoritesEntities.addAll(data);
-        }
-        notifyDataSetChanged();
-    }
-
-    public List<FavoritesEntity> getFavoritesEntities() {
-        return favoritesEntities;
-    }
-
+    @Override
     public FavoritesEntity getItem(int position) {
-        return favoritesEntities.get(position);
+        return favoritesEntities.get(position - 1);
+    }
+
+    @Override
+    protected String getEmptyText() {
+        return "暂无收藏";
     }
 
     @Override
     public int getItemViewType(int position) {
+        if(favoritesEntities.isEmpty()){
+            return 2;
+        }
         if (position == 0) {
             return 1;
         }
@@ -80,67 +56,8 @@ public class FavoritesAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        if (i == 0) {
-            MedicineListCell cell = new MedicineListCell(viewGroup.getContext());
-            cell.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            return new Holder(cell);
-        } else if (i == 1) {
-            FavoritesTipCell cell = new FavoritesTipCell(viewGroup.getContext());
-            cell.setLayoutParams(LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            return new Holder(cell);
-        }
-        return null;
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int i) {
-        if (viewHolder.itemView instanceof MedicineListCell) {
-            MedicineListCell cell = (MedicineListCell) viewHolder.itemView;
-            cell.setCellDelegate(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (favoritesCellDelegate != null) {
-                        favoritesCellDelegate.onCellClick(i - 1);
-                    }
-                }
-            });
-            FavoritesEntity entity = getItem(i - 1);
-            SpannableStringBuilder priceStr = new SpannableStringBuilder();
-            priceStr.append(ShoppingHelper.formatPrice(new BigDecimal(entity.getPrice())));
-            priceStr.append(String.format(" (%s)", entity.getMedicineSpec()));
-            CharSequence memberPriceStr = ShoppingHelper.createMemberPriceInfo(new BigDecimal(entity.getMemberPrice()));
-            cell.setValue(true, true, entity.getPicSmall(), emptyIcon, entity.getMedicineName(), "", priceStr, memberPriceStr, true, true);
-            cell.enableAddShoppingCartBtn(true, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (favoritesCellDelegate != null) {
-                        favoritesCellDelegate.onAddShoppingCart(getItem(i - 1));
-                    }
-                }
-            });
-            cell.setFavoritesDelegate(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (favoritesCellDelegate != null) {
-                        favoritesCellDelegate.onRemoveFavorites(getItem(i - 1));
-                    }
-                }
-            });
-        } else if (viewHolder.itemView instanceof FavoritesTipCell) {
-            FavoritesTipCell cell = (FavoritesTipCell) viewHolder.itemView;
-            cell.setValue("小提示:点击 [favorites] 可以取消收藏!", "[favorites]", R.drawable.ic_favorite_white_24dp, true);
-        }
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
     public int getItemCount() {
         int count = favoritesEntities == null ? 0 : favoritesEntities.size();
-        return count > 0 ? (count + 1) : count;
+        return count > 0 ? (count + 1) : 1;
     }
 }

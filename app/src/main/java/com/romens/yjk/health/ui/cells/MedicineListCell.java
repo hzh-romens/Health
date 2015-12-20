@@ -2,8 +2,10 @@ package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -137,11 +139,14 @@ public class MedicineListCell extends LinearLayout {
         addShoppingCartBtn.setMaxLines(1);
         addShoppingCartBtn.setEllipsize(TextUtils.TruncateAt.END);
         addShoppingCartBtn.setSingleLine(true);
-        addShoppingCartBtn.setTextColor(ResourcesConfig.bodyText1);
-        addShoppingCartBtn.setBackgroundResource(R.drawable.btn_primary_border);
+        addShoppingCartBtn.setTextColor(Color.WHITE);
+        addShoppingCartBtn.setBackgroundResource(R.drawable.btn_primary);
         addShoppingCartBtn.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(4));
         addShoppingCartBtn.setGravity(Gravity.CENTER);
         addShoppingCartBtn.setText("添加到购物车");
+        if (Build.VERSION.SDK_INT >= 21) {
+            addShoppingCartBtn.setStateListAnimator(null);
+        }
         bottomContainer.addView(addShoppingCartBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 8, 0, 16, 0));
     }
 

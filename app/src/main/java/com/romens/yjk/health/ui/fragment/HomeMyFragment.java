@@ -107,7 +107,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == helpRow) {
                     startActivity(new Intent(getActivity(), HelpActivity.class));
                 } else if (position == accountRow) {
-                    startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
+                    //startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
+                    UIOpenHelper.openUserLabelsActivity(getActivity());
                 } else if (position == exitRow) {
                     UserConfig.clearUser();
                     UserConfig.clearConfig();

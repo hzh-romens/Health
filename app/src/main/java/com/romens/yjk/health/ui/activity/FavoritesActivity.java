@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,8 +10,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -18,6 +21,7 @@ import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
+import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -28,6 +32,7 @@ import com.romens.yjk.health.db.dao.FavoritesDao;
 import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.adapter.FavoritesAdapter;
+import com.romens.yjk.health.ui.adapter.FavoritesSearchAdapter;
 import com.romens.yjk.health.ui.cells.AllSelectCell;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -42,6 +47,11 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView listView;
     private FavoritesAdapter adapter;
+    private FavoritesSearchAdapter searchAdapter;
+
+    private boolean searchWas;
+    private boolean searching;
+    private ActionBarMenuItem searchMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +69,7 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
-                } else if (id == 1) {
+                } else if (id == 2) {
                     if (adapter.getItemCount() > 0) {
                         new AlertDialog.Builder(FavoritesActivity.this)
                                 .setTitle("我的收藏")
@@ -79,7 +89,46 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
         setContentView(content, actionBar);
 
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        actionBarMenu.addItem(1, R.drawable.ic_delete_grey600_24dp);
+        searchMenuItem = addActionBarSearchItem(actionBarMenu, 1, new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
+
+            @Override
+            public boolean canCollapseSearch() {
+                return true;
+            }
+
+            @Override
+            public void onSearchCollapse() {
+                searching = false;
+                searchWas = false;
+                listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                refreshLayout.setEnabled(!searchWas);
+            }
+
+//            @Override
+//            public void onSearchExpand() {
+//                refreshLayout.setEnabled(false);
+//            }
+
+            @Override
+            public void onTextChanged(EditText editText) {
+                if (searchAdapter == null) {
+                    return;
+                }
+                String text = editText.getText().toString();
+                if (text.length() != 0) {
+                    searchWas = true;
+                    if (listView != null) {
+                        listView.setAdapter(searchAdapter);
+                        searchAdapter.notifyDataSetChanged();
+                    }
+                }
+                searchAdapter.searchDelayed(text);
+                refreshLayout.setEnabled(!searchWas);
+            }
+        });
+        searchMenuItem.getSearchField().setHint("输入商品名,比如:阿司匹林");
+        actionBarMenu.addItem(2, R.drawable.ic_delete_grey600_24dp);
         setActionBarTitle(actionBar, "我的收藏");
 
         refreshLayout = new SwipeRefreshLayout(this);
@@ -115,7 +164,33 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
                 tryRemoveMedicineFavorites(entity.getMerchandiseId());
             }
         });
+        searchAdapter = new FavoritesSearchAdapter(this, new FavoritesAdapter.FavoritesCellDelegate() {
+            @Override
+            public void onCellClick(int position) {
+                FavoritesEntity entity = searchAdapter.getItem(position);
+                UIOpenHelper.openMedicineActivity(FavoritesActivity.this, entity.getMerchandiseId());
+            }
+
+            @Override
+            public void onAddShoppingCart(FavoritesEntity entity) {
+                ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCart(entity.getMerchandiseId(), entity.getPrice());
+            }
+
+            @Override
+            public void onRemoveFavorites(FavoritesEntity entity) {
+                tryRemoveMedicineFavorites(entity.getMerchandiseId());
+            }
+        });
         listView.setAdapter(adapter);
+        listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING && searching && searchWas) {
+                    AndroidUtilities.hideKeyboard(getCurrentFocus());
+                }
+            }
+        });
         updateGoodsFavorites();
 
         UIOpenHelper.syncFavorites(this);
@@ -201,10 +276,22 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
 
     @Override
     public void onDestroy() {
-
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onAddMedicineFavorite);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onMedicineFavoriteChanged);
+        if (searchAdapter != null) {
+            searchAdapter.destroy();
+        }
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        ActionBar actionBar = getMyActionBar();
+        if (actionBar.isSearchFieldVisible()) {
+            actionBar.closeSearchField();
+            return;
+        }
+        finish();
     }
 }

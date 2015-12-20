@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.ADProductEntity;
 import com.romens.yjk.health.model.ADProductListEntity;
 
@@ -19,7 +21,7 @@ import com.romens.yjk.health.model.ADProductListEntity;
  * Created by siery on 15/8/14.
  */
 
-public class ADProductsCell extends LinearLayout {
+public class ADProductsCell extends LinearLayout implements ProductCell.ProductCellDelegate {
     private int count = 3;
 
     private ADProductGroupCell groupCell;
@@ -30,7 +32,7 @@ public class ADProductsCell extends LinearLayout {
 
     private int cellStyle = 0;
 
-    private ADProductsCellDelegate cellDelegate;
+    private Bundle arguments = new Bundle();
 
     public ADProductsCell(Context context) {
         super(context);
@@ -43,9 +45,7 @@ public class ADProductsCell extends LinearLayout {
         groupCell.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cellDelegate != null) {
-                    cellDelegate.onMoreButtonClick();
-                }
+
             }
         });
 
@@ -79,7 +79,6 @@ public class ADProductsCell extends LinearLayout {
      * 3、2：
      */
     public void setValue(ADProductListEntity entity) {
-
         cellStyle = 0;
         count = 3;
         final int size = entity.size();
@@ -146,6 +145,10 @@ public class ADProductsCell extends LinearLayout {
         ProductCell cell = new ProductCell(getContext());
         //cell.setLayoutStyle(cellStyle == 1 ? ProductCell.LayoutStyle.DEFAULT : ProductCell.LayoutStyle.SMALL);
         cell.setValue(entity.icon, entity.name, entity.price, entity.price);
+        Bundle arguments = new Bundle();
+        arguments.putString("ID", entity.id);
+        cell.setArguments(arguments);
+        cell.setProductCellDelegate(this);
         parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 4, 4, 4, 4));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
         layoutParams.weight = 1;
@@ -253,14 +256,11 @@ public class ADProductsCell extends LinearLayout {
 //        }
 //    }
 
-    public void setADProductsCellDelegate(ADProductsCellDelegate delegate) {
-        cellDelegate = delegate;
+    @Override
+    public void onCellClick(Bundle arguments) {
+        if (arguments != null && arguments.containsKey("ID")) {
+            String medicineId = arguments.getString("ID", "");
+            UIOpenHelper.openMedicineActivity(getContext(), medicineId);
+        }
     }
-
-    public interface ADProductsCellDelegate {
-        void onMoreButtonClick();
-
-        void onChildClick();
-    }
-
 }

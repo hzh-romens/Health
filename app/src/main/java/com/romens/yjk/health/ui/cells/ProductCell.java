@@ -64,7 +64,7 @@ public class ProductCell extends LinearLayout {
         addView(nameView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 2));
         priceView = new TextView(context);
         priceView.setTextColor(0xff0f9d58);
-        priceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        priceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         priceView.setSingleLine(true);
         priceView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
         addView(priceView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
@@ -89,6 +89,14 @@ public class ProductCell extends LinearLayout {
         CharSequence priceStr = formatPrice(oldPrice, price);
         priceView.setText(priceStr);
         iconView.setImage(iconUrl, null, null);
+    }
+
+    public void setArguments(Bundle arguments) {
+        this.arguments = arguments;
+    }
+
+    public Bundle getArguments() {
+        return this.arguments;
     }
 
 //    public void setLayoutStyle(LayoutStyle style) {

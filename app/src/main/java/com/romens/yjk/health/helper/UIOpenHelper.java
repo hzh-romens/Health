@@ -17,6 +17,7 @@ import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
+import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 
 /**
  * Created by siery on 15/12/14.
@@ -114,6 +115,11 @@ public class UIOpenHelper {
     public static void openShippingAddress(Activity context, int requestCode) {
         Intent intent = new Intent(context, ControlAddressActivity.class);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void openUserLabelsActivity(Context context) {
+        Intent intent = new Intent(context, UserLabelsActivity.class);
+        context.startActivity(intent);
     }
 
 }

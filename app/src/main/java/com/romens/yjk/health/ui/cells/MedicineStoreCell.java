@@ -2,9 +2,11 @@ package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.os.Build;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -115,11 +117,15 @@ public class MedicineStoreCell extends FrameLayout {
         addShoppingCartView.setMaxLines(1);
         addShoppingCartView.setEllipsize(TextUtils.TruncateAt.END);
         addShoppingCartView.setSingleLine(true);
-        addShoppingCartView.setTextColor(ResourcesConfig.textPrimary);
-        addShoppingCartView.setBackgroundResource(R.drawable.btn_primary_border);
+        addShoppingCartView.setTextColor(Color.WHITE);
+        //addShoppingCartView.setTextColor(ResourcesConfig.textPrimary);
+        addShoppingCartView.setBackgroundResource(R.drawable.btn_primary);
         addShoppingCartView.setText("加入购物车");
         addShoppingCartView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(4));
         addShoppingCartView.setGravity(Gravity.CENTER);
+        if (Build.VERSION.SDK_INT >= 21) {
+            addShoppingCartView.setStateListAnimator(null);
+        }
         bottomContainer.addView(addShoppingCartView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, 8, 8, 0, 0));
 
     }
@@ -157,13 +163,14 @@ public class MedicineStoreCell extends FrameLayout {
             addShoppingCartResId = R.drawable.btn_border_emergency;
         } else if (storeCount < 999) {
             storeCountStr = String.format("现在有货 (%d)", storeCount);
-            storeCountFontColor = ResourcesConfig.textPrimary;
-            addShoppingCartResId = R.drawable.btn_primary_border;
+            storeCountFontColor = Color.WHITE;
+            addShoppingCartResId = R.drawable.btn_primary;
         } else {
             storeCountStr = "现在有货";
-            storeCountFontColor = ResourcesConfig.textPrimary;
-            addShoppingCartResId = R.drawable.btn_primary_border;
+            storeCountFontColor = Color.WHITE;
+            addShoppingCartResId = R.drawable.btn_primary;
         }
+
         SpannableString storeCountSpan = new SpannableString(storeCountStr);
         storeCountSpan.setSpan(new ForegroundColorSpan(storeCountFontColor), 0, storeCountStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         storeCountView.setText(storeCountSpan);

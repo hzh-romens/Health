@@ -9,5 +9,5 @@
 
     <solid android:color="@color/theme_primary" />
 
-    <corners android:radius="4dp" />
+    <corners android:radius="2dp" />
 </shape>

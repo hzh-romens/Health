@@ -21,6 +21,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.helper.AnimHelper;
 
 /**
  * Created by siery on 15/12/15.
@@ -73,6 +74,10 @@ public class MedicineMainCell extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(64) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
+    }
+
+    public void showAddFavoritesAnim() {
+        AnimHelper.addFavoritesAnim(favoritesView);
     }
 
     public void setValue(CharSequence name, String desc, boolean isFavorites, boolean divider) {
