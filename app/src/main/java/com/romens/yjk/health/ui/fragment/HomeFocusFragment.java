@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.amap.api.location.AMapLocation;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -26,6 +27,8 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.HomeConfig;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
 import com.romens.yjk.health.model.ADFunctionEntity;
 import com.romens.yjk.health.model.ADImageEntity;
@@ -35,6 +38,7 @@ import com.romens.yjk.health.model.ADProductEntity;
 import com.romens.yjk.health.model.ADProductListEntity;
 import com.romens.yjk.health.model.HealthNewsEntity;
 import com.romens.yjk.health.ui.adapter.FocusAdapter;
+import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
 import com.romens.yjk.health.ui.controls.ADFunctionControl;
 import com.romens.yjk.health.ui.controls.ADGroupControl;
@@ -59,8 +63,9 @@ import java.util.Map;
 /**
  * Created by siery on 15/8/10.
  */
-public class HomeFocusFragment extends BaseFragment {
+public class HomeFocusFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
 
+    private LastLocationCell lastLocationCell;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerListView;
     private FocusAdapter focusAdapter;
@@ -78,6 +83,9 @@ public class HomeFocusFragment extends BaseFragment {
         LinearLayout content = new LinearLayout(context);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setBackgroundColor(ResourcesConfig.greyBackground);
+
+        lastLocationCell = new LastLocationCell(context);
+        content.addView(lastLocationCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         refreshLayout = new SwipeRefreshLayout(context);
         UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
@@ -119,6 +127,7 @@ public class HomeFocusFragment extends BaseFragment {
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
+        updateLastLocation();
         requestDataChanged();
     }
 
@@ -495,5 +504,21 @@ public class HomeFocusFragment extends BaseFragment {
         } catch (JSONException e) {
             return null;
         }
+    }
+
+    @Override
+    public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.onLastLocationChanged) {
+            updateLastLocation();
+        }
+    }
+
+    private void updateLastLocation() {
+        AMapLocation location = LocationHelper.getLastLocation(getActivity());
+        String address = location == null ? null : location.getAddress();
+        if (TextUtils.isEmpty(address)) {
+            address = "无法获取当前位置";
+        }
+        lastLocationCell.setValue(address);
     }
 }

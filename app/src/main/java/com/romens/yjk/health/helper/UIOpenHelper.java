@@ -24,6 +24,11 @@ import com.romens.yjk.health.ui.activity.UserLabelsActivity;
  */
 public class UIOpenHelper {
 
+    public static void openLoginActivity(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
     public static void openLoginActivity(Fragment fragment, int requestCode) {
         Intent intent = new Intent(fragment.getActivity(), LoginActivity.class);
         fragment.startActivityForResult(intent, requestCode);

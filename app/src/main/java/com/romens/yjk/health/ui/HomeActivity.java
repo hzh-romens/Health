@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.widget.FrameLayout;
 
 import com.amap.api.location.AMapLocation;
@@ -31,6 +32,7 @@ import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.LoginActivity;
+import com.romens.yjk.health.ui.cells.HomeTabsCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
@@ -67,11 +69,20 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         viewPager = new ViewPager(this);
-        frameLayout.addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        frameLayout.addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP, 0, 0, 0, 64));
+
+        HomeTabsCell tabsCell = new HomeTabsCell(this);
+        frameLayout.addView(tabsCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
+        tabsCell.setViewPager(viewPager);
         setContentView(content, actionBar);
 
+        tabsCell.addView(R.drawable.ic_search_grey600_24dp, "首页");
+        tabsCell.addView(R.drawable.ic_local_hospital_grey600_24dp, "健康");
+        tabsCell.addView(R.drawable.ic_whatshot_grey600_24dp, "发现");
+        tabsCell.addView(R.drawable.ic_person_grey600_24dp, "我的");
         pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
         viewPager.setAdapter(pagerAdapter);
+        tabsCell.setSelected(0);
 
         slidingFixTabLayout.setCustomTabView(R.layout.widget_tab_indicator, android.R.id.text1);
         //slidingFixTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
@@ -79,10 +90,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         slidingFixTabLayout.setSelectedIndicatorColors(Color.WHITE);
         //slidingFixTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.themecolor));
         slidingFixTabLayout.setDistributeEvenly(true);
-        slidingFixTabLayout.setViewPager(viewPager);
+        //slidingFixTabLayout.setViewPager(viewPager);
 
         actionBar.setTitle(getString(R.string.app_name));
-        actionBar.setBackButtonImage(R.drawable.yaojk_logo);
+        actionBar.setBackButtonImage(R.drawable.ic_app_icon);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);

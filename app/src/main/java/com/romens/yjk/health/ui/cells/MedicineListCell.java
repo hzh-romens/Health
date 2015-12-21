@@ -135,19 +135,19 @@ public class MedicineListCell extends LinearLayout {
 
 
         addShoppingCartBtn = new Button(context);
-        addShoppingCartBtn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        addShoppingCartBtn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         addShoppingCartBtn.setMaxLines(1);
         addShoppingCartBtn.setEllipsize(TextUtils.TruncateAt.END);
         addShoppingCartBtn.setSingleLine(true);
-        addShoppingCartBtn.setTextColor(Color.WHITE);
-        addShoppingCartBtn.setBackgroundResource(R.drawable.btn_primary);
+        addShoppingCartBtn.setTextColor(ResourcesConfig.textPrimary);
+        addShoppingCartBtn.setBackgroundResource(R.drawable.btn_primary_border);
         addShoppingCartBtn.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(4));
         addShoppingCartBtn.setGravity(Gravity.CENTER);
         addShoppingCartBtn.setText("添加到购物车");
         if (Build.VERSION.SDK_INT >= 21) {
             addShoppingCartBtn.setStateListAnimator(null);
         }
-        bottomContainer.addView(addShoppingCartBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 8, 0, 16, 0));
+        bottomContainer.addView(addShoppingCartBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 28, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 8, 0, 16, 0));
     }
 
     public void setValue(boolean enableFavorites, boolean isFavorites, String iconUrl, Drawable defaultIcon, CharSequence name, CharSequence desc, CharSequence price, CharSequence priceInfo, boolean showAdd, boolean divider) {
