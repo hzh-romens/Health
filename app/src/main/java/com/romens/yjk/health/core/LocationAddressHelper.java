@@ -146,7 +146,7 @@ public class LocationAddressHelper {
         }
     }
 
-    public static boolean openLocationAddress(Activity activity, int requestCode,String title) {
+    public static boolean openLocationAddress(Activity activity, int requestCode, String title) {
         LocationAddressDao dao = DBInterface.instance().openReadableDb().getLocationAddressDao();
         List<LocationAddressEntity> provinceData = dao.queryBuilder()
                 .where(LocationAddressDao.Properties.ParentId.eq(""))
@@ -165,6 +165,32 @@ public class LocationAddressHelper {
         Intent intent = new Intent(activity, LocationAddressSelectActivity.class);
         intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_ADDRESS_DEEP, 0);
         intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_TITLE, title);
+        intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_NAME_LIST, nameList);
+        intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_VALUE_LIST, valueList);
+        intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_ONLY_SELECT, false);
+        activity.startActivityForResult(intent, requestCode);
+        return true;
+    }
+
+    public static boolean openLocationCityOrCountySelect(Activity activity, int requestCode, String name, String value) {
+        LocationAddressDao dao = DBInterface.instance().openReadableDb().getLocationAddressDao();
+        List<LocationAddressEntity> provinceData = dao.queryBuilder()
+                .where(LocationAddressDao.Properties.ParentId.eq(value))
+                .orderDesc(LocationAddressDao.Properties.Key)
+                .list();
+        if (provinceData == null || provinceData.size() <= 0) {
+            return false;
+        }
+        ArrayList<String> nameList = new ArrayList<>();
+        ArrayList<String> valueList = new ArrayList<>();
+        for (LocationAddressEntity entity :
+                provinceData) {
+            nameList.add(entity.getName());
+            valueList.add(entity.getKey());
+        }
+        Intent intent = new Intent(activity, LocationAddressSelectActivity.class);
+        intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_ADDRESS_DEEP, 0);
+        intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_TITLE, name);
         intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_NAME_LIST, nameList);
         intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_VALUE_LIST, valueList);
         intent.putExtra(LocationAddressSelectActivity.ARGUMENTS_KEY_ONLY_SELECT, false);
