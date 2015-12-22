@@ -66,7 +66,8 @@ public class ProductCell extends LinearLayout {
         priceView.setTextColor(0xff0f9d58);
         priceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         priceView.setSingleLine(true);
-        priceView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+        priceView.setEllipsize(TextUtils.TruncateAt.END);
+        priceView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         addView(priceView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
 
         setClickable(true);
@@ -139,18 +140,19 @@ public class ProductCell extends LinearLayout {
 
             SpannableStringBuilder priceSpanBuilder = new SpannableStringBuilder();
 
-            SpannableString oldPriceSpan = new SpannableString(formatOlPrice);
-            oldPriceSpan.setSpan(new StrikethroughSpan(), 0, formatOlPrice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            oldPriceSpan.setSpan(new ForegroundColorSpan(ResourcesConfig.bodyText3), 0, formatOlPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            priceSpanBuilder.append(oldPriceSpan);
-            priceSpanBuilder.append(" ");
-
+            //current price
             SpannableString priceSpan = new SpannableString(formatPrice);
             int length = formatPrice.length();
             priceSpan.setSpan(new ForegroundColorSpan(ResourcesConfig.priceFontColor), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             priceSpan.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             priceSpanBuilder.append(priceSpan);
-
+            //divider
+            priceSpanBuilder.append(" ");
+            //old price
+            SpannableString oldPriceSpan = new SpannableString(formatOlPrice);
+            oldPriceSpan.setSpan(new StrikethroughSpan(), 0, formatOlPrice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            oldPriceSpan.setSpan(new ForegroundColorSpan(ResourcesConfig.bodyText3), 0, formatOlPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            priceSpanBuilder.append(oldPriceSpan);
             return priceSpanBuilder;
         }
     }

@@ -8,8 +8,9 @@ import com.romens.yjk.health.R;
  */
 public class ResourcesConfig {
     public static int greyBackground=0xffeeeeee;
-    public static int primaryColor;
     public static int greyColor=0xffeeeeee;
+
+    public static int primaryColor;
     public static final int textPrimary;
 
     public static final int bodyText1 = 0xff212121;

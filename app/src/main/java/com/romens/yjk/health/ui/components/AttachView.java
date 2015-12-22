@@ -89,6 +89,8 @@ public class AttachView extends FrameLayout {
                 }
             });
         }
+        invalidate();
+        requestLayout();
     }
 
     @Override

@@ -13,12 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.yjk.health.R;
@@ -36,6 +33,7 @@ import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.components.CustomDialog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -244,8 +242,6 @@ public class ShopCarActivity extends BaseActivity {
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
                 .build();
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
 
@@ -259,10 +255,20 @@ public class ShopCarActivity extends BaseActivity {
             public void onResult(Message msg, Message errorMsg) {
                 needHideProgress();
                 if (errorMsg == null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    onResponseShopCarData(responseProtocol.getResponse());
-                } else {
-                    Log.e("GetBuyCarCount", errorMsg.msg);
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
+                        onResponseShopCarData(jsonArray);
+                        return;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                try {
+                    onResponseShopCarData(null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -273,8 +279,8 @@ public class ShopCarActivity extends BaseActivity {
     HashMap<String, List<ShopCarEntity>> childData;
 
 
-    public void onResponseShopCarData(List<LinkedTreeMap<String, String>> ShopCarData) {
-        int count = ShopCarData == null ? 0 : ShopCarData.size();
+    public void onResponseShopCarData(JSONArray jsonArray) throws JSONException {
+        int count = jsonArray == null ? 0 : jsonArray.length();
         if (count <= 0) {
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
             HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
@@ -293,11 +299,16 @@ public class ShopCarActivity extends BaseActivity {
             return;
         }
         List<ShopCarEntity> result = new ArrayList<ShopCarEntity>();
-        for (LinkedTreeMap<String, String> item : ShopCarData) {
-            ShopCarEntity entity = ShopCarEntity.mapToEntity(item);
+        for (int i = 0; i < count; i++) {
+            ShopCarEntity entity = ShopCarEntity.jsonObjectToEntity(jsonArray.getJSONObject(i));
             entity.setCHECK("true");
             result.add(entity);
         }
+//        for (LinkedTreeMap<String, String> item : ShopCarData) {
+//            ShopCarEntity entity = ShopCarEntity.jsonObjectToEntity(item);
+//            entity.setCHECK("true");
+//            result.add(entity);
+//        }
         fatherEntities = new ArrayList<ParentEntity>();
         childData = new HashMap<String, List<ShopCarEntity>>();
         for (int i = 0; i < result.size(); i++) {

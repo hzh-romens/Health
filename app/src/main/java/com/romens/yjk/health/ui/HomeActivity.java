@@ -275,7 +275,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                         if (aMapLocation != null) {
                             AMapLocException exception = aMapLocation.getAMapException();
                             if (exception == null || exception.getErrorCode() == 0) {
-
                                 LocationHelper.updateLastLocation(HomeActivity.this, aMapLocation);
                             }
                         }

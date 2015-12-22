@@ -2,6 +2,9 @@ package com.romens.yjk.health.model;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -161,6 +164,24 @@ public class ShopCarEntity implements Serializable {
 
     public void setUpdatedTime(int updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    public static ShopCarEntity jsonObjectToEntity(JSONObject jsonObject) throws JSONException {
+        ShopCarEntity entity = new ShopCarEntity();
+        entity.setSPEC(jsonObject.getString("SPEC"));
+        entity.setNAME(jsonObject.getString("NAME"));
+        entity.setBUYCOUNT(jsonObject.getInt("BUYCOUNT"));
+        entity.setCODE(jsonObject.getString("CODE"));
+        entity.setCREATETIME(jsonObject.getString("CREATEDTIME"));
+        entity.setDETAILDESCRIPTION(jsonObject.getString("DETAILDESCRIPTION"));
+        entity.setGOODSCLASSNAME(jsonObject.getString("GOODSCLASSNAME"));
+        entity.setGOODSGUID(jsonObject.getString("GOODSGUID"));
+        entity.setGOODSPRICE(jsonObject.getDouble("GOODSPRICE"));
+        entity.setGOODURL(jsonObject.getString("GOODURL"));
+        entity.setSHOPID(jsonObject.getString("SHOPID"));
+        entity.setSHOPNAME(jsonObject.getString("SHOPNAME"));
+        entity.setUSERGUID(jsonObject.getString("USERGUID"));
+        return entity;
     }
 
     public static ShopCarEntity mapToEntity(LinkedTreeMap<String, String> map) {

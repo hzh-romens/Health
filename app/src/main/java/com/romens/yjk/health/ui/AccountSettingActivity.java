@@ -77,7 +77,7 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
         setContentView(content, actionBar);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_done_grey600_24dp);
-        setActionBarTitle(actionBar, "详细信息");
+        setActionBarTitle(actionBar, "个人信息");
         content.setBackgroundColor(getResources().getColor(R.color.title_background_grey));
         setRow();
 

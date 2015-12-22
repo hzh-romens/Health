@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -24,7 +23,6 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.db.entity.AddressEntity;
-import com.romens.yjk.health.db.entity.CitysEntity;
 import com.romens.yjk.health.ui.activity.BaseActivity;
 import com.romens.yjk.health.ui.activity.LocationAddressSelectActivity;
 import com.romens.yjk.health.ui.cells.InputTextCell;
@@ -33,7 +31,6 @@ import com.romens.yjk.health.ui.cells.LocationAddressInputCell;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,10 +44,10 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
     private LocationAddressInputCell editAddressIdView;
     private InputTextCell editAddressDetailView;
 
-    private String[] locationNames;
-    private String[] locationValues;
+    private final String[] locationNames = new String[3];
+    private final String[] locationValues = new String[3];
 
-    private String userGuid = "3333";
+    private String userGuid;
 
 
     @Override
@@ -184,19 +181,26 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
         editAddressIdView.setDelegate(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!LocationAddressHelper.openLocationAddress(NewShoppingAddressActivity.this, 0, "所在地区选择")) {
+                final int deep = 0;
+                if (!LocationAddressHelper.openLocationAddress(NewShoppingAddressActivity.this, deep, "所在地区选择")) {
                     LocationAddressHelper.syncServerLocationAddress(NewShoppingAddressActivity.this);
                 }
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final int deep = 1;
+                String name = locationNames[deep-1];
+                String value = locationValues[deep-1];
+                LocationAddressHelper.openLocationCityOrCountySelect(NewShoppingAddressActivity.this, deep, name, value);
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final int deep = 2;
+                String name = locationNames[deep-1];
+                String value = locationValues[deep-1];
+                LocationAddressHelper.openLocationCityOrCountySelect(NewShoppingAddressActivity.this, deep, name, value);
             }
         });
         updateLocationAddress();
@@ -218,10 +222,23 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
+        if (requestCode == 0 || requestCode == 1 || requestCode == 2) {
             if (resultCode == RESULT_OK) {
-                locationNames = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_NAME);
-                locationValues = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_VALUE);
+                String[] names = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_NAME);
+                String[] values = data.getStringArrayExtra(LocationAddressSelectActivity.RESULT_KEY_SELECTED_VALUE);
+                int length = values.length;
+                for (int i = requestCode; i < 3; i++) {
+                    if (length == 3) {
+                        locationNames[i] = names[i];
+                        locationValues[i] = values[i];
+                    } else if (length == 2) {
+                        locationNames[i] = names[i - requestCode];
+                        locationValues[i] = values[i - requestCode];
+                    } else if (length == 1) {
+                        locationNames[i] = names[i - requestCode];
+                        locationValues[i] = values[i - requestCode];
+                    }
+                }
                 updateLocationAddress();
             }
         }
