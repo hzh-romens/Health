@@ -45,7 +45,16 @@ public class TextDetailSelectCell extends FrameLayoutFixed {
         ImageView selectView = new ImageView(context);
         selectView.setScaleType(ImageView.ScaleType.CENTER);
         selectView.setImageResource(com.romens.android.R.drawable.ic_more_vert_grey600_18dp);
-        addView(selectView, LayoutHelper.createFrame(17, 17, Gravity.RIGHT | Gravity.TOP, 17, 10, 0, 0));
+        addView(selectView, LayoutHelper.createFrame(17, 17, Gravity.RIGHT | Gravity.TOP, 17, 10, 8, 0));
+
+        selectView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onImageClickListener != null) {
+                    onImageClickListener.onImageClick(v);
+                }
+            }
+        });
 
         valueTextView = new TextView(context);
         valueTextView.setTextColor(0xff8a8a8a);
@@ -94,5 +103,15 @@ public class TextDetailSelectCell extends FrameLayoutFixed {
         if (needDivider) {
             canvas.drawLine(getPaddingLeft(), getHeight() - 1, getWidth() - getPaddingRight(), getHeight() - 1, paint);
         }
+    }
+
+    private OnImageClickListener onImageClickListener;
+
+    public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
+        this.onImageClickListener = onImageClickListener;
+    }
+
+    public interface OnImageClickListener {
+        void onImageClick(View view);
     }
 }

@@ -22,4 +22,14 @@ public class UserAttributeEntity {
         valuesDesc.add(valueDesc);
         return this;
     }
+
+    public void remove(String value) {
+        values.remove(value);
+        valuesDesc.remove(Integer.parseInt(value));
+    }
+
+    public void clear() {
+        values.clear();
+        valuesDesc.clear();
+    }
 }

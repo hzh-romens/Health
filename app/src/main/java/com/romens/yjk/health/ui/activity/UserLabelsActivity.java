@@ -1,20 +1,26 @@
 package com.romens.yjk.health.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.UserAttributeEntity;
 import com.romens.yjk.health.helper.LabelHelper;
+import com.romens.yjk.health.model.PersonalEntity;
+import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.cells.TextDetailSelectCell;
 
 import java.util.ArrayList;
@@ -30,6 +36,8 @@ public class UserLabelsActivity extends LightActionBarActivity {
 
     private final List<UserAttributeEntity> userAttributes = new ArrayList<>();
 
+    private List<String[]> data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +49,21 @@ public class UserLabelsActivity extends LightActionBarActivity {
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
+                } else if (id == 0) {
+                    Gson gson = new Gson();
+                    String result = gson.toJson(userAttributes);
+                    Intent intent = new Intent(UserLabelsActivity.this, AccountSettingActivity.class);
+                    intent.putExtra("userLabelResultJson", result);
+                    setResult(UserGuidConfig.RESPONSE_USERLABELS_TO_ACCOUNTSETTING, intent);
+                    finish();
                 }
             }
         });
         setContentView(content, actionBar);
 
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        setActionBarTitle(actionBar, "个人信息");
+        actionBarMenu.addItem(0, R.drawable.ic_done_grey600_24dp);
+        setActionBarTitle(actionBar, "详细信息");
 
         listView = new ListView(this);
         content.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -55,21 +71,70 @@ public class UserLabelsActivity extends LightActionBarActivity {
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         listView.setSelector(R.drawable.list_selector);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
 
         listView.setAdapter(adapter = new ListAdapter(this));
         bindData();
+
+        iniData();
+    }
+
+    private void iniData() {
+        data = new ArrayList<>();
+        String[] arr = new String[]{"无", "有"};
+        String[] arr1 = new String[]{"低盐", "低脂", "低糖", "高盐", "高脂", "高糖"};
+        String[] arr2 = new String[]{"早起早睡", "早起晚睡", "晚起早睡", "晚起晚睡", "熬夜经常", "作息不规律"};
+        String[] arr3 = new String[]{"抽烟", "喝酒", "不吃早餐", "饱食"};
+        data.add(arr);
+        data.add(arr1);
+        data.add(arr2);
+        data.add(arr3);
     }
 
     public void bindData() {
         userAttributes.clear();
-        userAttributes.add(new UserAttributeEntity("a", "有无遗传病史").addValue("1", "有"));
-        userAttributes.add(new UserAttributeEntity("a", "饮食偏好").addValue("0", "低盐").addValue("1", "低脂"));
+        Intent intent = getIntent();
+        PersonalEntity entity = (PersonalEntity) intent.getSerializableExtra("personEntity");
+        if (entity.getHASINHERITED() != null && entity.getHASINHERITED().equals("1")) {
+            userAttributes.add(new UserAttributeEntity("heredity", "有无遗传病史").addValue("1", "有"));
+        } else {
+            userAttributes.add(new UserAttributeEntity("heredity", "有无遗传病史").addValue("0", "无"));
+        }
+        if (entity.getHASSERIOUS() != null && entity.getHASSERIOUS().equals("1")) {
+            userAttributes.add(new UserAttributeEntity("history", "有无病史").addValue("0", "无"));
+        } else {
+            userAttributes.add(new UserAttributeEntity("history", "有无病史").addValue("1", "有"));
+        }
+        if (entity.getHASGUOMIN() != null && entity.getHASGUOMIN().equals("1")) {
+            userAttributes.add(new UserAttributeEntity("allergy", "是否过敏").addValue("0", "无"));
+        } else {
+            userAttributes.add(new UserAttributeEntity("allergy", "是否过敏").addValue("1", "有"));
+        }
+        userAttributes.add(new UserAttributeEntity("preference", "饮食偏好"));
+        if (entity.getFOODHOBBY() != null) {
+            String[] result = entity.getFOODHOBBY().split(",");
+            for (int i = 0; i < result.length; i++) {
+                userAttributes.get(3).addValue(i + "", result[i]);
+            }
+        }
+        userAttributes.add(new UserAttributeEntity("habit", "作息习惯"));
+        if (entity.getSLEEPHOBBY() != null) {
+            String[] result = entity.getSLEEPHOBBY().split(",");
+            for (int i = 0; i < result.length; i++) {
+                userAttributes.get(4).addValue(i + "", result[i]);
+            }
+        }
+        userAttributes.add(new UserAttributeEntity("other", "其他"));
+        if (entity.getOTHER() != null) {
+            String[] result = entity.getOTHER().split(",");
+            for (int i = 0; i < result.length; i++) {
+                userAttributes.get(5).addValue(i + "", result[i]);
+            }
+        }
+//        userAttributes.add(new UserAttributeEntity("history", "有无病史").addValue("1", "无"));
+//        userAttributes.add(new UserAttributeEntity("allergy", "是否过敏").addValue("1", "无"));
+//        userAttributes.add(new UserAttributeEntity("preference", "饮食偏好"));
+//        userAttributes.add(new UserAttributeEntity("habit", "作息习惯"));
+//        userAttributes.add(new UserAttributeEntity("other", "其他"));
         adapter.notifyDataSetChanged();
     }
 
@@ -126,7 +191,7 @@ public class UserLabelsActivity extends LightActionBarActivity {
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
+        public View getView(final int position, View view, ViewGroup viewGroup) {
             int type = getItemViewType(position);
             if (type == 0) {
                 if (view == null) {
@@ -134,11 +199,67 @@ public class UserLabelsActivity extends LightActionBarActivity {
                 }
                 TextDetailSelectCell cell = (TextDetailSelectCell) view;
                 cell.setMultilineDetail(true);
-                UserAttributeEntity entity = getItem(position);
+                final UserAttributeEntity entity = getItem(position);
                 CharSequence labels = LabelHelper.createChipForUserInfoLabels(entity.valuesDesc);
                 cell.setTextAndValue(entity.name, labels, true);
+                cell.setOnImageClickListener(new TextDetailSelectCell.OnImageClickListener() {
+                    @Override
+                    public void onImageClick(View view) {
+                        if (position < 3) {
+                            showSigleChooseView(data.get(0), entity);
+                        } else if (position == 3) {
+                            entity.clear();
+                            showMulitChooseView(data.get(1), entity);
+                        } else if (position == 4) {
+                            entity.clear();
+                            showMulitChooseView(data.get(2), entity);
+                        } else if (position == 5) {
+                            entity.clear();
+                            showMulitChooseView(data.get(3), entity);
+                        }
+                    }
+                });
             }
             return view;
         }
+    }
+
+    public void showSigleChooseView(String[] data, final UserAttributeEntity entity) {
+        new AlertDialog.Builder(this).setSingleChoiceItems(data, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                entity.clear();
+                if (which == 0) {
+                    entity.addValue("0", "无");
+                } else {
+                    entity.addValue("1", "有");
+                }
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    public void showMulitChooseView(final String[] data, final UserAttributeEntity entity) {
+
+        new AlertDialog.Builder(this).setMultiChoiceItems(data, null, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if (isChecked) {
+                    entity.addValue(which + "", data[which]);
+                }
+            }
+        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        }).show();
     }
 }
