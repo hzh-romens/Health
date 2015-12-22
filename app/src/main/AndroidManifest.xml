@@ -223,11 +223,6 @@
 
 
         <!-- My -->
-        <activity
-            android:name=".ui.NewShippingAddressActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.LocationAddressSelectActivity"
@@ -236,9 +231,6 @@
             android:screenOrientation="portrait" />
 
 
-        <activity
-            android:name=".ui.IllnessActivity"
-            android:label="@string/title_activity_illness"></activity>
         <activity
             android:name=".ui.MedicinalDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -382,7 +374,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.PersonalInformationActivity"
+            android:name=".ui.AccountSettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
@@ -448,12 +440,12 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-
-        <service android:name=".core.CollectService">
-            <intent-filter>
-                <action android:name="com.romens.yjk.health.core.myService" />
-            </intent-filter>
-        </service>
+        <activity
+            android:name=".ui.EditActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <service
             android:name=".service.MedicineFavoriteService"

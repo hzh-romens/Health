@@ -1,19 +1,21 @@
 package com.romens.yjk.health.model;
 
+import java.io.Serializable;
+
 /**
  * Created by AUSU on 2015/10/25.
  */
-public class PersonalEntity {
-        private String PERSONNAME;  //姓名
-        private String GENDER;         //性别： 1为男 2位女
-        private String JOB;             //职业
-        private String BIRTHDAY;        //出生年月
-        private String HASINHERITED;    //有无遗传病
-        private String HASSERIOUS;      //有无大病史
-        private String HASGUOMIN;       //有无过敏史
-        private String FOODHOBBY;       //饮食偏好
-        private String SLEEPHOBBY;      //作息习惯
-        private String OTHER;          //其他
+public class PersonalEntity implements Serializable {
+    private String PERSONNAME;  //姓名
+    private String GENDER;         //性别： 1为男 2位女
+    private String JOB;             //职业
+    private String BIRTHDAY;        //出生年月
+    private String HASINHERITED;    //有无遗传病
+    private String HASSERIOUS;      //有无大病史
+    private String HASGUOMIN;       //有无过敏史
+    private String FOODHOBBY;       //饮食偏好
+    private String SLEEPHOBBY;      //作息习惯
+    private String OTHER;          //其他
 
     public String getPERSONNAME() {
         return PERSONNAME;

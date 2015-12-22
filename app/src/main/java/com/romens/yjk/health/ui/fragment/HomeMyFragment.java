@@ -26,6 +26,7 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.CollectActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
@@ -34,6 +35,7 @@ import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
+import com.romens.yjk.health.ui.cells.AccountCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -108,7 +110,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     startActivity(new Intent(getActivity(), HelpActivity.class));
                 } else if (position == accountRow) {
                     //startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
-                    UIOpenHelper.openUserLabelsActivity(getActivity());
+//                    UIOpenHelper.openUserLabelsActivity(getActivity());
+                    startActivity(new Intent(getActivity(), AccountSettingActivity.class));
                 } else if (position == exitRow) {
                     UserConfig.clearUser();
                     UserConfig.clearConfig();

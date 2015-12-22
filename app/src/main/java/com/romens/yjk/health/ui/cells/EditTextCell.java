@@ -53,7 +53,7 @@ public class EditTextCell extends LinearLayout {
         editText.setFloatingLabelTextSize((int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
         editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER,17,8,17,4));
+        addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 17, 8, 17, 4));
     }
 
     @Override
@@ -111,5 +111,9 @@ public class EditTextCell extends LinearLayout {
     public void setErrorText(CharSequence text, int color) {
         editText.setError(text);
         editText.setErrorColor(color);
+    }
+
+    public String getEditText() {
+        return editText.getText().toString().trim();
     }
 }

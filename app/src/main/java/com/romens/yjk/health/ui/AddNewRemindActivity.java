@@ -1,12 +1,11 @@
 package com.romens.yjk.health.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -324,7 +323,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                 KeyAndImgCell cell = (KeyAndImgCell) convertView;
                 cell.setBackgroundColor(Color.WHITE);
                 cell.setInfo("提醒时间", R.drawable.remind_time_add, true);
-                cell.setKeyColor(0xff0f9d58);
+                cell.setKeyColor(getResources().getColor(R.color.theme_primary));
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
