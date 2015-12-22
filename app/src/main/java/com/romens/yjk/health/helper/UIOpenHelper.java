@@ -119,6 +119,7 @@ public class UIOpenHelper {
 
     public static void openShippingAddress(Activity context, int requestCode) {
         Intent intent = new Intent(context, ControlAddressActivity.class);
+        intent.putExtra("chose", "chose");
         context.startActivityForResult(intent, requestCode);
     }
 

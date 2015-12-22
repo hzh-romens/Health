@@ -30,6 +30,12 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // onresume时，取消notification显示
+    }
+
     protected void setContentView(int contentResId, int actionBarResId) {
         setContentView(contentResId);
         if (actionBarResId != -1) {

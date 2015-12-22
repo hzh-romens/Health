@@ -2,8 +2,6 @@ package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -113,7 +110,7 @@ public class ControlAddressActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
-                UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this,0);
+                UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, 0);
             }
         });
     }
@@ -231,12 +228,15 @@ public class ControlAddressActivity extends BaseActivity {
                             }
                         }
                         if (entity == null) {
-                            if (addressListEntitis.size() > 1) {
-                                entity = addressListEntitis.get(i);
+                            if (addressListEntitis.size() > 0&&addressListEntitis.size()!=0) {
+                                entity = addressListEntitis.get(0);
+                                intent.putExtra("responseCommitEntity", entity);
+                                setResult(2, intent);
+                            }else{
+                                setResult(3,intent);
                             }
                         }
-                        intent.putExtra("responseCommitEntity", entity);
-                        setResult(2, intent);
+
                     }
                     finish();
                 } else if (i == 0) {
@@ -422,8 +422,16 @@ public class ControlAddressActivity extends BaseActivity {
                         entity = addressListEntitis.get(j);
                     }
                 }
-                intent.putExtra("responseCommitEntity", entity);
-                setResult(2, intent);
+                if (entity == null) {
+                    if (addressListEntitis.size() > 0&&addressListEntitis.size()!=0) {
+                        entity = addressListEntitis.get(0);
+                        intent.putExtra("responseCommitEntity", entity);
+                        setResult(2, intent);
+                    }else{
+                        setResult(3,intent);
+                    }
+                }
+
             }
             finish();
         }
