@@ -28,7 +28,7 @@ public class ADFunctionEntity {
 
     public void onAction(Context context) {
         if (!TextUtils.isEmpty(actionValue)) {
-            DiscoveryCollection.onFocusItemAction(context, actionValue);
+            DiscoveryCollection.onFocusItemAction(context,id,actionValue);
         }
 
 //        if (!TextUtils.isEmpty(actionValue)) {

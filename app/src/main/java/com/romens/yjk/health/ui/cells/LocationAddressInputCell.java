@@ -158,8 +158,8 @@ public class LocationAddressInputCell extends LinearLayout {
 
     public void setDelegate(View.OnClickListener provinceDelegate, View.OnClickListener cityDelegate, View.OnClickListener countyDelegate) {
         provinceBtn.setOnClickListener(provinceDelegate);
-        cityBtn.setOnClickListener(provinceDelegate);
-        countyBtn.setOnClickListener(provinceDelegate);
+        cityBtn.setOnClickListener(cityDelegate);
+        countyBtn.setOnClickListener(countyDelegate);
     }
 
     public void setProvinceEnable(boolean enable) {

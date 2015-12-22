@@ -29,7 +29,11 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationHelper;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
+import com.romens.yjk.health.db.entity.HistoryEntity;
+import com.romens.yjk.health.helper.MedicareHelper;
 import com.romens.yjk.health.model.ADFunctionEntity;
 import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADImageListEntity;
@@ -74,6 +78,7 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onLastLocationChanged);
         focusAdapter = new FocusAdapter(getActivity());
     }
 
@@ -127,8 +132,19 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
-        updateLastLocation();
         requestDataChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateLastLocation();
+    }
+
+    @Override
+    public void onDestroy() {
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onLastLocationChanged);
+        super.onDestroy();
     }
 
     private void requestDataChanged() {
@@ -272,10 +288,10 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
             if (adFunctionEntities == null) {
                 adFunctionEntities = new ArrayList<>();
-                ADFunctionEntity nearControl = new ADFunctionEntity("", "附近药店", R.drawable.attach_location_states);
-                nearControl.setActionValue("com.romens.yjk.health.NEARBYPHARMACY");
                 ADFunctionEntity newControl = new ADFunctionEntity("", "最新资讯", R.drawable.attach_new_states);
                 newControl.setActionValue("com.romens.rhealth.INFORMATION_NEWS");
+                ADFunctionEntity nearControl = new ADFunctionEntity("", "附近药店", R.drawable.attach_location_states);
+                nearControl.setActionValue("com.romens.yjk.health.NEARBYPHARMACY");
                 ADFunctionEntity sortControl = new ADFunctionEntity("", "扫码识药", R.drawable.attach_sort_states);
                 sortControl.setActionValue("com.romens.yjk.health.QRSCANNER");
                 ADFunctionEntity remindControl = new ADFunctionEntity("", "用药提醒", R.drawable.attach_remind_states);
@@ -312,11 +328,43 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
             });
             controls.addAll(otherControls);
 
+            ADProductsControl historyControl = createHistoryControl();
+            if (historyControl != null) {
+                controls.add(historyControl);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return controls;
+    }
+
+    private ADProductsControl createHistoryControl() {
+        HistoryDao historyDao = DBInterface.instance().openReadableDb().getHistoryDao();
+        List<HistoryEntity> historyEntities = historyDao.queryBuilder().limit(3).list();
+
+        ADProductListEntity entity = new ADProductListEntity("", "您浏览过的相关商品", "", "");
+        int size = historyEntities == null ? 0 : historyEntities.size();
+        if (size >= 3) {
+            ADProductEntity entityTemp;
+            for (int i = 0; i < size; i++) {
+                entityTemp = createADProductEntityFromHistoryEntity(historyEntities.get(i));
+                if (entityTemp != null) {
+                    entity.addProductEntity(i, entityTemp);
+                }
+            }
+            ADProductsControl control = new ADProductsControl();
+            control.bindModel(entity);
+            return control;
+        }
+        return null;
+    }
+
+    private ADProductEntity createADProductEntityFromHistoryEntity(HistoryEntity historyEntity) {
+        ADProductEntity entity = new ADProductEntity(historyEntity.getGuid()
+                , historyEntity.getImgUrl(), historyEntity.getMedicinalName(), "", historyEntity.getCurrentPrice());
+        entity.setTag(historyEntity.getShopIp());
+        return entity;
     }
 
     private List<ADPagerEntity> createADPagerEntitiesFromJsonObject(JSONObject jsonObject) {
@@ -390,6 +438,10 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
                 name = DiscoveryCollection.InformationNews.name;
                 resId = DiscoveryCollection.InformationNews.iconRes;
                 actionValue = DiscoveryCollection.InformationNews.value;
+            } else if (TextUtils.equals("YBZQ", id)) {
+                name = "医保专区";
+                resId = R.drawable.attach_ybzq_states;
+                actionValue = MedicareHelper.INTENT_ACTION;
             }
             if ((!TextUtils.isEmpty(name)) && resId != -1) {
                 entity = new ADFunctionEntity(id, name, resId);
@@ -460,8 +512,9 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     private ADProductEntity createADProductEntityFromJsonObject(JSONObject jsonObject) {
         try {
+            //jsonObject.getString("OLDPRICE")
             ADProductEntity entity = new ADProductEntity(jsonObject.getString("ID")
-                    , jsonObject.getString("ICONURL"), jsonObject.getString("NAME"), jsonObject.getString("OLDPRICE"), jsonObject.getString("PRICE"));
+                    , jsonObject.getString("ICONURL"), jsonObject.getString("NAME"), "", jsonObject.getString("PRICE"));
             entity.setTag(jsonObject.getString("TAG"));
             return entity;
         } catch (JSONException e) {

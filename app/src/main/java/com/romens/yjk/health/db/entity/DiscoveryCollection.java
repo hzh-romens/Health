@@ -29,12 +29,17 @@ public class DiscoveryCollection {
         return false;
     }
 
-    public static boolean onFocusItemAction(Context context, CharSequence btnString) {
-        if (TextUtils.isEmpty(btnString)) {
+    public static boolean onFocusItemAction(Context context, String id, String action) {
+        if (TextUtils.isEmpty(action)) {
             return false;
         }
 
-        context.startActivity(new Intent(btnString.toString()));
+        Intent intent = new Intent(action);
+        if (TextUtils.equals("YBZQ", id)) {
+            intent.putExtra("title", "医保专区");
+        }
+        context.startActivity(intent);
+
 //        if (btnString.equals(FindDrugWithScanner.name)) {
 //            String action = FindDrugWithScanner.value;
 //            if (!TextUtils.isEmpty(action)) {

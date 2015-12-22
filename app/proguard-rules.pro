@@ -225,5 +225,8 @@
 -dontwarn com.romens.yjk.health.db.**
 -keep public class com.romens.yjk.health.db.**{*;}
 
+-dontwarn com.romens.yjk.health.ui.cells.**
+-keep public class com.romens.yjk.health.ui.cells.**{*;}
+
 -dontwarn com.romens.yjk.health.ui.components.**
 -keep public class com.romens.yjk.health.ui.components.**{*;}

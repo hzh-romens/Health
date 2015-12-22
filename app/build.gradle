@@ -8,8 +8,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 151218
-        versionName "1.5.3"
+        versionCode 151221
+        versionName "1.5.5"
         multiDexEnabled true
         manifestPlaceholders = [APK_CHANNEL_VALUE: "4;romens", IM_SDK_APPKEY: "romens#kfly20jp"]
 
@@ -51,12 +51,14 @@ android {
 
     buildTypes {
         debug {
-            manifestPlaceholders = [LOCATION_SDK_KEY: "7827d8503aac9c36d00ccae581aa84a6"]
+            //manifestPlaceholders = [LOCATION_SDK_KEY: "7827d8503aac9c36d00ccae581aa84a6"]
+            manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             debuggable true
             signingConfig signingConfigs.debug
         }
         release {
-            manifestPlaceholders = [LOCATION_SDK_KEY: "f22aabde9a3424ab5ac5e23bafaf5bad"]
+            //manifestPlaceholders = [LOCATION_SDK_KEY: "f22aabde9a3424ab5ac5e23bafaf5bad"]
+            manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             minifyEnabled true
             shrinkResources true
             signingConfig signingConfigs.release

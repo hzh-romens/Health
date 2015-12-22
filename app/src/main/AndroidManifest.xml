@@ -172,10 +172,24 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.activity.MedicineGroupActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.romens.rhealth.SHOP_MALL_MEDICARE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
             android:name=".ui.SalesPromotionActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.LocationActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

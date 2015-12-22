@@ -102,20 +102,23 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
             groupCell.setTextAndValue(entity.name, "更多", true, false);
         }
 
-
         String adUrl = entity.adBackground;
         if (TextUtils.isEmpty(adUrl)) {
             changeCellColor(Color.TRANSPARENT);
+            backupImageView.setVisibility(INVISIBLE);
             backupImageView.setImageBitmap(null);
         } else if (adUrl.startsWith("http")) {
             changeCellColor(Color.TRANSPARENT);
+            backupImageView.setVisibility(VISIBLE);
             backupImageView.setImage(adUrl, null, null);
         } else if (adUrl.startsWith("#")) {
             int color = Color.parseColor(adUrl);
             changeCellColor(color);
+            backupImageView.setVisibility(INVISIBLE);
             backupImageView.setImageBitmap(null);
         } else {
             changeCellColor(Color.TRANSPARENT);
+            backupImageView.setVisibility(INVISIBLE);
             backupImageView.setImageBitmap(null);
         }
 
@@ -144,7 +147,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
     private void addProductCell(LinearLayout parent, ADProductEntity entity) {
         ProductCell cell = new ProductCell(getContext());
         //cell.setLayoutStyle(cellStyle == 1 ? ProductCell.LayoutStyle.DEFAULT : ProductCell.LayoutStyle.SMALL);
-        cell.setValue(entity.icon, entity.name, entity.price, entity.price);
+        cell.setValue(entity.icon, entity.name, entity.oldPrice, entity.price);
         Bundle arguments = new Bundle();
         arguments.putString("ID", entity.id);
         cell.setArguments(arguments);
@@ -165,6 +168,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
 
     private void changeCellColor(int bgColor) {
         content.setBackgroundColor(bgColor);
+        groupCell.setBackgroundColor(bgColor);
     }
 
 //    @Override

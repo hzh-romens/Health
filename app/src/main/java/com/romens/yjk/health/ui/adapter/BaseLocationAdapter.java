@@ -158,8 +158,8 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
         }
         notifyDataSetChanged();
     }
-    // TODO: 附近药店获取药店列表信息
 
+    // TODO: 附近药店获取药店列表信息
     public void searchMapPlacesWithServerQuery(final String query, final Location coordinate) {
         if (lastSearchLocation != null && coordinate.distanceTo(lastSearchLocation) < 100) {
             return;

@@ -21,7 +21,7 @@ public class ADProductsControl extends ADBaseControl {
 
     public static ADHolder createViewHolder(Context context) {
         ADProductsCell cell = new ADProductsCell(context);
-        cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 8, 8, 8, 8));
+        cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 8, 4, 8, 8));
         return new ADHolder(cell);
     }
 
