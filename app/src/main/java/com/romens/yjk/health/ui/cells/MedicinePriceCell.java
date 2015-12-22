@@ -102,7 +102,7 @@ public class MedicinePriceCell extends LinearLayout {
         } else {
             marketPriceView.setVisibility(VISIBLE);
         }
-        DecimalFormat decimalFormat = new java.text.DecimalFormat(FormatHelper.priceFormat);
+        DecimalFormat decimalFormat = new DecimalFormat(FormatHelper.priceFormat);
         String marketPriceStr = decimalFormat.format(marketPrice);
         String userPriceStr = decimalFormat.format(userPrice);
 
