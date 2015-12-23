@@ -116,7 +116,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
             parentHolder = new ParentHolder();
             parentHolder.name = (TextView) convertView.findViewById(R.id.group_name);
             parentHolder.empty_view = convertView.findViewById(R.id.empty_view);
-            parentHolder.title_layout= (FrameLayout) convertView.findViewById(R.id.group_name_layout);
+            parentHolder.title_layout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
             convertView.setTag(parentHolder);
         } else {
             parentHolder = (ParentHolder) convertView.getTag();
@@ -148,7 +148,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
             childHolder.comment = (TextView) convertView.findViewById(R.id.comment);
             childHolder.linear_item = (LinearLayout) convertView.findViewById(R.id.linear_item);
             childHolder.saleCount = (TextView) convertView.findViewById(R.id.saleCount);
-            childHolder.childitem= (FrameLayout) convertView.findViewById(R.id.childitem);
+            childHolder.childitem = (FrameLayout) convertView.findViewById(R.id.childitem);
             convertView.setTag(childHolder);
         } else {
             childHolder = (ChildHolder) convertView.getTag();
@@ -161,9 +161,11 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         ImageManager.loadForView(adapterContext, childHolder.iv, entity.getImgUrl(), defaultDrawables, defaultDrawables);
         childHolder.name.setText(entity.getMedicinalName());
         childHolder.realPrice.setTextColor(adapterContext.getResources().getColor(R.color.md_red_400));
-        childHolder.realPrice.setText("¥" + entity.getCurrentPrice());
+        String currentPrice = entity.getCurrentPrice();
+        String discountPrice = entity.getDiscountPrice();
+        childHolder.realPrice.setText("¥" + getModifyPrice(currentPrice));
         childHolder.realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        childHolder.discountPrice.setText("¥" + entity.getDiscountPrice());
+        childHolder.discountPrice.setText("¥" +getModifyPrice(discountPrice));
         childHolder.shop.setImageDrawable(adapterContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
         childHolder.shop.setVisibility(View.GONE);
         childHolder.comment.setText(entity.getCommentCount() + "条评论");
@@ -171,15 +173,18 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         childHolder.childitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i=new Intent(adapterContext,MedicinalDetailActivity.class);
-//                i.putExtra("guid",entity.getGuid());
-//                adapterContext.startActivity(i);
 
-                UIOpenHelper.openMedicineActivity(adapterContext,entity.getGuid());
+                UIOpenHelper.openMedicineActivity(adapterContext, entity.getGuid());
 
             }
         });
         return convertView;
+    }
+
+    private String getModifyPrice(String price) {
+        int start = price.indexOf(".");
+        String modifyPrice =price.substring(0,start+2);
+        return modifyPrice;
     }
 
     class ChildHolder {

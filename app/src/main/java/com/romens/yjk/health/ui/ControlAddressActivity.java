@@ -228,19 +228,22 @@ public class ControlAddressActivity extends BaseActivity {
                             }
                         }
                         if (entity == null) {
-                            if (addressListEntitis.size() > 0&&addressListEntitis.size()!=0) {
+                            if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
                                 entity = addressListEntitis.get(0);
                                 intent.putExtra("responseCommitEntity", entity);
                                 setResult(2, intent);
-                            }else{
-                                setResult(3,intent);
+                            } else {
+                                setResult(3, intent);
                             }
+                        } else {
+                            intent.putExtra("responseCommitEntity", entity);
+                            setResult(2, intent);
                         }
 
                     }
                     finish();
                 } else if (i == 0) {
-                    UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this,0);
+                    UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, 0);
                     //startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
                 }
             }
@@ -411,6 +414,7 @@ public class ControlAddressActivity extends BaseActivity {
         CitysDao dao = DBInterface.instance().openReadableDb().getCitysDao();
         entities = dao.queryBuilder().list();
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -423,13 +427,16 @@ public class ControlAddressActivity extends BaseActivity {
                     }
                 }
                 if (entity == null) {
-                    if (addressListEntitis.size() > 0&&addressListEntitis.size()!=0) {
+                    if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
                         entity = addressListEntitis.get(0);
                         intent.putExtra("responseCommitEntity", entity);
                         setResult(2, intent);
-                    }else{
-                        setResult(3,intent);
+                    } else {
+                        setResult(3, intent);
                     }
+                } else {
+                    intent.putExtra("responseCommitEntity", entity);
+                    setResult(2, intent);
                 }
 
             }

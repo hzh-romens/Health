@@ -23,12 +23,11 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.DeleteEntity;
 import com.romens.yjk.health.model.GoodsEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
-import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.components.CustomDialog;
@@ -64,7 +63,7 @@ public class ShopCarActivity extends BaseActivity {
         needShowProgress("正在加载...");
         myAdapter = new ShopAdapter(this);
         expandableListView.setAdapter(myAdapter);
-        requestShopCarDataChanged();
+        getShopCarData();
         //向服务器提交购物车信息并跳转到订单页面
         iv_accounts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,7 +231,7 @@ public class ShopCarActivity extends BaseActivity {
     }
 
     //获取购物车的信息
-    private void requestShopCarDataChanged() {
+    private void getShopCarData() {
 
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         if (UserConfig.isClientLogined()) {
@@ -254,19 +253,14 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void onResult(Message msg, Message errorMsg) {
                 needHideProgress();
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    try {
-                        JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
-                        onResponseShopCarData(jsonArray);
-                        return;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
                 try {
-                    onResponseShopCarData(null);
+                    if (errorMsg == null) {
+                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                        JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
+                        resultToJson(jsonArray);
+                    } else {
+                        resultToJson(null);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -279,7 +273,7 @@ public class ShopCarActivity extends BaseActivity {
     HashMap<String, List<ShopCarEntity>> childData;
 
 
-    public void onResponseShopCarData(JSONArray jsonArray) throws JSONException {
+    public void resultToJson(JSONArray jsonArray) throws JSONException {
         int count = jsonArray == null ? 0 : jsonArray.length();
         if (count <= 0) {
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
@@ -304,11 +298,6 @@ public class ShopCarActivity extends BaseActivity {
             entity.setCHECK("true");
             result.add(entity);
         }
-//        for (LinkedTreeMap<String, String> item : ShopCarData) {
-//            ShopCarEntity entity = ShopCarEntity.jsonObjectToEntity(item);
-//            entity.setCHECK("true");
-//            result.add(entity);
-//        }
         fatherEntities = new ArrayList<ParentEntity>();
         childData = new HashMap<String, List<ShopCarEntity>>();
         for (int i = 0; i < result.size(); i++) {
@@ -369,11 +358,6 @@ public class ShopCarActivity extends BaseActivity {
 
     }
 
-    private void bindData() {
-        List<ShopCarEntity> result = DBInterface.instance().loadAllShopCar();
-
-    }
-
     //向服务器提交购物车信息
     private void CommitData(String data, final HashMap<String, List<ShopCarEntity>> filterChildData, final ArrayList<ParentEntity> filterParentData) {
         if (UserConfig.isClientLogined()) {
@@ -417,7 +401,7 @@ public class ShopCarActivity extends BaseActivity {
                 }
             });
         } else {
-            startActivity(new Intent(this, LoginActivity.class));
+            UIOpenHelper.openLoginActivity(this);
             finish();
         }
     }
@@ -447,7 +431,7 @@ public class ShopCarActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                             String success = jsonObject.getString("success");
                             if (success.equals("yes")) {
-                                requestShopCarDataChanged();
+                                getShopCarData();
                             } else {
                                 Toast.makeText(ShopCarActivity.this, "出现异常，请您稍后再试", Toast.LENGTH_SHORT).show();
                             }
@@ -457,7 +441,7 @@ public class ShopCarActivity extends BaseActivity {
                     } else {
                         //暂时这样做
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -reduceCount);
-                        requestShopCarDataChanged();
+                        getShopCarData();
                     }
                 } else {
                     Log.i("ERROR", errorMsg.msg);

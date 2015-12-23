@@ -83,6 +83,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         adapter = new CommitOrderAdapter(this, parentData.size() + 1);
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
+        getSendData();
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
         adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
@@ -107,7 +108,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     @Override
     protected void onResume() {
         super.onResume();
-        getSendData();
     }
 
     public void getAll(HashMap<String, List<ShopCarEntity>> childData) {
@@ -200,6 +200,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("返回码-------",resultCode+"");
         if (resultCode == 2) {
             //对从ControlAddressActivity返回的数据进行处理
             AddressEntity addressEntity = (AddressEntity) data.getSerializableExtra("responseCommitEntity");
