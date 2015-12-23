@@ -52,15 +52,14 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         addView(groupCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         content = new FrameLayout(context);
-        content.setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(4), AndroidUtilities.dp(4), AndroidUtilities.dp(4));
-        addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, (ProductCell.defaultSize + 24)));
+        addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, (ProductCell.defaultSize +8)));
 
         backupImageView = new BackupImageView(context);
         content.addView(backupImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
 
         dataContainer = new LinearLayout(context);
         dataContainer.setOrientation(HORIZONTAL);
-        content.addView(dataContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, ProductCell.defaultSize, Gravity.CENTER, 8, 8, 8, 8));
+        content.addView(dataContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, ProductCell.defaultSize, Gravity.CENTER,0,4,0,4));
 //        //recyclerView的GridView样式的布局
 //        recyclerView = new RecyclerView(context);
 //        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), count));
@@ -152,7 +151,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         arguments.putString("ID", entity.id);
         cell.setArguments(arguments);
         cell.setProductCellDelegate(this);
-        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 4, 4, 4, 4));
+        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 4, 0, 4, 0));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
         layoutParams.weight = 1;
         cell.setLayoutParams(layoutParams);
@@ -160,7 +159,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
 
     private void addProductEmptyCell(LinearLayout parent) {
         ProductEmptyCell cell = new ProductEmptyCell(getContext());
-        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 4, 4, 4, 4));
+        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 4, 0, 4, 0));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
         layoutParams.weight = 1;
         cell.setLayoutParams(layoutParams);
@@ -168,7 +167,6 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
 
     private void changeCellColor(int bgColor) {
         content.setBackgroundColor(bgColor);
-        groupCell.setBackgroundColor(bgColor);
     }
 
 //    @Override

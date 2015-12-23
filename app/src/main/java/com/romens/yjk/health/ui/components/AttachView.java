@@ -52,7 +52,7 @@ public class AttachView extends FrameLayout {
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(95), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(100), MeasureSpec.EXACTLY));
+            super.onMeasure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(92), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(96), MeasureSpec.EXACTLY));
         }
 
         public void setTextAndIcon(CharSequence text, int icon) {
@@ -97,7 +97,7 @@ public class AttachView extends FrameLayout {
     protected void onMeasure(int widthSpec, int heightSpec) {
         int count = views.size();
         int row = (count == 0) ? 1 : (int) Math.ceil((double) count / 4);
-        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(row * 105), MeasureSpec.EXACTLY));
+        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(row * 92), MeasureSpec.EXACTLY));
     }
 
     @Override
@@ -106,9 +106,9 @@ public class AttachView extends FrameLayout {
         int diff = (width - AndroidUtilities.dp(85 * 4 + 20)) / 3;
         int size = views.size();
         View childTemp;
-        int t = 8;
+        int t = 0;
         for (int a = 0; a < size; a++) {
-            int y = AndroidUtilities.dp(t + (a / 4) * 100);
+            int y = AndroidUtilities.dp(t + (a / 4) * 88);
             int x = AndroidUtilities.dp(8) + (a % 4) * (AndroidUtilities.dp(85) + diff);
             childTemp = views.get(a);
             childTemp.layout(x, y, x + childTemp.getMeasuredWidth(), y + childTemp.getMeasuredHeight());

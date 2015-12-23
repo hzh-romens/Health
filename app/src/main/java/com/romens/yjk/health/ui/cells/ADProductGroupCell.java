@@ -3,7 +3,11 @@ package com.romens.yjk.health.ui.cells;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -12,6 +16,7 @@ import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 
 /**
@@ -36,7 +41,7 @@ public class ADProductGroupCell extends FrameLayout {
 
         textView = new TextView(context);
         textView.setTextColor(ResourcesConfig.bodyText1);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         textView.setLines(1);
         textView.setMaxLines(1);
         textView.setSingleLine(true);
@@ -46,24 +51,24 @@ public class ADProductGroupCell extends FrameLayout {
 
         valueTextView = new TextView(context);
         valueTextView.setTextColor(ResourcesConfig.bodyText3);
-        valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         valueTextView.setLines(1);
         valueTextView.setMaxLines(1);
         valueTextView.setSingleLine(true);
         valueTextView.setEllipsize(TextUtils.TruncateAt.END);
         valueTextView.setGravity((Gravity.RIGHT) | Gravity.CENTER_VERTICAL);
-        addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, (Gravity.RIGHT) | Gravity.TOP, 17, 0, 34, 0));
+        addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, (Gravity.RIGHT) | Gravity.TOP, 17, 0, 24, 0));
 
         selectView = new ImageView(context);
         selectView.setScaleType(ImageView.ScaleType.CENTER);
         selectView.setVisibility(INVISIBLE);
-        selectView.setImageResource(com.romens.android.R.drawable.ic_more_vert_grey600_18dp);
-        addView(selectView, LayoutHelper.createFrame(17, 17, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 17, 0));
+        selectView.setImageResource(R.drawable.ic_chevron_right_grey600_18dp);
+        addView(selectView, LayoutHelper.createFrame(18, 18, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(48) + (needDivider ? 1 : 0));
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(36) + (needDivider ? 1 : 0));
 
         if (selectView.getVisibility() == VISIBLE) {
             selectView.measure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(17), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(17), MeasureSpec.EXACTLY));
@@ -96,7 +101,9 @@ public class ADProductGroupCell extends FrameLayout {
     }
 
     public void setTextAndValue(String text, String value, boolean isSelect, boolean divider) {
-        textView.setText(text);
+        SpannableString spanString = new SpannableString(text);
+        spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(spanString);
         selectView.setVisibility(isSelect ? VISIBLE : INVISIBLE);
         if (value != null) {
             valueTextView.setText(value);

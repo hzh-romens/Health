@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
  * Created by siery on 15/8/14.
  */
 public class ProductCell extends LinearLayout {
-    public static final int defaultSize = 172;
+    public static final int defaultSize = 158;
     private BackupImageView iconView;
     private TextView nameView;
     private TextView priceView;
@@ -50,7 +50,7 @@ public class ProductCell extends LinearLayout {
         super(context);
         setOrientation(VERTICAL);
         setBackgroundColor(Color.WHITE);
-        setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+        setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
         iconView = new BackupImageView(context);
         iconView.setRoundRadius(4);
         addView(iconView, LayoutHelper.createLinear(80, 80, Gravity.CENTER_HORIZONTAL));
