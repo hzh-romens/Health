@@ -29,6 +29,7 @@ public class ShopCarEntity implements Serializable {
     private String USERGUID;
     public int createdTime;
     public int updatedTime;
+    private String memberId;
 
     public String getUSERGUID() {
         return USERGUID;
@@ -166,13 +167,21 @@ public class ShopCarEntity implements Serializable {
         this.updatedTime = updatedTime;
     }
 
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
     public static ShopCarEntity jsonObjectToEntity(JSONObject jsonObject) throws JSONException {
         ShopCarEntity entity = new ShopCarEntity();
         entity.setSPEC(jsonObject.getString("SPEC"));
         entity.setNAME(jsonObject.getString("NAME"));
         entity.setBUYCOUNT(jsonObject.getInt("BUYCOUNT"));
         entity.setCODE(jsonObject.getString("CODE"));
-        entity.setCREATETIME(jsonObject.getString("CREATEDTIME"));
+        entity.setCREATETIME(jsonObject.getString("CREATETIME"));
         entity.setDETAILDESCRIPTION(jsonObject.getString("DETAILDESCRIPTION"));
         entity.setGOODSCLASSNAME(jsonObject.getString("GOODSCLASSNAME"));
         entity.setGOODSGUID(jsonObject.getString("GOODSGUID"));
@@ -180,7 +189,8 @@ public class ShopCarEntity implements Serializable {
         entity.setGOODURL(jsonObject.getString("GOODURL"));
         entity.setSHOPID(jsonObject.getString("SHOPID"));
         entity.setSHOPNAME(jsonObject.getString("SHOPNAME"));
-        entity.setUSERGUID(jsonObject.getString("USERGUID"));
+        entity.setUSERGUID(jsonObject.getString("GUID"));
+        entity.setMemberId(jsonObject.getString("memberId"));
         return entity;
     }
 
@@ -190,7 +200,7 @@ public class ShopCarEntity implements Serializable {
         entity.setNAME(map.get("NAME"));
         entity.setBUYCOUNT(Integer.parseInt(map.get("BUYCOUNT")));
         entity.setCODE(map.get("CODE"));
-        entity.setCREATETIME(map.get("CREATEDTIME"));
+        entity.setCREATETIME(map.get("CREATETIME"));
         entity.setDETAILDESCRIPTION(map.get("DETAILDESCRIPTION"));
         entity.setGOODSCLASSNAME(map.get("GOODSCLASSNAME"));
         entity.setGOODSGUID(map.get("GOODSGUID"));
@@ -198,7 +208,8 @@ public class ShopCarEntity implements Serializable {
         entity.setGOODURL(map.get("GOODURL"));
         entity.setSHOPID(map.get("SHOPID"));
         entity.setSHOPNAME(map.get("SHOPNAME"));
-        entity.setUSERGUID(map.get("USERGUID"));
+        entity.setUSERGUID(map.get("GUID"));
+        entity.setMemberId(map.get("memberId"));
         return entity;
     }
 

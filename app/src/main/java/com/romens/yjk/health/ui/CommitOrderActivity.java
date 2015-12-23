@@ -81,9 +81,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
         getAll(childData);
         adapter = new CommitOrderAdapter(this, parentData.size() + 1);
-        getSendData();
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
+        getSendData();
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
         adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
@@ -103,6 +103,11 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void getAll(HashMap<String, List<ShopCarEntity>> childData) {
@@ -163,6 +168,10 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         tv_content = (TextView) findViewById(R.id.tv_content);
         accounts = (TextView) findViewById(R.id.accounts);
         //头部添加地址
+        addHeadView();
+    }
+
+    private void addHeadView() {
         View view = getLayoutInflater().inflate(R.layout.list_item_address, null);
         person = (TextView) view.findViewById(R.id.person);
         address = (TextView) view.findViewById(R.id.address);
@@ -191,12 +200,15 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2) {
+        Log.i("返回码-------",resultCode+"");
+        if (resultCode == 2) {
             //对从ControlAddressActivity返回的数据进行处理
             AddressEntity addressEntity = (AddressEntity) data.getSerializableExtra("responseCommitEntity");
             person.setText("收货人：" + addressEntity.getRECEIVER() + " " + addressEntity.getCONTACTPHONE());
             address.setText(addressEntity.getADDRESS());
             ADDRESSID = addressEntity.getADDRESSID();
+        } else if (resultCode == 3) {
+            showBuilder();
         }
     }
 
@@ -277,24 +289,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                     try {
                         JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
                         if (jsonArray.length() == 0) {
-                            ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
-                            ibuilder.setTitle(R.string.prompt);
-                            ibuilder.setMessage("请填写收货地址");
-                            ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-//                                    startActivity(new Intent(CommitOrderActivity.this, NewShippingAddressActivity.class));
-//                                    finish();
-                                    UIOpenHelper.openShippingAddress(CommitOrderActivity.this, 0);
-                                }
-                            });
-                            ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            });
-                            ibuilder.create().show();
+                            showBuilder();
+
                         } else {
                             Gson gson = new Gson();
                             JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -313,7 +309,29 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
     }
 
-    private List<DeliverytypeEntity> result=new ArrayList<DeliverytypeEntity>();
+
+    private void showBuilder() {
+        ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
+        ibuilder.setTitle(R.string.prompt);
+        ibuilder.setMessage("请填写收货地址");
+        ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                UIOpenHelper.openShippingAddress(CommitOrderActivity.this, 0);
+
+            }
+        });
+        ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        ibuilder.create().show();
+    }
+
+
+    private List<DeliverytypeEntity> result = new ArrayList<DeliverytypeEntity>();
 
     public void getSendData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
@@ -335,9 +353,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             public void onResult(Message msg, Message errorMsg) {
                 needHideProgress();
                 if (errorMsg == null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol=(ResponseProtocol) msg.protocol;
+                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
-                    for (LinkedTreeMap<String,String> item:response) {
+                    for (LinkedTreeMap<String, String> item : response) {
                         DeliverytypeEntity entity = DeliverytypeEntity.mapToEntity(item);
                         result.add(entity);
                     }

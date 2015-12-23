@@ -93,7 +93,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         //slidingFixTabLayout.setViewPager(viewPager);
 
         actionBar.setTitle(getString(R.string.app_name));
-        actionBar.setBackButtonImage(R.drawable.ic_app_icon);
+       // actionBar.setBackButtonImage(R.drawable.ic_app_icon);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
