@@ -69,7 +69,7 @@ import java.util.Map;
  */
 public class HomeFocusFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
 
-    private LastLocationCell lastLocationCell;
+    //private LastLocationCell lastLocationCell;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerListView;
     private FocusAdapter focusAdapter;
@@ -89,8 +89,8 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
         content.setOrientation(LinearLayout.VERTICAL);
         content.setBackgroundColor(ResourcesConfig.greyBackground);
 
-        lastLocationCell = new LastLocationCell(context);
-        content.addView(lastLocationCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+//        lastLocationCell = new LastLocationCell(context);
+//        content.addView(lastLocationCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         refreshLayout = new SwipeRefreshLayout(context);
         UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
@@ -138,7 +138,7 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
     @Override
     public void onResume() {
         super.onResume();
-        updateLastLocation();
+        //updateLastLocation();
     }
 
     @Override
@@ -561,17 +561,10 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
-        if (i == AppNotificationCenter.onLastLocationChanged) {
-            updateLastLocation();
-        }
+//        if (i == AppNotificationCenter.onLastLocationChanged) {
+//            updateLastLocation();
+//        }
     }
 
-    private void updateLastLocation() {
-        AMapLocation location = LocationHelper.getLastLocation(getActivity());
-        String address = location == null ? null : location.getAddress();
-        if (TextUtils.isEmpty(address)) {
-            address = "无法获取当前位置";
-        }
-        lastLocationCell.setValue(address);
-    }
+
 }

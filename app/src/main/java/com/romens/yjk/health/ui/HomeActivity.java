@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.amap.api.location.AMapLocation;
@@ -33,6 +35,7 @@ import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
+import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
@@ -44,7 +47,7 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
-    private SlidingFixTabLayout slidingFixTabLayout;
+    private LastLocationCell lastLocationCell;
     private ViewPager viewPager;
     private HomePagerAdapter pagerAdapter;
     private ActionBarMenuItem shoppingCartItem;
@@ -62,10 +65,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         ActionBar actionBar = new ActionBar(this);
 
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        slidingFixTabLayout = new SlidingFixTabLayout(this);
-        slidingFixTabLayout.setBackgroundResource(R.color.theme_primary);
-        // slidingFixTabLayout.setBackgroundResource(R.color.new_grey);
-        content.addView(slidingFixTabLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         viewPager = new ViewPager(this);
@@ -75,6 +74,12 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         frameLayout.addView(tabsCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
         tabsCell.setViewPager(viewPager);
         setContentView(content, actionBar);
+        //定位
+        lastLocationCell = new LastLocationCell(this);
+        lastLocationCell.setClickable(true);
+        lastLocationCell.setBackgroundResource(R.drawable.list_selector);
+        actionBar.addView(lastLocationCell, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
+                Gravity.CENTER_VERTICAL | Gravity.LEFT, 56, 0, 104, 0));
 
         tabsCell.addView(R.drawable.ic_search_grey600_24dp, "首页");
         tabsCell.addView(R.drawable.ic_local_hospital_grey600_24dp, "健康");
@@ -83,17 +88,31 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
         viewPager.setAdapter(pagerAdapter);
         tabsCell.setSelected(0);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        slidingFixTabLayout.setCustomTabView(R.layout.widget_tab_indicator, android.R.id.text1);
-        //slidingFixTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
-        slidingFixTabLayout.setTabStripBottomBorderThicknessPadding(AndroidUtilities.dp(2));
-        slidingFixTabLayout.setSelectedIndicatorColors(Color.WHITE);
-        //slidingFixTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.themecolor));
-        slidingFixTabLayout.setDistributeEvenly(true);
-        //slidingFixTabLayout.setViewPager(viewPager);
+            }
 
-        actionBar.setTitle(getString(R.string.app_name));
-       // actionBar.setBackButtonImage(R.drawable.ic_app_icon);
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    lastLocationCell.setVisibility(View.VISIBLE);
+                    getMyActionBar().setTitle("");
+                } else {
+                    lastLocationCell.setVisibility(View.GONE);
+                    getMyActionBar().setTitle(getString(R.string.app_name));
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        //actionBar.setTitle(getString(R.string.app_name));
+        actionBar.setBackButtonImage(R.drawable.ic_app_icon);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
@@ -185,7 +204,15 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 int count = (int) args[0];
                 updateShoppingCartCount(count);
             }
+        } else if (id == AppNotificationCenter.onLastLocationChanged) {
+            updateLastLocation();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateLastLocation();
     }
 
     @Override
@@ -214,6 +241,15 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         public String getPageTitle(int position) {
             return mPageTitle.get(position);
         }
+    }
+
+    private void updateLastLocation() {
+        AMapLocation location = LocationHelper.getLastLocation(HomeActivity.this);
+        String address = location == null ? null : location.getAddress();
+        if (TextUtils.isEmpty(address)) {
+            address = "无法获取当前位置";
+        }
+        lastLocationCell.setValue(address);
     }
 
 //    //获取购物车数量

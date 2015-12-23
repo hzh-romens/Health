@@ -52,14 +52,14 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         addView(groupCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         content = new FrameLayout(context);
-        addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, (ProductCell.defaultSize +8)));
+        addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, (ProductCell.defaultSize + 8)));
 
         backupImageView = new BackupImageView(context);
         content.addView(backupImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
 
         dataContainer = new LinearLayout(context);
         dataContainer.setOrientation(HORIZONTAL);
-        content.addView(dataContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, ProductCell.defaultSize, Gravity.CENTER,0,4,0,4));
+        content.addView(dataContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, ProductCell.defaultSize, Gravity.CENTER, 0, 4, 0, 4));
 //        //recyclerView的GridView样式的布局
 //        recyclerView = new RecyclerView(context);
 //        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), count));
@@ -126,24 +126,24 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
             dataContainer.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
             int emptyCellCount = count - size;
             for (int i = 0; i < emptyCellCount; i++) {
-                addProductEmptyCell(dataContainer);
+                addProductEmptyCell(dataContainer, i == 0);
             }
             for (int i = 0; i < size; i++) {
-                addProductCell(dataContainer, entity.get(i));
+                addProductCell(dataContainer, entity.get(i), emptyCellCount <= 0 ? (i == 0) : false);
             }
         } else {
             for (int i = 0; i < size; i++) {
-                addProductCell(dataContainer, entity.get(i));
+                addProductCell(dataContainer, entity.get(i), i == 0);
             }
             int emptyCellCount = count - size;
             for (int i = 0; i < emptyCellCount; i++) {
-                addProductEmptyCell(dataContainer);
+                addProductEmptyCell(dataContainer, false);
             }
         }
         setWillNotDraw(false);
     }
 
-    private void addProductCell(LinearLayout parent, ADProductEntity entity) {
+    private void addProductCell(LinearLayout parent, ADProductEntity entity, boolean isFirst) {
         ProductCell cell = new ProductCell(getContext());
         //cell.setLayoutStyle(cellStyle == 1 ? ProductCell.LayoutStyle.DEFAULT : ProductCell.LayoutStyle.SMALL);
         cell.setValue(entity.icon, entity.name, entity.oldPrice, entity.price);
@@ -151,15 +151,15 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         arguments.putString("ID", entity.id);
         cell.setArguments(arguments);
         cell.setProductCellDelegate(this);
-        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 4, 0, 4, 0));
+        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, isFirst ? 4 : 0, 0, 4, 0));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
         layoutParams.weight = 1;
         cell.setLayoutParams(layoutParams);
     }
 
-    private void addProductEmptyCell(LinearLayout parent) {
+    private void addProductEmptyCell(LinearLayout parent, boolean isFirst) {
         ProductEmptyCell cell = new ProductEmptyCell(getContext());
-        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 4, 0, 4, 0));
+        parent.addView(cell, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, isFirst ? 4 : 0, 0, 4, 0));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
         layoutParams.weight = 1;
         cell.setLayoutParams(layoutParams);
