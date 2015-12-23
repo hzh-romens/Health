@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.ShadowSectionCell;
@@ -45,12 +47,10 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
         void isDefaultClickLLinstener(int postion);
     }
 
-    public List<AddressEntity> getLiatData() {
-        return data;
-    }
-
     public void setData(List<AddressEntity> data) {
+        Log.e("tag", "---->" + new Gson().toJson(data));
         this.data = data;
+        notifyDataSetChanged();
     }
 
     public void changeDefaultAddressIndex(int newIndex) {

@@ -76,6 +76,9 @@ public class ControlAddressActivity extends BaseActivity {
         setContentView(R.layout.activity_shipping_address, R.id.action_bar);
         havaAddressLayout = (LinearLayout) findViewById(R.id.control_address_hava_address);
         noHaveAddressLayout = (LinearLayout) findViewById(R.id.control_address_no_address);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
+        listView = (RecyclerView) findViewById(R.id.control_address_recycler);
+
         actionBarEven();
         initData();
         if (addressListEntitis != null && addressListEntitis.size() > 0) {
@@ -123,12 +126,6 @@ public class ControlAddressActivity extends BaseActivity {
 
     //有地址时，显示
     private void setHaveAddressView() {
-        listView = (RecyclerView) findViewById(R.id.control_address_recycler);
-        adapter = new ControlAddressAdapter(this, addressListEntitis);
-        listView.setAdapter(adapter);
-        listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
         UIHelper.setupSwipeRefreshLayoutProgress(swipeRefreshLayout);
         swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -138,6 +135,10 @@ public class ControlAddressActivity extends BaseActivity {
                 requestDataChanged(userGuid, "0");
             }
         });
+        adapter = new ControlAddressAdapter(this, addressListEntitis);
+        listView.setAdapter(adapter);
+        listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
         noHaveAddressLayout.setVisibility(View.GONE);
         havaAddressLayout.setVisibility(View.VISIBLE);
 
@@ -149,7 +150,6 @@ public class ControlAddressActivity extends BaseActivity {
 
             @Override
             public void isDefaultClickLLinstener(int postion) {
-                addressListEntitis = adapter.getLiatData();
                 requestDefaultChanged(userGuid, addressListEntitis.get(postion).getADDRESSID(), postion);
             }
         });
@@ -189,7 +189,7 @@ public class ControlAddressActivity extends BaseActivity {
 
     private void setAddressListData(List<LinkedTreeMap<String, String>> response) {
         int count = response == null ? 0 : response.size();
-        if (count <= 0) {
+        if (count < 0) {
             return;
         }
         addressListEntitis = new ArrayList<>();
@@ -204,7 +204,6 @@ public class ControlAddressActivity extends BaseActivity {
         }
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(addressListEntitis);
-        adapter.notifyDataSetChanged();
     }
 
     private void actionBarEven() {
@@ -219,29 +218,7 @@ public class ControlAddressActivity extends BaseActivity {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
-                    if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
-                        Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
-                        AddressEntity entity = null;
-                        for (int j = 0; j < addressListEntitis.size(); j++) {
-                            if (addressListEntitis.get(j).getISDEFAULT().equals("1")) {
-                                entity = addressListEntitis.get(j);
-                            }
-                        }
-                        if (entity == null) {
-                            if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
-                                entity = addressListEntitis.get(0);
-                                intent.putExtra("responseCommitEntity", entity);
-                                setResult(2, intent);
-                            } else {
-                                setResult(3, intent);
-                            }
-                        } else {
-                            intent.putExtra("responseCommitEntity", entity);
-                            setResult(2, intent);
-                        }
-
-                    }
-                    finish();
+                    backEvent();
                 } else if (i == 0) {
                     UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, 0);
                     //startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
@@ -251,7 +228,6 @@ public class ControlAddressActivity extends BaseActivity {
     }
 
     public void removeDialogView(final int position) {
-        addressListEntitis = adapter.getLiatData();
         final AlertDialog dialog = new AlertDialog.Builder(this).create();
         TextView textView = new TextView(this);
 
@@ -418,30 +394,34 @@ public class ControlAddressActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
-                Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
-                AddressEntity entity = null;
-                for (int j = 0; j < addressListEntitis.size(); j++) {
-                    if (addressListEntitis.get(j).getISDEFAULT().equals("1")) {
-                        entity = addressListEntitis.get(j);
-                    }
-                }
-                if (entity == null) {
-                    if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
-                        entity = addressListEntitis.get(0);
-                        intent.putExtra("responseCommitEntity", entity);
-                        setResult(2, intent);
-                    } else {
-                        setResult(3, intent);
-                    }
-                } else {
-                    intent.putExtra("responseCommitEntity", entity);
-                    setResult(2, intent);
-                }
-
-            }
-            finish();
+            backEvent();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void backEvent() {
+        if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
+            Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
+            AddressEntity entity = null;
+            for (int j = 0; j < addressListEntitis.size(); j++) {
+                if (addressListEntitis.get(j).getISDEFAULT().equals("1")) {
+                    entity = addressListEntitis.get(j);
+                }
+            }
+            if (entity == null) {
+                if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
+                    entity = addressListEntitis.get(0);
+                    intent.putExtra("responseCommitEntity", entity);
+                    setResult(2, intent);
+                } else {
+                    setResult(3, intent);
+                }
+            } else {
+                intent.putExtra("responseCommitEntity", entity);
+                setResult(2, intent);
+            }
+
+        }
+        finish();
     }
 }
