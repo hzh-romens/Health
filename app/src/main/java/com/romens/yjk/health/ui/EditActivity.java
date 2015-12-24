@@ -1,26 +1,49 @@
 package com.romens.yjk.health.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
+import com.romens.android.AndroidUtilities;
+import com.romens.android.network.FacadeClient;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.ui.activity.LightActionBarActivity;
 import com.romens.yjk.health.ui.cells.EditTextCell;
+import com.romens.yjk.health.ui.components.SlideView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by anlc on 2015/12/21.
  */
-public class EditActivity extends LightActionBarActivity {
+public class EditActivity extends BaseActivity {
 
     private String formActivityName;
     private String result;
-    private EditTextCell cell;
+    private OrganizationCodeView cell;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +72,10 @@ public class EditActivity extends LightActionBarActivity {
         });
         setContentView(content, actionBar);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        setActionBarTitle(actionBar, title);
-        actionBarMenu.addItem(0, R.drawable.ic_done_grey600_24dp);
+        actionBar.setTitle(title);
+        actionBarMenu.addItem(0, R.drawable.ic_done);
 
-        cell = new EditTextCell(this);
-        cell.setNeedDivider(true);
+        cell = new OrganizationCodeView(this);
         content.addView(cell);
     }
 
@@ -62,5 +84,59 @@ public class EditActivity extends LightActionBarActivity {
         intent.putExtra("editActivityResult", result);
         setResult(UserGuidConfig.RESPONSE_EDITACTIVITY, intent);
         finish();
+    }
+
+    public class OrganizationCodeView extends LinearLayout {
+
+        private EditText organizationCodeField;
+
+        public OrganizationCodeView(Context context) {
+            super(context);
+            setOrientation(VERTICAL);
+
+            LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT);
+            layoutParams.topMargin = AndroidUtilities.dp(20);
+            layoutParams.leftMargin = AndroidUtilities.dp(16);
+            layoutParams.rightMargin = AndroidUtilities.dp(16);
+            setLayoutParams(layoutParams);
+
+            organizationCodeField = new EditText(context);
+            organizationCodeField.setInputType(InputType.TYPE_CLASS_TEXT);
+            organizationCodeField.setTextColor(0xff212121);
+            organizationCodeField.setHintTextColor(0xff979797);
+            organizationCodeField.setPadding(0, 0, 0, 0);
+            AndroidUtilities.clearCursorDrawable(organizationCodeField);
+            organizationCodeField.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            organizationCodeField.setMaxLines(1);
+            organizationCodeField.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+            organizationCodeField.setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            addView(organizationCodeField);
+            layoutParams = (LinearLayout.LayoutParams) organizationCodeField.getLayoutParams();
+            layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            layoutParams.height = AndroidUtilities.dp(36);
+            organizationCodeField.setLayoutParams(layoutParams);
+
+            TextView textView = new TextView(context);
+            textView.setText("完善详细信息我们更好的为您提供用药咨询和促销信息");
+            textView.setTextColor(0xff757575);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            textView.setGravity(Gravity.LEFT);
+            textView.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
+            addView(textView);
+            layoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            layoutParams.topMargin = AndroidUtilities.dp(28);
+            layoutParams.bottomMargin = AndroidUtilities.dp(10);
+            layoutParams.gravity = Gravity.LEFT;
+            textView.setLayoutParams(layoutParams);
+
+            AndroidUtilities.showKeyboard(organizationCodeField);
+            organizationCodeField.requestFocus();
+        }
+
+        public String getEditText() {
+            return organizationCodeField.getText().toString().trim();
+        }
     }
 }

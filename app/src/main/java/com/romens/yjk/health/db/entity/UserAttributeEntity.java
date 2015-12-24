@@ -23,9 +23,9 @@ public class UserAttributeEntity {
         return this;
     }
 
-    public void remove(String value) {
+    public void remove(String value, String valueDesc) {
         values.remove(value);
-        valuesDesc.remove(Integer.parseInt(value));
+        valuesDesc.remove(valueDesc);
     }
 
     public void clear() {

@@ -148,6 +148,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                     String response = responseProtocol.getResponse();
                     Gson gson = new Gson();
                     entity = gson.fromJson(response, PersonalEntity.class);
+                    Log.e("tag", "--init->" + response);
                     updateData();
                 } else {
                     Log.e("person message", errorMsg.msg);
@@ -163,6 +164,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
         needShowProgress("正在更新个人信息");
         Gson gson = new Gson();
         final String jsonData = gson.toJson(entity);
+        Log.e("tag", "--SaveInfor->" + jsonData);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
                 .put("JSONDATA", jsonData)
@@ -192,9 +194,11 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                             finish();
                         }
                     } catch (JSONException e) {
+                        Toast.makeText(AccountSettingActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 } else {
+                    Toast.makeText(AccountSettingActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
                     Log.e("个人信息错误日志", errorMsg.msg);
                 }
             }
@@ -239,19 +243,31 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                     for (int j = 0; j < valuesDesc.length(); j++) {
                         result += valuesDesc.getString(j) + ",";
                     }
-                    entity.setFOODHOBBY(result.substring(0, result.length() - 1));
+                    if (result.equals("")) {
+                        entity.setFOODHOBBY(result);
+                    } else {
+                        entity.setFOODHOBBY(result.substring(0, result.length() - 1));
+                    }
                 } else if ("habit".equals(jsonObject.getString("key"))) {
                     String result = "";
                     for (int j = 0; j < valuesDesc.length(); j++) {
                         result += valuesDesc.getString(j) + ",";
                     }
-                    entity.setSLEEPHOBBY(result.substring(0, result.length() - 1));
+                    if (result.equals("")) {
+                        entity.setSLEEPHOBBY(result);
+                    } else {
+                        entity.setSLEEPHOBBY(result.substring(0, result.length() - 1));
+                    }
                 } else if ("other".equals(jsonObject.getString("key"))) {
                     String result = "";
                     for (int j = 0; j < valuesDesc.length(); j++) {
                         result += valuesDesc.getString(j) + ",";
                     }
-                    entity.setOTHER(result.substring(0, result.length() - 1));
+                    if (result.equals("")) {
+                        entity.setOTHER(result);
+                    } else {
+                        entity.setOTHER(result.substring(0, result.length() - 1));
+                    }
                 }
             }
         } catch (Exception e) {
