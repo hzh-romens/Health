@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * Created by siery on 15/12/19.
  */
-public class UserLabelsActivity extends LightActionBarActivity {
+public class UserLabelsActivity extends BaseActivity {
 
     private ListView listView;
     private ListAdapter adapter;
@@ -62,8 +63,8 @@ public class UserLabelsActivity extends LightActionBarActivity {
         setContentView(content, actionBar);
 
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        actionBarMenu.addItem(0, R.drawable.ic_done_grey600_24dp);
-        setActionBarTitle(actionBar, "详细信息");
+        actionBarMenu.addItem(0, R.drawable.ic_done);
+        actionBar.setTitle("详细信息");
 
         listView = new ListView(this);
         content.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -71,6 +72,12 @@ public class UserLabelsActivity extends LightActionBarActivity {
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         listView.setSelector(R.drawable.list_selector);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
 
         listView.setAdapter(adapter = new ListAdapter(this));
         bindData();

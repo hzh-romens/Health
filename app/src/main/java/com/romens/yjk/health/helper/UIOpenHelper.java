@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.service.MedicineFavoriteService;
+import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
@@ -126,6 +127,15 @@ public class UIOpenHelper {
     public static void openUserLabelsActivity(Context context) {
         Intent intent = new Intent(context, UserLabelsActivity.class);
         context.startActivity(intent);
+    }
+
+    /**
+     * 打开账户管理界面
+     *
+     * @param context
+     */
+    public static void openAccountSettingActivity(Context context) {
+        context.startActivity(new Intent(context, AccountSettingActivity.class));
     }
 
 }

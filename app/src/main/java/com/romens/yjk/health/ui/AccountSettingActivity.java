@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -25,16 +24,18 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.cells.LoadingCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
+import com.romens.android.ui.cells.TextInfoPrivacyCell;
+import com.romens.android.ui.cells.TextSettingSelectCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.PersonalEntity;
-import com.romens.yjk.health.ui.activity.LightActionBarActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
-import com.romens.yjk.health.ui.cells.AccountCell;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +47,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/12/21.
  */
-public class AccountSettingActivity extends LightActionBarActivity implements DatePickerDialog.OnDateSetListener {
+public class AccountSettingActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
     private ListView listView;
     private AccountAdapter adapter;
@@ -76,11 +77,8 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
         });
         setContentView(content, actionBar);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
-        actionBarMenu.addItem(0, R.drawable.ic_done_grey600_24dp);
-        setActionBarTitle(actionBar, "个人信息");
-        content.setBackgroundColor(getResources().getColor(R.color.title_background_grey));
-        setRow();
-
+        actionBarMenu.addItem(0, R.drawable.ic_done);
+        actionBar.setTitle("个人信息");
         entity = new PersonalEntity();
         listView = new ListView(this);
         listView.setDivider(null);
@@ -90,6 +88,8 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
         content.addView(listView);
         adapter = new AccountAdapter(this);
         listView.setAdapter(adapter);
+
+        updateData();
         initData();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -109,7 +109,7 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
                     startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING2_TO_EDITACTIVITY);
                 } else if (position == birthdayRow) {
                     showDatePickerDialog();
-                } else if (position == detailRow || position == detailIntroduceRow) {
+                } else if (position == detailRow) {
 //                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this);
                     Intent intent = new Intent(AccountSettingActivity.this, UserLabelsActivity.class);
                     intent.putExtra("personEntity", entity);
@@ -119,8 +119,14 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
         });
     }
 
+    private void changeLoadingUserInfo(boolean progress) {
+        loadingUserInfo = progress;
+        updateData();
+    }
+
     //获取数据
     private void initData() {
+        changeLoadingUserInfo(true);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserInfo", args);
@@ -131,19 +137,18 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
 
             @Override
             public void onTokenTimeout(Message msg) {
-                needHideProgress();
-                Log.e("person message", msg.msg);
+                changeLoadingUserInfo(false);
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
+                changeLoadingUserInfo(false);
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
                     Gson gson = new Gson();
                     entity = gson.fromJson(response, PersonalEntity.class);
-                    adapter.notifyDataSetChanged();
+                    updateData();
                 } else {
                     Log.e("person message", errorMsg.msg);
                 }
@@ -155,6 +160,7 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
 
     //保存信息
     private void SaveInfor() {
+        needShowProgress("正在更新个人信息");
         Gson gson = new Gson();
         final String jsonData = gson.toJson(entity);
         Map<String, String> args = new FacadeArgs.MapBuilder()
@@ -265,7 +271,7 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
                             entity.setGENDER((which + 1) + "");
                         }
                         dialog.dismiss();
-                        adapter.notifyDataSetChanged();
+                        updateData();
                     }
                 })
                 .setPositiveButton("取 消", new DialogInterface.OnClickListener() {
@@ -290,7 +296,7 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         entity.setBIRTHDAY(year + "年" + (month + 1) + "月" + day + "日");
-        adapter.notifyDataSetChanged();
+        updateData();
     }
 
     private int rowCount;
@@ -302,26 +308,41 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
     private int detailRow;
     private int detailIntroduceRow;
 
-    private void setRow() {
-        nameRow = rowCount++;
-        sexRow = rowCount++;
-        professionRow = rowCount++;
-        birthdayRow = rowCount++;
-        lineRow = rowCount++;
-        detailRow = rowCount++;
-        detailIntroduceRow = rowCount++;
+    private int loadingUserInfoRow;
+
+    private boolean loadingUserInfo = false;
+
+    private void updateData() {
+        rowCount = 0;
+        if (loadingUserInfo) {
+            loadingUserInfoRow = rowCount++;
+            nameRow = -1;
+            sexRow = -1;
+            professionRow = -1;
+            birthdayRow = -1;
+            lineRow = -1;
+            detailRow = -1;
+            detailIntroduceRow = -1;
+        } else {
+            loadingUserInfoRow = -1;
+            nameRow = rowCount++;
+            sexRow = rowCount++;
+            professionRow = rowCount++;
+            birthdayRow = rowCount++;
+            lineRow = rowCount++;
+            detailRow = rowCount++;
+            detailIntroduceRow = rowCount++;
+        }
+
+        adapter.notifyDataSetChanged();
     }
 
     class AccountAdapter extends BaseAdapter {
 
         private Context context;
-        private String[] dataStr;
 
         public AccountAdapter(Context context) {
             this.context = context;
-            dataStr = new String[]{"姓名", "性别", "职业",
-                    "出生日期", "", "详细信息",
-                    "完善详细信息我们更好的为您提供用药咨询和促销信息"};
         }
 
         @Override
@@ -341,37 +362,46 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
 
         @Override
         public boolean isEnabled(int position) {
-            return position != lineRow && position != detailIntroduceRow;
+            if (position == lineRow || position == detailIntroduceRow || position == loadingUserInfoRow) {
+                return false;
+            }
+            return true;
         }
 
         @Override
         public int getItemViewType(int position) {
             if (position == lineRow) {
                 return 0;
-            } else {
-                return 1;
+            } else if (position == detailIntroduceRow) {
+                return 2;
+            } else if (position == loadingUserInfoRow) {
+                return 3;
             }
+            return 1;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 4;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             int type = getItemViewType(position);
-            String key = dataStr[position];
             if (type == 0) {
                 if (convertView == null) {
                     convertView = new ShadowSectionCell(context);
                 }
             } else if (type == 1) {
                 if (convertView == null) {
-                    convertView = new AccountCell(context);
+                    convertView = new TextSettingSelectCell(context);
                 }
-                AccountCell cell = (AccountCell) convertView;
-                cell.setBackgroundColor(Color.WHITE);
-
+                TextSettingSelectCell cell = (TextSettingSelectCell) convertView;
+                cell.setValueTextColor(ResourcesConfig.bodyText2);
                 if (position == nameRow) {
-                    cell.setKeyAndValue(key, entity.getPERSONNAME(), R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setTextAndValue("姓名", entity == null ? "" : entity.getPERSONNAME(), true, true);
                 } else if (position == sexRow) {
-                    if (entity.getGENDER() != null) {
+                    if (entity != null && entity.getGENDER() != null) {
                         String sex;
                         if (entity.getGENDER().equals("1")) {
                             sex = "男";
@@ -380,19 +410,28 @@ public class AccountSettingActivity extends LightActionBarActivity implements Da
                         } else {
                             sex = "保密";
                         }
-                        cell.setKeyAndValue(key, sex, R.drawable.ic_chevron_right_grey600_24dp, true);
+                        cell.setTextAndValue("性别", sex, true, true);
                     } else {
-                        cell.setKeyAndValue(key, R.drawable.ic_chevron_right_grey600_24dp, true);
+                        cell.setTextAndValue("性别", "请选择...", true, true);
                     }
                 } else if (position == professionRow) {
-                    cell.setKeyAndValue(key, entity.getJOB(), R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setTextAndValue("职业", entity == null ? "" : entity.getJOB(), true, true);
                 } else if (position == birthdayRow) {
-                    cell.setKeyAndValue(key, entity.getBIRTHDAY(), R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setTextAndValue("出生日期", entity == null ? "" : entity.getBIRTHDAY(), true, true);
                 } else if (position == detailRow) {
-                    cell.setKeyAndValue(key, R.drawable.ic_chevron_right_grey600_24dp, true);
-                } else if (position == detailIntroduceRow) {
-                    cell.setKey(key, true);
-                    cell.setKeyTxtColor(R.color.theme_sub_title);
+                    cell.setTextAndValue("详细信息", "", true, true);
+                }
+            } else if (type == 2) {
+                if (convertView == null) {
+                    convertView = new TextInfoPrivacyCell(context);
+                }
+                TextInfoPrivacyCell cell = (TextInfoPrivacyCell) convertView;
+                if (position == detailIntroduceRow) {
+                    cell.setText("完善详细信息我们更好的为您提供用药咨询和促销信息");
+                }
+            } else if (type == 3) {
+                if (convertView == null) {
+                    convertView = new LoadingCell(context);
                 }
             }
 

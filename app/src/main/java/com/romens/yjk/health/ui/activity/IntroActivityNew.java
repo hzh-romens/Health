@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -14,8 +16,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.romens.android.AndroidUtilities;
+import com.romens.android.ui.Image.BackupImageView;
+import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
 
@@ -25,30 +29,77 @@ import com.romens.yjk.health.ui.HomeActivity;
 public class IntroActivityNew extends Activity {
 
     private ViewPager viewPager;
-    private int[] imgs;
-    private String isFirst;
+
+    private boolean openGuidePager;
+    private int[] pagerImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPreferences = getSharedPreferences("flag", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        isFirst = sharedPreferences.getString("isFirst", "yes");
-        if (isFirst.equals("yes")) {
-            editor.putString("isFirst", "no");
-            editor.commit();
-        } else {
-            Intent intent2 = new Intent(this, HomeActivity.class);
-            intent2.putExtra("fromIntro", true);
-            startActivity(intent2);
-            finish();
+
+        //是否首次打开App，首次打开App启动引导页
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        openGuidePager = sharedPreferences.getBoolean("open_guide_pager", false);
+        if (openGuidePager) {
+            sharedPreferences.edit().putBoolean("open_guide_pager", false).commit();
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_intro);
         viewPager = (ViewPager) findViewById(R.id.intro_view_pager);
-        imgs = new int[]{R.drawable.guide_1, R.drawable.guide_2, R.drawable.guide_3};
-        viewPager.setAdapter(new MyPagerAdapter(imgs, this));
+        if (openGuidePager) {
+            pagerImages = new int[]{R.drawable.guide_1, R.drawable.guide_2, R.drawable.guide_3};
+            viewPager.setAdapter(new MyPagerAdapter(pagerImages, this));
+        } else {
+            viewPager.setAdapter(new ADPagerAdapter(this));
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    openHomeActivity();
+                }
+            }, 2000);
+        }
+    }
+
+    private void openHomeActivity() {
+        Intent intent2 = new Intent(this, HomeActivity.class);
+        intent2.putExtra("fromIntro", true);
+        startActivity(intent2);
+        finish();
+    }
+
+    class ADPagerAdapter extends PagerAdapter {
+        private Context context;
+
+        public ADPagerAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+            View view = LayoutInflater.from(context).inflate(R.layout.list_item_intro_ad, null);
+            NetImageView imageView = (NetImageView) view.findViewById(R.id.ad_image);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setImage("", R.drawable.intro_ad_pager, 0);
+            container.addView(view);
+            return view;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object o) {
+
+            return view == o;
+        }
     }
 
     class MyPagerAdapter extends PagerAdapter {
@@ -77,10 +128,7 @@ public class IntroActivityNew extends Activity {
                 @Override
                 public void onClick(View v) {
                     if (position == 2) {
-                        Intent intent2 = new Intent(context, HomeActivity.class);
-                        intent2.putExtra("fromIntro", true);
-                        startActivity(intent2);
-                        finish();
+                        openHomeActivity();
                     }
                 }
             });

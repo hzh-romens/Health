@@ -32,7 +32,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
 
     private int cellStyle = 0;
 
-    private Bundle arguments = new Bundle();
+    private Bundle properties = new Bundle();
 
     public ADProductsCell(Context context) {
         super(context);

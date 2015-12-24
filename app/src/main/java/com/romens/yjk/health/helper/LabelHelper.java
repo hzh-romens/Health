@@ -49,6 +49,10 @@ public class LabelHelper {
 
     public static SpannableStringBuilder createChipForUserInfoLabels(List<String> labels) {
         SpannableStringBuilder ssb = new SpannableStringBuilder("");
+        if (labels == null || labels.size() <= 0) {
+            ssb.append("");
+            return ssb;
+        }
         XImageSpan span;
         for (String label : labels) {
             span = createImageSpanForUserInfoLabel(label);

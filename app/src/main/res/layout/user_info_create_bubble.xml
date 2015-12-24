@@ -10,7 +10,7 @@
         android:layout_height="26dp"
         android:background="@drawable/user_info_label"
         android:gravity="center"
-        android:textColor="@color/text_primary"
+        android:textColor="@color/md_white_1000"
         android:textSize="14dp" />
 
 </FrameLayout>
