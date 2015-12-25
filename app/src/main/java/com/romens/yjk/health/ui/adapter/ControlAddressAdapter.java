@@ -48,7 +48,6 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
     }
 
     public void setData(List<AddressEntity> data) {
-        Log.e("tag", "---->" + new Gson().toJson(data));
         this.data = data;
         notifyDataSetChanged();
     }
@@ -154,7 +153,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
 
     @Override
     public int getItemCount() {
-        return data.size() * 2;
+        return data.size() * 2 - 1;
     }
 
     class ControlAddressHolder extends RecyclerView.ViewHolder {

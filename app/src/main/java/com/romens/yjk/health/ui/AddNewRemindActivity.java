@@ -68,7 +68,6 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
         container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        container.setBackgroundResource(R.color.line_color);
         setContentView(container, actionBar);
         actionBarEvent();
         initData();
@@ -77,7 +76,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setSelection(R.drawable.list_selector);
+        listView.setSelector(R.drawable.list_selector);
         adapter = new AddRemindAdapter(this, timesDataTemp);
         listView.setAdapter(adapter);
         container.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -250,6 +249,11 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         }
 
         @Override
+        public int getViewTypeCount() {
+            return 2;
+        }
+
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             int type = getItemViewType(position);
             if (type == 0) {
@@ -257,7 +261,6 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                     convertView = new KeyAndViewCell(context);
                 }
                 KeyAndViewCell cell = (KeyAndViewCell) convertView;
-                cell.setBackgroundColor(Color.WHITE);
                 if (position == userRow) {
                     cell.setKeyAndLeftText("称呼", user, true);
                     cell.setOnTextViewClickListener(new KeyAndViewCell.OnTextViewClickListener() {
