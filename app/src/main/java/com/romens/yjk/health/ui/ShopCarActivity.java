@@ -31,6 +31,7 @@ import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.components.CustomDialog;
+import com.romens.yjk.health.ui.utils.UIUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -286,7 +287,7 @@ public class ShopCarActivity extends BaseActivity {
 
                 @Override
                 public void UpdateMoney(String money) {
-                    tv_all1.setText("总计：" + money);
+                    tv_all1.setText("总计：" + UIUtils.getDouvleValue(money));
                 }
             });
             all_choice.setChecked(false);
@@ -334,7 +335,7 @@ public class ShopCarActivity extends BaseActivity {
 
             @Override
             public void UpdateMoney(String money) {
-                tv_all1.setText("总计：" + money);
+                tv_all1.setText("总计：" + UIUtils.getDouvleValue(money));
             }
 
         });

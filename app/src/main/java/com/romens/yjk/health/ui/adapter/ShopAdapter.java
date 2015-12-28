@@ -65,7 +65,8 @@ public class ShopAdapter extends BaseExpandableListAdapter {
     public List<ParentEntity> getParentData() {
         return mFatherData;
     }
-    public SparseBooleanArray getParentStatus(){
+
+    public SparseBooleanArray getParentStatus() {
         return fatherStatus;
     }
 
@@ -73,9 +74,9 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         this.mFatherData = fatherData;
         this.mChildData = childData;
         this.mAdapterCallBack = adapterCallBack;
-        sumMoney=0;
+        sumMoney = 0;
         fatherStatus.clear();
-       childStatusList.clear();
+        childStatusList.clear();
         for (int i = 0; i < mFatherData.size(); i++) {
             fatherStatus.append(i, true);
         }
@@ -95,8 +96,9 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         updateData();
         updateMoney(sumMoney + "");
     }
+
     //获取childstatus的集合
-    public HashMap<String, SparseBooleanArray> getChildStatusList(){
+    public HashMap<String, SparseBooleanArray> getChildStatusList() {
         return childStatusList;
     }
 
@@ -165,8 +167,9 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         int i = provisional.indexOfValue(false);
         return index < 0 && i < 0;
     }
-    public boolean isAllNotSelected(){
-        if(mFatherData!=null) {
+
+    public boolean isAllNotSelected() {
+        if (mFatherData != null) {
             SparseBooleanArray provisional = new SparseBooleanArray();
             for (int i = 0; i < mFatherData.size(); i++) {
                 boolean b = childItemIsAllSelected(mFatherData.get(i).getShopID());
@@ -175,7 +178,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             int index = fatherStatus.indexOfValue(true);
             int i = provisional.indexOfValue(true);
             return index < 0 && i < 0;
-        }else {
+        } else {
             return true;
         }
     }
@@ -307,15 +310,15 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             holder = (ChildHolder) convertView.getTag();
         }
         final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-        holder.tv_num.setText(entity.getBUYCOUNT()+"");
+        holder.tv_num.setText(entity.getBUYCOUNT() + "");
         holder.tv_discountPrice.setText("¥" + entity.getGOODSPRICE());
         holder.tv_realPrice.setText("¥" + entity.getGOODSPRICE());
         holder.tv_realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         holder.tv_infor.setText(entity.getNAME());
         holder.tv_store.setText(entity.getSPEC());
 
-        Drawable defaultDrawables =  holder.iv_detail.getDrawable();
-        ImageManager.loadForView(mContext, holder.iv_detail,entity.getGOODURL(), defaultDrawables, defaultDrawables);
+        Drawable defaultDrawables = holder.iv_detail.getDrawable();
+        ImageManager.loadForView(mContext, holder.iv_detail, entity.getGOODURL(), defaultDrawables, defaultDrawables);
 
         holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
 
