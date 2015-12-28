@@ -18,6 +18,7 @@ import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.utils.DialogUtils;
+import com.romens.yjk.health.ui.utils.UIUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +36,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
     private SparseBooleanArray childStatus = new SparseBooleanArray();
 
     public double sumMoney = 0;
-
 
     //接口回调，用于数据刷新
     public interface AdapterCallBack {
@@ -128,110 +128,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         updateMoney(sumMoney + "");
     }
 
-    //childItem的单个点击事件
-    public void SwitchChildItem(int parentPosition, String parentId, int childPosition, boolean status) {
-        double sMoney = sumMoney;
-        ShopCarEntity entity = mChildData.get(parentId).get(childPosition);
-        entity.setCHECK(status + "");
-        childStatusList.get(parentId).put(childPosition, status);
-        SparseBooleanArray sparseBooleanArray = childStatusList.get(parentId);
-        if (sparseBooleanArray.indexOfValue(true) < 0) {
-            SwitchFatherItem(parentId, false);
-        } else {
-            fatherStatus.append(parentPosition, true);
-        }
-        //   double allMoney=0;
-        if (status) {
-            sMoney = sMoney + entity.getBUYCOUNT() * entity.getGOODSPRICE();
-        } else {
-            sMoney = sMoney - entity.getBUYCOUNT() * entity.getGOODSPRICE();
-        }
-        //  sumMoney=sumMoney+allMoney;
-        sumMoney = sMoney;
-        updateData();
-        updateMoney(sumMoney + "");
-    }
-
-    public double getSumMoney(HashMap<String, List<ShopCarEntity>> data) {
-        return 0;
-    }
-
-    //全选
-    public boolean isAllSelected() {
-        SparseBooleanArray provisional = new SparseBooleanArray();
-        for (int i = 0; i < mFatherData.size(); i++) {
-            boolean b = childItemIsAllSelected(mFatherData.get(i).getShopID());
-            provisional.append(i, b);
-        }
-        int index = fatherStatus.indexOfValue(false);
-        int i = provisional.indexOfValue(false);
-        return index < 0 && i < 0;
-    }
-
-    public boolean isAllNotSelected() {
-        if (mFatherData != null) {
-            SparseBooleanArray provisional = new SparseBooleanArray();
-            for (int i = 0; i < mFatherData.size(); i++) {
-                boolean b = childItemIsAllSelected(mFatherData.get(i).getShopID());
-                provisional.append(i, b);
-            }
-            int index = fatherStatus.indexOfValue(true);
-            int i = provisional.indexOfValue(true);
-            return index < 0 && i < 0;
-        } else {
-            return true;
-        }
-    }
-
-    //某一个parent下面的childItem是否全选
-    public boolean childItemIsAllSelected(String parentId) {
-        SparseBooleanArray sparseBooleanArray = childStatusList.get(parentId);
-        int index = sparseBooleanArray.indexOfValue(false);
-        return index < 0;
-    }
-
-    //全选或者全不选
-    public void switchAllSelect(boolean value) {
-        for (int i = 0; i < fatherStatus.size(); i++) {
-            fatherStatus.append(i, value);
-            mFatherData.get(i).setCheck(value + "");
-        }
-        Iterator iter = mChildData.entrySet().iterator();
-        double s = 0;
-        while (iter.hasNext()) {
-            ParentEntity fatherEntity = new ParentEntity();
-            Map.Entry entry = (Map.Entry) iter.next();
-            String key = (String) entry.getKey();
-            List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
-            SparseBooleanArray childStatus = new SparseBooleanArray();
-            double allMoney = 0;
-            if (value) {
-                for (int i = 0; i < child.size(); i++) {
-                    childStatus.append(i, value);
-                    Double goodsprice = child.get(i).getGOODSPRICE();
-                    allMoney = allMoney + goodsprice * child.get(i).getBUYCOUNT();
-                }
-            } else {
-                for (int i = 0; i < child.size(); i++) {
-                    childStatus.append(i, value);
-                }
-            }
-            s = s + allMoney;
-            childStatusList.put(key, childStatus);
-        }
-        sumMoney = s;
-        updateMoney(sumMoney + "");
-        updateData();
-
-    }
-
-    public void updateMoney(String money) {
-        if (mAdapterCallBack != null) {
-            mAdapterCallBack.UpdateMoney(money);
-        }
-    }
-
-
     //数据刷新及回调
     public void updateData() {
         notifyDataSetChanged();
@@ -311,17 +207,14 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         }
         final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
         holder.tv_num.setText(entity.getBUYCOUNT() + "");
-        holder.tv_discountPrice.setText("¥" + entity.getGOODSPRICE());
-        holder.tv_realPrice.setText("¥" + entity.getGOODSPRICE());
+        holder.tv_discountPrice.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
+        holder.tv_realPrice.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
         holder.tv_realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         holder.tv_infor.setText(entity.getNAME());
         holder.tv_store.setText(entity.getSPEC());
-
         Drawable defaultDrawables = holder.iv_detail.getDrawable();
         ImageManager.loadForView(mContext, holder.iv_detail, entity.getGOODURL(), defaultDrawables, defaultDrawables);
-
         holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
-
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -391,7 +284,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                 if (num > 1) {
                     if (holder.checkBox.isChecked()) {
                         num--;
-                        //    ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getStoreID()).get(childPosition);
                         entity.setBUYCOUNT(num);
                         double addMoney = entity.getGOODSPRICE() * (startNum - num);
                         sumMoney = sumMoney - addMoney;
@@ -400,10 +292,8 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                         updateData();
                     } else {
                         num--;
-                        //   ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getStoreID()).get(childPosition);
                         entity.setBUYCOUNT(num);
                         holder.tv_num.setText(num + "");
-                        // updateData();
                     }
                 }
             }
@@ -456,5 +346,106 @@ public class ShopAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean hasStableIds() {
         return false;
+    }
+
+    //childItem的单个点击事件
+    public void SwitchChildItem(int parentPosition, String parentId, int childPosition, boolean status) {
+        double sMoney = sumMoney;
+        ShopCarEntity entity = mChildData.get(parentId).get(childPosition);
+        entity.setCHECK(status + "");
+        childStatusList.get(parentId).put(childPosition, status);
+        SparseBooleanArray sparseBooleanArray = childStatusList.get(parentId);
+        if (sparseBooleanArray.indexOfValue(true) < 0) {
+            SwitchFatherItem(parentId, false);
+        } else {
+            fatherStatus.append(parentPosition, true);
+        }
+        //   double allMoney=0;
+        if (status) {
+            sMoney = sMoney + entity.getBUYCOUNT() * entity.getGOODSPRICE();
+        } else {
+            sMoney = sMoney - entity.getBUYCOUNT() * entity.getGOODSPRICE();
+        }
+        //  sumMoney=sumMoney+allMoney;
+        sumMoney = sMoney;
+        updateData();
+        updateMoney(sumMoney + "");
+    }
+
+
+    public void updateMoney(String money) {
+        if (mAdapterCallBack != null) {
+            mAdapterCallBack.UpdateMoney(money);
+        }
+    }
+
+
+    //全选
+    public boolean isAllSelected() {
+        SparseBooleanArray provisional = new SparseBooleanArray();
+        for (int i = 0; i < mFatherData.size(); i++) {
+            boolean b = childItemIsAllSelected(mFatherData.get(i).getShopID());
+            provisional.append(i, b);
+        }
+        int index = fatherStatus.indexOfValue(false);
+        int i = provisional.indexOfValue(false);
+        return index < 0 && i < 0;
+    }
+
+    public boolean isAllNotSelected() {
+        if (mFatherData != null) {
+            SparseBooleanArray provisional = new SparseBooleanArray();
+            for (int i = 0; i < mFatherData.size(); i++) {
+                boolean b = childItemIsAllSelected(mFatherData.get(i).getShopID());
+                provisional.append(i, b);
+            }
+            int index = fatherStatus.indexOfValue(true);
+            int i = provisional.indexOfValue(true);
+            return index < 0 && i < 0;
+        } else {
+            return true;
+        }
+    }
+
+    //某一个parent下面的childItem是否全选
+    public boolean childItemIsAllSelected(String parentId) {
+        SparseBooleanArray sparseBooleanArray = childStatusList.get(parentId);
+        int index = sparseBooleanArray.indexOfValue(false);
+        return index < 0;
+    }
+
+    //全选或者全不选
+    public void switchAllSelect(boolean value) {
+        for (int i = 0; i < fatherStatus.size(); i++) {
+            fatherStatus.append(i, value);
+            mFatherData.get(i).setCheck(value + "");
+        }
+        Iterator iter = mChildData.entrySet().iterator();
+        double s = 0;
+        while (iter.hasNext()) {
+            ParentEntity fatherEntity = new ParentEntity();
+            Map.Entry entry = (Map.Entry) iter.next();
+            String key = (String) entry.getKey();
+            List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
+            SparseBooleanArray childStatus = new SparseBooleanArray();
+            double allMoney = 0;
+            if (value) {
+                for (int i = 0; i < child.size(); i++) {
+                    childStatus.append(i, value);
+                    Double goodsprice = child.get(i).getGOODSPRICE();
+                    allMoney = allMoney + goodsprice * child.get(i).getBUYCOUNT();
+                }
+            } else {
+                for (int i = 0; i < child.size(); i++) {
+                    childStatus.append(i, value);
+                }
+            }
+            s = s + allMoney;
+            childStatusList.put(key, childStatus);
+        }
+        sumMoney = s;
+        updateMoney(sumMoney + "");
+        updateData();
+
     }
 }

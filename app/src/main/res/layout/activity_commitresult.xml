@@ -14,7 +14,7 @@
         android:paddingLeft="64dp"
         android:text="Title"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_xlarge" />
+        android:textSize="@dimen/text_size_title" />
 
     <LinearLayout
         android:id="@+id/first_layout"

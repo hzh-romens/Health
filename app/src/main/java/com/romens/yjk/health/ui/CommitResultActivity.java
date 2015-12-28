@@ -26,6 +26,22 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commitresult);
         initVew();
+        initValue();
+
+    }
+
+    private void initVew() {
+        firstLayout = (LinearLayout) findViewById(R.id.first_layout);
+        secondLayout = (LinearLayout) findViewById(R.id.second_layout);
+        tv_orderNumber = (TextView) findViewById(R.id.orderNumber);
+        date = (TextView) findViewById(R.id.time);
+        money = (TextView) findViewById(R.id.money);
+        toOrder = (Button) findViewById(R.id.toOrder);
+        toShop = (Button) findViewById(R.id.toShop);
+        title = (TextView) findViewById(R.id.title);
+    }
+
+    private void initValue() {
         Intent intent = getIntent();
         if ("true".equals(intent.getStringExtra("success"))) {
             title.setText("订单提交成功");
@@ -44,18 +60,6 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         date.setText("下单时间：" + time);
         toShop.setOnClickListener(this);
         toOrder.setOnClickListener(this);
-    }
-
-
-    private void initVew() {
-        firstLayout = (LinearLayout) findViewById(R.id.first_layout);
-        secondLayout = (LinearLayout) findViewById(R.id.second_layout);
-        tv_orderNumber = (TextView) findViewById(R.id.orderNumber);
-        date = (TextView) findViewById(R.id.time);
-        money = (TextView) findViewById(R.id.money);
-        toOrder = (Button) findViewById(R.id.toOrder);
-        toShop = (Button) findViewById(R.id.toShop);
-        title = (TextView) findViewById(R.id.title);
     }
 
     @Override

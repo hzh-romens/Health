@@ -86,13 +86,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         getSendData();
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
-        adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
-            @Override
-            public void getCheckData(String flag) {
-
-            }
-        });
-        //将ExpandAbleListView的每个parentItem展开
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -200,7 +193,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("返回码-------",resultCode+"");
         if (resultCode == 2) {
             //对从ControlAddressActivity返回的数据进行处理
             AddressEntity addressEntity = (AddressEntity) data.getSerializableExtra("responseCommitEntity");

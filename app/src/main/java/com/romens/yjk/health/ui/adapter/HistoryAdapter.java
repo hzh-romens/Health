@@ -1,10 +1,8 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +10,13 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.romens.android.io.image.ImageManager;
-import com.romens.android.io.image.ImageUtils;
-import com.romens.android.ui.Image.BackupImageView;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.model.GoodsListEntity;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.cells.IsSelectCell;
+import com.romens.yjk.health.ui.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,9 +155,9 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         childHolder.realPrice.setTextColor(adapterContext.getResources().getColor(R.color.md_red_400));
         String currentPrice = entity.getCurrentPrice();
         String discountPrice = entity.getDiscountPrice();
-        childHolder.realPrice.setText("¥" + getModifyPrice(currentPrice));
+        childHolder.realPrice.setText("¥" + UIUtils.getDouvleValue(currentPrice));
         childHolder.realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        childHolder.discountPrice.setText("¥" +getModifyPrice(discountPrice));
+        childHolder.discountPrice.setText("¥" + UIUtils.getDouvleValue(currentPrice));
         childHolder.shop.setImageDrawable(adapterContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
         childHolder.shop.setVisibility(View.GONE);
         childHolder.comment.setText(entity.getCommentCount() + "条评论");
@@ -173,18 +165,10 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         childHolder.childitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 UIOpenHelper.openMedicineActivity(adapterContext, entity.getGuid());
-
             }
         });
         return convertView;
-    }
-
-    private String getModifyPrice(String price) {
-        int start = price.indexOf(".");
-        String modifyPrice =price.substring(0,start+2);
-        return modifyPrice;
     }
 
     class ChildHolder {

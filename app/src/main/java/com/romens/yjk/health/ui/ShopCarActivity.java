@@ -332,14 +332,11 @@ public class ShopCarActivity extends BaseActivity {
             public void UpdateData() {
                 all_choice.setChecked(myAdapter.isAllSelected());
             }
-
             @Override
             public void UpdateMoney(String money) {
                 tv_all1.setText("总计：" + UIUtils.getDouvleValue(money));
             }
-
         });
-
 
         all_choice.setOnClickListener(new View.OnClickListener() {
             @Override
