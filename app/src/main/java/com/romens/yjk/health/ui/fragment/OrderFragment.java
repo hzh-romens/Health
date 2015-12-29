@@ -44,6 +44,8 @@ import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -189,6 +191,12 @@ public class OrderFragment extends BaseFragment {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
+        Collections.sort(mOrderEntities, new Comparator<AllOrderEntity>() {
+            @Override
+            public int compare(AllOrderEntity lhs, AllOrderEntity rhs) {
+                return rhs.getCreateDate().compareTo(lhs.getCreateDate());
+            }
+        });
         refreshView();
     }
 
