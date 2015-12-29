@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
+import com.romens.yjk.health.ui.HomeActivity;
+import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
@@ -136,6 +139,31 @@ public class UIOpenHelper {
      */
     public static void openAccountSettingActivity(Context context) {
         context.startActivity(new Intent(context, AccountSettingActivity.class));
+    }
+
+    public static void openShopCarActivityWithAnimation(Context context) {
+        Intent i = new Intent(context, ShopCarActivity.class);
+        context.startActivity(i);
+        ((Activity) context).finish();
+        ((Activity) context).overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    public static void openControlAddressActivityForResult(Context context) {
+        Intent i = new Intent(context, ControlAddressActivity.class);
+        i.putExtra("chose", "chose");
+        ((Activity) context).startActivityForResult(i, 2);
+    }
+
+    public static void openMyOrderActivity(Context context) {
+        Intent intent = new Intent(context, MyOrderActivity.class);
+        context.startActivity(intent);
+        ((Activity) context).finish();
+    }
+
+    public static void openHomeActivity(Context context) {
+        Intent i = new Intent(context, HomeActivity.class);
+        context.startActivity(i);
+        ((Activity) context).finish();
     }
 
 }
