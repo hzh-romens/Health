@@ -144,7 +144,6 @@ public class ShopCarActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 ibuilder = new CustomDialog.Builder(ShopCarActivity.this);
-                // ibuilder.setTitle(R.string.prompt);
                 ibuilder.setMessage("是否删除？");
                 ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     @Override
@@ -233,7 +232,6 @@ public class ShopCarActivity extends BaseActivity {
 
     //获取购物车的信息
     private void getShopCarData() {
-
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         if (UserConfig.isClientLogined()) {
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
@@ -273,16 +271,16 @@ public class ShopCarActivity extends BaseActivity {
     List<ParentEntity> fatherEntities;//药店名称
     HashMap<String, List<ShopCarEntity>> childData;
 
-
     public void resultToJson(JSONArray jsonArray) throws JSONException {
         int count = jsonArray == null ? 0 : jsonArray.length();
         if (count <= 0) {
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
             HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
-            myAdapter.bindData(parentResult, childResult, new ShopAdapter.AdapterCallBack() {
+            myAdapter.bindData(parentResult, childResult);
+            all_choice.setChecked(false);
+            myAdapter.setCallBack(new ShopAdapter.AdapterCallBack() {
                 @Override
                 public void UpdateData() {
-
                 }
 
                 @Override
@@ -290,7 +288,6 @@ public class ShopCarActivity extends BaseActivity {
                     tv_all1.setText("总计：" + UIUtils.getDouvleValue(money));
                 }
             });
-            all_choice.setChecked(false);
             return;
         }
         List<ShopCarEntity> result = new ArrayList<ShopCarEntity>();
@@ -326,12 +323,13 @@ public class ShopCarActivity extends BaseActivity {
             fatherEntities.add(fatherEntity);
         }
 
-        myAdapter.bindData(fatherEntities, childData, new ShopAdapter.AdapterCallBack() {
-
+        myAdapter.bindData(fatherEntities, childData);
+        myAdapter.setCallBack(new ShopAdapter.AdapterCallBack() {
             @Override
             public void UpdateData() {
-                all_choice.setChecked(myAdapter.isAllSelected());
+
             }
+
             @Override
             public void UpdateMoney(String money) {
                 tv_all1.setText("总计：" + UIUtils.getDouvleValue(money));

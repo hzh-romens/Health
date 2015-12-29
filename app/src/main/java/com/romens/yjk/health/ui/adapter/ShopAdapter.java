@@ -70,10 +70,15 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         return fatherStatus;
     }
 
-    public void bindData(List<ParentEntity> fatherData, HashMap<String, List<ShopCarEntity>> childData, AdapterCallBack adapterCallBack) {
+    public void setCallBack(AdapterCallBack adapterCallBack) {
+        this.mAdapterCallBack = adapterCallBack;
+        updateData();
+    }
+
+    //, AdapterCallBack adapterCallBack
+    public void bindData(List<ParentEntity> fatherData, HashMap<String, List<ShopCarEntity>> childData) {
         this.mFatherData = fatherData;
         this.mChildData = childData;
-        this.mAdapterCallBack = adapterCallBack;
         sumMoney = 0;
         fatherStatus.clear();
         childStatusList.clear();
@@ -93,8 +98,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             }
             childStatusList.put(key, childStatus);
         }
-        updateData();
-        updateMoney(sumMoney + "");
     }
 
     //获取childstatus的集合
@@ -125,7 +128,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             }
         }
         updateData();
-        updateMoney(sumMoney + "");
     }
 
     //数据刷新及回调
@@ -133,6 +135,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         notifyDataSetChanged();
         if (mAdapterCallBack != null) {
             mAdapterCallBack.UpdateData();
+            mAdapterCallBack.UpdateMoney(sumMoney + "");
         }
     }
 
@@ -150,37 +153,37 @@ public class ShopAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        final FatherHolder fatherHolder;
+        final ParentHolder parentHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_parent, null);
-            fatherHolder = new FatherHolder();
-            fatherHolder.empty_view = convertView.findViewById(R.id.empty_view);
-            fatherHolder.checkableFrameLayout = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
-            fatherHolder.storeName = (TextView) convertView.findViewById(R.id.name);
-            convertView.setTag(fatherHolder);
+            parentHolder = new ParentHolder();
+            parentHolder.empty_view = convertView.findViewById(R.id.empty_view);
+            parentHolder.checkableFrameLayout = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
+            parentHolder.storeName = (TextView) convertView.findViewById(R.id.name);
+            convertView.setTag(parentHolder);
         } else {
-            fatherHolder = (FatherHolder) convertView.getTag();
+            parentHolder = (ParentHolder) convertView.getTag();
         }
         if (groupPosition == 0) {
-            fatherHolder.empty_view.setVisibility(View.GONE);
+            parentHolder.empty_view.setVisibility(View.GONE);
         } else {
-            fatherHolder.empty_view.setVisibility(View.VISIBLE);
+            parentHolder.empty_view.setVisibility(View.VISIBLE);
         }
         convertView.setClickable(true);
         ParentEntity fatherEntity = mFatherData.get(groupPosition);
-        fatherHolder.storeName.setText(fatherEntity.getShopName());
-        fatherHolder.checkableFrameLayout.setChecked(fatherStatus.get(groupPosition));
-        fatherHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
+        parentHolder.storeName.setText(fatherEntity.getShopName());
+        parentHolder.checkableFrameLayout.setChecked(fatherStatus.get(groupPosition));
+        parentHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SwitchFatherItem(mFatherData.get(groupPosition).getShopID(),
-                        !fatherHolder.checkableFrameLayout.isChecked());
+                        !parentHolder.checkableFrameLayout.isChecked());
             }
         });
-        fatherHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
+        parentHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SwitchFatherItem(mFatherData.get(groupPosition).getShopID(), !fatherHolder.checkableFrameLayout.isChecked());
+                SwitchFatherItem(mFatherData.get(groupPosition).getShopID(), !parentHolder.checkableFrameLayout.isChecked());
             }
         });
         return convertView;
@@ -221,6 +224,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                 SwitchChildItem(groupPosition, mFatherData.get(groupPosition).getShopID(), childPosition, !holder.checkBox.isChecked());
             }
         });
+
         holder.tv_num.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,12 +238,12 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                                 int reduce = startNum - num;
                                 double reduceMoney = reduce * entity.getGOODSPRICE();
                                 sumMoney = sumMoney - reduceMoney;
-                                updateMoney(sumMoney + "");
+                                updateData();
                             } else {
                                 int add = num - startNum;
                                 double addMoney = add * entity.getGOODSPRICE();
                                 sumMoney = sumMoney + addMoney;
-                                updateMoney(sumMoney + "");
+                                updateData();
                             }
                             entity.setBUYCOUNT(num);
                             holder.tv_num.setText(num + "");
@@ -264,7 +268,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                     double addMoney = entity.getGOODSPRICE() * (num - startNum);
                     sumMoney = sumMoney + addMoney;
                     holder.tv_num.setText(num + "");
-                    updateMoney(sumMoney + "");
                     updateData();
                 } else {
                     num++;
@@ -288,7 +291,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                         double addMoney = entity.getGOODSPRICE() * (startNum - num);
                         sumMoney = sumMoney - addMoney;
                         holder.tv_num.setText(num + "");
-                        updateMoney(sumMoney + "");
                         updateData();
                     } else {
                         num--;
@@ -309,13 +311,12 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         private TextView tv_num, tv_store;
     }
 
-    class FatherHolder {
+    class ParentHolder {
         private CheckableFrameLayout checkableFrameLayout;
         private TextView storeName;
         private View empty_view;
 
     }
-
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -366,17 +367,8 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         } else {
             sMoney = sMoney - entity.getBUYCOUNT() * entity.getGOODSPRICE();
         }
-        //  sumMoney=sumMoney+allMoney;
         sumMoney = sMoney;
         updateData();
-        updateMoney(sumMoney + "");
-    }
-
-
-    public void updateMoney(String money) {
-        if (mAdapterCallBack != null) {
-            mAdapterCallBack.UpdateMoney(money);
-        }
     }
 
 
@@ -444,7 +436,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             childStatusList.put(key, childStatus);
         }
         sumMoney = s;
-        updateMoney(sumMoney + "");
         updateData();
 
     }
