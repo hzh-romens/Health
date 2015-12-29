@@ -261,6 +261,7 @@ public class ControlAddressActivity extends BaseActivity {
 
     //请求修改默认
     private void requestDefaultChanged(final String userGuid, String addressId, final int index) {
+        needShowProgress("正在处理...");
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ADDRESSID", addressId);
@@ -272,11 +273,13 @@ public class ControlAddressActivity extends BaseActivity {
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                needHideProgress();
                 Toast.makeText(ControlAddressActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
                 if (msg != null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String requestCode = "";

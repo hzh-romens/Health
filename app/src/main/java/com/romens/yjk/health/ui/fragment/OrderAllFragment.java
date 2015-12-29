@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +39,8 @@ import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -155,16 +156,25 @@ public class OrderAllFragment extends BaseFragment {
         if (count <= 0) {
             return;
         }
+
         mOrderEntities = new ArrayList<>();
         for (LinkedTreeMap<String, String> item : response) {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
+        Collections.sort(mOrderEntities, comparator);
         refershContentView();
         swipeRefreshLayout.setRefreshing(false);
         adapter.setOrderEntities(mOrderEntities);
         adapter.notifyDataSetChanged();
     }
+
+    private Comparator<AllOrderEntity> comparator = new Comparator<AllOrderEntity>() {
+        @Override
+        public int compare(AllOrderEntity lhs, AllOrderEntity rhs) {
+            return rhs.getCreateDate().compareTo(lhs.getCreateDate());
+        }
+    };
 
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
