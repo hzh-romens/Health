@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
@@ -36,6 +37,7 @@ public class OrderExpandableAdapter extends BaseExpandableAdapter {
         TextView titleTextView = (TextView) convertView.findViewById(R.id.order_title);
         TextView moneyTextView = (TextView) convertView.findViewById(R.id.order_money);
         TextView specTextView = (TextView) convertView.findViewById(R.id.order_date);
+        BackupImageView medicineImg = (BackupImageView) convertView.findViewById(R.id.order_img);
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
 
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
@@ -43,6 +45,11 @@ public class OrderExpandableAdapter extends BaseExpandableAdapter {
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
         specTextView.setText(entity.getCreateDate());
+        if (entity.getPicSmall() != null) {
+            medicineImg.setImageUrl(entity.getPicSmall(), null, null);
+        }else {
+            medicineImg.setImageResource(R.drawable.no_img_upload);
+        }
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

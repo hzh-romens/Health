@@ -139,6 +139,13 @@ public class ControlAddressActivity extends BaseActivity {
         noHaveAddressLayout.setVisibility(View.GONE);
         havaAddressLayout.setVisibility(View.VISIBLE);
 
+        adapter.setOnViewClickListener(new ControlAddressAdapter.OnViewClickListener() {
+            @Override
+            public void onClick(int position) {
+                chooseItemBackEvent(position);
+            }
+        });
+
         adapter.setOnItemLongClickLinstener(new ControlAddressAdapter.onItemLongClickLinstener() {
             @Override
             public void itemLongClickLinstener(int position) {
@@ -398,6 +405,17 @@ public class ControlAddressActivity extends BaseActivity {
             backEvent();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void chooseItemBackEvent(int position) {
+        if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
+            Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
+            AddressEntity entity = addressListEntitis.get(position);
+            intent.putExtra("responseCommitEntity", entity);
+            setResult(2, intent);
+            finish();
+        }
+
     }
 
     private void backEvent() {

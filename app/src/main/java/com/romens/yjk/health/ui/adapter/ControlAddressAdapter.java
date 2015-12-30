@@ -110,6 +110,14 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
                     return false;
                 }
             });
+            holder.outsideLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onViewClickListener != null) {
+                        onViewClickListener.onClick(position / 2);
+                    }
+                }
+            });
             holder.defaultImg.setImageResource(R.drawable.control_address_undeafult);
             AddressEntity entity = data.get(index);
             if (entity.getISDEFAULT().equals("1")) {
@@ -176,5 +184,15 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             outsideLayout = (LinearLayout) itemView.findViewById(R.id.control_address_layout);
             defaultLayout = (RelativeLayout) itemView.findViewById(R.id.control_address_defult_layout);
         }
+    }
+
+    private OnViewClickListener onViewClickListener;
+
+    public void setOnViewClickListener(OnViewClickListener onViewClickListener) {
+        this.onViewClickListener = onViewClickListener;
+    }
+
+    public interface OnViewClickListener {
+        void onClick(int position);
     }
 }

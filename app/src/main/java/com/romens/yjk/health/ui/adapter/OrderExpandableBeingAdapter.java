@@ -19,6 +19,7 @@ import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
@@ -57,6 +58,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
+        BackupImageView medicineImg = (BackupImageView) view.findViewById(R.id.order_img);
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
         RelativeLayout btnLayout = (RelativeLayout) view.findViewById(R.id.order_btn_layout);
         btnLayout.setVisibility(View.GONE);
@@ -72,6 +74,11 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         cancelBtn.setVisibility(View.VISIBLE);
 
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
+        if (entity.getPicSmall() != null) {
+            medicineImg.setImageUrl(entity.getPicSmall(), null, null);
+        }else {
+            medicineImg.setImageResource(R.drawable.no_img_upload);
+        }
         titleTextView.setText(entity.getGoodsName());
 //        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
