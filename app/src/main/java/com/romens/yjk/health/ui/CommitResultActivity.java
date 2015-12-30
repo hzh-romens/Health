@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.UIOpenHelper;
 
 /**
  * Created by AUSU on 2015/9/22.
@@ -66,14 +67,10 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toOrder:
-                Intent intent = new Intent(this, MyOrderActivity.class);
-                startActivity(intent);
-                finish();
+                UIOpenHelper.openMyOrderActivity(CommitResultActivity.this);
                 break;
             case R.id.toShop:
-                Intent i = new Intent(this, HomeActivity.class);
-                startActivity(i);
-                finish();
+                UIOpenHelper.openHomeActivity(CommitResultActivity.this);
                 break;
         }
     }
@@ -81,9 +78,7 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent i = new Intent(this, HomeActivity.class);
-            startActivity(i);
-            finish();
+            UIOpenHelper.openHomeActivity(CommitResultActivity.this);
         }
         return false;
     }
