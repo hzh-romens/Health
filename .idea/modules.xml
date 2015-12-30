@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MaterialDesign/MaterialDesign.iml" filepath="$PROJECT_DIR$/MaterialDesign/MaterialDesign.iml" />
       <module fileurl="file://$PROJECT_DIR$/YJKHealth.iml" filepath="$PROJECT_DIR$/YJKHealth.iml" />
-      <module fileurl="file://$PROJECT_DIR$/YJKHealth.iml" filepath="$PROJECT_DIR$/YJKHealth.iml" />
       <module fileurl="file://$PROJECT_DIR$/YJKHealthForAndroid.iml" filepath="$PROJECT_DIR$/YJKHealthForAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/citys/citys.iml" filepath="$PROJECT_DIR$/citys/citys.iml" />
