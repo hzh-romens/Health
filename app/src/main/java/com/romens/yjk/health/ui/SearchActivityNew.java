@@ -41,6 +41,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.SearchResultEntity;
 
 import java.io.Serializable;
@@ -108,9 +109,7 @@ public class SearchActivityNew extends BaseActivity {
                     finish();
                 } else if (isDrugSearchResultRow(position)) {
                     //跳转药品页面
-                    Intent intent = new Intent(SearchActivityNew.this, MedicinalDetailActivity.class);
-                    intent.putExtra("guid", searchDrugResult.get(position - (searchDrugSession + 1)).guid);
-                    startActivity(intent);
+                    UIOpenHelper.openMedicinalDetailActivity(SearchActivityNew.this,searchDrugResult.get(position - (searchDrugSession + 1)).guid);
                 } else if (isDiseaseSearchResultRow(position)) {
                     //跳转疾病页面
                 }

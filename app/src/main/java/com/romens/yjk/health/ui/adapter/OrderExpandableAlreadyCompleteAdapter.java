@@ -31,6 +31,7 @@ import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
 import com.romens.yjk.health.ui.cells.KeyAndViewCell;
@@ -67,7 +68,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
         RelativeLayout btnLayout = (RelativeLayout) view.findViewById(R.id.order_btn_layout);
         btnLayout.setVisibility(View.GONE);
-        if (childPosition == getChildrenCount(groupPosition)-1) {
+        if (childPosition == getChildrenCount(groupPosition) - 1) {
             btnLayout.setVisibility(View.VISIBLE);
         }
 
@@ -95,6 +96,14 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             @Override
             public void onClick(View v) {
                 requestOrderDetailList(UserGuidConfig.USER_GUID, entity.getOrderId());
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(adapterContext, OrderDetailActivity.class);
+                intent.putExtra("orderId", entity.getOrderId());
+                adapterContext.startActivity(intent);
             }
         });
         return view;
@@ -134,7 +143,6 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             return;
         }
         goodsListEntities = new ArrayList<>();
-        OrderListEntity orderListEntity = new OrderListEntity();
         try {
             JSONObject object = new JSONObject(jsonData);
             JSONArray array = object.getJSONArray("GOODSLIST");
@@ -150,7 +158,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
 
 
     public void requestToBuy(String PRICE, String GUID) {
-        //加入购物车,用户暂定为2222
+        //加入购物车
         int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("GOODSGUID", GUID);

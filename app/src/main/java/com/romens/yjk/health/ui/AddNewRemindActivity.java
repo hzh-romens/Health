@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.RemindTimesDailogCallBack;
 import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
 import com.romens.yjk.health.ui.cells.KeyAndImgCell;
@@ -58,7 +60,6 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
 
     private int intervalDay;
     private String chooseDate;
-    private int oldTimes = 1;
     private int isRemind = 0;
 
 
@@ -266,9 +267,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                     cell.setOnTextViewClickListener(new KeyAndViewCell.OnTextViewClickListener() {
                         @Override
                         public void textViewClick() {
-                            Intent intent = new Intent(context, FamilyMemberActivity.class);
-                            intent.putExtra("isFromAddRemind", true);
-                            startActivityForResult(intent, UserGuidConfig.REQUEST_REMIND_TO_MEMBER);
+                            UIOpenHelper.openFamilyMemberActivity((Activity) context);
                         }
                     });
                 } else if (position == drugRow) {
@@ -276,9 +275,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                     cell.setOnTextViewClickListener(new KeyAndViewCell.OnTextViewClickListener() {
                         @Override
                         public void textViewClick() {
-                            Intent intent = new Intent(context, FamilyDrugGroupActivity.class);
-                            intent.putExtra("isFromAddRemindDrug", true);
-                            startActivityForResult(intent, UserGuidConfig.REQUEST_REMIND_TO_DRUGGROUP);
+                            UIOpenHelper.openFamilyDrugGroupActivity((Activity) context);
                         }
                     });
                 } else if (position == dosageRow) {
@@ -289,15 +286,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                             showChooseDosageDialog();
                         }
                     });
-                }/* else if (position == remindTimeRow) {
-                    cell.setKeyAndRightImg("提示时间", R.drawable.remind_time_add, true);
-                    cell.setOnRightImgViewClickListener(new KeyAndViewCell.OnRightImgViewClickListener() {
-                        @Override
-                        public void imgViewClick() {
-                            new AddRemindTimesDailog(context, timesData, oldTimes).show();
-                        }
-                    });
-                }*/ else if (position == timersRow) {
+                } else if (position == timersRow) {
                     cell.setKeyAndRightText("重复", dayTimersTxt, true);
                     cell.setOnTextViewClickListener(new KeyAndViewCell.OnTextViewClickListener() {
                         @Override
@@ -331,9 +320,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                     @Override
                     public void onClick(View v) {
 //                        new AddRemindTimesDailog(context, timesData, oldTimes).show();
-                        Intent intent = new Intent(context, AddRemindTimesActivity.class);
-                        intent.putStringArrayListExtra("timesDataList", (ArrayList<String>) timesData);
-                        startActivityForResult(intent, UserGuidConfig.REQUEST_NEW_REMIND_TO_REMIND_TIMES);
+                        UIOpenHelper.openAddRemindTimesActivity((Activity) context, (ArrayList<String>) timesData);
                     }
                 });
             }

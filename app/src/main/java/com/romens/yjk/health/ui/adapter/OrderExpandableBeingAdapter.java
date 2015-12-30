@@ -28,6 +28,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 import com.romens.yjk.health.ui.fragment.OrderFragment;
@@ -95,6 +96,14 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
             @Override
             public void onClick(View v) {
                 showCancelDialog(userGuid, entity.getOrderId());
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(adapterContext, OrderDetailActivity.class);
+                intent.putExtra("orderId", entity.getOrderId());
+                adapterContext.startActivity(intent);
             }
         });
         return view;
