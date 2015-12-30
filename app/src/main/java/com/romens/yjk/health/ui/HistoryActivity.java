@@ -1,12 +1,10 @@
 package com.romens.yjk.health.ui;
 
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +15,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.ui.adapter.HistoryAdapter;
-import com.romens.yjk.health.ui.components.CustomDialog;
+import com.romens.yjk.health.ui.utils.DialogUtils;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import java.util.List;
@@ -33,7 +31,6 @@ public class HistoryActivity extends BaseActivity implements View.OnClickListene
     private List<HistoryEntity> goodsListEntities;
     private TextView tv_clear, title;
     private ImageView back;
-    private CustomDialog.Builder ibuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,23 +80,28 @@ public class HistoryActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.clear:
-                ibuilder = new CustomDialog.Builder(HistoryActivity.this);
-                ibuilder.setTitle(R.string.prompt);
-                ibuilder.setMessage("您确定要清空历史浏览记录？");
-                ibuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        HistoryDao historyDao = DBInterface.instance().openReadableDb().getHistoryDao();
-                        historyDao.deleteAll();
-                        initData();
-                    }
-                });
-                ibuilder.setNegativeButton("取消", null);
-                ibuilder.create().show();
+                showDialogs(this, "提示", "是否清空历史记录?");
                 break;
             case R.id.back:
                 finish();
                 break;
         }
+    }
+
+    public void showDialogs(Context context, String title, String info) {
+        DialogUtils dialogUtils = new DialogUtils();
+        dialogUtils.show_infor_two(info, (Activity) context, title, new DialogUtils.ConfirmListenerCallBack() {
+            @Override
+            public void ConfirmListener() {
+                HistoryDao historyDao = DBInterface.instance().openReadableDb().getHistoryDao();
+                historyDao.deleteAll();
+                initData();
+            }
+        }, new DialogUtils.CancelListenerCallBack() {
+            @Override
+            public void CancelListener() {
+
+            }
+        });
     }
 }

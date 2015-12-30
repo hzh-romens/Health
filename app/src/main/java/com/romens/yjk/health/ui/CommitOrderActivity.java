@@ -1,6 +1,5 @@
 package com.romens.yjk.health.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -36,7 +35,6 @@ import com.romens.yjk.health.model.FilterChildEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.CommitOrderAdapter;
-import com.romens.yjk.health.ui.components.CustomDialog;
 import com.romens.yjk.health.ui.utils.DialogUtils;
 
 import org.json.JSONArray;
@@ -57,7 +55,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private ExpandableListView expandableListView;
     private ImageView back;
     private TextView address, tv_content, accounts, person;
-    private CustomDialog.Builder ibuilder;
     private CommitOrderAdapter adapter;
 
     private HashMap<String, List<ShopCarEntity>> childData;
@@ -83,7 +80,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         back = (ImageView) findViewById(R.id.btn_back);
         tv_content = (TextView) findViewById(R.id.tv_content);
         accounts = (TextView) findViewById(R.id.accounts);
-        //头部添加地址
         addHeadView();
         needShowProgress("正在加载...");
     }
@@ -244,10 +240,10 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     }
 
 
-
     //向服务器提交订单
     private void commitOrder(List<FilterChildEntity> data, final int count) {
         String JSON_DATA = getJsonData(data, DELIVERYTYPE, ADDRESSID);
+        Log.i("订单数据-------", JSON_DATA + "");
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", JSON_DATA).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
@@ -266,6 +262,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    Log.i("responseProtocol", responseProtocol.toString());
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String success = jsonObject.getString("success");
@@ -305,23 +302,18 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
 
     private void showBuilder() {
-        ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
-        ibuilder.setTitle(R.string.prompt);
-        ibuilder.setMessage("请填写收货地址");
-        ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+        DialogUtils dialogUtils = new DialogUtils();
+        dialogUtils.show_infor_two("请填写收货地址", this, "提示", new DialogUtils.ConfirmListenerCallBack() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void ConfirmListener() {
                 UIOpenHelper.openShippingAddress(CommitOrderActivity.this, 0);
-
             }
-        });
-        ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        }, new DialogUtils.CancelListenerCallBack() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void CancelListener() {
                 finish();
             }
         });
-        ibuilder.create().show();
     }
 
 

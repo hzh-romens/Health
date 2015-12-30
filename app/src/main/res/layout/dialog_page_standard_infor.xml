@@ -2,35 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:background="@drawable/bg_white"
-    >
+    android:orientation="vertical">
     <!--android:background="@drawable/standard_dlg_bg"-->
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="52dp"
+        android:layout_marginLeft="@dimen/padding_outter"
         android:gravity="center_vertical"
+        android:minHeight="52dp"
         android:text="提示"
         android:textColor="#3B3B3B"
-        android:layout_marginLeft="@dimen/padding_outter"
-        android:textSize="@dimen/text_size_xlarge" >
-    </TextView>
+        android:textSize="@dimen/text_size_xlarge"></TextView>
 
     <TextView
         android:id="@+id/tv_tips"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-         android:layout_marginLeft="@dimen/padding_outter"
+        android:layout_marginLeft="@dimen/padding_outter"
         android:layout_weight="1"
         android:gravity="center_vertical|left"
         android:text=""
         android:textColor="#3B3B3B"
-        android:textSize="@dimen/text_size_large" >
-    </TextView>
+        android:textSize="@dimen/text_size_large"></TextView>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginRight="@dimen/margin_standard"
+        android:layout_marginLeft="@dimen/margin_standard">
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="102dp"
+            android:layout_height="30dp"
+            android:layout_gravity="left|bottom"
+            android:gravity="left|center_vertical"
+            android:text="@string/cancel"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/text_size_large" />
 
 
         <TextView
@@ -38,14 +51,13 @@
             android:layout_width="102dp"
             android:layout_height="30dp"
             android:layout_centerInParent="true"
-            android:text="确定"
             android:layout_gravity="right|bottom"
-            android:textColor="@color/theme_primary"
-            android:gravity="center"
             android:layout_marginRight="@dimen/padding_inner"
-            android:layout_marginBottom="@dimen/padding_outter"
-            android:textSize="@dimen/text_size_large" >
-        </TextView>
+            android:gravity="right|center_vertical"
+            android:text="@string/confirm"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/text_size_large" />
+    </FrameLayout>
 
 
 </LinearLayout>

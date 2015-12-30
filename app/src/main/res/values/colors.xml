@@ -24,19 +24,18 @@
     <!--<color name="text_primary">#0f9d58</color>-->
 
 
+
     <color name="theme_title">#ff333333</color>
     <color name="theme_sub_title">#ff666666</color>
     <color name="line_color">#99cccccc</color>
     <color name="order_statu_color">#ff96bd2c</color>
     <color name="order_money_color">#ffff7407</color>
-    <color name="order_btn_bg">#fffa5959</color>
 
 
     <color name="title_background_grey">#f9f9f9</color>
     <color name="accouns_color">#66cc00</color>
     <color name="reset_btn_bg">#f38202</color>
-    <color name="btntextcolor">#66cc00</color>
-    <!--dialog中按钮字体颜色 -->
+    <color name="btntextcolor">#66cc00</color><!--dialog中按钮字体颜色 -->
     <color name="second_title">#f0f0f0</color>
     <color name="themecolor">#96bd2c</color>
     <color name="titlecolor">#333333</color>
@@ -44,6 +43,7 @@
 
 
     <color name="font_emergency">#ffb0120a</color>
+
 
 
 </resources>
