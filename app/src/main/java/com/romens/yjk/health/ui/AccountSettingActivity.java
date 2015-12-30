@@ -34,6 +34,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.PersonalEntity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 
@@ -96,24 +97,15 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == nameRow) {
-                    Intent intent = new Intent(AccountSettingActivity.this, EditActivity.class);
-                    intent.putExtra("activity_title", "编辑姓名");
-                    intent.putExtra("formActivityName", "AccountSettingActivity");
-                    startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING_TO_EDITACTIVITY);
+                    UIOpenHelper.openEditActivityForEditName(AccountSettingActivity.this);
                 } else if (position == sexRow) {
                     chooseSex();
                 } else if (position == professionRow) {
-                    Intent intent = new Intent(AccountSettingActivity.this, EditActivity.class);
-                    intent.putExtra("activity_title", "编辑职业");
-                    intent.putExtra("formActivityName", "AccountSettingActivity");
-                    startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING2_TO_EDITACTIVITY);
+                    UIOpenHelper.openEditActivityForEditProfession(AccountSettingActivity.this);
                 } else if (position == birthdayRow) {
                     showDatePickerDialog();
                 } else if (position == detailRow) {
-//                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this);
-                    Intent intent = new Intent(AccountSettingActivity.this, UserLabelsActivity.class);
-                    intent.putExtra("personEntity", entity);
-                    startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING_TO_USERLABELS);
+                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this, entity);
                 }
             }
         });
@@ -148,7 +140,6 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                     String response = responseProtocol.getResponse();
                     Gson gson = new Gson();
                     entity = gson.fromJson(response, PersonalEntity.class);
-                    Log.e("tag", "--init->" + response);
                     updateData();
                 } else {
                     Log.e("person message", errorMsg.msg);
@@ -164,7 +155,6 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
         needShowProgress("正在更新个人信息");
         Gson gson = new Gson();
         final String jsonData = gson.toJson(entity);
-        Log.e("tag", "--SaveInfor->" + jsonData);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
                 .put("JSONDATA", jsonData)
@@ -223,6 +213,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
             }
             entitySetFromJson(jsonStr);
         }
+        adapter.notifyDataSetChanged();
     }
 
     private void entitySetFromJson(String jsonStr) {
