@@ -30,6 +30,7 @@ import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.android.ui.cells.LoadingCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -57,6 +58,7 @@ public class OrderAllFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private AllOrderViewAdapter adapter;
     private List<AllOrderEntity> mOrderEntities;
+    private LoadingCell loadingCell;
 
     private String userGuid = "3333";
     private ImageAndTextCell attachView;
@@ -79,6 +81,8 @@ public class OrderAllFragment extends BaseFragment {
         Context context = getActivity();
         initData();
         content = new FrameLayout(context);
+        loadingCell = new LoadingCell(context);
+        content.addView(loadingCell);
         swipeRefreshLayout = new SwipeRefreshLayout(context);
         content.addView(swipeRefreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
@@ -97,11 +101,19 @@ public class OrderAllFragment extends BaseFragment {
             }
         });
         addCellView(content);
-        refershContentView();
+//        refershContentView();
+        showProgressLayout();
         return content;
     }
 
+    private void showProgressLayout() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+        attachView.setVisibility(View.GONE);
+        loadingCell.setVisibility(View.VISIBLE);
+    }
+
     public void refershContentView() {
+        loadingCell.setVisibility(View.GONE);
         if (mOrderEntities != null && mOrderEntities.size() > 0) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
             attachView.setVisibility(View.GONE);
@@ -136,11 +148,13 @@ public class OrderAllFragment extends BaseFragment {
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                refershContentView();
                 Toast.makeText(getActivity(), msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                refershContentView();
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     setOrderData(responseProtocol.getResponse());
@@ -164,7 +178,6 @@ public class OrderAllFragment extends BaseFragment {
             mOrderEntities.add(entity);
         }
         Collections.sort(mOrderEntities, comparator);
-        refershContentView();
         swipeRefreshLayout.setRefreshing(false);
         adapter.setOrderEntities(mOrderEntities);
         adapter.notifyDataSetChanged();

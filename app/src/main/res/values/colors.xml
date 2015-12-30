@@ -30,6 +30,7 @@
     <color name="line_color">#99cccccc</color>
     <color name="order_statu_color">#ff96bd2c</color>
     <color name="order_money_color">#ffff7407</color>
+    <color name="order_btn_bg">#fffa5939</color>
 
 
     <color name="title_background_grey">#f9f9f9</color>

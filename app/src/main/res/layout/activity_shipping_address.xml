@@ -9,6 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/action_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
 
     <LinearLayout
         android:id="@+id/control_address_hava_address"
@@ -16,6 +24,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/action_bar"
         android:orientation="vertical">
+
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swiperefreshlayout"

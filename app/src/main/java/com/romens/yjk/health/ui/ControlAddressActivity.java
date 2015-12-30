@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +62,7 @@ public class ControlAddressActivity extends BaseActivity {
     private Button addAddress;
     private List<AddressEntity> addressListEntitis;
     private ControlAddressAdapter adapter;
+    private ProgressBar progressBar;
 
     private LinearLayout havaAddressLayout;
     private LinearLayout noHaveAddressLayout;
@@ -77,6 +79,7 @@ public class ControlAddressActivity extends BaseActivity {
         havaAddressLayout = (LinearLayout) findViewById(R.id.control_address_hava_address);
         listView = (RecyclerView) findViewById(R.id.control_address_recycler);
         addAddress = (Button) findViewById(R.id.control_address_add_address);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         noHaveAddressLayout = (LinearLayout) findViewById(R.id.control_address_no_address);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
@@ -91,11 +94,12 @@ public class ControlAddressActivity extends BaseActivity {
 
         actionBarEven();
         initData();
-        if (addressListEntitis != null && addressListEntitis.size() > 0) {
-            setHaveAddressView();
-        } else {
-            setNoHaveAddressView();
-        }
+        showProgressLayout();
+//        if (addressListEntitis != null && addressListEntitis.size() > 0) {
+//            setHaveAddressView();
+//        } else {
+//            setNoHaveAddressView();
+//        }
 //        queryDb();
 
         //同步省市县数据
@@ -106,8 +110,15 @@ public class ControlAddressActivity extends BaseActivity {
 
     }
 
+    private void showProgressLayout() {
+        noHaveAddressLayout.setVisibility(View.GONE);
+        havaAddressLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     //没有地址时，显示
     private void setNoHaveAddressView() {
+        progressBar.setVisibility(View.GONE);
         noHaveAddressLayout.setVisibility(View.VISIBLE);
         havaAddressLayout.setVisibility(View.GONE);
 
@@ -131,11 +142,11 @@ public class ControlAddressActivity extends BaseActivity {
 
     //有地址时，显示
     private void setHaveAddressView() {
-
         adapter = new ControlAddressAdapter(this, addressListEntitis);
         listView.setAdapter(adapter);
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
+        progressBar.setVisibility(View.GONE);
         noHaveAddressLayout.setVisibility(View.GONE);
         havaAddressLayout.setVisibility(View.VISIBLE);
 
@@ -174,13 +185,13 @@ public class ControlAddressActivity extends BaseActivity {
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                swipeRefreshLayout.setRefreshing(false);
+                refreshLayout();
                 Toast.makeText(ControlAddressActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                swipeRefreshLayout.setRefreshing(false);
+                refreshLayout();
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     setAddressListData(responseProtocol.getResponse());
@@ -203,12 +214,17 @@ public class ControlAddressActivity extends BaseActivity {
             AddressEntity entity = AddressEntity.mapToEntity(item);
             addressListEntitis.add(entity);
         }
+        refreshLayout();
+        adapter.setData(addressListEntitis);
+    }
+
+    private void refreshLayout() {
+        swipeRefreshLayout.setRefreshing(false);
         if (addressListEntitis != null && addressListEntitis.size() > 0) {
             setHaveAddressView();
         } else {
             setNoHaveAddressView();
         }
-        adapter.setData(addressListEntitis);
     }
 
     private void actionBarEven() {
