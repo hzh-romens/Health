@@ -26,6 +26,8 @@ public class DialogUtils {
      */
     private int startNum=0;
     private QuantityOfGoodsCallBack mQuantityOfGoodsCallBack;
+    private CancelListenerCallBack cancelListenerCallBack;
+    private ConfirmListenerCallBack confirmListenerCallBack;
     public interface QuantityOfGoodsCallBack{
         void getGoodsNum(int num);
     }
@@ -106,8 +108,6 @@ public class DialogUtils {
      */
     public void show_infor(String infor, Activity owner,String title) {
 
-
-
         View v = owner.getLayoutInflater().inflate(
                 R.layout.dialog_page_standard_infor, null);
         TextView tv = (TextView) v.findViewById(R.id.tv_tips);
@@ -154,5 +154,66 @@ public class DialogUtils {
             }
         });
     }
+    /**
+     * 弹出一个对话框（有确定和取消）
+     * @param infor
+     * @param owner
+     */
+    public void show_infor_two(String infor, Activity owner,String title, final ConfirmListenerCallBack confirmListenerCallBack, final CancelListenerCallBack cancelListenerCallBack) {
+
+        this.cancelListenerCallBack=cancelListenerCallBack;
+        this.confirmListenerCallBack=confirmListenerCallBack;
+        View v = owner.getLayoutInflater().inflate(
+                R.layout.dialog_page_standard_infor, null);
+        TextView tv = (TextView) v.findViewById(R.id.tv_tips);
+        tv.setText(infor);
+
+        if (title != null) {
+            TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
+            tv_title.setText(title);
+        }
+
+        Dialog dlg = new Dialog(owner, R.style.Float_Dialog);
+        dlg.setCanceledOnTouchOutside(false);// 设置用户点击其他区域不关闭
+        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dlg.setContentView(v);
+        WindowManager.LayoutParams attributes = dlg.getWindow().getAttributes();
+        WindowManager systemService = (WindowManager) owner.getSystemService(Context.WINDOW_SERVICE);
+        attributes.horizontalMargin = 0;
+        attributes.width = (int) (systemService.getDefaultDisplay().getWidth() / 1.2);
+        attributes.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        dlg.getWindow().setAttributes(attributes);
+        dlg.show();
+
+        View ok = v.findViewById(R.id.btn_ok);
+        View cancle=v.findViewById(R.id.btn_cancel);
+
+        ok.setTag(R.id.btn_ok,dlg);
+        cancle.setTag(R.id.btn_cancel,dlg);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dlg = (Dialog) v.getTag(R.id.btn_ok);
+                dlg.cancel();
+                confirmListenerCallBack.ConfirmListener();
+
+            }
+        });
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dlg = (Dialog) v.getTag(R.id.btn_cancel);
+                dlg.cancel();
+                cancelListenerCallBack.CancelListener();
+            }
+        });
+    }
+    public interface ConfirmListenerCallBack{
+        void ConfirmListener();
+    }
+    public interface CancelListenerCallBack{
+        void CancelListener();
+    }
+
 
 }
