@@ -19,6 +19,7 @@ import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
@@ -66,6 +67,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
+        BackupImageView medicineImg = (BackupImageView) view.findViewById(R.id.order_img);
         RelativeLayout btnLayout = (RelativeLayout) view.findViewById(R.id.order_btn_layout);
         btnLayout.setVisibility(View.GONE);
         if (childPosition == getChildrenCount(groupPosition) - 1) {
@@ -82,6 +84,11 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         moneyTextView.setText("￥" + entity.getOrderPrice());
         TransformDateUitls.getDate(entity.getCreateDate());
         dateTextView.setText(entity.getCreateDate());
+        if (entity.getPicSmall() != null) {
+            medicineImg.setImageUrl(entity.getPicSmall(), null, null);
+        } else {
+            medicineImg.setImageResource(R.drawable.no_img_upload);
+        }
         evaluateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

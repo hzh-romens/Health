@@ -18,6 +18,7 @@ public class AllOrderEntity implements Serializable {
     private String createDate;
     private String merCount;
     private String orderNo;
+    private String picSmall;
 
     public String getCreateDate() {
         return createDate;
@@ -83,6 +84,14 @@ public class AllOrderEntity implements Serializable {
         this.orderPrice = orderPrice;
     }
 
+    public String getPicSmall() {
+        return picSmall;
+    }
+
+    public void setPicSmall(String picSmall) {
+        this.picSmall = picSmall;
+    }
+
     public static AllOrderEntity mapToEntity(LinkedTreeMap<String, String> item) {
         AllOrderEntity entity = new AllOrderEntity();
         entity.setOrderId(item.get("ORDERID"));
@@ -93,6 +102,7 @@ public class AllOrderEntity implements Serializable {
         entity.setCreateDate(item.get("CREATEDATE"));
         entity.setMerCount(item.get("MERCOUNT"));
         entity.setOrderNo(item.get("ORDERNO"));
+        entity.setPicSmall(item.get("PICSMALL"));
         return entity;
     }
 }

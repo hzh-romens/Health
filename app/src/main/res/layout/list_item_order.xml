@@ -3,54 +3,127 @@
     android:id="@+id/order_card_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:padding="20dp">
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp">
+
+    <com.romens.android.ui.Image.BackupImageView
+        android:id="@+id/order_img"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="8dp"/>
 
     <TextView
         android:id="@+id/order_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="50dp"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:text="aaaaaaaaaaaaaaaaa"
+        android:layout_below="@id/line"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/order_img"
+        android:text="xxx药"
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
     <TextView
-        android:id="@+id/order_date"
+        android:id="@+id/order_all_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/order_title"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:text="bbbbbbbb"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/order_img"
+        android:text="共计："
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
-
 
     <TextView
         android:id="@+id/order_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
-        android:text="bbbbbbbb"
-        android:textColor="@color/order_money_color"
+        android:layout_below="@id/order_title"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/order_all_hint"
+        android:text="bbb"
+        android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/order_title"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/y"
+        />
+
     <TextView
-        android:id="@+id/order_count"
+        android:id="@+id/order_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/order_money"
-        android:layout_marginBottom="5dp"
-        android:text="bb"
+        android:layout_below="@id/order_all_hint"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/order_img"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="aaaa"
         android:textColor="@color/theme_sub_title"
-        android:textSize="@dimen/body_size"
-        android:visibility="gone"/>
+        android:textSize="@dimen/body_size"/>
+
+    <!--<TextView-->
+    <!--android:id="@+id/order_title"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="8dp"-->
+    <!--android:layout_marginRight="50dp"-->
+    <!--android:layout_toRightOf="@id/order_img"-->
+    <!--android:ellipsize="end"-->
+    <!--android:maxLines="3"-->
+    <!--android:text="aaaaaaaaaaaaaaaaa"-->
+    <!--android:textColor="@color/theme_sub_title"-->
+    <!--android:textSize="@dimen/body_size"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/order_date"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/order_title"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:layout_marginLeft="8dp"-->
+    <!--android:layout_marginRight="20dp"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:layout_toRightOf="@id/order_img"-->
+    <!--android:text="bbbbbbbb"-->
+    <!--android:textColor="@color/theme_sub_title"-->
+    <!--android:textSize="@dimen/body_size"/>-->
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/order_money"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:text="bbbbbbbb"-->
+    <!--android:textColor="@color/order_money_color"-->
+    <!--android:textSize="@dimen/body_size"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/order_count"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_below="@id/order_money"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:text="bb"-->
+    <!--android:textColor="@color/theme_sub_title"-->
+    <!--android:textSize="@dimen/body_size"-->
+    <!--android:visibility="gone"/>-->
 
 </RelativeLayout>

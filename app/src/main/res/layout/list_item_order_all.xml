@@ -13,7 +13,7 @@
         android:id="@+id/order_all_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="8dp"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="aaaa"
@@ -27,7 +27,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:text="bbb"
-        android:textColor="@color/order_statu_color"
+        android:textColor="@color/order_money_color"
         android:textSize="@dimen/body_size"/>
 
     <TextView
@@ -38,13 +38,23 @@
         android:layout_marginTop="10dp"
         android:background="@color/line_color"/>
 
+    <com.romens.android.ui.Image.BackupImageView
+        android:id="@+id/order_img"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/line"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"/>
+
     <TextView
         android:id="@+id/order_all_goods_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/line"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/order_img"
         android:text="xxx药"
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
@@ -54,8 +64,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/order_all_goods_name"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/order_img"
         android:text="共计："
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
@@ -69,7 +80,7 @@
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/order_all_hint"
         android:text="bbb"
-        android:textColor="@color/order_money_color"
+        android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
     <ImageView
@@ -87,8 +98,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/order_all_hint"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/order_img"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="aaaa"

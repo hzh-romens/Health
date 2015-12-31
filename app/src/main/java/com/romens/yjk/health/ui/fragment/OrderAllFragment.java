@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -28,6 +29,8 @@ import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.Image.BackupImageView;
+import com.romens.android.ui.cells.LoadingCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -55,6 +58,7 @@ public class OrderAllFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private AllOrderViewAdapter adapter;
     private List<AllOrderEntity> mOrderEntities;
+    private LoadingCell loadingCell;
 
     private String userGuid = "3333";
     private ImageAndTextCell attachView;
@@ -77,6 +81,8 @@ public class OrderAllFragment extends BaseFragment {
         Context context = getActivity();
         initData();
         content = new FrameLayout(context);
+        loadingCell = new LoadingCell(context);
+        content.addView(loadingCell);
         swipeRefreshLayout = new SwipeRefreshLayout(context);
         content.addView(swipeRefreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
@@ -95,11 +101,19 @@ public class OrderAllFragment extends BaseFragment {
             }
         });
         addCellView(content);
-        refershContentView();
+//        refershContentView();
+        showProgressLayout();
         return content;
     }
 
+    private void showProgressLayout() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+        attachView.setVisibility(View.GONE);
+        loadingCell.setVisibility(View.VISIBLE);
+    }
+
     public void refershContentView() {
+        loadingCell.setVisibility(View.GONE);
         if (mOrderEntities != null && mOrderEntities.size() > 0) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
             attachView.setVisibility(View.GONE);
@@ -134,11 +148,13 @@ public class OrderAllFragment extends BaseFragment {
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                refershContentView();
                 Toast.makeText(getActivity(), msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                refershContentView();
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     setOrderData(responseProtocol.getResponse());
@@ -156,14 +172,12 @@ public class OrderAllFragment extends BaseFragment {
         if (count <= 0) {
             return;
         }
-
         mOrderEntities = new ArrayList<>();
         for (LinkedTreeMap<String, String> item : response) {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
         Collections.sort(mOrderEntities, comparator);
-        refershContentView();
         swipeRefreshLayout.setRefreshing(false);
         adapter.setOrderEntities(mOrderEntities);
         adapter.notifyDataSetChanged();
@@ -216,10 +230,17 @@ public class OrderAllFragment extends BaseFragment {
                 holder.itemView.setBackgroundColor(Color.WHITE);
                 final int index = position / 2;
                 final ItemViewHolder viewHolder = (ItemViewHolder) holder;
-                viewHolder.titleView.setText("订单编号：" + orderEntities.get(index).getOrderNo());
-                viewHolder.evaluateState.setText(orderEntities.get(index).getOrderStatuster());
-                viewHolder.dateView.setText(orderEntities.get(index).getCreateDate());
-                viewHolder.moneyView.setText("￥" + orderEntities.get(index).getOrderPrice());
+                AllOrderEntity entity = orderEntities.get(index);
+                viewHolder.titleView.setText("订单编号：" + entity.getOrderNo());
+                viewHolder.evaluateState.setText(entity.getOrderStatuster());
+                viewHolder.dateView.setText(entity.getCreateDate());
+                viewHolder.moneyView.setText("￥" + entity.getOrderPrice());
+
+                if (entity.getPicSmall() != null) {
+                    viewHolder.medicineImg.setImageUrl(entity.getPicSmall(), null, null);
+                } else {
+                    viewHolder.medicineImg.setImageResource(R.drawable.no_img_upload);
+                }
 
                 viewHolder.cardViewLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -253,6 +274,7 @@ public class OrderAllFragment extends BaseFragment {
         private TextView dateView;
         private TextView moneyView;
         private TextView goodsName;
+        private BackupImageView medicineImg;
         private RelativeLayout cardViewLayout;
 
         public ItemViewHolder(View itemView) {
@@ -263,6 +285,7 @@ public class OrderAllFragment extends BaseFragment {
             dateView = (TextView) itemView.findViewById(R.id.order_all_date);
             moneyView = (TextView) itemView.findViewById(R.id.order_all_money);
             cardViewLayout = (RelativeLayout) itemView.findViewById(R.id.order_total_layout);
+            medicineImg = (BackupImageView) itemView.findViewById(R.id.order_img);
         }
     }
 }
