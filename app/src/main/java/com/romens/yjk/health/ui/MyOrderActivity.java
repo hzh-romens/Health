@@ -14,7 +14,6 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.fragment.OrderAllFragment;
 import com.romens.yjk.health.ui.fragment.OrderFragment;
 
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class MyOrderActivity extends BaseActivity {
 
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new OrderAllFragment());
+        fragments.add(new OrderFragment(ORDER_TYPE_ALL));
         fragments.add(new OrderFragment(ORDER_TYPE_BEING));
         fragments.add(new OrderFragment(ORDER_TYPE_COMPLETE));
         fragments.add(new OrderFragment(ORDER_TYPE_EVALUATE));

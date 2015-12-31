@@ -1,14 +1,12 @@
 package com.romens.yjk.health.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,10 +31,9 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
-import com.romens.yjk.health.ui.OrderEvaluateDetailActivity;
+import com.romens.yjk.health.ui.adapter.OrderExpandableAllAdpter;
 import com.romens.yjk.health.ui.adapter.BaseExpandableAdapter;
 import com.romens.yjk.health.ui.adapter.OrderExpandableAdapter;
 import com.romens.yjk.health.ui.adapter.OrderExpandableAlreadyCompleteAdapter;
@@ -77,6 +74,9 @@ public class OrderFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mOrderEntities = new ArrayList<>();
         switch (fragmentType) {
+            case MyOrderActivity.ORDER_TYPE_ALL:
+                adapter = new OrderExpandableAllAdpter(getActivity(), mOrderEntities);
+                break;
             case MyOrderActivity.ORDER_TYPE_COMPLETE:
                 adapter = new OrderExpandableAlreadyCompleteAdapter(getActivity(), mOrderEntities);
                 break;
