@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f9f9f9">
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/layout_edit_bgc">
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginTop="52dp"
+            android:background="@drawable/ic_launcher"
+            android:layout_gravity="center_horizontal"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_margin="@dimen/margin_small"
+            android:layout_gravity="right|top"
+            android:background="@drawable/ic_launcher"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="@drawable/layout_edit_bgc"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="168dp"
+            android:hint="@string/member"
+            android:gravity="center"
+            android:textColorHint="@color/md_grey_300"
+            android:textSize="@dimen/text_size_large"
+            android:textColor="@color/md_black_1000"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginBottom="12dp"/>
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/layout_edit_bgc"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:gravity="center"
+        android:id="@+id/btn_ok"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/text_size_xlarge"
+            android:text="提交"/>
+    </LinearLayout>
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/memberView"
+        android:layout="@layout/layout_member"/>
+
+</LinearLayout>

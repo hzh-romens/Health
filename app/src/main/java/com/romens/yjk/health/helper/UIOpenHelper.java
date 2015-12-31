@@ -20,6 +20,7 @@ import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
 import com.romens.yjk.health.ui.FamilyMemberActivity;
 import com.romens.yjk.health.ui.HomeActivity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
+import com.romens.yjk.health.ui.MemberActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
@@ -226,4 +227,11 @@ public class UIOpenHelper {
         intent.putExtra("guid", guid);
         context.startActivity(intent);
     }
+
+    //打开会员界面
+    public static void openMemberActivity(Context context) {
+        Intent intent = new Intent(context, MemberActivity.class);
+        context.startActivity(intent);
+    }
 }
+
