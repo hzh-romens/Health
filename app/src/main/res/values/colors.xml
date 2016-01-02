@@ -44,6 +44,8 @@
 
 
     <color name="font_emergency">#ffb0120a</color>
+    <color name="progress_bgc">#cccccc</color>
+
 
 
 

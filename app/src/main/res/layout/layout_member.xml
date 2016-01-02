@@ -2,10 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f9f9f9">
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list"/>
+    android:background="@color/white">
+   <ListView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:divider="#00000000"
+       android:dividerHeight="0dp"
+       android:background="@color/white"
+       android:id="@id/list"/>
 
 </LinearLayout>
