@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.romens.yjk.health.R;
@@ -23,8 +22,7 @@ public class LineProgressBar extends View {
     private int start = 0;
     private int mWidth;
     private int mHeight;
-    private int currentCount;
-    private int secondCount;
+
 
     public LineProgressBar(Context context) {
         this(context, null);
@@ -56,29 +54,11 @@ public class LineProgressBar extends View {
         canvas.drawRoundRect(progressBgc, round, round, paint);
 
         paint.setColor(getResources().getColor(R.color.themecolor));
-        float current = (float) currentCount / max;
+        float current = (float) progress / max;
         RectF currentBgc = new RectF(10, 0, mWidths * current, mHeight);
         canvas.drawRoundRect(currentBgc, round, round, paint);
 
-        paint.setColor(getResources().getColor(R.color.themecolor));
-        float second = (float) (secondCount + currentCount) / max;
-        RectF secondBgc = null;
-        if (current == 0) {
-            secondBgc = new RectF(mWidths * current + 10, 0, mWidths
-                    * second, mHeight);
-        } else {
-            secondBgc = new RectF(mWidths * current, 0, mWidths
-                    * second, mHeight);
-        }
-        canvas.drawRoundRect(secondBgc, 0, 0, paint);
-        // 画结尾那个小半圆
-        if (currentCount == max) {
-            paint.setColor(getResources().getColor(R.color.themecolor));
-
-        } else if (secondCount == max) {
-            paint.setColor(getResources().getColor(R.color.themecolor));
-
-        } else if (currentCount + secondCount == max) {
+        if (progress == max) {
             paint.setColor(getResources().getColor(R.color.themecolor));
 
         } else {
@@ -88,22 +68,16 @@ public class LineProgressBar extends View {
         RectF oval2 = new RectF(mWidths - 10, 0, mWidths + 10, mHeight);
         canvas.drawArc(oval2, 270, 180, true, paint);
         // 画开头那个小半圆
-        if (currentCount == 0 && secondCount != 0) {
+        if (progress == 0) {
             paint.setColor(getResources().getColor(R.color.progress_bgc));
-
         }
-        if (currentCount == 0 && secondCount == 0) {
-            paint.setColor(getResources().getColor(R.color.progress_bgc));
-
-        }
-        if ((currentCount != 0 && secondCount == 0) || (currentCount != 0 && secondCount != 0)) {
+        if (progress != 0) {
             paint.setColor(getResources().getColor(R.color.themecolor));
-
         }
 
         RectF oval = new RectF(0, 0, 20, mHeight);
         canvas.drawArc(oval, 90, 180, true, paint);
-        String percentValue = currentCount + "/" + max;
+        String percentValue = progress + "/" + max;
         Rect rect = new Rect();
         paint.setColor(Color.WHITE);
         paint.setTextSize(24);
@@ -125,22 +99,6 @@ public class LineProgressBar extends View {
         this.max = max;
     }
 
-    public synchronized int getProgress(int progress) {
-        return progress;
-    }
-
-    public synchronized void setProress(int progress) {
-        if (progress < 0) {
-            throw new IllegalArgumentException("progress not less than 0");
-        }
-        if (progress > max) {
-            progress = max;
-        }
-        if (progress <= max) {
-            this.progress = progress;
-            postInvalidate();
-        }
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -173,35 +131,21 @@ public class LineProgressBar extends View {
     /***
      * 设置当前的进度值
      *
-     * @param currentCount
+     * @param progress
      */
 
-    public synchronized void setCurrentCount(int currentCount) {
-        if (currentCount < 0) {
-            throw new IllegalArgumentException("currentCount not less than 0");
+    public synchronized void setProgress(int progress) {
+        if (progress < 0) {
+            throw new IllegalArgumentException("progress not less than 0");
         }
-        this.currentCount = currentCount > max ? max : currentCount;
-        invalidate();
+        this.progress = progress > max ? max : progress;
+        //invalidate();
+        postInvalidate();
     }
 
-    public synchronized int getCurrentCount() {
-        return currentCount;
+    public synchronized int getProgress() {
+        return progress;
     }
 
-    public synchronized void setSecondCount(int secondProgress) {
-        if (secondProgress < 0) {
-            throw new IllegalArgumentException("secondCount not less than 0");
-        }
-        if (currentCount + secondProgress > max) {
-            throw new IllegalArgumentException("Please Reasonable set");
-
-        }
-        this.secondCount = secondProgress;
-        invalidate();
-    }
-
-    public synchronized int getSecondCount() {
-        return secondCount;
-    }
 
 }
