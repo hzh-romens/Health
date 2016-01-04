@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.LinearLayout;
@@ -22,6 +21,7 @@ public class MemberActivity extends BaseActivity {
     private LinearLayout btn_ok, pwdLayout;
     private ActionBar actionBar;
     private List<String> types;
+    private ListView listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +41,31 @@ public class MemberActivity extends BaseActivity {
         });
         initBindView();
         if (isMember) {
+            hideMemberView();
             initMember();
         }
     }
 
-    private ListView listview;
+
+    private void initBindView() {
+        pwdLayout = (LinearLayout) findViewById(R.id.pwdLayout);
+        btn_ok = (LinearLayout) findViewById(R.id.btn_ok);
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideMemberView();
+                initMember();
+            }
+        });
+    }
+
+    private void hideMemberView() {
+        pwdLayout.setVisibility(View.GONE);
+        actionBar.setTitle("我的会员卡", 0xff212121);
+        ViewStub viewById = (ViewStub) findViewById(R.id.memberLayout);
+        viewById.inflate();
+        isMember = true;
+    }
 
     private void initMember() {
         listview = (ListView) findViewById(R.id.list);
@@ -60,22 +80,6 @@ public class MemberActivity extends BaseActivity {
         for (int i = 1; i <= 4; i++) {
             types.add(i + "");
         }
-    }
-
-    private void initBindView() {
-        pwdLayout = (LinearLayout) findViewById(R.id.pwdLayout);
-        btn_ok = (LinearLayout) findViewById(R.id.btn_ok);
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pwdLayout.setVisibility(View.GONE);
-                actionBar.setTitle("我的会员卡", 0xff212121);
-                ViewStub viewById = (ViewStub) findViewById(R.id.memberLayout);
-                viewById.inflate();
-                isMember = true;
-                initMember();
-            }
-        });
     }
 
 

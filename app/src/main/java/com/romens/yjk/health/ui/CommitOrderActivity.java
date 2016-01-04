@@ -243,7 +243,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     //向服务器提交订单
     private void commitOrder(List<FilterChildEntity> data, final int count) {
         String JSON_DATA = getJsonData(data, DELIVERYTYPE, ADDRESSID);
-        Log.i("订单数据-------", JSON_DATA + "");
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", JSON_DATA).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
