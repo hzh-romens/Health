@@ -78,6 +78,11 @@
 }
 -keepattributes Signature
 
+-keepclassmembers class * {
+   public <init>(org.json.JSONObject);
+}
+
+
 #-dontwarn com.romens.rcp.**
 #-keep class com.romens.rcp.** { *; }
 #-keep interface com.romens.rcp.** { *; }
@@ -118,9 +123,9 @@
 -dontwarn com.romens.extend.scanner.**
 -keep public class com.romens.extend.scanner.**{*;}
 
-#蒲公英
--dontwarn com.pgyersdk.**
--keep class com.pgyersdk.**{*;}
+##蒲公英
+#-dontwarn com.pgyersdk.**
+#-keep class com.pgyersdk.**{*;}
 
 -dontwarn com.prolificinteractive.materialcalendarview.**
 -keep class com.prolificinteractive.materialcalendarview.**{*;}
@@ -217,6 +222,11 @@
 
 
 #----------------- App Begin ------------------#
+
+-keep public class com.romens.yjk.health.R$*{
+public static final int *;
+}
+
 -keep class com.romens.yjk.health.model.**{*;}
 
 -dontwarn com.romens.yjk.health.web.**
@@ -230,3 +240,13 @@
 
 -dontwarn com.romens.yjk.health.ui.components.**
 -keep public class com.romens.yjk.health.ui.components.**{*;}
+
+#umeng
+-keep class com.umeng.** { *; }
+-keep public class * extends com.umeng.**
+-keep public class com.umeng.fb.ui.ThreadView {
+}
+
+#qq mta
+-keep class com.tencent.stat.**  {* ;}
+-keep class com.tencent.mid.**  {* ;}

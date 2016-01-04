@@ -52,23 +52,29 @@ public class ADImagesControl extends ADBaseControl {
     }
 
     private void handleImageClick(Context context, ADImageEntity entity) {
-        int type = entity.getType();
-        String action = entity.getAction();
-        if (entity != null) {
-//            Intent intent = new Intent(context, MedicinalDetailActivity.class);
-//            intent.putExtra("guid", entity.id);
-//            context.startActivity(intent);
-
-            UIOpenHelper.openMedicineActivity(context,entity.id);
-        }
-
-//        if (type == 0) {
-//            if (!TextUtils.isEmpty(action)) {
-//                String url = createADWebUrl(action, FacadeToken.getInstance().getAuthToken(), entity.id);
-//                Bundle bundle = new Bundle();
-//                bundle.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
-//                onActionForADWeb(context, bundle);
-//            }
+        Bundle arguments=new Bundle();
+        arguments.putString("ID",entity.id);
+        arguments.putString("VALUE",entity.value);
+        arguments.putInt("TYPE", entity.getType());
+        arguments.putString("ACTION", entity.getAction());
+        onActonForImageAD(context,arguments);
+//        int type = entity.getType();
+//        String action = entity.getAction();
+//        if (entity != null) {
+////            Intent intent = new Intent(context, MedicinalDetailActivity.class);
+////            intent.putExtra("guid", entity.id);
+////            context.startActivity(intent);
+//
+//            UIOpenHelper.openMedicineActivity(context,entity.id);
 //        }
+//
+////        if (type == 0) {
+////            if (!TextUtils.isEmpty(action)) {
+////                String url = createADWebUrl(action, FacadeToken.getInstance().getAuthToken(), entity.id);
+////                Bundle bundle = new Bundle();
+////                bundle.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
+////                onActionForADWeb(context, bundle);
+////            }
+////        }
     }
 }

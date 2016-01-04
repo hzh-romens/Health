@@ -26,19 +26,16 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.AccountSettingActivity;
-import com.romens.yjk.health.ui.CollectActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
-import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
-import com.romens.yjk.health.ui.cells.AccountCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
+import com.umeng.update.UmengUpdateAgent;
 
 /**
  * Created by siery on 15/8/10.
@@ -120,9 +117,15 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
 
+                } else if (position == checkUpdateRow) {
+                    checkAppUpdate();
                 }
             }
         });
+    }
+
+    private void checkAppUpdate() {
+        UmengUpdateAgent.forceUpdate(getActivity());
     }
 
     @Override

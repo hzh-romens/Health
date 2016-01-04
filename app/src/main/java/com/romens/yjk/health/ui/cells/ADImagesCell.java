@@ -55,7 +55,7 @@ public class ADImagesCell extends FrameLayout {
 
     public ADImagesCell(Context context) {
         super(context);
-        layoutStyle=4;
+        layoutStyle = 4;
         imageView1 = new BackupImageView(context);
         addView(imageView1, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         imageView2 = new BackupImageView(context);
@@ -148,8 +148,8 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.GONE);
                 imageView4.setVisibility(View.GONE);
 
-                imageView1.setImage(adImageListEntity.get("1234").value, "1234", null);
-                imageView1.setRoundRadius(1);
+                imageView1.setImage(adImageListEntity.get("1234").iconValue, "1234", null);
+                //imageView1.setRoundRadius(1);
                 imageView2.setImageBitmap(null);
                 imageView3.setImageBitmap(null);
                 imageView4.setImageBitmap(null);
@@ -161,10 +161,10 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.GONE);
                 imageView4.setVisibility(View.GONE);
 
-                imageView1.setImage(adImageListEntity.get("13").value, "13", null);
-                imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("24").value, "24", null);
-                imageView2.setRoundRadius(4);
+                imageView1.setImage(adImageListEntity.get("13").iconValue, "13", null);
+                //imageView1.setRoundRadius(4);
+                imageView2.setImage(adImageListEntity.get("24").iconValue, "24", null);
+                //imageView2.setRoundRadius(4);
                 imageView3.setImageBitmap(null);
                 imageView4.setImageBitmap(null);
 
@@ -175,12 +175,12 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.VISIBLE);
                 imageView4.setVisibility(View.GONE);
 
-                imageView1.setImage(adImageListEntity.get("1").value, "1", null);
-                imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("24").value, "24", null);
-                imageView2.setRoundRadius(4);
-                imageView3.setImage(adImageListEntity.get("3").value, "3", null);
-                imageView3.setRoundRadius(4);
+                imageView1.setImage(adImageListEntity.get("1").iconValue, "1", null);
+                //imageView1.setRoundRadius(4);
+                imageView2.setImage(adImageListEntity.get("24").iconValue, "24", null);
+                //imageView2.setRoundRadius(4);
+                imageView3.setImage(adImageListEntity.get("3").iconValue, "3", null);
+                //imageView3.setRoundRadius(4);
                 imageView4.setImageBitmap(null);
                 break;
             case 3:
@@ -189,13 +189,13 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.GONE);
                 imageView4.setVisibility(View.VISIBLE);
 
-                imageView1.setImage(adImageListEntity.get("13").value, "13", null);
-                imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("2").value, "2", null);
-                imageView2.setRoundRadius(4);
+                imageView1.setImage(adImageListEntity.get("13").iconValue, "13", null);
+                //imageView1.setRoundRadius(4);
+                imageView2.setImage(adImageListEntity.get("2").iconValue, "2", null);
+                //imageView2.setRoundRadius(4);
                 imageView3.setImageBitmap(null);
-                imageView4.setImage(adImageListEntity.get("4").value, "4", null);
-                imageView4.setRoundRadius(4);
+                imageView4.setImage(adImageListEntity.get("4").iconValue, "4", null);
+                //imageView4.setRoundRadius(4);
 
                 break;
             case 4:
@@ -204,14 +204,14 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.VISIBLE);
                 imageView4.setVisibility(View.VISIBLE);
 
-                imageView1.setImage(adImageListEntity.get("1").value, "1", null);
-                imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("2").value, "2", null);
-                imageView2.setRoundRadius(4);
-                imageView3.setImage(adImageListEntity.get("3").value, "3", null);
-                imageView3.setRoundRadius(4);
-                imageView4.setImage(adImageListEntity.get("4").value, "4", null);
-                imageView4.setRoundRadius(4);
+                imageView1.setImage(adImageListEntity.get("1").iconValue, "1", null);
+                //imageView1.setRoundRadius(4);
+                imageView2.setImage(adImageListEntity.get("2").iconValue, "2", null);
+                //imageView2.setRoundRadius(4);
+                imageView3.setImage(adImageListEntity.get("3").iconValue, "3", null);
+                //imageView3.setRoundRadius(4);
+                imageView4.setImage(adImageListEntity.get("4").iconValue, "4", null);
+                //imageView4.setRoundRadius(4);
                 break;
         }
         invalidate();
@@ -221,7 +221,7 @@ public class ADImagesCell extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int measureHeight = measureWidth / 2;
+        int measureHeight = layoutStyle == 0 ? (measureWidth / 3) : (measureWidth / 2);
         int count = getChildCount();
 
         int childWidth = 0;
@@ -289,17 +289,17 @@ public class ADImagesCell extends FrameLayout {
         int cb = 0;
 
         final int leftPadding = AndroidUtilities.dp(8);
-        final int topPadding = AndroidUtilities.dp(8);
+        final int topPadding = AndroidUtilities.dp(4);
         final int middlePadding = AndroidUtilities.dp(4);
 
         for (int index = 0; index < count; index++) {
             View child = getChildAt(index);
             if (layoutStyle == 0) {
                 if (index == 0) {
-                    cl = 0;
-                    ct = 0;
-                    cr = totalWidth;
-                    cb = totalHeight;
+                    cl = leftPadding;
+                    ct = topPadding;
+                    cr = totalWidth - leftPadding;
+                    cb = totalHeight - topPadding;
                 } else {
                     cl = 0;
                     ct = 0;

@@ -26,6 +26,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.AppConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.tencent.stat.StatService;
 
 public class IntroActivity extends Activity implements NotificationCenterDelegate {
     private ViewPager viewPager;
@@ -44,6 +45,9 @@ public class IntroActivity extends Activity implements NotificationCenterDelegat
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StatService.trackCustomEvent(this, "onCreate", "");
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.intro_layout);

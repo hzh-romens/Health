@@ -18,7 +18,7 @@ public class ADWebActivity extends WebActivity {
     public static final String ARGUMENTS_KEY_TITLE = "title";
     public static final String ARGUMENTS_KEY_TARGET_URL = "target_url";
 
-    private JsBaseInterface mADWebJsInterface;
+    private JsBaseInterface adWebJsInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,31 +40,19 @@ public class ADWebActivity extends WebActivity {
                 return true;
             }
         });
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                ProgressBarDeterminate progressBar = getWebProgressBar();
-                progressBar.setProgress(newProgress);
-                if (newProgress == 100) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    if (mADWebJsInterface != null) {
-                        mADWebJsInterface.onJavascript();
-                    }
-                } else {
-                    if (progressBar.getVisibility() == View.INVISIBLE) {
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-        });
+
         if (bundle.containsKey(ARGUMENTS_KEY_TARGET_URL)) {
             String url = bundle.getString(ARGUMENTS_KEY_TARGET_URL);
-            mADWebJsInterface = new ADWebJsInterface(this)
+            adWebJsInterface = new ADWebJsInterface(this)
                     .withWebView(webView);
-            webView.addJavascriptInterface(mADWebJsInterface, mADWebJsInterface.toString());
+            webView.addJavascriptInterface(adWebJsInterface, adWebJsInterface.toString());
             webView.loadUrl(url);
         }
+
+    }
+
+    @Override
+    protected void onWebPageCompleted() {
 
     }
 

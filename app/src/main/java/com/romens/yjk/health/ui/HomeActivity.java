@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,15 +18,14 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.location.core.AMapLocException;
-import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
-import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.UMengHelper;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
@@ -41,6 +39,7 @@ import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
+import com.umeng.update.UmengUpdateAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +158,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         setupConfig();
         initLastLocation();
         UIOpenHelper.syncFavorites(this);
+        //umeng 相关配置
+        UMengHelper.setDefault();
+        UmengUpdateAgent.silentUpdate(this);
     }
 
     private void setupConfig() {

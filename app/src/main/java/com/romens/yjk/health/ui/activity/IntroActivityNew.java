@@ -22,6 +22,7 @@ import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.tencent.stat.StatService;
 
 /**
  * Created by anlc on 2015/10/28.
@@ -36,7 +37,7 @@ public class IntroActivityNew extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        StatService.trackCustomEvent(this, "onCreate", "");
         //是否首次打开App，首次打开App启动引导页
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         openGuidePager = sharedPreferences.getBoolean("open_guide_pager", false);

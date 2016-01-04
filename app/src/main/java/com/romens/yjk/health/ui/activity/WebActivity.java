@@ -1,9 +1,10 @@
 package com.romens.yjk.health.ui.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.View;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -19,15 +20,28 @@ import com.romens.yjk.health.config.ResourcesConfig;
 /**
  * Created by siery on 15/5/5.
  */
-public class WebActivity extends LightActionBarActivity {
-    private ProgressBarDeterminate mWebProgress;
-    private WebView mWebView;
+public abstract class WebActivity extends LightActionBarActivity {
+    private ProgressBarDeterminate webProgress;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
+        FrameLayout actionLayout = new FrameLayout(this);
+        content.addView(actionLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        actionLayout.addView(actionBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        webProgress = new ProgressBarDeterminate(this);
+        webProgress.setBackgroundColor(ResourcesConfig.accentColor);
+        webProgress.setMinimumHeight(AndroidUtilities.dp(2));
+        webProgress.setMax(AndroidUtilities.dp(2));
+        webProgress.setMax(100);
+        webProgress.setMin(0);
+        actionLayout.addView(webProgress, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
+        setContentView(content, actionBar);
+
         actionBar.setBackButtonImage(R.drawable.ic_clear_grey600_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -38,16 +52,14 @@ public class WebActivity extends LightActionBarActivity {
             }
         });
 
-        content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        setContentView(content, actionBar);
+
         FrameLayout frameLayout = new FrameLayout(this);
         content.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
+        webView = new WebView(this);
+        frameLayout.addView(webView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
 
-        mWebView = new WebView(this);
-        frameLayout.addView(mWebView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
-
-        WebSettings settings = mWebView.getSettings();
+        WebSettings settings = webView.getSettings();
         settings.setAllowFileAccess(true);
         settings.setSupportZoom(true);
         settings.setJavaScriptEnabled(true);
@@ -55,21 +67,44 @@ public class WebActivity extends LightActionBarActivity {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
 
-        mWebProgress = new ProgressBarDeterminate(this);
-        mWebProgress.setBackgroundColor(ResourcesConfig.primaryColor);
-        mWebProgress.setMinimumHeight(AndroidUtilities.dp(2));
-        mWebProgress.setMax(AndroidUtilities.dp(2));
-        mWebProgress.setMax(100);
-        mWebProgress.setMin(0);
+        // 如果不设置这个，JS代码中的按钮会显示，但是按下去却不弹出对话框
+        // Sets the chrome handler. This is an implementation of WebChromeClient
+        // for use in handling JavaScript dialogs, favicons, titles, and the
+        // progress. This will replace the current handler.
+        webView.setWebChromeClient(new WebChromeClient() {
 
-        frameLayout.addView(mWebProgress, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP));
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message,
+                                     JsResult result) {
+                // TODO Auto-generated method stub
+                return super.onJsAlert(view, url, message, result);
+            }
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                ProgressBarDeterminate progressBar = getWebProgressBar();
+                progressBar.setProgress(newProgress);
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    onWebPageCompleted();
+                } else {
+                    if (progressBar.getVisibility() == View.INVISIBLE) {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+
+        });
     }
 
+    protected abstract void onWebPageCompleted();
+
     protected WebView getWebView() {
-        return this.mWebView;
+        return this.webView;
     }
 
     protected ProgressBarDeterminate getWebProgressBar() {
-        return this.mWebProgress;
+        return this.webProgress;
     }
 }

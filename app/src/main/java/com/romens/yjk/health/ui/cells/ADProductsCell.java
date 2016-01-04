@@ -32,7 +32,15 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
 
     private int cellStyle = 0;
 
-    private Bundle properties = new Bundle();
+    private final Bundle properties = new Bundle();
+
+    private ADProductsDelegate delegate;
+
+    public interface ADProductsDelegate {
+        void onGroupCellClick(Bundle arguments);
+
+        void onChildCellClick(Bundle arguments);
+    }
 
     public ADProductsCell(Context context) {
         super(context);
@@ -45,7 +53,9 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         groupCell.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (delegate != null) {
+                    delegate.onGroupCellClick(properties);
+                }
             }
         });
 
@@ -78,6 +88,12 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
      * 3、2：
      */
     public void setValue(ADProductListEntity entity) {
+        //缓存相关属性
+        properties.clear();
+        properties.putString("ID", entity.adId);
+        properties.putString("NAME", entity.name);
+        properties.putString("ACTION", entity.action);
+
         cellStyle = 0;
         count = 3;
         final int size = entity.size();
@@ -260,9 +276,12 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
 
     @Override
     public void onCellClick(Bundle arguments) {
-        if (arguments != null && arguments.containsKey("ID")) {
-            String medicineId = arguments.getString("ID", "");
-            UIOpenHelper.openMedicineActivity(getContext(), medicineId);
+        if (delegate != null) {
+            delegate.onChildCellClick(arguments);
         }
+    }
+
+    public void setDelegate(ADProductsDelegate d) {
+        delegate = d;
     }
 }
