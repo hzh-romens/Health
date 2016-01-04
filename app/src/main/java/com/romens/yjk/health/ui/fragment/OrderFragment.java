@@ -33,13 +33,12 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAllAdpter;
+import com.romens.yjk.health.ui.adapter.OrderAllAdpter;
 import com.romens.yjk.health.ui.adapter.BaseExpandableAdapter;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAdapter;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAlreadyCompleteAdapter;
-import com.romens.yjk.health.ui.adapter.OrderExpandableBeingAdapter;
+import com.romens.yjk.health.ui.adapter.OrderEvaluateAdapter;
+import com.romens.yjk.health.ui.adapter.OrderAlreadyCompleteAdapter;
+import com.romens.yjk.health.ui.adapter.OrderBeingAdapter;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
-import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,16 +74,16 @@ public class OrderFragment extends BaseFragment {
         mOrderEntities = new ArrayList<>();
         switch (fragmentType) {
             case MyOrderActivity.ORDER_TYPE_ALL:
-                adapter = new OrderExpandableAllAdpter(getActivity(), mOrderEntities);
+                adapter = new OrderAllAdpter(getActivity(), mOrderEntities);
                 break;
             case MyOrderActivity.ORDER_TYPE_COMPLETE:
-                adapter = new OrderExpandableAlreadyCompleteAdapter(getActivity(), mOrderEntities);
+                adapter = new OrderAlreadyCompleteAdapter(getActivity(), mOrderEntities);
                 break;
             case MyOrderActivity.ORDER_TYPE_EVALUATE:
-                adapter = new OrderExpandableAdapter(getActivity(), mOrderEntities);
+                adapter = new OrderEvaluateAdapter(getActivity(), mOrderEntities);
                 break;
             case MyOrderActivity.ORDER_TYPE_BEING:
-                adapter = new OrderExpandableBeingAdapter(getActivity(), mOrderEntities);
+                adapter = new OrderBeingAdapter(getActivity(), mOrderEntities);
                 break;
         }
     }
@@ -114,7 +113,6 @@ public class OrderFragment extends BaseFragment {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long key) {
                 parent.expandGroup(groupPosition);
-                Log.e("tag", "-------->" + groupPosition);
                 return true;
             }
         });
@@ -158,7 +156,6 @@ public class OrderFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.e("tag", "isVisibleToUser---->" + isVisibleToUser);
     }
 
     private void requestOrderList(String userGuid, int fragmentType) {

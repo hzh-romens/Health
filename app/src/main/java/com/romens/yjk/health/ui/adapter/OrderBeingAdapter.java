@@ -44,9 +44,9 @@ import java.util.Map;
  * Created by anlc on 2015/9/24.
  * 订单页面中可扩展的listview的Adapter
  */
-public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
+public class OrderBeingAdapter extends BaseExpandableAdapter {
 
-    public OrderExpandableBeingAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
+    public OrderBeingAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
         super(adapterContext, orderEntities);
     }
 
@@ -62,7 +62,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
         RelativeLayout btnLayout = (RelativeLayout) view.findViewById(R.id.order_btn_layout);
         btnLayout.setVisibility(View.GONE);
-        if (childPosition == getChildrenCount(groupPosition)-1) {
+        if (childPosition == getChildrenCount(groupPosition) - 1) {
             btnLayout.setVisibility(View.VISIBLE);
         }
 
@@ -76,7 +76,7 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
         if (entity.getPicSmall() != null) {
             medicineImg.setImageUrl(entity.getPicSmall(), null, null);
-        }else {
+        } else {
             medicineImg.setImageResource(R.drawable.no_img_upload);
         }
         titleTextView.setText(entity.getGoodsName());
@@ -200,7 +200,6 @@ public class OrderExpandableBeingAdapter extends BaseExpandableAdapter {
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         requestCode = jsonObject.getString("success");
-                        Log.e("tag", "--requestCode--->" + requestCode);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -50,11 +50,11 @@ import java.util.Map;
  * Created by anlc on 2015/9/24.
  * 订单页面中可扩展的listview的Adapter
  */
-public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter {
+public class OrderAlreadyCompleteAdapter extends BaseExpandableAdapter {
 
     private List<GoodsListEntity> goodsListEntities;
 
-    public OrderExpandableAlreadyCompleteAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
+    public OrderAlreadyCompleteAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
         super(adapterContext, orderEntities);
     }
 
@@ -76,6 +76,8 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
 
         TextView buyAgainBtn = (TextView) view.findViewById(R.id.order_all_buy_again);
         TextView evaluateBtn = (TextView) view.findViewById(R.id.order_all_evaluate_btn);
+        buyAgainBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+        buyAgainBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
         buyAgainBtn.setText("再来一单");
         evaluateBtn.setText(" 评    价 ");
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
@@ -191,11 +193,9 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
                     String response = responseProtocol.getResponse();
                     if ("ERROE".equals(response)) {
                         Toast.makeText(adapterContext, "加入购物车异常", Toast.LENGTH_SHORT).show();
-                        Log.e("tag", "---newOrder--error->");
                     } else {
                         Toast.makeText(adapterContext, "成功加入购物车", Toast.LENGTH_SHORT).show();
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
-                        Log.e("tag", "---newOrder--ok->");
                     }
                 } else {
                     Log.e("InsertIntoCar", errorMsg.toString() + "====" + errorMsg.msg);
