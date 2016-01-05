@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/datetimepicker/datetimepicker.iml" filepath="$PROJECT_DIR$/datetimepicker/datetimepicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/romens.android/romens.android.iml" filepath="$PROJECT_DIR$/romens.android/romens.android.iml" />
       <module fileurl="file://$PROJECT_DIR$/romens.extend.QR/romens.extend.QR.iml" filepath="$PROJECT_DIR$/romens.extend.QR/romens.extend.QR.iml" />
+      <module fileurl="file://$PROJECT_DIR$/romens.images/romens.images.iml" filepath="$PROJECT_DIR$/romens.images/romens.images.iml" />
     </modules>
   </component>
 </project>

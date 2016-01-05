@@ -250,3 +250,13 @@ public static final int *;
 #qq mta
 -keep class com.tencent.stat.**  {* ;}
 -keep class com.tencent.mid.**  {* ;}
+
+
+
+#romens.images
+-dontwarn com.facebook.**
+-keep class com.facebook.**{*;}
+
+-keep class com.romens.images.**{
+    public protected *;
+}

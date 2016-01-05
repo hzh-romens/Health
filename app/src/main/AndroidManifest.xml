@@ -175,11 +175,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.romens.yjk.health.QRSCANNER" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -194,10 +189,6 @@
             android:exported="false"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.romens.rhealth.SHOP_MALL_MEDICARE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
 
@@ -212,12 +203,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
-
-            <intent-filter>
-                <action android:name="com.romens.yjk.health.NEARBYPHARMACY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -268,11 +253,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.romens.rhealth.INFORMATION_NEWS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.ControlAddressActivity"
@@ -285,11 +265,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.romens.rhealth.MEDICATIONREMINDERS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.AddRemindActivityNew"
@@ -313,10 +288,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.romens.yjk.health.ADWEB" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.MyOrderActivity"

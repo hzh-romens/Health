@@ -6,6 +6,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,30 +18,26 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.romens.android.ApplicationLoader;
-import com.romens.android.log.FileLog;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.ShadowSectionCell;
+import com.romens.android.ui.cells.TextDetailSettingsCell;
 import com.romens.android.ui.cells.TextIconCell;
-import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.AccountSettingActivity;
-import com.romens.yjk.health.ui.CollectActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
-import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
-import com.romens.yjk.health.ui.cells.AccountCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
+import com.romens.yjk.health.ui.cells.SupportCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 /**
@@ -179,7 +179,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             feedbackRow = -1;
         }
         checkUpdateRow = rowCount++;
-        appInfoRow = rowCount++;
+
+        aboutSectionRow = rowCount++;
+        supportRow = rowCount++;
 
         adapter.notifyDataSetChanged();
     }
@@ -205,7 +207,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
 
     private int checkUpdateRow;
-    private int appInfoRow;
+
+    private int aboutSectionRow;
+    private int supportRow;
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
@@ -261,7 +265,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 return 3;
             } else if (i == collectRow || i == historyRow || i == accountRow || i == feedbackRow) {
                 return 3;
-            } else if (i == appInfoRow) {
+            } else if (i == supportRow) {
                 return 4;
             } else if (i == loginRow) {
                 return 5;
@@ -335,15 +339,23 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 }
             } else if (type == 4) {
                 if (view == null) {
-                    view = new TextInfoCell(adapterContext);
-                    if (position == appInfoRow) {
-                        try {
-                            PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
-                            ((TextInfoCell) view).setText(String.format("%s for Android v%s (c%d)", getString(R.string.app_name), pInfo.versionName, pInfo.versionCode));
-                        } catch (Exception e) {
-                            FileLog.e("YJKHealth", e);
-                        }
-                    }
+                    view = new SupportCell(adapterContext);
+                }
+                SupportCell cell = (SupportCell) view;
+                cell.setMultilineDetail(true);
+                SpannableStringBuilder value = new SpannableStringBuilder();
+                SpannableString supportOrg = new SpannableString("青岛雨诺网络信息股份有限公司");
+                supportOrg.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, supportOrg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                value.append(supportOrg);
+                value.append("\n");
+                try {
+                    PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
+                    value.append(String.format("%s for Android v%s (c%d)", getString(R.string.app_name), pInfo.versionName, pInfo.versionCode));
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                if (position == supportRow) {
+                    cell.setTextAndValue("技术支持", value, true);
                 }
             } else if (type == 5) {
                 if (view == null) {
