@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
     <com.romens.android.ui.ActionBar.ActionBar
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/action_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
 
     <LinearLayout
         android:id="@+id/control_address_hava_address"
@@ -16,18 +25,19 @@
         android:layout_below="@id/action_bar"
         android:orientation="vertical">
 
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swiperefreshlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/control_address_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </android.support.v4.widget.SwipeRefreshLayout>
+                android:layout_height="match_parent"/>
 
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -41,17 +51,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/control_address_bg" />
+            android:src="@drawable/control_address_bg"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/no_address_hint"
-            android:includeFontPadding="false"
-            android:textColor="#666666"
             android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/abc_text_size_menu_material" />
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:text="@string/no_address_hint"
+            android:textColor="#666666"
+            android:textSize="@dimen/abc_text_size_menu_material"/>
 
         <Button
             android:id="@+id/control_address_add_address"
@@ -60,14 +70,13 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:background="@drawable/bg_white"
+            android:includeFontPadding="false"
             android:paddingBottom="4dp"
             android:paddingLeft="32dp"
             android:paddingRight="32dp"
             android:paddingTop="4dp"
             android:text="@string/add"
-            android:includeFontPadding="false"
-            android:textSize="@dimen/text_size_xlarge" />
+            android:textSize="@dimen/text_size_xlarge"/>
     </LinearLayout>
-
 
 </RelativeLayout>

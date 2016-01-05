@@ -1,11 +1,9 @@
 package com.romens.yjk.health.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,7 +35,6 @@ import com.romens.yjk.health.model.FilterChildEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.CommitOrderAdapter;
-import com.romens.yjk.health.ui.components.CustomDialog;
 import com.romens.yjk.health.ui.utils.DialogUtils;
 
 import org.json.JSONArray;
@@ -57,15 +54,13 @@ import java.util.Map;
 public class CommitOrderActivity extends BaseActivity implements IListDialogListener {
     private ExpandableListView expandableListView;
     private ImageView back;
+    private TextView address, tv_content, accounts, person;
+    private CommitOrderAdapter adapter;
+
     private HashMap<String, List<ShopCarEntity>> childData;
     private List<ParentEntity> parentData;
-    private TextView person;
-    private TextView address, tv_content, accounts;
-    private CommitOrderAdapter adapter;
     private int sumCount;
     private double sumMoney;
-    private CustomDialog.Builder ibuilder;
-
     private String ADDRESSID; //送货地址id
     private String DELIVERYTYPE;//送货方式
 
@@ -75,24 +70,102 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commitorder);
         initView();
+        getData();
+        setData();
+    }
+
+
+    private void initView() {
+        expandableListView = (ExpandableListView) findViewById(R.id.ev);
+        back = (ImageView) findViewById(R.id.btn_back);
+        tv_content = (TextView) findViewById(R.id.tv_content);
+        accounts = (TextView) findViewById(R.id.accounts);
+        addHeadView();
         needShowProgress("正在加载...");
+    }
+
+    private void addHeadView() {
+        View view = getLayoutInflater().inflate(R.layout.list_item_address, null);
+        person = (TextView) view.findViewById(R.id.person);
+        address = (TextView) view.findViewById(R.id.address);
+        expandableListView.addHeaderView(view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIOpenHelper.openControlAddressActivityForResult(CommitOrderActivity.this);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+            }
+        });
+
+    }
+
+    private void getData() {
         getAdressData();
+        getIntentData();
+        getSendData();
+    }
+
+
+    //获取默认的收货地址信息
+    public void getAdressData() {
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("DEFAULTFLAG", "1").build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAddressList", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol).build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Log.e("GetUserAddressList", "ERROR");
+                needHideProgress();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
+                        if (jsonArray.length() == 0) {
+                            showBuilder();
+                        } else {
+                            Gson gson = new Gson();
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            String addressid = jsonObject.getString("ADDRESSID");
+                            person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
+                            address.setText(jsonObject.getString("ADDRESS"));
+                            ADDRESSID = addressid;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("GetUserAddressList", errorMsg.msg);
+                }
+            }
+        });
+    }
+
+    private void getIntentData() {
         childData = (HashMap<String, List<ShopCarEntity>>) getIntent().getSerializableExtra("childData");
         parentData = (List<ParentEntity>) getIntent().getSerializableExtra("parentData");
+    }
+
+    private void setData() {
         getAll(childData);
         adapter = new CommitOrderAdapter(this, parentData.size() + 1);
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData);
-        getSendData();
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
-        adapter.setCheckDataChangeListener(new CommitOrderAdapter.CheckDataCallBack() {
-            @Override
-            public void getCheckData(String flag) {
-
-            }
-        });
-        //将ExpandAbleListView的每个parentItem展开
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -101,50 +174,27 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 }
             }
         });
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     public void getAll(HashMap<String, List<ShopCarEntity>> childData) {
         Iterator iter = childData.entrySet().iterator();
         final List<FilterChildEntity> filteData = new ArrayList<FilterChildEntity>();
         while (iter.hasNext()) {
-            ParentEntity fatherEntity = new ParentEntity();
             Map.Entry entry = (Map.Entry) iter.next();
-            String key = (String) entry.getKey();
             List<ShopCarEntity> child = (List<ShopCarEntity>) entry.getValue();
             for (int i = 0; i < child.size(); i++) {
-                sumCount = sumCount + child.get(i).getBUYCOUNT();
-                sumMoney = sumMoney + child.get(i).getBUYCOUNT() * child.get(i).getGOODSPRICE();
-                FilterChildEntity filterChildEntity = new FilterChildEntity();
-                filterChildEntity.setSHOPID(child.get(i).getSHOPID());
-                filterChildEntity.setBUYCOUNT(child.get(i).getBUYCOUNT() + "");
-                filterChildEntity.setGOODSGUID(child.get(i).getGOODSGUID());
-                filterChildEntity.setGOODSPRICE(child.get(i).getGOODSPRICE() + "");
+                ShopCarEntity shopCarEntity = child.get(i);
+                sumCount = sumCount + shopCarEntity.getBUYCOUNT();
+                sumMoney = sumMoney + shopCarEntity.getBUYCOUNT() * shopCarEntity.getGOODSPRICE();
+                FilterChildEntity filterChildEntity = toFilterEntity(shopCarEntity);
                 filteData.add(filterChildEntity);
             }
         }
-        String countStr = sumCount + "";
-        String moneyStr = "¥" + sumMoney;
-        String str1 = "共";
-        String str2 = "件  总金额";
-        String textStr = str1 + countStr + str2 + moneyStr;
-        if (!TextUtils.isEmpty(textStr)) {
-            SpannableStringBuilder builder = new SpannableStringBuilder(textStr);
-            // ForegroundColorSpan 为文字前景色，BackgroundColorSpan为文字背景色
-            ForegroundColorSpan greedSpan = new ForegroundColorSpan(getResources().getColor(R.color.accouns_color));
-            ForegroundColorSpan blackSpan = new ForegroundColorSpan(getResources().getColor(R.color.accouns_color));
-            builder.setSpan(blackSpan, str1.length(), str1.length() + countStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            builder.setSpan(greedSpan, str1.length() + countStr.length() + str2.length(), textStr.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            tv_content.setText(builder);
-        } else {
-            tv_content.setText("");
-        }
+
+        String counts = sumCount + "";
+        String moneys = "¥" + sumMoney;
+        tv_content.setText(getColorText(counts, moneys));
+
         //订单提交，并跳转到下一个页面
         accounts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,47 +212,24 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
     }
 
-    private void initView() {
-        expandableListView = (ExpandableListView) findViewById(R.id.ev);
-        back = (ImageView) findViewById(R.id.btn_back);
-        tv_content = (TextView) findViewById(R.id.tv_content);
-        accounts = (TextView) findViewById(R.id.accounts);
-        //头部添加地址
-        addHeadView();
+    public SpannableStringBuilder getColorText(String counts, String moneys) {
+        String str1 = "共";
+        String str2 = "件  总金额";
+        String textStr = str1 + counts + str2 + moneys;
+        SpannableStringBuilder builder = new SpannableStringBuilder(textStr);
+        // ForegroundColorSpan 为文字前景色，BackgroundColorSpan为文字背景色
+        ForegroundColorSpan greedSpan = new ForegroundColorSpan(getResources().getColor(R.color.accouns_color));
+        ForegroundColorSpan blackSpan = new ForegroundColorSpan(getResources().getColor(R.color.accouns_color));
+        builder.setSpan(blackSpan, str1.length(), str1.length() + counts.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(greedSpan, str1.length() + counts.length() + str2.length(), textStr.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return builder;
     }
 
-    private void addHeadView() {
-        View view = getLayoutInflater().inflate(R.layout.list_item_address, null);
-        person = (TextView) view.findViewById(R.id.person);
-        address = (TextView) view.findViewById(R.id.address);
-        expandableListView.addHeaderView(view);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(CommitOrderActivity.this, ControlAddressActivity.class);
-                i.putExtra("chose", "chose");
-                startActivityForResult(i, 2);
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(CommitOrderActivity.this, ShopCarActivity.class);
-                startActivity(i);
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
-        });
 
-    }
-
-    //startActivityForResult数据回调回来
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("返回码-------",resultCode+"");
         if (resultCode == 2) {
-            //对从ControlAddressActivity返回的数据进行处理
             AddressEntity addressEntity = (AddressEntity) data.getSerializableExtra("responseCommitEntity");
             person.setText("收货人：" + addressEntity.getRECEIVER() + " " + addressEntity.getCONTACTPHONE());
             address.setText(addressEntity.getADDRESS());
@@ -212,14 +239,10 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         }
     }
 
+
     //向服务器提交订单
     private void commitOrder(List<FilterChildEntity> data, final int count) {
-        Gson gson = new Gson();
-        CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
-        commitOrderEntity.setDELIVERYTYPE(DELIVERYTYPE);
-        commitOrderEntity.setADDRESSID(ADDRESSID);
-        commitOrderEntity.setGOODSLIST(data);
-        String JSON_DATA = gson.toJson(commitOrderEntity);
+        String JSON_DATA = getJsonData(data, DELIVERYTYPE, ADDRESSID);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", JSON_DATA).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
@@ -238,6 +261,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    Log.i("responseProtocol", responseProtocol.toString());
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String success = jsonObject.getString("success");
@@ -265,69 +289,30 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
     }
 
-    //获取默认的收货地址信息
-    public void getAdressData() {
-        Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("DEFAULTFLAG", "1").build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAddressList", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol).build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("GetUserAddressList", "ERROR");
-                needHideProgress();
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-
-                    try {
-                        JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
-                        if (jsonArray.length() == 0) {
-                            showBuilder();
-
-                        } else {
-                            Gson gson = new Gson();
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
-                            String addressid = jsonObject.getString("ADDRESSID");
-                            person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
-                            address.setText(jsonObject.getString("ADDRESS"));
-                            ADDRESSID = addressid;
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.e("GetUserAddressList", errorMsg.msg);
-                }
-            }
-        });
+    public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid) {
+        Gson gson = new Gson();
+        CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
+        commitOrderEntity.setDELIVERYTYPE(DELIVERYTYPE);
+        commitOrderEntity.setADDRESSID(ADDRESSID);
+        commitOrderEntity.setGOODSLIST(data);
+        String JSON_DATA = gson.toJson(commitOrderEntity);
+        return JSON_DATA;
     }
 
 
     private void showBuilder() {
-        ibuilder = new CustomDialog.Builder(CommitOrderActivity.this);
-        ibuilder.setTitle(R.string.prompt);
-        ibuilder.setMessage("请填写收货地址");
-        ibuilder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+        DialogUtils dialogUtils = new DialogUtils();
+        dialogUtils.show_infor_two("请填写收货地址", this, "提示", new DialogUtils.ConfirmListenerCallBack() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void ConfirmListener() {
                 UIOpenHelper.openShippingAddress(CommitOrderActivity.this, 0);
-
             }
-        });
-        ibuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        }, new DialogUtils.CancelListenerCallBack() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void CancelListener() {
                 finish();
             }
         });
-        ibuilder.create().show();
     }
 
 
@@ -367,13 +352,19 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
     }
 
+    public FilterChildEntity toFilterEntity(ShopCarEntity shopCarEntity) {
+        FilterChildEntity filterChildEntity = new FilterChildEntity();
+        filterChildEntity.setSHOPID(shopCarEntity.getSHOPID());
+        filterChildEntity.setBUYCOUNT(shopCarEntity.getBUYCOUNT() + "");
+        filterChildEntity.setGOODSGUID(shopCarEntity.getGOODSGUID());
+        filterChildEntity.setGOODSPRICE(shopCarEntity.getGOODSPRICE() + "");
+        return filterChildEntity;
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent i = new Intent(this, ShopCarActivity.class);
-            startActivity(i);
-            finish();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
         }
         return super.onKeyDown(keyCode, event);
     }

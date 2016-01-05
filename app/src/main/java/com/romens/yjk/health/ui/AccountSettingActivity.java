@@ -34,6 +34,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.PersonalEntity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 
@@ -96,24 +97,15 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == nameRow) {
-                    Intent intent = new Intent(AccountSettingActivity.this, EditActivity.class);
-                    intent.putExtra("activity_title", "编辑姓名");
-                    intent.putExtra("formActivityName", "AccountSettingActivity");
-                    startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING_TO_EDITACTIVITY);
+                    UIOpenHelper.openEditActivityForEditName(AccountSettingActivity.this);
                 } else if (position == sexRow) {
                     chooseSex();
                 } else if (position == professionRow) {
-                    Intent intent = new Intent(AccountSettingActivity.this, EditActivity.class);
-                    intent.putExtra("activity_title", "编辑职业");
-                    intent.putExtra("formActivityName", "AccountSettingActivity");
-                    startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING2_TO_EDITACTIVITY);
+                    UIOpenHelper.openEditActivityForEditProfession(AccountSettingActivity.this);
                 } else if (position == birthdayRow) {
                     showDatePickerDialog();
                 } else if (position == detailRow) {
-//                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this);
-                    Intent intent = new Intent(AccountSettingActivity.this, UserLabelsActivity.class);
-                    intent.putExtra("personEntity", entity);
-                    startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING_TO_USERLABELS);
+                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this, entity);
                 }
             }
         });
@@ -192,9 +184,11 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                             finish();
                         }
                     } catch (JSONException e) {
+                        Toast.makeText(AccountSettingActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 } else {
+                    Toast.makeText(AccountSettingActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
                     Log.e("个人信息错误日志", errorMsg.msg);
                 }
             }
@@ -219,6 +213,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
             }
             entitySetFromJson(jsonStr);
         }
+        adapter.notifyDataSetChanged();
     }
 
     private void entitySetFromJson(String jsonStr) {
@@ -239,19 +234,31 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                     for (int j = 0; j < valuesDesc.length(); j++) {
                         result += valuesDesc.getString(j) + ",";
                     }
-                    entity.setFOODHOBBY(result.substring(0, result.length() - 1));
+                    if (result.equals("")) {
+                        entity.setFOODHOBBY(result);
+                    } else {
+                        entity.setFOODHOBBY(result.substring(0, result.length() - 1));
+                    }
                 } else if ("habit".equals(jsonObject.getString("key"))) {
                     String result = "";
                     for (int j = 0; j < valuesDesc.length(); j++) {
                         result += valuesDesc.getString(j) + ",";
                     }
-                    entity.setSLEEPHOBBY(result.substring(0, result.length() - 1));
+                    if (result.equals("")) {
+                        entity.setSLEEPHOBBY(result);
+                    } else {
+                        entity.setSLEEPHOBBY(result.substring(0, result.length() - 1));
+                    }
                 } else if ("other".equals(jsonObject.getString("key"))) {
                     String result = "";
                     for (int j = 0; j < valuesDesc.length(); j++) {
                         result += valuesDesc.getString(j) + ",";
                     }
-                    entity.setOTHER(result.substring(0, result.length() - 1));
+                    if (result.equals("")) {
+                        entity.setOTHER(result);
+                    } else {
+                        entity.setOTHER(result.substring(0, result.length() - 1));
+                    }
                 }
             }
         } catch (Exception e) {

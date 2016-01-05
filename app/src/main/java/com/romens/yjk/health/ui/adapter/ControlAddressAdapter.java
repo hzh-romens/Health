@@ -48,7 +48,6 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
     }
 
     public void setData(List<AddressEntity> data) {
-        Log.e("tag", "---->" + new Gson().toJson(data));
         this.data = data;
         notifyDataSetChanged();
     }
@@ -111,6 +110,14 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
                     return false;
                 }
             });
+            holder.outsideLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onViewClickListener != null) {
+                        onViewClickListener.onClick(position / 2);
+                    }
+                }
+            });
             holder.defaultImg.setImageResource(R.drawable.control_address_undeafult);
             AddressEntity entity = data.get(index);
             if (entity.getISDEFAULT().equals("1")) {
@@ -154,7 +161,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
 
     @Override
     public int getItemCount() {
-        return data.size() * 2;
+        return data.size() * 2 - 1;
     }
 
     class ControlAddressHolder extends RecyclerView.ViewHolder {
@@ -177,5 +184,15 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             outsideLayout = (LinearLayout) itemView.findViewById(R.id.control_address_layout);
             defaultLayout = (RelativeLayout) itemView.findViewById(R.id.control_address_defult_layout);
         }
+    }
+
+    private OnViewClickListener onViewClickListener;
+
+    public void setOnViewClickListener(OnViewClickListener onViewClickListener) {
+        this.onViewClickListener = onViewClickListener;
+    }
+
+    public interface OnViewClickListener {
+        void onClick(int position);
     }
 }

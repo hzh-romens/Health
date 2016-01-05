@@ -11,7 +11,6 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
-import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
@@ -25,19 +24,6 @@ import com.romens.yjk.health.ui.activity.UserLabelsActivity;
  * Created by siery on 15/12/14.
  */
 public class UIOpenHelper {
-
-    public static void openWeb(Context context, String title, String url) {
-        Bundle arguments = new Bundle();
-        arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
-        arguments.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
-        openWeb(context, arguments);
-    }
-
-    public static void openWeb(Context context, Bundle arguments) {
-        Intent intent = new Intent("com.romens.yjk.health.ADWEB");
-        intent.putExtras(arguments);
-        context.startActivity(intent);
-    }
 
     public static void openLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -150,16 +136,6 @@ public class UIOpenHelper {
      */
     public static void openAccountSettingActivity(Context context) {
         context.startActivity(new Intent(context, AccountSettingActivity.class));
-    }
-
-    /**
-     * 打开浏览历史
-     *
-     * @param context
-     */
-    public static void openHistoryActivity(Context context) {
-        Intent intent = new Intent(context, HistoryActivity.class);
-        context.startActivity(intent);
     }
 
 }

@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class LabelHelper {
     }
 
     public static SpannableStringBuilder createChipForUserInfoLabels(List<String> labels) {
+        Log.e("tag", "-SpannableStringBuilder->" + labels.size());
         SpannableStringBuilder ssb = new SpannableStringBuilder("");
         if (labels == null || labels.size() <= 0) {
             ssb.append("");

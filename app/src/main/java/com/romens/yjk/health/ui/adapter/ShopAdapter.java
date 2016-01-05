@@ -18,6 +18,7 @@ import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.utils.DialogUtils;
+import com.romens.yjk.health.ui.utils.UIUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +36,6 @@ public class ShopAdapter extends BaseExpandableListAdapter {
     private SparseBooleanArray childStatus = new SparseBooleanArray();
 
     public double sumMoney = 0;
-
 
     //接口回调，用于数据刷新
     public interface AdapterCallBack {
@@ -65,17 +65,23 @@ public class ShopAdapter extends BaseExpandableListAdapter {
     public List<ParentEntity> getParentData() {
         return mFatherData;
     }
-    public SparseBooleanArray getParentStatus(){
+
+    public SparseBooleanArray getParentStatus() {
         return fatherStatus;
     }
 
-    public void bindData(List<ParentEntity> fatherData, HashMap<String, List<ShopCarEntity>> childData, AdapterCallBack adapterCallBack) {
+    public void setCallBack(AdapterCallBack adapterCallBack) {
+        this.mAdapterCallBack = adapterCallBack;
+        updateData();
+    }
+
+    //, AdapterCallBack adapterCallBack
+    public void bindData(List<ParentEntity> fatherData, HashMap<String, List<ShopCarEntity>> childData) {
         this.mFatherData = fatherData;
         this.mChildData = childData;
-        this.mAdapterCallBack = adapterCallBack;
-        sumMoney=0;
+        sumMoney = 0;
         fatherStatus.clear();
-       childStatusList.clear();
+        childStatusList.clear();
         for (int i = 0; i < mFatherData.size(); i++) {
             fatherStatus.append(i, true);
         }
@@ -92,11 +98,10 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             }
             childStatusList.put(key, childStatus);
         }
-        updateData();
-        updateMoney(sumMoney + "");
     }
+
     //获取childstatus的集合
-    public HashMap<String, SparseBooleanArray> getChildStatusList(){
+    public HashMap<String, SparseBooleanArray> getChildStatusList() {
         return childStatusList;
     }
 
@@ -123,7 +128,225 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             }
         }
         updateData();
-        updateMoney(sumMoney + "");
+    }
+
+    //数据刷新及回调
+    public void updateData() {
+        notifyDataSetChanged();
+        if (mAdapterCallBack != null) {
+            mAdapterCallBack.UpdateData();
+            mAdapterCallBack.UpdateMoney(sumMoney + "");
+        }
+    }
+
+    @Override
+    public int getGroupCount() {
+        return mFatherData == null ? 0 : mFatherData.size();
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(groupPosition).getShopID());
+        return shopCarEntities == null ? 0 : shopCarEntities.size();
+    }
+
+
+    @Override
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        final ParentHolder parentHolder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_parent, null);
+            parentHolder = new ParentHolder();
+            parentHolder.empty_view = convertView.findViewById(R.id.empty_view);
+            parentHolder.checkableFrameLayout = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
+            parentHolder.storeName = (TextView) convertView.findViewById(R.id.name);
+            convertView.setTag(parentHolder);
+        } else {
+            parentHolder = (ParentHolder) convertView.getTag();
+        }
+        if (groupPosition == 0) {
+            parentHolder.empty_view.setVisibility(View.GONE);
+        } else {
+            parentHolder.empty_view.setVisibility(View.VISIBLE);
+        }
+        convertView.setClickable(true);
+        ParentEntity fatherEntity = mFatherData.get(groupPosition);
+        parentHolder.storeName.setText(fatherEntity.getShopName());
+        parentHolder.checkableFrameLayout.setChecked(fatherStatus.get(groupPosition));
+        parentHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SwitchFatherItem(mFatherData.get(groupPosition).getShopID(),
+                        !parentHolder.checkableFrameLayout.isChecked());
+            }
+        });
+        parentHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SwitchFatherItem(mFatherData.get(groupPosition).getShopID(), !parentHolder.checkableFrameLayout.isChecked());
+            }
+        });
+        return convertView;
+    }
+
+    @Override
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        final ChildHolder holder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_shop, null);
+            holder = new ChildHolder();
+            holder.bt_add = (Button) convertView.findViewById(R.id.bt_add);
+            holder.bt_reduce = (Button) convertView.findViewById(R.id.bt_reduce);
+            holder.checkBox = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
+            holder.iv_detail = (ImageView) convertView.findViewById(R.id.iv_detail);
+            holder.tv_num = (TextView) convertView.findViewById(R.id.et_num);
+            holder.tv_infor = (TextView) convertView.findViewById(R.id.tv_shop_infor);
+            holder.tv_realPrice = (TextView) convertView.findViewById(R.id.realPrice);
+            holder.tv_discountPrice = (TextView) convertView.findViewById(R.id.discountPrice);
+            holder.tv_store = (TextView) convertView.findViewById(R.id.tv_store);
+            convertView.setTag(holder);
+        } else {
+            holder = (ChildHolder) convertView.getTag();
+        }
+        final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+        holder.tv_num.setText(entity.getBUYCOUNT() + "");
+        holder.tv_discountPrice.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
+        holder.tv_realPrice.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
+        holder.tv_realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        holder.tv_infor.setText(entity.getNAME());
+        holder.tv_store.setText(entity.getSPEC());
+        Drawable defaultDrawables = holder.iv_detail.getDrawable();
+        ImageManager.loadForView(mContext, holder.iv_detail, entity.getGOODURL(), defaultDrawables, defaultDrawables);
+        holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SwitchChildItem(groupPosition, mFatherData.get(groupPosition).getShopID(), childPosition, !holder.checkBox.isChecked());
+            }
+        });
+
+        holder.tv_num.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogUtils dialogUtils = new DialogUtils();
+                dialogUtils.show(holder.tv_num.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
+                    @Override
+                    public void getGoodsNum(int num) {
+                        int startNum = entity.getBUYCOUNT();
+                        if (holder.checkBox.isChecked()) {
+                            if (startNum > num) {
+                                int reduce = startNum - num;
+                                double reduceMoney = reduce * entity.getGOODSPRICE();
+                                sumMoney = sumMoney - reduceMoney;
+                                updateData();
+                            } else {
+                                int add = num - startNum;
+                                double addMoney = add * entity.getGOODSPRICE();
+                                sumMoney = sumMoney + addMoney;
+                                updateData();
+                            }
+                            entity.setBUYCOUNT(num);
+                            holder.tv_num.setText(num + "");
+                        } else {
+                            entity.setBUYCOUNT(num);
+                            holder.tv_num.setText(num + "");
+                        }
+                    }
+                });
+            }
+        });
+
+        //增加
+        holder.bt_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int num = Integer.parseInt(holder.tv_num.getText().toString());
+                int startNum = num;
+                if (holder.checkBox.isChecked()) {
+                    num++;
+                    entity.setBUYCOUNT(num);
+                    double addMoney = entity.getGOODSPRICE() * (num - startNum);
+                    sumMoney = sumMoney + addMoney;
+                    holder.tv_num.setText(num + "");
+                    updateData();
+                } else {
+                    num++;
+                    entity.setBUYCOUNT(num);
+                    holder.tv_num.setText(num + "");
+                    updateData();
+                }
+            }
+        });
+
+        //减少
+        holder.bt_reduce.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int num = Integer.parseInt(holder.tv_num.getText().toString());
+                int startNum = num;
+                if (num > 1) {
+                    if (holder.checkBox.isChecked()) {
+                        num--;
+                        entity.setBUYCOUNT(num);
+                        double addMoney = entity.getGOODSPRICE() * (startNum - num);
+                        sumMoney = sumMoney - addMoney;
+                        holder.tv_num.setText(num + "");
+                        updateData();
+                    } else {
+                        num--;
+                        entity.setBUYCOUNT(num);
+                        holder.tv_num.setText(num + "");
+                    }
+                }
+            }
+        });
+        return convertView;
+    }
+
+    class ChildHolder {
+        private CheckableFrameLayout checkBox;
+        private Button bt_reduce, bt_add;
+        private ImageView iv_detail;
+        private TextView tv_realPrice, tv_discountPrice, tv_infor;
+        private TextView tv_num, tv_store;
+    }
+
+    class ParentHolder {
+        private CheckableFrameLayout checkableFrameLayout;
+        private TextView storeName;
+        private View empty_view;
+
+    }
+
+    @Override
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return true;
+    }
+
+
+    @Override
+    public Object getGroup(int groupPosition) {
+        return null;
+    }
+
+    @Override
+    public Object getChild(int groupPosition, int childPosition) {
+        return null;
+    }
+
+    @Override
+    public long getGroupId(int groupPosition) {
+        return groupPosition;
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
     }
 
     //childItem的单个点击事件
@@ -144,15 +367,10 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         } else {
             sMoney = sMoney - entity.getBUYCOUNT() * entity.getGOODSPRICE();
         }
-        //  sumMoney=sumMoney+allMoney;
         sumMoney = sMoney;
         updateData();
-        updateMoney(sumMoney + "");
     }
 
-    public double getSumMoney(HashMap<String, List<ShopCarEntity>> data) {
-        return 0;
-    }
 
     //全选
     public boolean isAllSelected() {
@@ -165,8 +383,9 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         int i = provisional.indexOfValue(false);
         return index < 0 && i < 0;
     }
-    public boolean isAllNotSelected(){
-        if(mFatherData!=null) {
+
+    public boolean isAllNotSelected() {
+        if (mFatherData != null) {
             SparseBooleanArray provisional = new SparseBooleanArray();
             for (int i = 0; i < mFatherData.size(); i++) {
                 boolean b = childItemIsAllSelected(mFatherData.get(i).getShopID());
@@ -175,7 +394,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             int index = fatherStatus.indexOfValue(true);
             int i = provisional.indexOfValue(true);
             return index < 0 && i < 0;
-        }else {
+        } else {
             return true;
         }
     }
@@ -217,241 +436,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             childStatusList.put(key, childStatus);
         }
         sumMoney = s;
-        updateMoney(sumMoney + "");
         updateData();
 
-    }
-
-    public void updateMoney(String money) {
-        if (mAdapterCallBack != null) {
-            mAdapterCallBack.UpdateMoney(money);
-        }
-    }
-
-
-    //数据刷新及回调
-    public void updateData() {
-        notifyDataSetChanged();
-        if (mAdapterCallBack != null) {
-            mAdapterCallBack.UpdateData();
-        }
-    }
-
-    @Override
-    public int getGroupCount() {
-        return mFatherData == null ? 0 : mFatherData.size();
-    }
-
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(groupPosition).getShopID());
-        return shopCarEntities == null ? 0 : shopCarEntities.size();
-    }
-
-
-    @Override
-    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        final FatherHolder fatherHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_parent, null);
-            fatherHolder = new FatherHolder();
-            fatherHolder.empty_view = convertView.findViewById(R.id.empty_view);
-            fatherHolder.checkableFrameLayout = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
-            fatherHolder.storeName = (TextView) convertView.findViewById(R.id.name);
-            convertView.setTag(fatherHolder);
-        } else {
-            fatherHolder = (FatherHolder) convertView.getTag();
-        }
-        if (groupPosition == 0) {
-            fatherHolder.empty_view.setVisibility(View.GONE);
-        } else {
-            fatherHolder.empty_view.setVisibility(View.VISIBLE);
-        }
-        convertView.setClickable(true);
-        ParentEntity fatherEntity = mFatherData.get(groupPosition);
-        fatherHolder.storeName.setText(fatherEntity.getShopName());
-        fatherHolder.checkableFrameLayout.setChecked(fatherStatus.get(groupPosition));
-        fatherHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SwitchFatherItem(mFatherData.get(groupPosition).getShopID(),
-                        !fatherHolder.checkableFrameLayout.isChecked());
-            }
-        });
-        fatherHolder.checkableFrameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SwitchFatherItem(mFatherData.get(groupPosition).getShopID(), !fatherHolder.checkableFrameLayout.isChecked());
-            }
-        });
-        return convertView;
-    }
-
-    @Override
-    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final ChildHolder holder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_shop, null);
-            holder = new ChildHolder();
-            holder.bt_add = (Button) convertView.findViewById(R.id.bt_add);
-            holder.bt_reduce = (Button) convertView.findViewById(R.id.bt_reduce);
-            holder.checkBox = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
-            holder.iv_detail = (ImageView) convertView.findViewById(R.id.iv_detail);
-            holder.tv_num = (TextView) convertView.findViewById(R.id.et_num);
-            holder.tv_infor = (TextView) convertView.findViewById(R.id.tv_shop_infor);
-            holder.tv_realPrice = (TextView) convertView.findViewById(R.id.realPrice);
-            holder.tv_discountPrice = (TextView) convertView.findViewById(R.id.discountPrice);
-            holder.tv_store = (TextView) convertView.findViewById(R.id.tv_store);
-            convertView.setTag(holder);
-        } else {
-            holder = (ChildHolder) convertView.getTag();
-        }
-        final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-        holder.tv_num.setText(entity.getBUYCOUNT()+"");
-        holder.tv_discountPrice.setText("¥" + entity.getGOODSPRICE());
-        holder.tv_realPrice.setText("¥" + entity.getGOODSPRICE());
-        holder.tv_realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        holder.tv_infor.setText(entity.getNAME());
-        holder.tv_store.setText(entity.getSPEC());
-
-        Drawable defaultDrawables =  holder.iv_detail.getDrawable();
-        ImageManager.loadForView(mContext, holder.iv_detail,entity.getGOODURL(), defaultDrawables, defaultDrawables);
-
-        holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
-
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SwitchChildItem(groupPosition, mFatherData.get(groupPosition).getShopID(), childPosition, !holder.checkBox.isChecked());
-            }
-        });
-        holder.tv_num.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogUtils dialogUtils = new DialogUtils();
-                dialogUtils.show(holder.tv_num.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
-                    @Override
-                    public void getGoodsNum(int num) {
-                        int startNum = entity.getBUYCOUNT();
-                        if (holder.checkBox.isChecked()) {
-                            if (startNum > num) {
-                                int reduce = startNum - num;
-                                double reduceMoney = reduce * entity.getGOODSPRICE();
-                                sumMoney = sumMoney - reduceMoney;
-                                updateMoney(sumMoney + "");
-                            } else {
-                                int add = num - startNum;
-                                double addMoney = add * entity.getGOODSPRICE();
-                                sumMoney = sumMoney + addMoney;
-                                updateMoney(sumMoney + "");
-                            }
-                            entity.setBUYCOUNT(num);
-                            holder.tv_num.setText(num + "");
-                        } else {
-                            entity.setBUYCOUNT(num);
-                            holder.tv_num.setText(num + "");
-                        }
-                    }
-                });
-            }
-        });
-
-        //增加
-        holder.bt_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int num = Integer.parseInt(holder.tv_num.getText().toString());
-                int startNum = num;
-                if (holder.checkBox.isChecked()) {
-                    num++;
-                    entity.setBUYCOUNT(num);
-                    double addMoney = entity.getGOODSPRICE() * (num - startNum);
-                    sumMoney = sumMoney + addMoney;
-                    holder.tv_num.setText(num + "");
-                    updateMoney(sumMoney + "");
-                    updateData();
-                } else {
-                    num++;
-                    entity.setBUYCOUNT(num);
-                    holder.tv_num.setText(num + "");
-                    updateData();
-                }
-            }
-        });
-
-        //减少
-        holder.bt_reduce.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int num = Integer.parseInt(holder.tv_num.getText().toString());
-                int startNum = num;
-                if (num > 1) {
-                    if (holder.checkBox.isChecked()) {
-                        num--;
-                        //    ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getStoreID()).get(childPosition);
-                        entity.setBUYCOUNT(num);
-                        double addMoney = entity.getGOODSPRICE() * (startNum - num);
-                        sumMoney = sumMoney - addMoney;
-                        holder.tv_num.setText(num + "");
-                        updateMoney(sumMoney + "");
-                        updateData();
-                    } else {
-                        num--;
-                        //   ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(groupPosition).getStoreID()).get(childPosition);
-                        entity.setBUYCOUNT(num);
-                        holder.tv_num.setText(num + "");
-                        // updateData();
-                    }
-                }
-            }
-        });
-        return convertView;
-    }
-
-    class ChildHolder {
-        private CheckableFrameLayout checkBox;
-        private Button bt_reduce, bt_add;
-        private ImageView iv_detail;
-        private TextView tv_realPrice, tv_discountPrice, tv_infor;
-        private TextView tv_num, tv_store;
-    }
-
-    class FatherHolder {
-        private CheckableFrameLayout checkableFrameLayout;
-        private TextView storeName;
-        private View empty_view;
-
-    }
-
-
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return true;
-    }
-
-
-    @Override
-    public Object getGroup(int groupPosition) {
-        return null;
-    }
-
-    @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return null;
-    }
-
-    @Override
-    public long getGroupId(int groupPosition) {
-        return groupPosition;
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
     }
 }

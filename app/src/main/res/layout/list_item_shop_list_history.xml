@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/text_size_large"
             android:id="@+id/name"
             android:textColor="@color/titlecolor"
             android:typeface="normal"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#fa5939"
-                android:textSize="@dimen/text_size_medium"
+                android:textSize="@dimen/text_size_large"
                 android:id="@+id/discountPrice"
                 android:text="¥9.9"/>
             <TextView
@@ -53,7 +53,7 @@
                 android:textColor="#999999"
                 android:layout_marginLeft="@dimen/padding_outter"
                 android:text="¥9.9"
-                android:textSize="@dimen/text_size_small"
+                android:textSize="@dimen/text_size_medium"
                 android:typeface="normal"
                 android:id="@+id/realPrice"
                 />
@@ -68,7 +68,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="#666666"
             android:text="100"
             android:id="@+id/saleCount"
@@ -78,7 +78,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="#666666"
             android:text="999评论"
             android:layout_marginLeft="@dimen/padding_inner"

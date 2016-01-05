@@ -1,14 +1,12 @@
 package com.romens.yjk.health.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,22 +26,23 @@ import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.cells.LoadingCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
-import com.romens.yjk.health.ui.OrderEvaluateDetailActivity;
+import com.romens.yjk.health.ui.adapter.OrderAllAdpter;
 import com.romens.yjk.health.ui.adapter.BaseExpandableAdapter;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAdapter;
-import com.romens.yjk.health.ui.adapter.OrderExpandableAlreadyCompleteAdapter;
-import com.romens.yjk.health.ui.adapter.OrderExpandableBeingAdapter;
+import com.romens.yjk.health.ui.adapter.OrderEvaluateAdapter;
+import com.romens.yjk.health.ui.adapter.OrderAlreadyCompleteAdapter;
+import com.romens.yjk.health.ui.adapter.OrderBeingAdapter;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
-import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +54,7 @@ public class OrderFragment extends BaseFragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ExpandableListView expandableListView;
     private BaseExpandableAdapter adapter;
+    private LoadingCell loadingCell;
 
     private List<AllOrderEntity> mOrderEntities;
     private String userGuid;
@@ -73,14 +73,17 @@ public class OrderFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mOrderEntities = new ArrayList<>();
         switch (fragmentType) {
+            case MyOrderActivity.ORDER_TYPE_ALL:
+                adapter = new OrderAllAdpter(getActivity(), mOrderEntities);
+                break;
             case MyOrderActivity.ORDER_TYPE_COMPLETE:
-                adapter = new OrderExpandableAlreadyCompleteAdapter(getActivity(), mOrderEntities);
+                adapter = new OrderAlreadyCompleteAdapter(getActivity(), mOrderEntities);
                 break;
             case MyOrderActivity.ORDER_TYPE_EVALUATE:
-                adapter = new OrderExpandableAdapter(getActivity(), mOrderEntities);
+                adapter = new OrderEvaluateAdapter(getActivity(), mOrderEntities);
                 break;
             case MyOrderActivity.ORDER_TYPE_BEING:
-                adapter = new OrderExpandableBeingAdapter(getActivity(), mOrderEntities);
+                adapter = new OrderBeingAdapter(getActivity(), mOrderEntities);
                 break;
         }
     }
@@ -89,6 +92,8 @@ public class OrderFragment extends BaseFragment {
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context context = getActivity();
         FrameLayout content = new FrameLayout(context);
+        loadingCell = new LoadingCell(getActivity());
+        content.addView(loadingCell);
         swipeRefreshLayout = new SwipeRefreshLayout(context);
         content.addView(swipeRefreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN);
@@ -108,14 +113,20 @@ public class OrderFragment extends BaseFragment {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long key) {
                 parent.expandGroup(groupPosition);
-                Log.e("tag", "-------->" + groupPosition);
                 return true;
             }
         });
 
         addCellView(content);
-        refershContentView();
+//        refershContentView();
+        showProgressLayout();
         return content;
+    }
+
+    private void showProgressLayout() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+        attachView.setVisibility(View.GONE);
+        loadingCell.setVisibility(View.VISIBLE);
     }
 
     private void addCellView(FrameLayout container) {
@@ -145,7 +156,6 @@ public class OrderFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.e("tag", "isVisibleToUser---->" + isVisibleToUser);
     }
 
     private void requestOrderList(String userGuid, int fragmentType) {
@@ -162,11 +172,13 @@ public class OrderFragment extends BaseFragment {
         FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                refershContentView();
                 Toast.makeText(getActivity(), msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                refershContentView();
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     setOrderData(responseProtocol.getResponse());
@@ -189,6 +201,12 @@ public class OrderFragment extends BaseFragment {
             AllOrderEntity entity = AllOrderEntity.mapToEntity(item);
             mOrderEntities.add(entity);
         }
+        Collections.sort(mOrderEntities, new Comparator<AllOrderEntity>() {
+            @Override
+            public int compare(AllOrderEntity lhs, AllOrderEntity rhs) {
+                return rhs.getCreateDate().compareTo(lhs.getCreateDate());
+            }
+        });
         refreshView();
     }
 
@@ -206,6 +224,7 @@ public class OrderFragment extends BaseFragment {
     }
 
     public void refershContentView() {
+        loadingCell.setVisibility(View.GONE);
         if (mOrderEntities != null && mOrderEntities.size() > 0) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
             attachView.setVisibility(View.GONE);

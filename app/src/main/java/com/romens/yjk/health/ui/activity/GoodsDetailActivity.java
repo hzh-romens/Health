@@ -498,10 +498,10 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                             currMedicineGoodsItem = new MedicineGoodsItem(jsonArray.getJSONObject(0));
                             updateGoodsFavorites();
                             initMedicineServiceModes();
+                            AddToHistory(currMedicineGoodsItem);
                         }
                         loadMedicineSaleStores();
                         loadCommentData();
-                        AddToHistory(currMedicineGoodsItem);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

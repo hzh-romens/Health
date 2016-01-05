@@ -19,6 +19,7 @@ import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
@@ -31,6 +32,7 @@ import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
 import com.romens.yjk.health.ui.cells.KeyAndViewCell;
@@ -48,11 +50,11 @@ import java.util.Map;
  * Created by anlc on 2015/9/24.
  * 订单页面中可扩展的listview的Adapter
  */
-public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter {
+public class OrderAlreadyCompleteAdapter extends BaseExpandableAdapter {
 
     private List<GoodsListEntity> goodsListEntities;
 
-    public OrderExpandableAlreadyCompleteAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
+    public OrderAlreadyCompleteAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
         super(adapterContext, orderEntities);
     }
 
@@ -65,14 +67,17 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
 //        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
+        BackupImageView medicineImg = (BackupImageView) view.findViewById(R.id.order_img);
         RelativeLayout btnLayout = (RelativeLayout) view.findViewById(R.id.order_btn_layout);
         btnLayout.setVisibility(View.GONE);
-        if (childPosition == getChildrenCount(groupPosition)-1) {
+        if (childPosition == getChildrenCount(groupPosition) - 1) {
             btnLayout.setVisibility(View.VISIBLE);
         }
 
         TextView buyAgainBtn = (TextView) view.findViewById(R.id.order_all_buy_again);
         TextView evaluateBtn = (TextView) view.findViewById(R.id.order_all_evaluate_btn);
+        buyAgainBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+        buyAgainBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
         buyAgainBtn.setText("再来一单");
         evaluateBtn.setText(" 评    价 ");
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
@@ -81,6 +86,11 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
         moneyTextView.setText("￥" + entity.getOrderPrice());
         TransformDateUitls.getDate(entity.getCreateDate());
         dateTextView.setText(entity.getCreateDate());
+        if (entity.getPicSmall() != null) {
+            medicineImg.setImageUrl(entity.getPicSmall(), null, null);
+        } else {
+            medicineImg.setImageResource(R.drawable.no_img_upload);
+        }
         evaluateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +105,14 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             @Override
             public void onClick(View v) {
                 requestOrderDetailList(UserGuidConfig.USER_GUID, entity.getOrderId());
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(adapterContext, OrderDetailActivity.class);
+                intent.putExtra("orderId", entity.getOrderId());
+                adapterContext.startActivity(intent);
             }
         });
         return view;
@@ -134,7 +152,6 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
             return;
         }
         goodsListEntities = new ArrayList<>();
-        OrderListEntity orderListEntity = new OrderListEntity();
         try {
             JSONObject object = new JSONObject(jsonData);
             JSONArray array = object.getJSONArray("GOODSLIST");
@@ -150,7 +167,7 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
 
 
     public void requestToBuy(String PRICE, String GUID) {
-        //加入购物车,用户暂定为2222
+        //加入购物车
         int lastTime = DBInterface.instance().getDiscoveryDataLastTime();
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("GOODSGUID", GUID);
@@ -176,11 +193,9 @@ public class OrderExpandableAlreadyCompleteAdapter extends BaseExpandableAdapter
                     String response = responseProtocol.getResponse();
                     if ("ERROE".equals(response)) {
                         Toast.makeText(adapterContext, "加入购物车异常", Toast.LENGTH_SHORT).show();
-                        Log.e("tag", "---newOrder--error->");
                     } else {
                         Toast.makeText(adapterContext, "成功加入购物车", Toast.LENGTH_SHORT).show();
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, 1);
-                        Log.e("tag", "---newOrder--ok->");
                     }
                 } else {
                     Log.e("InsertIntoCar", errorMsg.toString() + "====" + errorMsg.msg);

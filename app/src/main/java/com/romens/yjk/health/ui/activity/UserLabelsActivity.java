@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,6 +24,8 @@ import com.romens.yjk.health.helper.LabelHelper;
 import com.romens.yjk.health.model.PersonalEntity;
 import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.cells.TextDetailSelectCell;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,11 +140,6 @@ public class UserLabelsActivity extends BaseActivity {
                 userAttributes.get(5).addValue(i + "", result[i]);
             }
         }
-//        userAttributes.add(new UserAttributeEntity("history", "有无病史").addValue("1", "无"));
-//        userAttributes.add(new UserAttributeEntity("allergy", "是否过敏").addValue("1", "无"));
-//        userAttributes.add(new UserAttributeEntity("preference", "饮食偏好"));
-//        userAttributes.add(new UserAttributeEntity("habit", "作息习惯"));
-//        userAttributes.add(new UserAttributeEntity("other", "其他"));
         adapter.notifyDataSetChanged();
     }
 
@@ -206,22 +204,24 @@ public class UserLabelsActivity extends BaseActivity {
                 }
                 TextDetailSelectCell cell = (TextDetailSelectCell) view;
                 cell.setMultilineDetail(true);
+
                 final UserAttributeEntity entity = getItem(position);
-                CharSequence labels = LabelHelper.createChipForUserInfoLabels(entity.valuesDesc);
-                cell.setTextAndValue(entity.name, labels, true);
-                cell.setOnImageClickListener(new TextDetailSelectCell.OnImageClickListener() {
+                if (entity.valuesDesc.get(0).equals("")) {
+                    cell.setTextAndValue(entity.name, "", true);
+                } else {
+                    CharSequence labels = LabelHelper.createChipForUserInfoLabels(entity.valuesDesc);
+                    cell.setTextAndValue(entity.name, labels, true);
+                }
+                cell.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onImageClick(View view) {
+                    public void onClick(View v) {
                         if (position < 3) {
                             showSigleChooseView(data.get(0), entity);
                         } else if (position == 3) {
-                            entity.clear();
                             showMulitChooseView(data.get(1), entity);
                         } else if (position == 4) {
-                            entity.clear();
                             showMulitChooseView(data.get(2), entity);
                         } else if (position == 5) {
-                            entity.clear();
                             showMulitChooseView(data.get(3), entity);
                         }
                     }
@@ -253,12 +253,14 @@ public class UserLabelsActivity extends BaseActivity {
     }
 
     public void showMulitChooseView(final String[] data, final UserAttributeEntity entity) {
-
+        entity.clear();
         new AlertDialog.Builder(this).setMultiChoiceItems(data, null, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (isChecked) {
                     entity.addValue(which + "", data[which]);
+                } else {
+                    entity.remove(which + "", data[which]);
                 }
             }
         }).setPositiveButton("确定", new DialogInterface.OnClickListener() {

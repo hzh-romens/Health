@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.UIOpenHelper;
 
 /**
  * Created by AUSU on 2015/9/22.
@@ -26,6 +27,22 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commitresult);
         initVew();
+        initValue();
+
+    }
+
+    private void initVew() {
+        firstLayout = (LinearLayout) findViewById(R.id.first_layout);
+        secondLayout = (LinearLayout) findViewById(R.id.second_layout);
+        tv_orderNumber = (TextView) findViewById(R.id.orderNumber);
+        date = (TextView) findViewById(R.id.time);
+        money = (TextView) findViewById(R.id.money);
+        toOrder = (Button) findViewById(R.id.toOrder);
+        toShop = (Button) findViewById(R.id.toShop);
+        title = (TextView) findViewById(R.id.title);
+    }
+
+    private void initValue() {
         Intent intent = getIntent();
         if ("true".equals(intent.getStringExtra("success"))) {
             title.setText("订单提交成功");
@@ -46,30 +63,14 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         toOrder.setOnClickListener(this);
     }
 
-
-    private void initVew() {
-        firstLayout = (LinearLayout) findViewById(R.id.first_layout);
-        secondLayout = (LinearLayout) findViewById(R.id.second_layout);
-        tv_orderNumber = (TextView) findViewById(R.id.orderNumber);
-        date = (TextView) findViewById(R.id.time);
-        money = (TextView) findViewById(R.id.money);
-        toOrder = (Button) findViewById(R.id.toOrder);
-        toShop = (Button) findViewById(R.id.toShop);
-        title = (TextView) findViewById(R.id.title);
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toOrder:
-                Intent intent = new Intent(this, MyOrderActivity.class);
-                startActivity(intent);
-                finish();
+                UIOpenHelper.openMyOrderActivity(CommitResultActivity.this);
                 break;
             case R.id.toShop:
-                Intent i = new Intent(this, HomeActivity.class);
-                startActivity(i);
-                finish();
+                UIOpenHelper.openHomeActivity(CommitResultActivity.this);
                 break;
         }
     }
@@ -77,9 +78,7 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent i = new Intent(this, HomeActivity.class);
-            startActivity(i);
-            finish();
+            UIOpenHelper.openHomeActivity(CommitResultActivity.this);
         }
         return false;
     }

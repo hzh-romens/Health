@@ -24,6 +24,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
@@ -71,7 +72,7 @@ public class RemindActivity extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 1) {
-                    startActivity(new Intent(RemindActivity.this, AddNewRemindActivity.class));
+                    UIOpenHelper.openAddNewRemindActivity(RemindActivity.this);
                 }
             }
         });

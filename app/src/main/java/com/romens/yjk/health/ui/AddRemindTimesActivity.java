@@ -59,13 +59,13 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         container.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView = new ListView(this);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setSelection(R.drawable.list_selector);
         TextInfoCell cell=new TextInfoCell(this);
         cell.setBackgroundColor(Color.WHITE);
         cell.setText("长按删除单条记录");
         listView.addFooterView(cell);
         timesAdapter = new TimesAdapter(timesData, this, this);
         listView.setAdapter(timesAdapter);
+        listView.setSelector(R.drawable.list_selector);
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         FloatingActionButton actionButton = new FloatingActionButton(this);
