@@ -8,13 +8,13 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 151226
-        versionName "1.5.8"
+        versionCode 160105
+        versionName "1.6.1"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
                                 APK_CHANNEL_VALUE: "4;romens",
                                 IM_SDK_APPKEY    : "romens#kfly20jp",
-                                UMENG_APPKEY     : "567cb5da67e58e01600062cb",
+                                PGYER_APPID      : "c369efd3284683568819c1767a19c5ed",
                                 MTA_APPKEY       : "AQ5Q612ZPGBQ",
                                 LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac"]
 
@@ -33,7 +33,7 @@ android {
             manifestPlaceholders = [CHANNEL          : "yjk",
                                     APK_CHANNEL_VALUE: "19;romens",
                                     IM_SDK_APPKEY    : "romens#wsc609129",
-                                    UMENG_APPKEY     : "567cb5da67e58e01600062cb",
+                                    PGYER_APPID      : "c369efd3284683568819c1767a19c5ed",
                                     MTA_APPKEY       : "AQ5Q612ZPGBQ",
                                     LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac"]
         }
@@ -42,7 +42,7 @@ android {
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
                                     APK_CHANNEL_VALUE: "4;njxs",
                                     IM_SDK_APPKEY    : "romens#kfly20jp",
-                                    UMENG_APPKEY     : "567cb548e0f55a690d000fc4",
+                                    PGYER_APPID      : "99bf48ef0effc80d5a611179ee675fc1",
                                     MTA_APPKEY       : "APZ5T57IF1YH",
                                     LOCATION_SDK_KEY : "d6aa411b6b1a70541e2d818c91da3e0e"]
         }
@@ -51,7 +51,7 @@ android {
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     APK_CHANNEL_VALUE: "20;rmtt",
                                     IM_SDK_APPKEY    : "romens#yjkim8jrgju",
-                                    UMENG_APPKEY     : "567bb51fe0f55afcaf002121",
+                                    PGYER_APPID      : "567bb51fe0f55afcaf002121",
                                     MTA_APPKEY       : "AK6C73XIU4QY",
                                     LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0\t"]
         }

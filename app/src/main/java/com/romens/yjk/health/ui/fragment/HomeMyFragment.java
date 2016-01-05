@@ -28,6 +28,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
+import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
@@ -119,7 +120,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     userEntity = null;
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
-
+                } else if (position == checkUpdateRow) {
+                    MonitorHelper.checkUpdate(getActivity());
                 }
             }
         });
