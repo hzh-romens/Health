@@ -78,6 +78,7 @@ public class UIOpenHelper {
         }
     }
 
+    //打开搜索页面
     public static void openSearchActivity(Context context) {
         Intent intent = new Intent(context, SearchActivity.class);
         context.startActivity(intent);
