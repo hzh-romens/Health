@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="theme_primary">#ff0288d1</color>
-    <color name="theme_primary_dark">#ff0277bd</color>
-    <color name="theme_primary_light">#ff039be5</color>
+    <color name="theme_primary">#ff009688</color>
+    <color name="theme_primary_dark">#ff00897b</color>
+    <color name="theme_primary_light">#ff80cbc4</color>
 
     <color name="theme_accent_1">@color/md_red_500</color>
     <color name="theme_accent_1_light">@color/md_red_200</color>
 
     <color name="theme_accent_2">@color/md_red_500</color>
 
-    <color name="text_primary">#ff2f8cc9</color>
+    <color name="text_primary">#ff009688</color>
 
     <color name="btn_primary">@color/theme_primary</color>
     <color name="btn_primary_light">#ffe5e5e5</color>
