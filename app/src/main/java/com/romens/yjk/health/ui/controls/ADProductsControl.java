@@ -1,9 +1,11 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.Gravity;
 
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.model.ADProductListEntity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADProductsCell;
@@ -26,8 +28,19 @@ public class ADProductsControl extends ADBaseControl {
     }
 
     @Override
-    public void bindViewHolder(Context context, ADHolder holder) {
+    public void bindViewHolder(final Context context, ADHolder holder) {
         ADProductsCell cell = (ADProductsCell) holder.itemView;
+        cell.setDelegate(new ADProductsCell.ADProductsDelegate() {
+            @Override
+            public void onGroupCellClick(Bundle arguments) {
+                onActionForGroup(context, arguments);
+            }
+
+            @Override
+            public void onChildCellClick(Bundle arguments) {
+                onActionForProduct(context, arguments);
+            }
+        });
         cell.setValue(entity);
     }
 

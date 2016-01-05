@@ -2,12 +2,19 @@ package com.romens.yjk.health.web;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
+import android.widget.Toast;
+
+import com.romens.yjk.health.helper.UIOpenHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by siery on 15/9/9.
  */
-public class ADWebJsInterface  extends JsBaseInterface {
+public class ADWebJsInterface extends JsBaseInterface {
     private Handler handler = new Handler();
 
     public ADWebJsInterface(Context context) {
@@ -15,18 +22,16 @@ public class ADWebJsInterface  extends JsBaseInterface {
     }
 
     @JavascriptInterface
-    public String query() {
-//        JSONStringer jsonStringer = new JSONStringer();
-//        try {
-//            return jsonStringer.object().key("title").value(noticeEntity.getTitle())
-//                    .key("content").value(noticeEntity.getValue())
-//                    .key("auth").value(String.format("发布人:%s", noticeEntity.getAuthor()))
-//                    .key("sendDate").value(noticeEntity.getCreateDate())
-//                    .endObject().toString();
-//        } catch (JSONException e) {
-//            return "";
-//        }
-        return "";
+    public void openGoods(String data) {
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            String id = jsonObject.getString("ID");
+            if (!TextUtils.isEmpty(id)) {
+                UIOpenHelper.openMedicineActivity(context, id);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -43,6 +48,6 @@ public class ADWebJsInterface  extends JsBaseInterface {
 
     @Override
     protected String onCreateJsName() {
-        return "adWebJsInterface";
+        return "Mobile";
     }
 }

@@ -3,16 +3,10 @@ package com.romens.yjk.health;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.PowerManager;
-import android.text.TextUtils;
 
-import com.easemob.chat.EMChat;
-import com.pgyersdk.crash.PgyCrashManager;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
-import com.romens.yjk.health.config.AppConfig;
-import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.config.PgyConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.im.IMHXSDKHelper;
 
@@ -27,8 +21,6 @@ public class MyApplication extends ApplicationLoader {
         super.onCreate();
         //初始化环信SDK
         IMHXSDKHelper.getInstance().onInit(MyApplication.applicationContext);
-        //初始化蒲公英SDK
-        PgyCrashManager.register(this, PgyConfig.APP_ID);
         UserConfig.loadConfig();
     }
 

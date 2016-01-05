@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
@@ -27,12 +26,16 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.AccountSettingActivity;
+import com.romens.yjk.health.ui.CollectActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
+import com.romens.yjk.health.ui.cells.AccountCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -117,11 +120,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
 
-                }else if(position==pwdRow){
-                    //跳转到密码修改
-                    Toast.makeText(getActivity(),"敬请期待",Toast.LENGTH_SHORT).show();
-                }else if(position==memberRow){
-                    UIOpenHelper.openMemberActivity(getActivity());
                 }
             }
         });
@@ -152,15 +150,11 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             userProfileRow = rowCount++;
             userInfoSectionRow1 = rowCount++;
             accountRow = rowCount++;
-            //添加一个会员绑定
-            memberRow=rowCount++;
             myOrderRow = rowCount++;
             collectRow = rowCount++;
             historyRow = rowCount++;
             addressRow = rowCount++;
             exitRow = rowCount++;
-
-
         } else {
             loginRow = rowCount++;
             userProfileRow = -1;
@@ -173,17 +167,14 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             accountRow = -1;
             helpRow = -1;
             feedbackRow = -1;
-            memberRow=-1;
+
         }
 
         otherInfoSectionRow1 = rowCount++;
         if (userEntity != null) {
-            //添加一个密码修改
-            pwdRow=rowCount++;
             helpRow = rowCount++;
             feedbackRow = rowCount++;
         } else {
-            pwdRow=-1;
             helpRow = -1;
             feedbackRow = -1;
         }
@@ -215,9 +206,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
     private int checkUpdateRow;
     private int appInfoRow;
-
-    private int memberRow;
-    private int pwdRow;
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
@@ -269,9 +257,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 return 0;
             } else if (i == userInfoSectionRow1) {
                 return 2;
-            } else if (i == addressRow || i == checkUpdateRow || i == myOrderRow || i == helpRow || i == exitRow||i==pwdRow) {
+            } else if (i == addressRow || i == checkUpdateRow || i == myOrderRow || i == helpRow || i == exitRow) {
                 return 3;
-            } else if (i == collectRow || i == historyRow || i == accountRow || i == feedbackRow||i==memberRow) {
+            } else if (i == collectRow || i == historyRow || i == accountRow || i == feedbackRow) {
                 return 3;
             } else if (i == appInfoRow) {
                 return 4;
@@ -344,10 +332,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == exitRow) {
                     cell.setTextColor(0xffd01716);
                     cell.setIconText(R.drawable.ic_exit, "退出登录", true);
-                }else if(position==memberRow){
-                    cell.setIconTextAndNav(R.drawable.ic_member, "会员卡绑定", R.drawable.ic_chevron_right_grey600_24dp, true);
-                }else if(position==pwdRow){
-                    cell.setIconTextAndNav(R.drawable.ic_pwd, "修改密码", R.drawable.ic_chevron_right_grey600_24dp, true);
                 }
             } else if (type == 4) {
                 if (view == null) {

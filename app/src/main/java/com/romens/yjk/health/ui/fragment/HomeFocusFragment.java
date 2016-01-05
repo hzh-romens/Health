@@ -343,7 +343,7 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
         HistoryDao historyDao = DBInterface.instance().openReadableDb().getHistoryDao();
         List<HistoryEntity> historyEntities = historyDao.queryBuilder().limit(3).list();
 
-        ADProductListEntity entity = new ADProductListEntity("", "您浏览过的相关商品", "", "");
+        ADProductListEntity entity = new ADProductListEntity("", "您浏览过的相关商品", "", "", "ACTION_HISTORY");
         int size = historyEntities == null ? 0 : historyEntities.size();
         if (size >= 3) {
             ADProductEntity entityTemp;
@@ -488,9 +488,14 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
                 return null;
             }
             int sortIndex = jsonObject.getInt("SORTINDEX");
+            String action = "0";
+            if (valueJsonObject.has("ACTION")) {
+                action = valueJsonObject.getString("ACTION");
+            }
             ADProductListEntity entity = new ADProductListEntity(valueJsonObject.getString("ID"), valueJsonObject.getString("NAME")
                     , valueJsonObject.getString("DESC")
-                    , valueJsonObject.getString("ADURL"));
+                    , valueJsonObject.getString("ADURL"),
+                    action);
             entity.setLayoutStyle(valueJsonObject.getString("STYLE"));
             JSONArray jsonArray = new JSONArray(valueJsonObject.getString("DATA"));
             int size = jsonArray.length();
@@ -550,7 +555,7 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     private ADImageEntity createADImageEntityFromJsonObject(JSONObject jsonObject) {
         try {
-            ADImageEntity entity = new ADImageEntity(jsonObject.getString("ID"), jsonObject.getString("ICONURL"));
+            ADImageEntity entity = new ADImageEntity(jsonObject.getString("ID"), jsonObject.getString("ICONURL"),jsonObject.getString("VALUE"));
             entity.setType(jsonObject.getInt("TYPE"));
             entity.setAction(jsonObject.getString("ACTION"));
             return entity;

@@ -7,6 +7,7 @@ public class FacadeConfig {
     private static final int MODE_TEST = 0;
     private static final int MODE_RELEASE = 1;
     private static final int facadeMode = MODE_RELEASE;
+    public static final String HOST = "http://115.28.244.190";
     public static final String URL = "http://115.28.244.190/index.php/";
 
     public static final String URL_TEST = "http://115.28.244.190/index.php/";
