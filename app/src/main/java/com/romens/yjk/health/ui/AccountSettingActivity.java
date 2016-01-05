@@ -36,7 +36,6 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.PersonalEntity;
-import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,7 +104,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                 } else if (position == birthdayRow) {
                     showDatePickerDialog();
                 } else if (position == detailRow) {
-                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this, entity);
+                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this);
                 }
             }
         });
