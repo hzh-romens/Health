@@ -798,7 +798,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 }
                 MedicineStoreCell cell = (MedicineStoreCell) view;
                 if (i == storeRow) {
-                    cell.setValue("", currMedicineGoodsItem.shopName, currMedicineGoodsItem.shopAddress, currMedicineGoodsItem.storeCount, currMedicineGoodsItem.userPrice, true);
+                    cell.setValue(currMedicineGoodsItem.shopIcon, currMedicineGoodsItem.shopName, currMedicineGoodsItem.shopAddress, currMedicineGoodsItem.storeCount, currMedicineGoodsItem.userPrice, true);
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -808,7 +808,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else {
                     int storeIndex = i - otherStoresBeginRow;
                     MedicineSaleStoreEntity storeEntity = saleStoreEntities.get(storeIndex);
-                    cell.setValue("", storeEntity.name, storeEntity.address, storeEntity.storeCount, currMedicineGoodsItem.userPrice, i != otherStoresEndRow);
+                    cell.setValue(storeEntity.shopIcon, storeEntity.name, storeEntity.address, storeEntity.storeCount, currMedicineGoodsItem.userPrice, i != otherStoresEndRow);
                     cell.setDistance(storeEntity.distance);
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override

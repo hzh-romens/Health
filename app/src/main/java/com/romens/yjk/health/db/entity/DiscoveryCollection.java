@@ -21,7 +21,9 @@ public class DiscoveryCollection {
         if (TextUtils.isEmpty(key)) {
             return false;
         }
-        if (key.startsWith("intent")) {
+        if (key.startsWith("http")) {
+
+        }else{
             String value = entity.getValue();
             if (!value.equals(PharmicCounseling.value)) {
                 if (!TextUtils.isEmpty(value)) {
@@ -29,7 +31,6 @@ public class DiscoveryCollection {
                     return true;
                 }
             }
-
         }
         return false;
     }
@@ -92,7 +93,7 @@ public class DiscoveryCollection {
 
     public static final class PharmicCounseling {
         public static final String key = "intent_pharmic_counseling";
-        public static final String value = "com.romens.rhealth.PHARMICCOUNSELING";
+        public static final String value = "";
         public static final int iconRes = R.drawable.attach_counsel_states;
         public static final String iconUrl = "";
         public static final String name = "用药咨询";

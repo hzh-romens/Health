@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -31,6 +32,7 @@ import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -114,6 +116,24 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
+    /**
+     * 打开web页面
+     *
+     * @param context
+     * @param title   标题
+     * @param url     链接
+     */
+    public static void openWebActivity(Context context, String title, String url) {
+        Intent intent = new Intent(context, ADWebActivity.class);
+        Bundle arguments = new Bundle();
+        if(!TextUtils.isEmpty(title)) {
+            arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
+        }
+        arguments.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
+        intent.putExtras(arguments);
+        context.startActivity(intent);
+    }
+
     public static void openFavoritesActivity(Context context) {
         Intent intent = new Intent(context, FavoritesActivity.class);
         context.startActivity(intent);
@@ -138,9 +158,11 @@ public class UIOpenHelper {
         context.startActivityForResult(intent, requestCode);
     }
 
-    public static void openUserLabelsActivity(Context context) {
+    //帐号管理打开编辑详细信息页面
+    public static void openUserLabelsActivity(Activity context, Serializable entity) {
         Intent intent = new Intent(context, UserLabelsActivity.class);
-        context.startActivity(intent);
+        intent.putExtra("personEntity", entity);
+        context.startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING2_TO_EDITACTIVITY);
     }
 
     /**
@@ -226,7 +248,7 @@ public class UIOpenHelper {
         ((Activity) context).finish();
     }
 
-    public static void openHistoryActivity(Context context){
+    public static void openHistoryActivity(Context context) {
         Intent intent = new Intent(context, HistoryActivity.class);
         context.startActivity(intent);
     }

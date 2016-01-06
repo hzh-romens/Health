@@ -226,12 +226,6 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
 
-
-        <activity
-            android:name=".ui.MedicinalDetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.ShopCarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -260,11 +254,7 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
         </activity>
-        <activity
-            android:name=".ui.AddRemindActivityNew"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.RemindDetailActivityNew"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -368,30 +358,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <activity
-            android:name=".ui.SetDiseaseActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        <activity
-            android:name=".ui.SetNameActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        <activity
-            android:name=".ui.SetSexActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        <activity
-            android:name=".ui.SetDietActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".ui.FamilyMemberActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

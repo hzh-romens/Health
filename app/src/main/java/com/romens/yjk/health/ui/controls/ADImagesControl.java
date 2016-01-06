@@ -47,6 +47,7 @@ public class ADImagesControl extends ADBaseControl {
     private void handleImageClick(Context context, ADImageEntity entity) {
         Bundle arguments=new Bundle();
         arguments.putString("ID",entity.id);
+        arguments.putString("NAME", entity.getName());
         arguments.putString("VALUE",entity.value);
         arguments.putInt("TYPE", entity.getType());
         arguments.putString("ACTION", entity.getAction());
