@@ -32,6 +32,7 @@ import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -157,9 +158,11 @@ public class UIOpenHelper {
         context.startActivityForResult(intent, requestCode);
     }
 
-    public static void openUserLabelsActivity(Context context) {
+    //帐号管理打开编辑详细信息页面
+    public static void openUserLabelsActivity(Activity context, Serializable entity) {
         Intent intent = new Intent(context, UserLabelsActivity.class);
-        context.startActivity(intent);
+        intent.putExtra("personEntity", entity);
+        context.startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING2_TO_EDITACTIVITY);
     }
 
     /**
