@@ -53,7 +53,7 @@ android {
                                     IM_SDK_APPKEY    : "romens#yjkim8jrgju",
                                     PGYER_APPID      : "567bb51fe0f55afcaf002121",
                                     MTA_APPKEY       : "AK6C73XIU4QY",
-                                    LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0\t"]
+                                    LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0"]
         }
     }
     signingConfigs {

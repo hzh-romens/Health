@@ -21,12 +21,13 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
-import com.romens.android.ui.cells.EmptyCell;
+import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
-import com.romens.android.ui.cells.TextDetailSettingsCell;
 import com.romens.android.ui.cells.TextIconCell;
+import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
@@ -175,6 +176,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         }
 
         otherInfoSectionRow1 = rowCount++;
+        otherSectionRow = rowCount++;
         if (userEntity != null) {
             helpRow = rowCount++;
             feedbackRow = rowCount++;
@@ -199,16 +201,14 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
     private int otherInfoSectionRow1;
 
-
+    private int accountRow;
     private int collectRow;
     private int historyRow;
     private int exitRow;
 
-    private int accountRow;
+    private int otherSectionRow;
     private int helpRow;
     private int feedbackRow;
-
-
     private int checkUpdateRow;
 
     private int supportRow;
@@ -263,21 +263,25 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 return 0;
             } else if (i == userInfoSectionRow1) {
                 return 2;
-            } else if (i == addressRow || i == checkUpdateRow || i == myOrderRow || i == helpRow || i == exitRow) {
+            } else if (i == addressRow || i == myOrderRow || i == exitRow) {
                 return 3;
-            } else if (i == collectRow || i == historyRow || i == accountRow || i == feedbackRow) {
+            } else if (i == collectRow || i == historyRow || i == accountRow) {
                 return 3;
             } else if (i == supportRow) {
                 return 4;
             } else if (i == loginRow) {
                 return 5;
+            } else if (i == otherSectionRow) {
+                return 6;
+            } else if (i == checkUpdateRow || i == feedbackRow || i == helpRow) {
+                return 7;
             }
             return 1;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 6;
+            return 8;
         }
 
         @Override
@@ -303,8 +307,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     view = new TextIconCell(adapterContext);
                 }
                 TextIconCell cell = (TextIconCell) view;
+                cell.setBackgroundResource(R.drawable.greydivider);
                 if (position == userInfoSectionRow1) {
-                    cell.setBackgroundColor(getActivity().getResources().getColor(R.color.second_title));
                     cell.setIconText(R.drawable.ic_person, "个人中心", false);
                 }
             } else if (type == 3) {
@@ -314,25 +318,15 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
                 TextIconCell cell = (TextIconCell) view;
                 cell.setTextColor(0xff212121);
+                cell.setValueTextColor(ResourcesConfig.textPrimary);
                 if (position == addressRow) {
                     cell.setIconTextAndNav(R.drawable.ic_address2, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
-                } else if (position == checkUpdateRow) {
-                    try {
-                        PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
-                        cell.setIconTextAndValue(R.drawable.ic_update, "检查更新", "c" + pInfo.versionCode, true);
-                    } catch (PackageManager.NameNotFoundException e) {
-                        cell.setIconText(R.drawable.ic_update, "检查更新", true);
-                    }
                 } else if (position == myOrderRow) {
                     cell.setIconTextAndNav(R.drawable.ic_order, "我的订单", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == collectRow) {
                     cell.setIconTextAndNav(R.drawable.ic_favorite_person, "我的收藏", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == historyRow) {
                     cell.setIconTextAndNav(R.drawable.ic_history, "历史浏览", R.drawable.ic_chevron_right_grey600_24dp, true);
-                } else if (position == feedbackRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_advice, "意见反馈", R.drawable.ic_chevron_right_grey600_24dp, true);
-                } else if (position == helpRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_help, "帮助", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == accountRow) {
                     cell.setIconTextAndNav(R.drawable.ic_account, "账户管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == exitRow) {
@@ -374,6 +368,32 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                             startActivity(intent);
                         }
                     });
+                }
+            } else if (type == 6) {
+                if (view == null) {
+                    view = new HeaderCell(adapterContext);
+                }
+                HeaderCell cell = (HeaderCell) view;
+                cell.setTextColor(ResourcesConfig.textPrimary);
+                if (position == otherSectionRow) {
+                    cell.setText("其他");
+                }
+            } else if (type == 7) {
+                if (view == null) {
+                    view = new TextSettingsCell(adapterContext);
+                }
+                TextSettingsCell cell = (TextSettingsCell) view;
+                if (position == helpRow) {
+                    cell.setTextAndIcon("帮助", R.drawable.ic_chevron_right_grey600_24dp, true);
+                } else if (position == feedbackRow) {
+                    cell.setTextAndIcon("意见反馈", R.drawable.ic_chevron_right_grey600_24dp, true);
+                } else if (position == checkUpdateRow) {
+                    try {
+                        PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
+                        cell.setTextAndValue("检查更新", "c" + pInfo.versionCode, true);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        cell.setText("检查更新", true);
+                    }
                 }
             }
             return view;

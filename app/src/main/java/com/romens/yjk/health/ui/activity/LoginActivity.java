@@ -1668,12 +1668,11 @@ public class LoginActivity extends BaseActivity {
     public class PhoneView extends SlideView {
         private MaterialEditText phoneField;
         private TextView orgField;
-        private boolean ignoreOnPhoneChange = false;
+        //private boolean ignoreOnPhoneChange = false;
         private boolean nextPressed = false;
 
         public PhoneView(Context context) {
             super(context);
-            PhoneFormat.getInstance().init("86");
             setOrientation(VERTICAL);
             LinearLayout linearLayout = new LinearLayout(context);
             linearLayout.setOrientation(HORIZONTAL);
@@ -1689,7 +1688,6 @@ public class LoginActivity extends BaseActivity {
             phoneField.setPrimaryColor(ResourcesConfig.textPrimary);
             phoneField.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NONE);
             phoneField.setInputType(InputType.TYPE_CLASS_PHONE);
-            AndroidUtilities.clearCursorDrawable(phoneField);
             phoneField.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             phoneField.setMaxLines(1);
             phoneField.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
@@ -1699,53 +1697,53 @@ public class LoginActivity extends BaseActivity {
             layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
             layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
             phoneField.setLayoutParams(layoutParams);
-            phoneField.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    if (ignoreOnPhoneChange) {
-                        return;
-                    }
-                    if (count == 1 && after == 0 && s.length() > 1) {
-                        String phoneChars = "0123456789";
-                        String str = s.toString();
-                        String substr = str.substring(start, start + 1);
-                        if (!phoneChars.contains(substr)) {
-                            ignoreOnPhoneChange = true;
-                            StringBuilder builder = new StringBuilder(str);
-                            int toDelete = 0;
-                            for (int a = start; a >= 0; a--) {
-                                substr = str.substring(a, a + 1);
-                                if (phoneChars.contains(substr)) {
-                                    break;
-                                }
-                                toDelete++;
-                            }
-                            builder.delete(Math.max(0, start - toDelete), start + 1);
-                            str = builder.toString();
-                            if (PhoneFormat.strip(str).length() == 0) {
-                                phoneField.setText("");
-                            } else {
-                                phoneField.setText(str);
-                                updatePhoneField();
-                            }
-                            ignoreOnPhoneChange = false;
-                        }
-                    }
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (ignoreOnPhoneChange) {
-                        return;
-                    }
-                    updatePhoneField();
-                }
-            });
+//            phoneField.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                    if (ignoreOnPhoneChange) {
+//                        return;
+//                    }
+//                    if (count == 1 && after == 0 && s.length() > 1) {
+//                        String phoneChars = "0123456789";
+//                        String str = s.toString();
+//                        String substr = str.substring(start, start + 1);
+//                        if (!phoneChars.contains(substr)) {
+//                            ignoreOnPhoneChange = true;
+//                            StringBuilder builder = new StringBuilder(str);
+//                            int toDelete = 0;
+//                            for (int a = start; a >= 0; a--) {
+//                                substr = str.substring(a, a + 1);
+//                                if (phoneChars.contains(substr)) {
+//                                    break;
+//                                }
+//                                toDelete++;
+//                            }
+//                            builder.delete(Math.max(0, start - toDelete), start + 1);
+//                            str = builder.toString();
+//                            if (PhoneFormat.strip(str).length() == 0) {
+//                                phoneField.setText("");
+//                            } else {
+//                                phoneField.setText(str);
+//                                updatePhoneField();
+//                            }
+//                            ignoreOnPhoneChange = false;
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    if (ignoreOnPhoneChange) {
+//                        return;
+//                    }
+//                    updatePhoneField();
+//                }
+//            });
             phoneField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -1812,7 +1810,7 @@ public class LoginActivity extends BaseActivity {
         }
 
         private void updatePhoneField() {
-            ignoreOnPhoneChange = true;
+            //ignoreOnPhoneChange = true;
             try {
                 String phone = PhoneFormat.getInstance().format("+86" + phoneField.getText().toString());
                 int idx = phone.indexOf(" ");
@@ -1825,7 +1823,7 @@ public class LoginActivity extends BaseActivity {
             } catch (Exception e) {
                 FileLog.e("romens", e);
             }
-            ignoreOnPhoneChange = false;
+            //ignoreOnPhoneChange = false;
         }
 
         public static final String PARAM_PHONE = "PhoneNumber";

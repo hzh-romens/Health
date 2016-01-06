@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.helper.FormatHelper;
 import com.romens.yjk.health.helper.MedicareHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
@@ -16,6 +18,7 @@ import com.romens.yjk.health.ui.cells.ADHolder;
  * Created by siery on 15/8/14.
  */
 public abstract class ADBaseControl {
+    public static final String ACTION_WEB_AD = "WEB_AD";
     public int sortIndex;
 
     public abstract void bindViewHolder(Context context, ADHolder holder);
@@ -49,18 +52,20 @@ public abstract class ADBaseControl {
     public static void onActonForImageAD(Context context, Bundle arguments) {
         int type = arguments.getInt("TYPE");
         if (type == 1) {
-            String value = arguments.getString("VALUE");
-
-            if (TextUtils.equals("YBZQ", value)) {
+            String id = arguments.getString("ID");
+            if (TextUtils.equals("YBZQ", id)) {
                 //跳转到医保专区
-                ComponentName component=new ComponentName(context,MedicineGroupActivity.class.getName());
+                ComponentName component = new ComponentName(context, MedicineGroupActivity.class.getName());
                 Intent intent = new Intent();
                 intent.setComponent(component);
                 intent.putExtra("title", "医保专区");
                 context.startActivity(intent);
             }
-        }else{
+        } else {
+            String action = arguments.getString("ACTION");
+            if (TextUtils.equals(ACTION_WEB_AD, action)) {
 
+            }
         }
     }
 
@@ -81,5 +86,16 @@ public abstract class ADBaseControl {
             String medicineId = arguments.getString("ID", "");
             UIOpenHelper.openMedicineActivity(context, medicineId);
         }
+    }
+
+    public static String formatADWebUrl(String id, String value) {
+        String url = value;
+        if (!TextUtils.isEmpty(id)) {
+
+        }
+        if (url.startsWith("/")) {
+            url = FacadeConfig.HOST + url;
+        }
+        return url;
     }
 }
