@@ -17,6 +17,8 @@ public class MedicineSaleStoreEntity {
 
     public final String shopNo;
 
+    public final String shopIcon;
+
     public final double lat;
 
     public final double lon;
@@ -56,6 +58,7 @@ public class MedicineSaleStoreEntity {
         name = jsonObject.getString("SHOPNAME");
         address = jsonObject.getString("ADDRESS");
         shopNo = jsonObject.getString("SHOPNO");
+        shopIcon= jsonObject.getString("BRANCHIMAGEPATH");
         lat = jsonObject.getDouble("LAT");
         lon = jsonObject.getDouble("LON");
         distance = jsonObject.getDouble("DISTANCE");

@@ -556,9 +556,14 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     private ADImageEntity createADImageEntityFromJsonObject(JSONObject jsonObject) {
         try {
-            ADImageEntity entity = new ADImageEntity(jsonObject.getString("ID"), jsonObject.getString("ICONURL"),jsonObject.getString("VALUE"));
+            ADImageEntity entity = new ADImageEntity(jsonObject.getString("ID"), jsonObject.getString("ICONURL"), jsonObject.getString("VALUE"));
             entity.setType(jsonObject.getInt("TYPE"));
             entity.setAction(jsonObject.getString("ACTION"));
+            if (jsonObject.has("NAME")) {
+                entity.setName(jsonObject.getString("NAME"));
+            } else {
+                entity.setName("");
+            }
             return entity;
         } catch (JSONException e) {
             return null;

@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.helper.FormatHelper;
-import com.romens.yjk.health.helper.MedicareHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
+
+import java.util.List;
 
 /**
  * Created by siery on 15/8/14.
@@ -64,7 +66,11 @@ public abstract class ADBaseControl {
         } else {
             String action = arguments.getString("ACTION");
             if (TextUtils.equals(ACTION_WEB_AD, action)) {
-
+                String id = arguments.getString("ID");
+                String value = arguments.getString("VALUE");
+                String url = formatADWebUrl(id, value);
+                String name = arguments.getString("NAME");
+                UIOpenHelper.openWebActivity(context, name, url);
             }
         }
     }
@@ -91,11 +97,24 @@ public abstract class ADBaseControl {
     public static String formatADWebUrl(String id, String value) {
         String url = value;
         if (!TextUtils.isEmpty(id)) {
-
+            List<String> ids = FormatHelper.stringToList(id);
+            int size = ids.size();
+            String valueTemp;
+            for (int i = 0; i < size; i++) {
+                valueTemp = getPrimaryIdValue(ids.get(i));
+                url = url.replace("{" + i + "}", valueTemp);
+            }
         }
         if (url.startsWith("/")) {
             url = FacadeConfig.HOST + url;
         }
         return url;
+    }
+
+    public static String getPrimaryIdValue(String id) {
+        if (TextUtils.equals("操作人员", id)) {
+            return UserConfig.getClientUserId();
+        }
+        return id;
     }
 }

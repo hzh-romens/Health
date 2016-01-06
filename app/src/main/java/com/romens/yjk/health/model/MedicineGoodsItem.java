@@ -42,6 +42,7 @@ public class MedicineGoodsItem {
 
     //shop
     public final String shopId;
+    public final String shopIcon;
     public final String shopName;
     public final String shopAddress;
     public final int storeCount;
@@ -69,6 +70,7 @@ public class MedicineGoodsItem {
         }
 
         shopId = jsonObject.getString("SHOPID");
+        shopIcon= jsonObject.getString("BRANCHIMAGEPATH");
         shopName = jsonObject.getString("SHOPNAME");
         shopAddress = jsonObject.getString("SHOPADDRESS");
         storeCount = jsonObject.getInt("STORECOUNT");
