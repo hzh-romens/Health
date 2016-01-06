@@ -104,7 +104,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                 } else if (position == birthdayRow) {
                     showDatePickerDialog();
                 } else if (position == detailRow) {
-                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this);
+                    UIOpenHelper.openUserLabelsActivity(AccountSettingActivity.this, entity);
                 }
             }
         });
