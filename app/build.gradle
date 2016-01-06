@@ -8,14 +8,15 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 151226
-        versionName "1.5.8"
+        versionCode 160105
+        versionName "1.6.1"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
                                 APK_CHANNEL_VALUE: "4;romens",
                                 IM_SDK_APPKEY    : "romens#kfly20jp",
-                                UMENG_APPKEY     : "567cb5da67e58e01600062cb",
-                                MTA_APPKEY       : "AQ5Q612ZPGBQ"]
+                                PGYER_APPID      : "c369efd3284683568819c1767a19c5ed",
+                                MTA_APPKEY       : "AQ5Q612ZPGBQ",
+                                LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac"]
 
     }
 
@@ -28,25 +29,31 @@ android {
 
     productFlavors {
         channel_yjk {
+            applicationId "com.romens.yjk.health"
             manifestPlaceholders = [CHANNEL          : "yjk",
                                     APK_CHANNEL_VALUE: "19;romens",
                                     IM_SDK_APPKEY    : "romens#wsc609129",
-                                    UMENG_APPKEY     : "567cb5da67e58e01600062cb",
-                                    MTA_APPKEY       : "AQ5Q612ZPGBQ"]
+                                    PGYER_APPID      : "c369efd3284683568819c1767a19c5ed",
+                                    MTA_APPKEY       : "AQ5Q612ZPGBQ",
+                                    LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac"]
         }
         channel_nj_xszk {
+            applicationId "com.romens.yjk.health.njxszk"
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
                                     APK_CHANNEL_VALUE: "4;njxs",
                                     IM_SDK_APPKEY    : "romens#kfly20jp",
-                                    UMENG_APPKEY     : "567cb548e0f55a690d000fc4",
-                                    MTA_APPKEY       : "APZ5T57IF1YH"]
+                                    PGYER_APPID      : "99bf48ef0effc80d5a611179ee675fc1",
+                                    MTA_APPKEY       : "APZ5T57IF1YH",
+                                    LOCATION_SDK_KEY : "d6aa411b6b1a70541e2d818c91da3e0e"]
         }
         channel_hy_rmtt {
+            applicationId "com.romens.yjk.health.hyrmtt"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     APK_CHANNEL_VALUE: "20;rmtt",
                                     IM_SDK_APPKEY    : "romens#yjkim8jrgju",
-                                    UMENG_APPKEY     : "567bb51fe0f55afcaf002121",
-                                    MTA_APPKEY       : "AK6C73XIU4QY"]
+                                    PGYER_APPID      : "567bb51fe0f55afcaf002121",
+                                    MTA_APPKEY       : "AK6C73XIU4QY",
+                                    LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0\t"]
         }
     }
     signingConfigs {
@@ -68,13 +75,13 @@ android {
     buildTypes {
         debug {
             //manifestPlaceholders = [LOCATION_SDK_KEY: "7827d8503aac9c36d00ccae581aa84a6"]
-            manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
+            //manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             debuggable true
             signingConfig signingConfigs.debug
         }
         release {
             //manifestPlaceholders = [LOCATION_SDK_KEY: "f22aabde9a3424ab5ac5e23bafaf5bad"]
-            manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
+            //manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             minifyEnabled true
             shrinkResources true
             signingConfig signingConfigs.release
@@ -148,7 +155,6 @@ dependencies {
     compile project(':romens.android')
     compile project(':datetimepicker')
     compile project(':MaterialDesign')
-    compile project(':citys')
     compile files('libs/easemobchat_2.2.3.jar')
     compile 'com.commit451:PhotoView:1.2.4'
     compile 'com.melnykov:floatingactionbutton:1.0.7'
@@ -158,8 +164,6 @@ dependencies {
     compile files('libs/umeng-update-v2.6.0.1.jar')
     compile files('libs/mta-mid-sdk-2.20.jar')
     compile files('libs/mta-stats-sdk-2.0.4.jar')
-}
-
-repositories {
-    mavenCentral()
+    compile project(':romens.images')
+    compile 'com.facebook.fresco:fresco:0.8.1+'
 }

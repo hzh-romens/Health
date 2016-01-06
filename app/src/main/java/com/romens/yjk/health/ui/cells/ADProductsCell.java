@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.ADProductEntity;
@@ -27,7 +28,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
     private ADProductGroupCell groupCell;
 
     private FrameLayout content;
-    private BackupImageView backupImageView;
+    private CloudImageView backupImageView;
     private LinearLayout dataContainer;
 
     private int cellStyle = 0;
@@ -64,7 +65,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         content = new FrameLayout(context);
         addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, (ProductCell.defaultSize + 8)));
 
-        backupImageView = new BackupImageView(context);
+        backupImageView = CloudImageView.create(context);
         content.addView(backupImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER));
 
         dataContainer = new LinearLayout(context);
@@ -121,11 +122,11 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         if (TextUtils.isEmpty(adUrl)) {
             changeCellColor(Color.TRANSPARENT);
             backupImageView.setVisibility(INVISIBLE);
-            backupImageView.setImageBitmap(null);
+            backupImageView.setPlaceholderImage(null);
         } else if (adUrl.startsWith("http")) {
             changeCellColor(Color.TRANSPARENT);
             backupImageView.setVisibility(VISIBLE);
-            backupImageView.setImage(adUrl, null, null);
+            backupImageView.setImagePath(adUrl);
         } else if (adUrl.startsWith("#")) {
             int color = Color.parseColor(adUrl);
             changeCellColor(color);
@@ -134,7 +135,7 @@ public class ADProductsCell extends LinearLayout implements ProductCell.ProductC
         } else {
             changeCellColor(Color.TRANSPARENT);
             backupImageView.setVisibility(INVISIBLE);
-            backupImageView.setImageBitmap(null);
+            backupImageView.setPlaceholderImage(null);
         }
 
         dataContainer.removeAllViews();
