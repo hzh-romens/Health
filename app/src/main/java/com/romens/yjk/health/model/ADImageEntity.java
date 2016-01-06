@@ -6,6 +6,7 @@ package com.romens.yjk.health.model;
 public class ADImageEntity {
     public final String id;
     public final String iconValue;
+    private String name;
     public final String value;
 
     private int type;
@@ -15,6 +16,14 @@ public class ADImageEntity {
         this.id = id;
         this.iconValue = icon;
         this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setType(int _type) {

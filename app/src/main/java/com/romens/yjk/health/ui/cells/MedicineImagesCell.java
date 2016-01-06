@@ -14,6 +14,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.view.GuideViewPager;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.CommonConfig;
 
@@ -146,7 +147,7 @@ public class MedicineImagesCell extends FrameLayout {
 
         private Context adapterContext;
         private List<String> imagesList = new ArrayList<>();
-        private final List<BackupImageView> viewList = new ArrayList<>();
+        private final List<CloudImageView> viewList = new ArrayList<>();
 
         public GoodsImagesAdapter(Context context) {
             adapterContext = context;
@@ -160,7 +161,7 @@ public class MedicineImagesCell extends FrameLayout {
             final int size = imagesList.size();
             viewList.clear();
             for (int i = 0; i < size; i++) {
-                viewList.add(new BackupImageView(adapterContext));
+                viewList.add(CloudImageView.create(adapterContext));
             }
             notifyDataSetChanged();
         }
@@ -174,9 +175,9 @@ public class MedicineImagesCell extends FrameLayout {
         @Override
         public Object instantiateItem(final ViewGroup container, int position) {
             final String imageUrl = imagesList.get(position);
-            BackupImageView pager = viewList.get(position);
+            CloudImageView pager = viewList.get(position);
             container.addView(pager, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,defaultHeight));
-            pager.setImage(imageUrl, null, null);
+            pager.setImagePath(imageUrl);
             return pager;
         }
 

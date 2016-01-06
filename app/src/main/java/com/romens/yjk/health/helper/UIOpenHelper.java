@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -110,6 +111,24 @@ public class UIOpenHelper {
         Bundle arguments = new Bundle();
         arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, medicineName);
         arguments.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, targetUrl);
+        intent.putExtras(arguments);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 打开web页面
+     *
+     * @param context
+     * @param title   标题
+     * @param url     链接
+     */
+    public static void openWebActivity(Context context, String title, String url) {
+        Intent intent = new Intent(context, ADWebActivity.class);
+        Bundle arguments = new Bundle();
+        if(!TextUtils.isEmpty(title)) {
+            arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
+        }
+        arguments.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
         intent.putExtras(arguments);
         context.startActivity(intent);
     }
@@ -226,7 +245,7 @@ public class UIOpenHelper {
         ((Activity) context).finish();
     }
 
-    public static void openHistoryActivity(Context context){
+    public static void openHistoryActivity(Context context) {
         Intent intent = new Intent(context, HistoryActivity.class);
         context.startActivity(intent);
     }

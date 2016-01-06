@@ -23,6 +23,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.AvatarDrawable;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 
@@ -37,7 +38,7 @@ public class MedicineStoreCell extends FrameLayout {
     private TextView nameTextView;
     private TextView distanceTextView;
     private TextView addressTextView;
-    private BackupImageView imageView;
+    private CloudImageView imageView;
     private boolean needDivider;
     private static Paint paint;
     private AvatarDrawable avatarDrawable;
@@ -53,11 +54,8 @@ public class MedicineStoreCell extends FrameLayout {
             paint.setColor(0xffd9d9d9);
             paint.setStrokeWidth(1);
         }
-        imageView = new BackupImageView(context);
-        imageView.setRoundRadius(15);
-        imageView.setBackgroundResource(R.drawable.round_grey);
-        imageView.setSize(AndroidUtilities.dp(30), AndroidUtilities.dp(30));
-        imageView.getImageReceiver().setColorFilter(new PorterDuffColorFilter(0xff999999, PorterDuff.Mode.MULTIPLY));
+        imageView = CloudImageView.create(context);
+        imageView.setRound(20);
         addView(imageView, LayoutHelper.createFrame(40, 40, Gravity.TOP | (Gravity.LEFT), 17, 10, 0, 0));
 
         LinearLayout topContainer = new LinearLayout(context);
@@ -143,9 +141,10 @@ public class MedicineStoreCell extends FrameLayout {
             avatarDrawable = new AvatarDrawable();
             avatarDrawable.setSmallStyle(true);
         }
-        avatarDrawable.setInfo(0, "店");
+        avatarDrawable.setInfo(0, storeName);
         avatarDrawable.setColor(ResourcesConfig.primaryColor);
-        imageView.setImageUrl(storeIcon, null, avatarDrawable);
+        imageView.setPlaceholderImage(avatarDrawable);
+        imageView.setImagePath(storeIcon,AndroidUtilities.dp(40),AndroidUtilities.dp(40));
 
         distanceTextView.setText("");
         distanceTextView.setVisibility(View.GONE);
