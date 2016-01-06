@@ -1,15 +1,9 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
-import android.content.Intent;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.Toast;
 
-import com.romens.yjk.health.ui.PersonalInformationActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADIllustrationCell;
-import com.romens.yjk.health.ui.components.logger.Log;
 
 /**
  * Created by AUSU on 2015/10/14.

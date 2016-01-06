@@ -36,6 +36,7 @@ import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.adapter.CommitOrderAdapter;
 import com.romens.yjk.health.ui.utils.DialogUtils;
+import com.romens.yjk.health.ui.utils.UIUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,15 +55,15 @@ import java.util.Map;
 public class CommitOrderActivity extends BaseActivity implements IListDialogListener {
     private ExpandableListView expandableListView;
     private ImageView back;
-    private TextView address, tv_content, accounts, person;
+    private TextView address, sumMoneys, accounts, person;
     private CommitOrderAdapter adapter;
 
     private HashMap<String, List<ShopCarEntity>> childData;
     private List<ParentEntity> parentData;
     private int sumCount;
     private double sumMoney;
-    private String ADDRESSID; //送货地址id
-    private String DELIVERYTYPE;//送货方式
+    private String addressId; //送货地址id
+    private String deliveryType;//送货方式
 
 
     @Override
@@ -78,7 +79,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private void initView() {
         expandableListView = (ExpandableListView) findViewById(R.id.ev);
         back = (ImageView) findViewById(R.id.btn_back);
-        tv_content = (TextView) findViewById(R.id.tv_content);
+        sumMoneys = (TextView) findViewById(R.id.tv_content);
         accounts = (TextView) findViewById(R.id.accounts);
         addHeadView();
         needShowProgress("正在加载...");
@@ -139,10 +140,10 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                         } else {
                             Gson gson = new Gson();
                             JSONObject jsonObject = jsonArray.getJSONObject(0);
-                            String addressid = jsonObject.getString("ADDRESSID");
+                            String addressValue = jsonObject.getString("ADDRESSID");
                             person.setText("收货人：" + jsonObject.getString("RECEIVER") + " " + jsonObject.getString("CONTACTPHONE"));
                             address.setText(jsonObject.getString("ADDRESS"));
-                            ADDRESSID = addressid;
+                            addressId = addressValue;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -192,15 +193,15 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         }
 
         String counts = sumCount + "";
-        String moneys = "¥" + sumMoney;
-        tv_content.setText(getColorText(counts, moneys));
+        String moneys = "¥" + UIUtils.getDouvleValue(sumMoney + "");
+        sumMoneys.setText(getColorText(counts, moneys));
 
         //订单提交，并跳转到下一个页面
         accounts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 needShowProgress("正在提交..");
-                if (DELIVERYTYPE != null && !("".equals(DELIVERYTYPE))) {
+                if (deliveryType != null && !("".equals(deliveryType))) {
                     commitOrder(filteData, sumCount);
                 } else {
                     needHideProgress();
@@ -214,7 +215,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     public SpannableStringBuilder getColorText(String counts, String moneys) {
         String str1 = "共";
-        String str2 = "件  总金额";
+        String str2 = "件  总金额 ";
         String textStr = str1 + counts + str2 + moneys;
         SpannableStringBuilder builder = new SpannableStringBuilder(textStr);
         // ForegroundColorSpan 为文字前景色，BackgroundColorSpan为文字背景色
@@ -233,7 +234,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             AddressEntity addressEntity = (AddressEntity) data.getSerializableExtra("responseCommitEntity");
             person.setText("收货人：" + addressEntity.getRECEIVER() + " " + addressEntity.getCONTACTPHONE());
             address.setText(addressEntity.getADDRESS());
-            ADDRESSID = addressEntity.getADDRESSID();
+            addressId = addressEntity.getADDRESSID();
         } else if (resultCode == 3) {
             showBuilder();
         }
@@ -242,9 +243,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     //向服务器提交订单
     private void commitOrder(List<FilterChildEntity> data, final int count) {
-        String JSON_DATA = getJsonData(data, DELIVERYTYPE, ADDRESSID);
+        String jsonData = getJsonData(data, deliveryType, addressId);
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", JSON_DATA).build();
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", jsonData).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -292,8 +293,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid) {
         Gson gson = new Gson();
         CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
-        commitOrderEntity.setDELIVERYTYPE(DELIVERYTYPE);
-        commitOrderEntity.setADDRESSID(ADDRESSID);
+        commitOrderEntity.setDELIVERYTYPE(deliverytype);
+        commitOrderEntity.setADDRESSID(addressid);
         commitOrderEntity.setGOODSLIST(data);
         String JSON_DATA = gson.toJson(commitOrderEntity);
         return JSON_DATA;
@@ -375,7 +376,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             adapter.SetValue(charSequence.toString());
             for (int i = 0; i < result.size(); i++) {
                 if (charSequence.toString().equals(result.get(i).getNAME())) {
-                    DELIVERYTYPE = result.get(i).getGUID();
+                    deliveryType = result.get(i).getGUID();
                 }
             }
         }

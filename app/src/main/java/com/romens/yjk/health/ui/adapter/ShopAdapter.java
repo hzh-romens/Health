@@ -157,7 +157,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_parent, null);
             parentHolder = new ParentHolder();
-            parentHolder.empty_view = convertView.findViewById(R.id.empty_view);
+            parentHolder.emptyView = convertView.findViewById(R.id.empty_view);
             parentHolder.checkableFrameLayout = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
             parentHolder.storeName = (TextView) convertView.findViewById(R.id.name);
             convertView.setTag(parentHolder);
@@ -165,9 +165,9 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             parentHolder = (ParentHolder) convertView.getTag();
         }
         if (groupPosition == 0) {
-            parentHolder.empty_view.setVisibility(View.GONE);
+            parentHolder.emptyView.setVisibility(View.GONE);
         } else {
-            parentHolder.empty_view.setVisibility(View.VISIBLE);
+            parentHolder.emptyView.setVisibility(View.VISIBLE);
         }
         convertView.setClickable(true);
         ParentEntity fatherEntity = mFatherData.get(groupPosition);
@@ -195,28 +195,28 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_shop, null);
             holder = new ChildHolder();
-            holder.bt_add = (Button) convertView.findViewById(R.id.bt_add);
-            holder.bt_reduce = (Button) convertView.findViewById(R.id.bt_reduce);
+            holder.addButton = (Button) convertView.findViewById(R.id.bt_add);
+            holder.reduceButton = (Button) convertView.findViewById(R.id.bt_reduce);
             holder.checkBox = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
-            holder.iv_detail = (ImageView) convertView.findViewById(R.id.iv_detail);
-            holder.tv_num = (TextView) convertView.findViewById(R.id.et_num);
-            holder.tv_infor = (TextView) convertView.findViewById(R.id.tv_shop_infor);
-            holder.tv_realPrice = (TextView) convertView.findViewById(R.id.realPrice);
-            holder.tv_discountPrice = (TextView) convertView.findViewById(R.id.discountPrice);
-            holder.tv_store = (TextView) convertView.findViewById(R.id.tv_store);
+            holder.medicinalIcon = (ImageView) convertView.findViewById(R.id.iv_detail);
+            holder.numView = (TextView) convertView.findViewById(R.id.et_num);
+            holder.inforView = (TextView) convertView.findViewById(R.id.tv_shop_infor);
+            holder.realPriceView = (TextView) convertView.findViewById(R.id.realPrice);
+            holder.discountPriceView = (TextView) convertView.findViewById(R.id.discountPrice);
+            holder.storeView = (TextView) convertView.findViewById(R.id.tv_store);
             convertView.setTag(holder);
         } else {
             holder = (ChildHolder) convertView.getTag();
         }
         final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-        holder.tv_num.setText(entity.getBUYCOUNT() + "");
-        holder.tv_discountPrice.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
-        holder.tv_realPrice.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
-        holder.tv_realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        holder.tv_infor.setText(entity.getNAME());
-        holder.tv_store.setText(entity.getSPEC());
-        Drawable defaultDrawables = holder.iv_detail.getDrawable();
-        ImageManager.loadForView(mContext, holder.iv_detail, entity.getGOODURL(), defaultDrawables, defaultDrawables);
+        holder.numView.setText(entity.getBUYCOUNT() + "");
+        holder.discountPriceView.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
+        holder.realPriceView.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
+        holder.realPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        holder.inforView.setText(entity.getNAME());
+        holder.storeView.setText(entity.getSPEC());
+        Drawable defaultDrawables = holder.medicinalIcon.getDrawable();
+        ImageManager.loadForView(mContext, holder.medicinalIcon, entity.getGOODURL(), defaultDrawables, defaultDrawables);
         holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,11 +225,11 @@ public class ShopAdapter extends BaseExpandableListAdapter {
             }
         });
 
-        holder.tv_num.setOnClickListener(new View.OnClickListener() {
+        holder.numView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogUtils dialogUtils = new DialogUtils();
-                dialogUtils.show(holder.tv_num.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
+                dialogUtils.show(holder.numView.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
                     @Override
                     public void getGoodsNum(int num) {
                         int startNum = entity.getBUYCOUNT();
@@ -246,10 +246,10 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                                 updateData();
                             }
                             entity.setBUYCOUNT(num);
-                            holder.tv_num.setText(num + "");
+                            holder.numView.setText(num + "");
                         } else {
                             entity.setBUYCOUNT(num);
-                            holder.tv_num.setText(num + "");
+                            holder.numView.setText(num + "");
                         }
                     }
                 });
@@ -257,32 +257,32 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         });
 
         //增加
-        holder.bt_add.setOnClickListener(new View.OnClickListener() {
+        holder.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int num = Integer.parseInt(holder.tv_num.getText().toString());
+                int num = Integer.parseInt(holder.numView.getText().toString());
                 int startNum = num;
                 if (holder.checkBox.isChecked()) {
                     num++;
                     entity.setBUYCOUNT(num);
                     double addMoney = entity.getGOODSPRICE() * (num - startNum);
                     sumMoney = sumMoney + addMoney;
-                    holder.tv_num.setText(num + "");
+                    holder.numView.setText(num + "");
                     updateData();
                 } else {
                     num++;
                     entity.setBUYCOUNT(num);
-                    holder.tv_num.setText(num + "");
+                    holder.numView.setText(num + "");
                     updateData();
                 }
             }
         });
 
         //减少
-        holder.bt_reduce.setOnClickListener(new View.OnClickListener() {
+        holder.reduceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int num = Integer.parseInt(holder.tv_num.getText().toString());
+                int num = Integer.parseInt(holder.numView.getText().toString());
                 int startNum = num;
                 if (num > 1) {
                     if (holder.checkBox.isChecked()) {
@@ -290,12 +290,12 @@ public class ShopAdapter extends BaseExpandableListAdapter {
                         entity.setBUYCOUNT(num);
                         double addMoney = entity.getGOODSPRICE() * (startNum - num);
                         sumMoney = sumMoney - addMoney;
-                        holder.tv_num.setText(num + "");
+                        holder.numView.setText(num + "");
                         updateData();
                     } else {
                         num--;
                         entity.setBUYCOUNT(num);
-                        holder.tv_num.setText(num + "");
+                        holder.numView.setText(num + "");
                     }
                 }
             }
@@ -305,16 +305,16 @@ public class ShopAdapter extends BaseExpandableListAdapter {
 
     class ChildHolder {
         private CheckableFrameLayout checkBox;
-        private Button bt_reduce, bt_add;
-        private ImageView iv_detail;
-        private TextView tv_realPrice, tv_discountPrice, tv_infor;
-        private TextView tv_num, tv_store;
+        private Button reduceButton, addButton;
+        private ImageView medicinalIcon;
+        private TextView realPriceView, discountPriceView, inforView;
+        private TextView numView, storeView;
     }
 
     class ParentHolder {
         private CheckableFrameLayout checkableFrameLayout;
         private TextView storeName;
-        private View empty_view;
+        private View emptyView;
 
     }
 

@@ -48,29 +48,28 @@ import java.util.Map;
  */
 public class ShopListActivity extends BaseActivity implements View.OnClickListener {
     private ImageView back, other;
-    private EditText et_search;
+    private EditText searchEditor;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
     private ShopListAdapter shopListAdapter;
-    private RelativeLayout btn_switch;
+    private RelativeLayout switchButton;
     private boolean Expand = false;
     private String choice;
-    private int PAGE =0;
-    private final int COUNT = 10;
-    private String GUID, name;
+    private String guid, name;
     private LinearLayoutManager linearLayoutManager;
     private int lastVisibleItem;
     private RadioGroup radioGroup;
-    private RadioButton rb_all;
-    private ReviseRadioButton rb_price, rb_sale;
-    private int PRICE_FLAG = 0;
-    private int SALE_FLAG = 5;
-    private String EDITEXT = "";
-    private String KEY = "";
-    //Used to distinguish between Adapter signs
-    private int ADAPTERFLAG = 1;
+    private RadioButton allButton;
+    private ReviseRadioButton priceButton, saleButton;
+    private String editTextValue = "";
+    private String keyValue = "";
     private ShopListNoPictureAdapter shopListNoPictureAdapter;
-    private boolean SEARCHDEFAULT = true;
+    private int page = 0;
+    private final int COUNT = 10;
+    private static int ADAPTERFLAG = 1;
+    private static int PRICE_FLAG = 0;
+    private static int SALE_FLAG = 5;
+    private static boolean SEARCHDEFAULT = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,12 +118,12 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
-                PAGE = 0;
-                if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
+                page = 0;
+                if ((editTextValue == null || "".equals(editTextValue)) && (keyValue == null || "".equals(keyValue))) {
                     requestData();
                 } else {
                     SEARCHDEFAULT = true;
-                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
+                    requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
                 }
 
             }
@@ -136,14 +135,14 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
     private void initIntentValue() {
         if (getIntent().getStringExtra("guid") != null) {
-            GUID = getIntent().getStringExtra("guid");
+            guid = getIntent().getStringExtra("guid");
         }
         if (getIntent().getStringExtra("key_id") != null) {
-            GUID = getIntent().getStringExtra("key_id");
+            guid = getIntent().getStringExtra("key_id");
         }
         if (getIntent().getStringExtra("key_name") != null) {
             name = getIntent().getStringExtra("key_name");
-            EDITEXT = name;
+            editTextValue = name;
         }
 
     }
@@ -155,12 +154,12 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                         && lastVisibleItem + 1 == shopListAdapter.getItemCount()) {
-                    PAGE++;
-                    if ((EDITEXT == null || "".equals(EDITEXT)) && (KEY == null || "".equals(KEY))) {
+                    page++;
+                    if ((editTextValue == null || "".equals(editTextValue)) && (keyValue == null || "".equals(keyValue))) {
                         requestData();
                     } else {
                         SEARCHDEFAULT = true;
-                        requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
+                        requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
                     }
                 }
             }
@@ -185,28 +184,28 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
 
     private void initView() {
-        btn_switch = (RelativeLayout) findViewById(R.id.btn_switch);
+        switchButton = (RelativeLayout) findViewById(R.id.btn_switch);
         back = (ImageView) findViewById(R.id.back);
         other = (ImageView) findViewById(R.id.other);
-        et_search = (EditText) findViewById(R.id.et_search);
+        searchEditor = (EditText) findViewById(R.id.et_search);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshLayout);
         radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
-        rb_all = (RadioButton) findViewById(R.id.rb_all);
-        rb_price = (ReviseRadioButton) findViewById(R.id.rb_price);
-        rb_sale = (ReviseRadioButton) findViewById(R.id.rb_sale);
-        rb_price.setOnClickListener(this);
-        rb_sale.setOnClickListener(this);
-        rb_all.setOnClickListener(this);
+        allButton = (RadioButton) findViewById(R.id.rb_all);
+        priceButton = (ReviseRadioButton) findViewById(R.id.rb_price);
+        saleButton = (ReviseRadioButton) findViewById(R.id.rb_sale);
+        priceButton.setOnClickListener(this);
+        saleButton.setOnClickListener(this);
+        allButton.setOnClickListener(this);
         back.setOnClickListener(this);
         other.setOnClickListener(this);
-        btn_switch.setOnClickListener(this);
-        et_search.setOnKeyListener(onKeyListener);
+        switchButton.setOnClickListener(this);
+        searchEditor.setOnKeyListener(onKeyListener);
     }
 
     @Override
     public void onClick(View v) {
-        PAGE = 0;
+        page = 0;
         switch (v.getId()) {
             case R.id.back:
                 finish();
@@ -215,56 +214,56 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 startActivity(new Intent(this, HistoryActivity.class));
                 break;
             case R.id.rb_all:
-                KEY = "default";
-                requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
+                keyValue = "default";
+                requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
                 break;
             case R.id.rb_price:
-                rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
+                saleButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
                 SALE_FLAG = 5;
                 if (PRICE_FLAG == 0) {
-                    KEY = "priceDown";
-                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
-                    rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
+                    keyValue = "priceDown";
+                    requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
+                    priceButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
                     PRICE_FLAG = 1;
                     return;
                 }
                 if (PRICE_FLAG == 1) {
-                    KEY = "priceUp";
-                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
-                    rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
+                    keyValue = "priceUp";
+                    requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
+                    priceButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
                     PRICE_FLAG = 2;
                     return;
                 }
                 if (PRICE_FLAG == 2) {
-                    KEY = "priceDown";
-                    rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
-                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
+                    keyValue = "priceDown";
+                    priceButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
+                    requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
                     PRICE_FLAG = 1;
                     return;
                 }
                 break;
             case R.id.rb_sale:
-                rb_price.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
+                priceButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow), null);
                 PRICE_FLAG = 0;
                 if (SALE_FLAG == 5) {
-                    KEY = "saleDown";
-                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
-                    rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
+                    keyValue = "saleDown";
+                    requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
+                    saleButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
                     SALE_FLAG = 6;
                     return;
                 }
                 if (SALE_FLAG == 6) {
-                    KEY = "saleUp";
-                    rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
+                    keyValue = "saleUp";
+                    saleButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_up), null);
                     SALE_FLAG = 7;
-                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
+                    requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
                     return;
                 }
                 if (SALE_FLAG == 7) {
-                    KEY = "saleDown";
+                    keyValue = "saleDown";
                     SALE_FLAG = 6;
-                    rb_sale.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
-                    requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
+                    saleButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_arrow_down), null);
+                    requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
                     return;
                 }
                 break;
@@ -294,11 +293,11 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
                 }
                 SEARCHDEFAULT = false;
-                EDITEXT = et_search.getText().toString();
-                if (name.equals(EDITEXT) || "".equals(EDITEXT) || EDITEXT == null) {
+                editTextValue = searchEditor.getText().toString();
+                if (name.equals(editTextValue) || "".equals(editTextValue) || editTextValue == null) {
                     Toast.makeText(ShopListActivity.this, "请输入你需要搜索的商品", Toast.LENGTH_SHORT).show();
                 }
-                requestSearchData(EDITEXT, KEY, SEARCHDEFAULT);
+                requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
                 return true;
             }
             return false;
@@ -308,8 +307,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     //获取用户商品列表
     private void requestData() {
         Map<String, Object> args = new HashMap<>();
-        args.put("GUID", GUID);
-        args.put("PAGE", PAGE);
+        args.put("GUID", guid);
+        args.put("PAGE", page);
         args.put("COUNT", COUNT);
         args.put("SORTFIELD", "default");
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
@@ -337,7 +336,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                         GoodListEntity entity = GoodListEntity.toEntity(item);
                         result.add(entity);
                     }
-                    if (PAGE == 0) {
+                    if (page == 0) {
                         bindData(result);
                     } else {
                         if (ADAPTERFLAG == 1) {
@@ -360,8 +359,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     private void requestSearchData(String key, String sortfiled, boolean searchType) {
         refreshLayout.setRefreshing(true);
         Map<String, Object> args = new HashMap<>();
-        args.put("GUID", GUID);
-        args.put("PAGE", PAGE);
+        args.put("GUID", guid);
+        args.put("PAGE", page);
         args.put("COUNT", COUNT);
         if (key != null && !("".equals(key))) {
             args.put("KEY", key);
@@ -405,7 +404,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                         GoodListEntity entity = GoodListEntity.toEntity(item);
                         result.add(entity);
                     }
-                    if (PAGE == 0) {
+                    if (page == 0) {
                         bindData(result);
                     } else {
                         if (ADAPTERFLAG == 1) {

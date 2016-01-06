@@ -72,9 +72,9 @@ public class ShopListAdapter extends RecyclerView.Adapter {
 
 
         if (goodListEntity.getPICBIG() != null && !("".equals(goodListEntity.getPICBIG()))) {
-            itemHolder.iv_image.setImageUrl(goodListEntity.getPICBIG(), "64_64", null);
+            itemHolder.icon.setImageUrl(goodListEntity.getPICBIG(), "64_64", null);
         } else {
-            itemHolder.iv_image.setImageDrawable(mContext.getResources().getDrawable(R.drawable.picture_fail));
+            itemHolder.icon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.picture_fail));
         }
 
         itemHolder.name.setText(goodListEntity.getMEDICINENAME());
@@ -82,7 +82,7 @@ public class ShopListAdapter extends RecyclerView.Adapter {
             itemHolder.realPrice.setVisibility(View.INVISIBLE);
             itemHolder.discountPrice.setVisibility(View.INVISIBLE);
         } else {
-           // itemHolder.realPrice.setVisibility(View.VISIBLE);
+            // itemHolder.realPrice.setVisibility(View.VISIBLE);
             itemHolder.discountPrice.setVisibility(View.VISIBLE);
             itemHolder.shop.setVisibility(View.VISIBLE);
             itemHolder.realPrice.setText("¥" + goodListEntity.getMEMBERPRICE());
@@ -103,10 +103,10 @@ public class ShopListAdapter extends RecyclerView.Adapter {
                 }
             }
         });
-        itemHolder.linear_item.setOnClickListener(new View.OnClickListener() {
+        itemHolder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIOpenHelper.openMedicineActivity(mContext,goodListEntity.getMERCHANDISEID());
+                UIOpenHelper.openMedicineActivity(mContext, goodListEntity.getMERCHANDISEID());
             }
         });
     }
@@ -156,19 +156,19 @@ public class ShopListAdapter extends RecyclerView.Adapter {
 
     public class ItemHolder extends RecyclerView.ViewHolder {
         private ImageView shop;
-        private BackupImageView iv_image;
+        private BackupImageView icon;
         private TextView name, discountPrice, realPrice, comment;
-        private LinearLayout linear_item;
+        private LinearLayout itemLayout;
 
         public ItemHolder(View view) {
             super(view);
-            iv_image = (BackupImageView) view.findViewById(R.id.iv);
+            icon = (BackupImageView) view.findViewById(R.id.iv);
             shop = (ImageView) view.findViewById(R.id.shop);
             name = (TextView) view.findViewById(R.id.name);
             discountPrice = (TextView) view.findViewById(R.id.discountPrice);
             realPrice = (TextView) view.findViewById(R.id.realPrice);
             comment = (TextView) view.findViewById(R.id.comment);
-            linear_item = (LinearLayout) view.findViewById(R.id.linear_item);
+            itemLayout = (LinearLayout) view.findViewById(R.id.linear_item);
         }
     }
 }

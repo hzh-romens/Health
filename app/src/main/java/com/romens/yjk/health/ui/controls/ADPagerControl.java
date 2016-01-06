@@ -1,19 +1,14 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.images.ui.CloudImageView;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.ADPagerEntity;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADPagerCell;
 
@@ -60,7 +55,7 @@ public class ADPagerControl extends ADBaseControl {
 
         private Context mContext;
         private List<ADPagerEntity> adPagerEntities = new ArrayList<>();
-        private final List<CloudImageView> viewList = new ArrayList<>();
+        private final List<BackupImageView> viewList = new ArrayList<>();
         private ADPageCellDelegate cellDelegate;
 
         public ADPagerAdapter(Context context) {
@@ -79,7 +74,7 @@ public class ADPagerControl extends ADBaseControl {
             final int size = adPagerEntities.size();
             viewList.clear();
             for (int i = 0; i < size; i++) {
-                viewList.add(CloudImageView.create(mContext));
+                viewList.add(new BackupImageView(mContext));
             }
         }
 
@@ -92,7 +87,7 @@ public class ADPagerControl extends ADBaseControl {
         @Override
         public Object instantiateItem(final ViewGroup container, int position) {
             final ADPagerEntity entity = adPagerEntities.get(position);
-            CloudImageView pager = viewList.get(position);
+            BackupImageView pager = viewList.get(position);
             pager.setClickable(true);
             pager.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,7 +96,7 @@ public class ADPagerControl extends ADBaseControl {
                 }
             });
             container.addView(pager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-            pager.setImagePath(entity.value);
+            pager.setImage(entity.value, null, null);
             return pager;
         }
 

@@ -45,11 +45,11 @@ import java.util.Map;
 
 public class ShopCarActivity extends BaseActivity {
     private ExpandableListView expandableListView;
-    private CheckableFrameLayout all_choice;
-    private TextView tv_all1, iv_accounts;
-    private ImageView btn_back, delete;
+    private CheckableFrameLayout checkAll;
+    private TextView sumMoneyView, accountsView;
+    private ImageView btnBack, delete;
     private List<ShopCarEntity> datas;
-    private ShopAdapter myAdapter;
+    private ShopAdapter shopAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +58,18 @@ public class ShopCarActivity extends BaseActivity {
         initView();
         //获取数据
         needShowProgress("正在加载...");
-        myAdapter = new ShopAdapter(this);
-        expandableListView.setAdapter(myAdapter);
+        shopAdapter = new ShopAdapter(this);
+        expandableListView.setAdapter(shopAdapter);
         getShopCarData();
         //向服务器提交购物车信息并跳转到订单页面
-        iv_accounts.setOnClickListener(new View.OnClickListener() {
+        accountsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //向服务器发送请求
-                HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
-                ArrayList<ParentEntity> parentData = (ArrayList<ParentEntity>) myAdapter.getParentData();
-                HashMap<String, SparseBooleanArray> childStatusList = myAdapter.getChildStatusList();
-                if (myAdapter.isAllNotSelected()) {
+                HashMap<String, List<ShopCarEntity>> childData = shopAdapter.getChildData();
+                ArrayList<ParentEntity> parentData = (ArrayList<ParentEntity>) shopAdapter.getParentData();
+                HashMap<String, SparseBooleanArray> childStatusList = shopAdapter.getChildStatusList();
+                if (shopAdapter.isAllNotSelected()) {
                     Toast.makeText(ShopCarActivity.this, "请选择一样商品", Toast.LENGTH_SHORT).show();
                 } else {
                     ArrayList<ParentEntity> mFilterParentData = new ArrayList<ParentEntity>();
@@ -77,8 +77,8 @@ public class ShopCarActivity extends BaseActivity {
                         needShowProgress("正在提交");
                         ArrayList<ParentEntity> filterParentData = new ArrayList<ParentEntity>();
                         HashMap<String, List<ShopCarEntity>> filterChildData = new HashMap<String, List<ShopCarEntity>>();
-                        ArrayList<GoodsEntity> JSON_DATA = new ArrayList<GoodsEntity>();
-                        SparseBooleanArray parentStatus = myAdapter.getParentStatus();
+                        ArrayList<GoodsEntity> jsonData = new ArrayList<GoodsEntity>();
+                        SparseBooleanArray parentStatus = shopAdapter.getParentStatus();
                         if (parentData != null) {
                             for (int i = 0; i < parentData.size(); i++) {
                                 if (parentStatus.get(i)) {
@@ -100,7 +100,7 @@ public class ShopCarActivity extends BaseActivity {
                                     GoodsEntity goodsEntity = new GoodsEntity();
                                     goodsEntity.setBUYCOUNT(child.get(i).getBUYCOUNT() + "");
                                     goodsEntity.setGOODSGUID(child.get(i).getGOODSGUID() + "");
-                                    JSON_DATA.add(goodsEntity);
+                                    jsonData.add(goodsEntity);
                                 }
                                 if (mChild != null) {
                                     filterChildData.put(key, mChild);
@@ -111,8 +111,8 @@ public class ShopCarActivity extends BaseActivity {
                                 mFilterParentData.add(filterParentEntity);
                             }
                             Gson gson = new Gson();
-                            String s = gson.toJson(JSON_DATA);
-                            CommitData(s, filterChildData, filterParentData);
+                            String data = gson.toJson(jsonData);
+                            CommitData(data, filterChildData, filterParentData);
                         }
                     } else {
                         Toast.makeText(ShopCarActivity.this, "购物车为空", Toast.LENGTH_SHORT).show();
@@ -124,13 +124,13 @@ public class ShopCarActivity extends BaseActivity {
     }
 
     private void initView() {
-        all_choice = (CheckableFrameLayout) findViewById(R.id.all_choice);
-        tv_all1 = (TextView) findViewById(R.id.tv_all1);
-        iv_accounts = (TextView) findViewById(R.id.accounts);
+        checkAll = (CheckableFrameLayout) findViewById(R.id.all_choice);
+        sumMoneyView = (TextView) findViewById(R.id.tv_all1);
+        accountsView = (TextView) findViewById(R.id.accounts);
         expandableListView = (ExpandableListView) findViewById(R.id.ev);
-        btn_back = (ImageView) findViewById(R.id.back);
+        btnBack = (ImageView) findViewById(R.id.back);
         delete = (ImageView) findViewById(R.id.edit);
-        btn_back.setOnClickListener(new View.OnClickListener() {
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -155,18 +155,18 @@ public class ShopCarActivity extends BaseActivity {
         if (count <= 0) {
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
             HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
-            myAdapter.bindData(parentResult, childResult);
-            myAdapter.setCallBack(new ShopAdapter.AdapterCallBack() {
+            shopAdapter.bindData(parentResult, childResult);
+            shopAdapter.setCallBack(new ShopAdapter.AdapterCallBack() {
                 @Override
                 public void UpdateData() {
                 }
 
                 @Override
                 public void UpdateMoney(String money) {
-                    tv_all1.setText("总计：" + UIUtils.getDouvleValue(money));
+                    sumMoneyView.setText("总计：" + UIUtils.getDouvleValue(money));
                 }
             });
-            all_choice.setChecked(false);
+            checkAll.setChecked(false);
             return;
         }
         List<ShopCarEntity> result = new ArrayList<ShopCarEntity>();
@@ -202,23 +202,23 @@ public class ShopCarActivity extends BaseActivity {
             fatherEntities.add(fatherEntity);
         }
 
-        myAdapter.bindData(fatherEntities, childData);
-        myAdapter.setCallBack(new ShopAdapter.AdapterCallBack() {
+        shopAdapter.bindData(fatherEntities, childData);
+        shopAdapter.setCallBack(new ShopAdapter.AdapterCallBack() {
             @Override
             public void UpdateData() {
-                all_choice.setChecked(myAdapter.isAllSelected());
+                checkAll.setChecked(shopAdapter.isAllSelected());
             }
 
             @Override
             public void UpdateMoney(String money) {
-                tv_all1.setText("总计：" + UIUtils.getDouvleValue(money));
+                sumMoneyView.setText("总计：" + UIUtils.getDouvleValue(money));
             }
         });
 
-        all_choice.setOnClickListener(new View.OnClickListener() {
+        checkAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myAdapter.switchAllSelect(!all_choice.isChecked());
+                shopAdapter.switchAllSelect(!checkAll.isChecked());
 
             }
         });
@@ -373,10 +373,10 @@ public class ShopCarActivity extends BaseActivity {
         dialogUtils.show_infor_two("是否删除？", ShopCarActivity.this, "提示", new DialogUtils.ConfirmListenerCallBack() {
                     @Override
                     public void ConfirmListener() {
-                        HashMap<String, List<ShopCarEntity>> childData = myAdapter.getChildData();
-                        HashMap<String, SparseBooleanArray> childStatusList = myAdapter.getChildStatusList();
+                        HashMap<String, List<ShopCarEntity>> childData = shopAdapter.getChildData();
+                        HashMap<String, SparseBooleanArray> childStatusList = shopAdapter.getChildStatusList();
                         if (childData != null) {
-                            if (myAdapter.isAllSelected()) {
+                            if (shopAdapter.isAllSelected()) {
                                 Iterator iter = childData.entrySet().iterator();
                                 List<ShopCarEntity> filterData = new ArrayList<ShopCarEntity>();
                                 int count = 0;
@@ -399,7 +399,7 @@ public class ShopCarActivity extends BaseActivity {
                                 Gson gson = new Gson();
                                 String s = gson.toJson(deleteData);
                                 DeleteData(s, count);
-                            } else if (myAdapter.isAllNotSelected()) {
+                            } else if (shopAdapter.isAllNotSelected()) {
                                 Toast.makeText(ShopCarActivity.this, "请至少选择一件商品", Toast.LENGTH_SHORT).show();
                             } else {
                                 if (childData != null) {

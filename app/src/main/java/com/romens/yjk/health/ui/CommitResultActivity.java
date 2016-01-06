@@ -18,7 +18,7 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
 
 
     private LinearLayout firstLayout, secondLayout;
-    private TextView tv_orderNumber, date, money, title;
+    private TextView orderNumberView, date, money, title;
     private Button toShop, toOrder;
     private String sumMoney, orderNumber, time;
 
@@ -34,7 +34,7 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
     private void initVew() {
         firstLayout = (LinearLayout) findViewById(R.id.first_layout);
         secondLayout = (LinearLayout) findViewById(R.id.second_layout);
-        tv_orderNumber = (TextView) findViewById(R.id.orderNumber);
+        orderNumberView = (TextView) findViewById(R.id.orderNumber);
         date = (TextView) findViewById(R.id.time);
         money = (TextView) findViewById(R.id.money);
         toOrder = (Button) findViewById(R.id.toOrder);
@@ -57,7 +57,7 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
             secondLayout.setVisibility(View.VISIBLE);
         }
         money.setText("订单总金额：¥" + sumMoney);
-        tv_orderNumber.setText("订单编号：" + orderNumber);
+        orderNumberView.setText("订单编号：" + orderNumber);
         date.setText("下单时间：" + time);
         toShop.setOnClickListener(this);
         toOrder.setOnClickListener(this);
