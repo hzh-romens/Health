@@ -161,9 +161,9 @@ dependencies {
     compile 'com.avast:android-styled-dialogs:2.2.0'
     compile project(':romens.extend.QR')
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
-    compile files('libs/umeng-update-v2.6.0.1.jar')
     compile files('libs/mta-mid-sdk-2.20.jar')
     compile files('libs/mta-stats-sdk-2.0.4.jar')
-    compile project(':romens.images')
     compile 'com.facebook.fresco:fresco:0.8.1+'
+    compile files('libs/pgyer_sdk_2.2.2.jar')
+    compile project(':romens.images')
 }
