@@ -17,9 +17,11 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
+import com.romens.android.ui.cells.EmptyCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextDetailSettingsCell;
 import com.romens.android.ui.cells.TextIconCell;
@@ -182,7 +184,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
         }
         checkUpdateRow = rowCount++;
 
-        aboutSectionRow = rowCount++;
         supportRow = rowCount++;
 
         adapter.notifyDataSetChanged();
@@ -210,7 +211,6 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
     private int checkUpdateRow;
 
-    private int aboutSectionRow;
     private int supportRow;
 
     @Override
@@ -342,8 +342,10 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             } else if (type == 4) {
                 if (view == null) {
                     view = new SupportCell(adapterContext);
+                    view.setPadding(0, AndroidUtilities.dp(8), 0, 0);
                 }
                 SupportCell cell = (SupportCell) view;
+                cell.setBackgroundResource(R.drawable.greydivider);
                 cell.setMultilineDetail(true);
                 SpannableStringBuilder value = new SpannableStringBuilder();
                 SpannableString supportOrg = new SpannableString("青岛雨诺网络信息股份有限公司");
@@ -362,15 +364,16 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             } else if (type == 5) {
                 if (view == null) {
                     view = new LoginCell(adapterContext);
-                    if (position == loginRow) {
-                        ((LoginCell) view).setLoginCellDelegate(new LoginCell.LoginCellDelegate() {
-                            @Override
-                            public void onLoginClick() {
-                                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                    }
+                }
+                LoginCell cell = (LoginCell) view;
+                if (position == loginRow) {
+                    cell.setLoginCellDelegate(new LoginCell.LoginCellDelegate() {
+                        @Override
+                        public void onLoginClick() {
+                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
             return view;

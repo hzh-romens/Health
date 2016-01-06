@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.romens.yjk.health.helper.MedicareHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 
@@ -26,7 +27,7 @@ public abstract class ADBaseControl {
     }
 
     public static void onActionForADWeb(Context context, Bundle data) {
-        Intent intent = new Intent("com.romens.yjk.health.AD_WEB");
+        Intent intent = new Intent(context, ADWebActivity.class);
         intent.putExtras(data);
         context.startActivity(intent);
     }
