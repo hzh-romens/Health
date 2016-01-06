@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.RemindTimesDailogCallBack;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
-import com.romens.yjk.health.ui.AddRemindActivity;
-import com.romens.yjk.health.ui.AddRemindActivityNew;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
 
 import java.util.List;

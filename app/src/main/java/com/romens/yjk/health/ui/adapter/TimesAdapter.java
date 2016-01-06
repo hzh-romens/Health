@@ -19,9 +19,7 @@ import com.romens.android.library.datetimepicker.time.TimePickerDialog;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
-import com.romens.yjk.health.ui.AddRemindActivityNew;
 import com.romens.yjk.health.ui.BaseActivity;
-import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
 
 import java.util.Calendar;
 import java.util.List;

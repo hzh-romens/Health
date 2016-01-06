@@ -27,14 +27,7 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.ui.activity.LightActionBarActivity;
-import com.romens.yjk.health.ui.cells.EditTextCell;
-import com.romens.yjk.health.ui.components.SlideView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by anlc on 2015/12/21.
