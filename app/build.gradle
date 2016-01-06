@@ -8,8 +8,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 160105
-        versionName "1.6.1"
+        versionCode 160107
+        versionName "1.6.3"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
                                 APK_CHANNEL_VALUE: "4;romens",
@@ -51,7 +51,7 @@ android {
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     APK_CHANNEL_VALUE: "20;rmtt",
                                     IM_SDK_APPKEY    : "romens#yjkim8jrgju",
-                                    PGYER_APPID      : "567bb51fe0f55afcaf002121",
+                                    PGYER_APPID      : "92ecc14bb2dd3a009af7257c32a1a97c",
                                     MTA_APPKEY       : "AK6C73XIU4QY",
                                     LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0"]
         }

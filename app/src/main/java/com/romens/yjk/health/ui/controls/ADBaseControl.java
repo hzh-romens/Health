@@ -102,7 +102,7 @@ public abstract class ADBaseControl {
             String valueTemp;
             for (int i = 0; i < size; i++) {
                 valueTemp = getPrimaryIdValue(ids.get(i));
-                url = url.replace("{" + i + "}", valueTemp);
+                url = url.replace("{" + i + "}", valueTemp==null?"":valueTemp);
             }
         }
         if (url.startsWith("/")) {
