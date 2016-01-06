@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.FormatHelper;
 
@@ -31,7 +32,7 @@ import java.text.DecimalFormat;
  */
 public class ProductCell extends LinearLayout {
     public static final int defaultSize = 158;
-    private BackupImageView iconView;
+    private CloudImageView iconView;
     private TextView nameView;
     private TextView priceView;
     //private LayoutStyle layoutStyle = LayoutStyle.DEFAULT;
@@ -51,8 +52,8 @@ public class ProductCell extends LinearLayout {
         setOrientation(VERTICAL);
         setBackgroundColor(Color.WHITE);
         setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
-        iconView = new BackupImageView(context);
-        iconView.setRoundRadius(4);
+        iconView = CloudImageView.create(context);
+        iconView.setRound(AndroidUtilities.dp(4));
         addView(iconView, LayoutHelper.createLinear(80, 80, Gravity.CENTER_HORIZONTAL));
 
         nameView = new TextView(context);
@@ -89,7 +90,7 @@ public class ProductCell extends LinearLayout {
         nameView.setText(name);
         CharSequence priceStr = formatPrice(oldPrice, price);
         priceView.setText(priceStr);
-        iconView.setImage(iconUrl, null, null);
+        iconView.setImagePath(iconUrl);
     }
 
     public void setArguments(Bundle arguments) {

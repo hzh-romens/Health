@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.PowerManager;
 
+import com.pgyersdk.crash.PgyCrashManager;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
+import com.romens.images.CloudImagesManager;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.im.IMHXSDKHelper;
 
 /**
@@ -19,6 +22,8 @@ public class MyApplication extends ApplicationLoader {
     @Override
     public void onCreate() {
         super.onCreate();
+        CloudImagesManager.init(applicationContext);
+        MonitorHelper.init(this);
         //初始化环信SDK
         IMHXSDKHelper.getInstance().onInit(MyApplication.applicationContext);
         UserConfig.loadConfig();

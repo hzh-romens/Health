@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.controls;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.text.TextUtils;
 
 import com.romens.yjk.health.helper.MedicareHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 
 /**
@@ -50,7 +52,9 @@ public abstract class ADBaseControl {
 
             if (TextUtils.equals("YBZQ", value)) {
                 //跳转到医保专区
-                Intent intent = new Intent(MedicareHelper.INTENT_ACTION);
+                ComponentName component=new ComponentName(context,MedicineGroupActivity.class.getName());
+                Intent intent = new Intent();
+                intent.setComponent(component);
                 intent.putExtra("title", "医保专区");
                 context.startActivity(intent);
             }

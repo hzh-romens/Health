@@ -1673,6 +1673,7 @@ public class LoginActivity extends BaseActivity {
 
         public PhoneView(Context context) {
             super(context);
+            PhoneFormat.getInstance().init("86");
             setOrientation(VERTICAL);
             LinearLayout linearLayout = new LinearLayout(context);
             linearLayout.setOrientation(HORIZONTAL);
@@ -1757,7 +1758,7 @@ public class LoginActivity extends BaseActivity {
             });
 
             TextView textView = new TextView(context);
-            textView.setText("使用手机号码快捷登录要健康.未注册用户,赶快加入我们吧,一起开启健康之旅.");
+            textView.setText(String.format("使用手机号码快捷登录 %s.未注册用户,赶快加入我们吧,一起开启健康之旅.",getString(R.string.app_name)));
             textView.setTextColor(0xff757575);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             textView.setGravity(Gravity.LEFT);
@@ -1813,9 +1814,7 @@ public class LoginActivity extends BaseActivity {
         private void updatePhoneField() {
             ignoreOnPhoneChange = true;
             try {
-                String codeText = "86";
-                PhoneFormat.getInstance().init("86");
-                String phone = PhoneFormat.getInstance().format("+" + codeText + phoneField.getText().toString());
+                String phone = PhoneFormat.getInstance().format("+86" + phoneField.getText().toString());
                 int idx = phone.indexOf(" ");
                 if (idx != -1) {
                     phoneField.setText(phone.substring(idx).trim());

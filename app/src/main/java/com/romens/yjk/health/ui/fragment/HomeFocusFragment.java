@@ -41,6 +41,7 @@ import com.romens.yjk.health.model.ADPagerEntity;
 import com.romens.yjk.health.model.ADProductEntity;
 import com.romens.yjk.health.model.ADProductListEntity;
 import com.romens.yjk.health.model.HealthNewsEntity;
+import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.adapter.FocusAdapter;
 import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
@@ -419,33 +420,33 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
         String id;
         String name = null;
         int resId = -1;
-        String actionValue = null;
+        String className = null;
         try {
             id = jsonObject.getString("ID");
             if (TextUtils.equals("ZXYS", id)) {
                 name = DiscoveryCollection.PharmicCounseling.name;
                 resId = DiscoveryCollection.PharmicCounseling.iconRes;
-                actionValue = DiscoveryCollection.PharmicCounseling.value;
+                className = DiscoveryCollection.PharmicCounseling.value;
             } else if (TextUtils.equals("YPFL", id)) {
                 name = DiscoveryCollection.NearbyPharmacy.name;
                 resId = DiscoveryCollection.NearbyPharmacy.iconRes;
-                actionValue = DiscoveryCollection.NearbyPharmacy.value;
+                className = DiscoveryCollection.NearbyPharmacy.value;
             } else if (TextUtils.equals("YYTX", id)) {
                 name = DiscoveryCollection.MedicationReminders.name;
                 resId = DiscoveryCollection.MedicationReminders.iconRes;
-                actionValue = DiscoveryCollection.MedicationReminders.value;
+                className = DiscoveryCollection.MedicationReminders.value;
             } else if (TextUtils.equals("JKZX", id)) {
                 name = DiscoveryCollection.InformationNews.name;
                 resId = DiscoveryCollection.InformationNews.iconRes;
-                actionValue = DiscoveryCollection.InformationNews.value;
+                className = DiscoveryCollection.InformationNews.value;
             } else if (TextUtils.equals("YBZQ", id)) {
                 name = "医保专区";
                 resId = R.drawable.attach_ybzq_states;
-                actionValue = MedicareHelper.INTENT_ACTION;
+                className = MedicineGroupActivity.class.getName();
             }
             if ((!TextUtils.isEmpty(name)) && resId != -1) {
                 entity = new ADFunctionEntity(id, name, resId);
-                entity.setActionValue(actionValue);
+                entity.setActionValue(className);
             }
         } catch (JSONException e) {
             e.printStackTrace();

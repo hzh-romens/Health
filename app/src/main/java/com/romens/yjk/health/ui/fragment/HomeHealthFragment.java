@@ -45,11 +45,6 @@ import java.util.Map;
 public class HomeHealthFragment extends BaseFragment {
     private ExpandableListView listView;
     private ListAdapter adapter;
-
-    private int adDiseaseRow = -1;
-
-    private String adDiseaseTitle;
-    private String adDiseaseSubTitle;
     private List<ADDisease> adDiseaseList = new ArrayList<>();
     public static final String ARGUMENTS_KEY_ID = "key_id";
     public static final String ARGUMENTS_KEY_NAME = "key_name";
@@ -68,9 +63,7 @@ public class HomeHealthFragment extends BaseFragment {
         listView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                if (groupPosition != adDiseaseRow) {
-                    listView.setSelectedGroup(groupPosition);
-                }
+                listView.setSelectedGroup(groupPosition);
             }
         });
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -112,22 +105,22 @@ public class HomeHealthFragment extends BaseFragment {
     }
 
     private void bindADDiseaseData() {
-        adDiseaseRow = 0;
-        adDiseaseTitle = "秋季易发的疾病";
-        adDiseaseSubTitle = "进入秋季后我们人体的消化功能逐渐下降,因此肠道的抗病能力也开始减弱,容易引发疾病.";
-        adDiseaseList.clear();
-        adDiseaseList.add(new ADDisease("2", "感冒", 0));
-        adDiseaseList.add(new ADDisease("0", "急性胃肠炎", 0));
-        adDiseaseList.add(new ADDisease("4", "习惯性便秘", 0));
-        adDiseaseList.add(new ADDisease("1", "口腔溃疡", 0));
-        adDiseaseList.add(new ADDisease("7", "颈腰椎疼痛", 0));
-        adDiseaseList.add(new ADDisease("3", "皮肤瘙痒", 0));
-        adDiseaseList.add(new ADDisease("5", "鼻炎", 0));
-        adDiseaseList.add(new ADDisease("6", "防秋燥", 0));
-
-
-        adapter.notifyDataSetChanged();
-        listView.smoothScrollToPosition(0);
+//        adDiseaseRow = 0;
+//        adDiseaseTitle = "秋季易发的疾病";
+//        adDiseaseSubTitle = "进入秋季后我们人体的消化功能逐渐下降,因此肠道的抗病能力也开始减弱,容易引发疾病.";
+//        adDiseaseList.clear();
+//        adDiseaseList.add(new ADDisease("2", "感冒", 0));
+//        adDiseaseList.add(new ADDisease("0", "急性胃肠炎", 0));
+//        adDiseaseList.add(new ADDisease("4", "习惯性便秘", 0));
+//        adDiseaseList.add(new ADDisease("1", "口腔溃疡", 0));
+//        adDiseaseList.add(new ADDisease("7", "颈腰椎疼痛", 0));
+//        adDiseaseList.add(new ADDisease("3", "皮肤瘙痒", 0));
+//        adDiseaseList.add(new ADDisease("5", "鼻炎", 0));
+//        adDiseaseList.add(new ADDisease("6", "防秋燥", 0));
+//
+//
+//        adapter.notifyDataSetChanged();
+//        listView.smoothScrollToPosition(0);
     }
 
     private void changeRefreshUI(boolean refreshing) {
@@ -243,19 +236,15 @@ public class HomeHealthFragment extends BaseFragment {
 
         @Override
         public int getGroupCount() {
-            int count = mGroupNodes.size() + (adDiseaseRow != -1 ? 1 : 0);
+            int count = mGroupNodes.size();
             return count;
         }
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            if (groupPosition == adDiseaseRow) {
-                return 0;
-            } else {
-                final int currGroupPosition = getCurrentGroupPosition(groupPosition);
-                List<DrugGroupEntity> childNodes = findChildNodes(currGroupPosition);
-                return childNodes == null ? 0 : childNodes.size();
-            }
+            final int currGroupPosition = getCurrentGroupPosition(groupPosition);
+            List<DrugGroupEntity> childNodes = findChildNodes(currGroupPosition);
+            return childNodes == null ? 0 : childNodes.size();
         }
 
         @Override
@@ -286,15 +275,12 @@ public class HomeHealthFragment extends BaseFragment {
 
         @Override
         public int getGroupType(int groupPosition) {
-            if (groupPosition == adDiseaseRow) {
-                return 1;
-            }
             return 0;
         }
 
         @Override
         public int getGroupTypeCount() {
-            return 2;
+            return 1;
         }
 
 
@@ -310,12 +296,6 @@ public class HomeHealthFragment extends BaseFragment {
                 DrugGroupCell cell = (DrugGroupCell) convertView;
                 String groupDesc = getGroupDesc(currGroupPosition);
                 cell.setValue(groupNode.getName(), groupDesc, isExpanded, true);
-            } else if (type == 1) {
-                if (convertView == null) {
-                    convertView = new ADDiseaseCell(getActivity());
-                }
-                ADDiseaseCell cell = (ADDiseaseCell) convertView;
-                cell.setValue(adDiseaseTitle, adDiseaseSubTitle, adDiseaseList);
             }
             AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -338,7 +318,7 @@ public class HomeHealthFragment extends BaseFragment {
         }
 
         public int getCurrentGroupPosition(int groupPosition) {
-            int position = groupPosition - (adDiseaseRow != -1 ? 1 : 0);
+            int position = groupPosition;
             return position;
         }
 

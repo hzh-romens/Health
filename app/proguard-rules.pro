@@ -124,8 +124,8 @@
 -keep public class com.romens.extend.scanner.**{*;}
 
 ##蒲公英
-#-dontwarn com.pgyersdk.**
-#-keep class com.pgyersdk.**{*;}
+-dontwarn com.pgyersdk.**
+-keep class com.pgyersdk.** { *; }
 
 -dontwarn com.prolificinteractive.materialcalendarview.**
 -keep class com.prolificinteractive.materialcalendarview.**{*;}
@@ -241,12 +241,16 @@ public static final int *;
 -dontwarn com.romens.yjk.health.ui.components.**
 -keep public class com.romens.yjk.health.ui.components.**{*;}
 
-#umeng
--keep class com.umeng.** { *; }
--keep public class * extends com.umeng.**
--keep public class com.umeng.fb.ui.ThreadView {
-}
-
 #qq mta
 -keep class com.tencent.stat.**  {* ;}
 -keep class com.tencent.mid.**  {* ;}
+
+
+
+#romens.images
+-dontwarn com.facebook.**
+-keep class com.facebook.**{*;}
+
+-keep class com.romens.images.**{
+    public protected *;
+}

@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADImageListEntity;
 
@@ -14,10 +15,10 @@ import com.romens.yjk.health.model.ADImageListEntity;
  * Created by siery on 15/9/8.
  */
 public class ADImagesCell extends FrameLayout {
-    private BackupImageView imageView1;
-    private BackupImageView imageView2;
-    private BackupImageView imageView3;
-    private BackupImageView imageView4;
+    private CloudImageView imageView1;
+    private CloudImageView imageView2;
+    private CloudImageView imageView3;
+    private CloudImageView imageView4;
 
 
     private ADImageListEntity adImageListEntity;
@@ -56,13 +57,13 @@ public class ADImagesCell extends FrameLayout {
     public ADImagesCell(Context context) {
         super(context);
         layoutStyle = 4;
-        imageView1 = new BackupImageView(context);
+        imageView1 = CloudImageView.create(context);
         addView(imageView1, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        imageView2 = new BackupImageView(context);
+        imageView2 = CloudImageView.create(context);
         addView(imageView2, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        imageView3 = new BackupImageView(context);
+        imageView3 = CloudImageView.create(context);
         addView(imageView3, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        imageView4 = new BackupImageView(context);
+        imageView4 = CloudImageView.create(context);
         addView(imageView4, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         imageView1.setClickable(true);
@@ -148,11 +149,11 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.GONE);
                 imageView4.setVisibility(View.GONE);
 
-                imageView1.setImage(adImageListEntity.get("1234").iconValue, "1234", null);
+                imageView1.setImagePath(adImageListEntity.get("1234").iconValue);
                 //imageView1.setRoundRadius(1);
-                imageView2.setImageBitmap(null);
-                imageView3.setImageBitmap(null);
-                imageView4.setImageBitmap(null);
+                imageView2.setPlaceholderImage(null);
+                imageView3.setPlaceholderImage(null);
+                imageView4.setPlaceholderImage(null);
 
                 break;
             case 1:
@@ -161,12 +162,12 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.GONE);
                 imageView4.setVisibility(View.GONE);
 
-                imageView1.setImage(adImageListEntity.get("13").iconValue, "13", null);
+                imageView1.setImagePath(adImageListEntity.get("13").iconValue);
                 //imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("24").iconValue, "24", null);
+                imageView2.setImagePath(adImageListEntity.get("24").iconValue);
                 //imageView2.setRoundRadius(4);
-                imageView3.setImageBitmap(null);
-                imageView4.setImageBitmap(null);
+                imageView3.setPlaceholderImage(null);
+                imageView4.setPlaceholderImage(null);
 
                 break;
             case 2:
@@ -175,13 +176,13 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.VISIBLE);
                 imageView4.setVisibility(View.GONE);
 
-                imageView1.setImage(adImageListEntity.get("1").iconValue, "1", null);
+                imageView1.setImagePath(adImageListEntity.get("1").iconValue);
                 //imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("24").iconValue, "24", null);
+                imageView2.setImagePath(adImageListEntity.get("24").iconValue);
                 //imageView2.setRoundRadius(4);
-                imageView3.setImage(adImageListEntity.get("3").iconValue, "3", null);
+                imageView3.setImagePath(adImageListEntity.get("3").iconValue);
                 //imageView3.setRoundRadius(4);
-                imageView4.setImageBitmap(null);
+                imageView4.setPlaceholderImage(null);
                 break;
             case 3:
                 imageView1.setVisibility(View.VISIBLE);
@@ -189,12 +190,12 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.GONE);
                 imageView4.setVisibility(View.VISIBLE);
 
-                imageView1.setImage(adImageListEntity.get("13").iconValue, "13", null);
+                imageView1.setImagePath(adImageListEntity.get("13").iconValue);
                 //imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("2").iconValue, "2", null);
+                imageView2.setImagePath(adImageListEntity.get("2").iconValue);
                 //imageView2.setRoundRadius(4);
-                imageView3.setImageBitmap(null);
-                imageView4.setImage(adImageListEntity.get("4").iconValue, "4", null);
+                imageView3.setPlaceholderImage(null);
+                imageView4.setImagePath(adImageListEntity.get("4").iconValue);
                 //imageView4.setRoundRadius(4);
 
                 break;
@@ -204,13 +205,13 @@ public class ADImagesCell extends FrameLayout {
                 imageView3.setVisibility(View.VISIBLE);
                 imageView4.setVisibility(View.VISIBLE);
 
-                imageView1.setImage(adImageListEntity.get("1").iconValue, "1", null);
+                imageView1.setImagePath(adImageListEntity.get("1").iconValue);
                 //imageView1.setRoundRadius(4);
-                imageView2.setImage(adImageListEntity.get("2").iconValue, "2", null);
+                imageView2.setImagePath(adImageListEntity.get("2").iconValue);
                 //imageView2.setRoundRadius(4);
-                imageView3.setImage(adImageListEntity.get("3").iconValue, "3", null);
+                imageView3.setImagePath(adImageListEntity.get("3").iconValue);
                 //imageView3.setRoundRadius(4);
-                imageView4.setImage(adImageListEntity.get("4").iconValue, "4", null);
+                imageView4.setImagePath(adImageListEntity.get("4").iconValue);
                 //imageView4.setRoundRadius(4);
                 break;
         }

@@ -9,8 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.Image.BackupImageView;
-import com.romens.yjk.health.config.FacadeToken;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.ADPagerEntity;
 import com.romens.yjk.health.ui.MedicinalDetailActivity;
@@ -61,7 +60,7 @@ public class ADPagerControl extends ADBaseControl {
 
         private Context mContext;
         private List<ADPagerEntity> adPagerEntities = new ArrayList<>();
-        private final List<BackupImageView> viewList = new ArrayList<>();
+        private final List<CloudImageView> viewList = new ArrayList<>();
         private ADPageCellDelegate cellDelegate;
 
         public ADPagerAdapter(Context context) {
@@ -80,7 +79,7 @@ public class ADPagerControl extends ADBaseControl {
             final int size = adPagerEntities.size();
             viewList.clear();
             for (int i = 0; i < size; i++) {
-                viewList.add(new BackupImageView(mContext));
+                viewList.add(CloudImageView.create(mContext));
             }
         }
 
@@ -93,7 +92,7 @@ public class ADPagerControl extends ADBaseControl {
         @Override
         public Object instantiateItem(final ViewGroup container, int position) {
             final ADPagerEntity entity = adPagerEntities.get(position);
-            BackupImageView pager = viewList.get(position);
+            CloudImageView pager = viewList.get(position);
             pager.setClickable(true);
             pager.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +101,7 @@ public class ADPagerControl extends ADBaseControl {
                 }
             });
             container.addView(pager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-            pager.setImage(entity.value, null, null);
+            pager.setImagePath(entity.value);
             return pager;
         }
 

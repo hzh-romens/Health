@@ -1,11 +1,16 @@
 package com.romens.yjk.health.db.entity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.HealthNewsActivity;
+import com.romens.yjk.health.ui.LocationActivity;
+import com.romens.yjk.health.ui.RemindActivity;
+import com.romens.yjk.health.ui.activity.ScannerActivity;
 
 /**
  * Created by siery on 15/5/22.
@@ -17,10 +22,10 @@ public class DiscoveryCollection {
             return false;
         }
         if (key.startsWith("intent")) {
-            String action = entity.getValue();
-            if (!action.equals(PharmicCounseling.value)) {
-                if (!TextUtils.isEmpty(action)) {
-                    context.startActivity(new Intent(action));
+            String value = entity.getValue();
+            if (!value.equals(PharmicCounseling.value)) {
+                if (!TextUtils.isEmpty(value)) {
+                    onFocusItemAction(context, entity.getKey(), value);
                     return true;
                 }
             }
@@ -29,12 +34,14 @@ public class DiscoveryCollection {
         return false;
     }
 
-    public static boolean onFocusItemAction(Context context, String id, String action) {
-        if (TextUtils.isEmpty(action)) {
+    public static boolean onFocusItemAction(Context context, String id, String className) {
+        if (TextUtils.isEmpty(className)) {
             return false;
         }
 
-        Intent intent = new Intent(action);
+        Intent intent = new Intent();
+        ComponentName component=new ComponentName(context,className);
+        intent.setComponent(component);
         if (TextUtils.equals("YBZQ", id)) {
             intent.putExtra("title", "医保专区");
         }
@@ -66,7 +73,7 @@ public class DiscoveryCollection {
 
     public static final class NearbyPharmacy {
         public static final String key = "intent_nearby_pharmacy";
-        public static final String value = "com.romens.yjk.health.NEARBYPHARMACY";
+        public static final String value = LocationActivity.class.getName();
         public static final int iconRes = R.drawable.attach_location_states;
         public static final String iconUrl = "";
         public static final String name = "附近药店";
@@ -96,7 +103,7 @@ public class DiscoveryCollection {
 
     public static final class MedicationReminders {
         public static final String key = "intent_medication_reminders";
-        public static final String value = "com.romens.rhealth.MEDICATIONREMINDERS";
+        public static final String value = RemindActivity.class.getName();
         public static final int iconRes = R.drawable.attach_remind_states;
         public static final String iconUrl = "";
         public static final String name = "用药提醒";
@@ -115,7 +122,7 @@ public class DiscoveryCollection {
 
     public static final class InformationNews {
         public static final String key = "intent_information_new";
-        public static final String value = "com.romens.rhealth.INFORMATION_NEWS";
+        public static final String value = HealthNewsActivity.class.getName();
         public static final int iconRes = R.drawable.attach_new_states;
         public static final String iconUrl = "";
         public static final String name = "最新资讯";
@@ -126,7 +133,7 @@ public class DiscoveryCollection {
 
     public static final class FindDrugWithScanner {
         public static final String key = "intent_find_drug_with_scanner";
-        public static final String value = "com.romens.yjk.health.QRSCANNER";
+        public static final String value = ScannerActivity.class.getName();
         public static final int iconRes = R.drawable.attach_sort_states;
         public static final String iconUrl = "";
         public static final String name = "扫码识药";
