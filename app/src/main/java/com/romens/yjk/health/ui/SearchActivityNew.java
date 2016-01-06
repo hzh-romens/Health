@@ -3,11 +3,9 @@ package com.romens.yjk.health.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,7 +28,6 @@ import com.romens.android.ui.Components.FlowLayoutCallback;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.LoadingCell;
-import com.romens.android.ui.cells.TextCell;
 import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
@@ -41,10 +38,8 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
-import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.SearchResultEntity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +104,7 @@ public class SearchActivityNew extends BaseActivity {
                     finish();
                 } else if (isDrugSearchResultRow(position)) {
                     //跳转药品页面
-                    UIOpenHelper.openMedicinalDetailActivity(SearchActivityNew.this,searchDrugResult.get(position - (searchDrugSession + 1)).guid);
+                 //   UIOpenHelper.openMedicinalDetailActivity(SearchActivityNew.this,searchDrugResult.get(position - (searchDrugSession + 1)).guid);
                 } else if (isDiseaseSearchResultRow(position)) {
                     //跳转疾病页面
                 }

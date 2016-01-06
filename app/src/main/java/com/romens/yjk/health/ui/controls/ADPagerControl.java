@@ -1,20 +1,14 @@
 package com.romens.yjk.health.ui.controls;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
-import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.ADPagerEntity;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ADPagerCell;
 

@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.avast.android.dialogs.fragment.ListDialogFragment;
-import com.avast.android.dialogs.iface.IListDialogListener;
 import com.romens.android.io.image.ImageManager;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.DeliverytypeEntity;
@@ -107,30 +104,30 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter{
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
                 parentHolder = new ParentHolder();
-                parentHolder.tv_groupname = (TextView) convertView.findViewById(R.id.group_name);
-                parentHolder.group_name_layout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
+                parentHolder.parentName = (TextView) convertView.findViewById(R.id.group_name);
+                parentHolder.groupnameLayout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
                 convertView.setTag(parentHolder);
             } else {
                 parentHolder = (ParentHolder) convertView.getTag();
             }
             convertView.setClickable(true);
-            parentHolder.tv_groupname.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
-            parentHolder.group_name_layout.setClickable(true);
+            parentHolder.parentName.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
+            parentHolder.groupnameLayout.setClickable(true);
         } else if (groupType == 1) {
             final SendHolder sendHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
                 sendHolder = new SendHolder();
-                sendHolder.tv_groupname = (TextView) convertView.findViewById(R.id.name);
-                sendHolder.tv_deliverytype = (TextView) convertView.findViewById(R.id.tv_deliverytype);
+                sendHolder.groupname = (TextView) convertView.findViewById(R.id.name);
+                sendHolder.deliverytype = (TextView) convertView.findViewById(R.id.tv_deliverytype);
                 convertView.setTag(sendHolder);
             } else {
                 sendHolder = (SendHolder) convertView.getTag();
             }
             convertView.setClickable(true);
-            sendHolder.tv_groupname.setText("派送方式");
-            sendHolder.tv_groupname.setClickable(true);
-            sendHolder.tv_deliverytype.setText(DeliverytypeStr);
+            sendHolder.groupname.setText("派送方式");
+            sendHolder.groupname.setClickable(true);
+            sendHolder.deliverytype.setText(DeliverytypeStr);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -158,38 +155,38 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter{
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
             childHolder = new ChildHolder();
-            childHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
-            childHolder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
-            childHolder.tv_infor = (TextView) convertView.findViewById(R.id.tv_infor);
-            childHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            childHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
+            childHolder.imageView = (ImageView) convertView.findViewById(R.id.iv);
+            childHolder.count = (TextView) convertView.findViewById(R.id.tv_count);
+            childHolder.info = (TextView) convertView.findViewById(R.id.tv_infor);
+            childHolder.name = (TextView) convertView.findViewById(R.id.tv_name);
+            childHolder.price = (TextView) convertView.findViewById(R.id.tv_price);
             convertView.setTag(childHolder);
         } else {
             childHolder = (ChildHolder) convertView.getTag();
         }
         ShopCarEntity shopCarEntity = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID()).get(childPosition);
-        childHolder.tv_price.setText("¥" + shopCarEntity.getGOODSPRICE());
-        childHolder.tv_name.setText(shopCarEntity.getNAME());
-        childHolder.tv_infor.setText(shopCarEntity.getSPEC());
-        childHolder.tv_count.setText(shopCarEntity.getBUYCOUNT() + "");
-        Drawable defaultDrawables = childHolder.iv.getDrawable();
-        ImageManager.loadForView(mContext, childHolder.iv, shopCarEntity.getGOODURL(), defaultDrawables, defaultDrawables);
+        childHolder.price.setText("¥" + shopCarEntity.getGOODSPRICE());
+        childHolder.name.setText(shopCarEntity.getNAME());
+        childHolder.info.setText(shopCarEntity.getSPEC());
+        childHolder.count.setText(shopCarEntity.getBUYCOUNT() + "");
+        Drawable defaultDrawables = childHolder.imageView.getDrawable();
+        ImageManager.loadForView(mContext, childHolder.imageView, shopCarEntity.getGOODURL(), defaultDrawables, defaultDrawables);
         return convertView;
     }
 
     class ChildHolder {
-        private ImageView iv;
-        private TextView tv_name, tv_infor, tv_price, tv_count;
+        private ImageView imageView;
+        private TextView name, info, price, count;
     }
 
     class SendHolder {
-        private TextView tv_groupname;
-        private TextView tv_deliverytype;
+        private TextView groupname;
+        private TextView deliverytype;
     }
 
     class ParentHolder {
-        private TextView tv_groupname;
-        private FrameLayout group_name_layout;
+        private TextView parentName;
+        private FrameLayout groupnameLayout;
     }
 
     public int getCurrentGroupPosition(int groupPosition) {

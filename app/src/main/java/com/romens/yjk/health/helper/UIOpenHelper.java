@@ -20,7 +20,6 @@ import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
 import com.romens.yjk.health.ui.FamilyMemberActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.HomeActivity;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
 import com.romens.yjk.health.ui.MemberActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
@@ -195,12 +194,6 @@ public class UIOpenHelper {
         context.startActivity(new Intent(context, AddNewRemindActivity.class));
     }
 
-    //打开药品详情页面
-    public static void openMedicinalDetailActivity(Context context, String guid) {
-        Intent intent = new Intent(context, MedicinalDetailActivity.class);
-        intent.putExtra("guid", guid);
-        context.startActivity(intent);
-    }
 
     //打开会员界面
     public static void openMemberActivity(Context context) {

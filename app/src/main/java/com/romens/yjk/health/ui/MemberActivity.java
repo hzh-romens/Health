@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class MemberActivity extends BaseActivity {
     private boolean isMember = false;
-    private LinearLayout btn_ok, pwdLayout;
+    private LinearLayout btnOk, pwdLayout;
     private ActionBar actionBar;
     private List<String> types;
     private ListView listview;
@@ -49,8 +49,8 @@ public class MemberActivity extends BaseActivity {
 
     private void initBindView() {
         pwdLayout = (LinearLayout) findViewById(R.id.pwdLayout);
-        btn_ok = (LinearLayout) findViewById(R.id.btn_ok);
-        btn_ok.setOnClickListener(new View.OnClickListener() {
+        btnOk = (LinearLayout) findViewById(R.id.btn_ok);
+        btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideMemberView();

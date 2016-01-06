@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -16,8 +15,6 @@ import com.romens.android.ui.Components.FlowCell;
 import com.romens.android.ui.Components.FlowLayout;
 import com.romens.android.ui.Components.FlowLayoutCallback;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.yjk.health.ui.MedicinalDetailActivity;
-import com.romens.yjk.health.ui.ShopListActivity;
 
 import java.util.List;
 
