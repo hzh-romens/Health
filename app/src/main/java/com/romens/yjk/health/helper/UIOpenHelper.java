@@ -134,6 +134,23 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
+    /**
+     * 传入html dom 载入web页面
+     * @param context 上下文
+     * @param title 标题
+     * @param html html内容
+     */
+    public static void openWebActivityWithHtml(Context context, String title, String html) {
+        Intent intent = new Intent(context, ADWebActivity.class);
+        Bundle arguments = new Bundle();
+        if(!TextUtils.isEmpty(title)) {
+            arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
+        }
+        arguments.putString(ADWebActivity.ARGUMENTS_KEY_HTML, html);
+        intent.putExtras(arguments);
+        context.startActivity(intent);
+    }
+
     public static void openFavoritesActivity(Context context) {
         Intent intent = new Intent(context, FavoritesActivity.class);
         context.startActivity(intent);

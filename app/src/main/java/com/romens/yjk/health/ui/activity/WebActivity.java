@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -42,6 +43,7 @@ public abstract class WebActivity extends LightActionBarActivity {
         actionLayout.addView(webProgress, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
         setContentView(content, actionBar);
 
+        actionBar.setBackgroundColor(Color.WHITE);
         actionBar.setBackButtonImage(R.drawable.ic_clear_grey600_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override

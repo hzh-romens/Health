@@ -474,8 +474,8 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     private HealthNewsEntity createADHealthNewsEntityFromJsonObject(JSONObject jsonObject) {
         try {
-            HealthNewsEntity entity = new HealthNewsEntity(jsonObject.getString("ID"), jsonObject.getString("TEXT")
-                    , jsonObject.getString("ICONURL"), jsonObject.getString("VALUE"));
+            HealthNewsEntity entity = new HealthNewsEntity(jsonObject.getString("ID"),jsonObject.getString("ICONURL"),jsonObject.getString("TEXT")
+                    ,  jsonObject.getString("VALUE"));
             return entity;
         } catch (JSONException e) {
             return null;

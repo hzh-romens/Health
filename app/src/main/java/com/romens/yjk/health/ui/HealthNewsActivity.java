@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import com.romens.android.ui.support.widget.RecyclerView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.HealthNewsEntity;
 import com.romens.yjk.health.ui.cells.NewsCell;
 import com.romens.yjk.health.ui.cells.NewsTopCell;
@@ -94,7 +93,9 @@ public class HealthNewsActivity extends BaseActivity {
         recyclerView.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int i) {
-                Toast.makeText(HealthNewsActivity.this, "position:" + i, Toast.LENGTH_LONG).show();
+
+                HealthNewsEntity entity = adapter.getItem(i);
+                UIOpenHelper.openWebActivityWithHtml(HealthNewsActivity.this, entity.title, entity.getValue());
             }
         });
 
@@ -212,14 +213,17 @@ public class HealthNewsActivity extends BaseActivity {
                         //获取资讯数据
                         List<HealthNewsEntity> entities = new ArrayList<>();
                         JSONObject itemTemp;
+                        HealthNewsEntity entityTemp;
                         for (int i = 0; i < dataInfoJsonArray.length(); i++) {
                             itemTemp = dataInfoJsonArray.getJSONObject(i);
                             if (itemTemp != null) {
-                                entities.add(new HealthNewsEntity(
+                                entityTemp = new HealthNewsEntity(
                                         itemTemp.getString("id"),
-                                        itemTemp.getString("text"),
                                         itemTemp.getString("pic"),
-                                        itemTemp.getString("title")));
+                                        itemTemp.getString("title"),
+                                        itemTemp.getString("text"));
+                                entityTemp.setValue(itemTemp.getString("info"));
+                                entities.add(entityTemp);
                             }
                         }
                         return entities;
