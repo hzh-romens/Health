@@ -320,7 +320,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 cell.setTextColor(0xff212121);
                 cell.setValueTextColor(ResourcesConfig.textPrimary);
                 if (position == addressRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_address2, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_address, "收货地址管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == myOrderRow) {
                     cell.setIconTextAndNav(R.drawable.ic_order, "我的订单", R.drawable.ic_chevron_right_grey600_24dp, true);
                 } else if (position == collectRow) {
