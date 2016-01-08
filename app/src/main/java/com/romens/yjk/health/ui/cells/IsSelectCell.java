@@ -62,7 +62,7 @@ public class IsSelectCell extends LinearLayout {
 
         isSelectImgView = new ImageView(context);
         isSelectImgView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
-        isSelectImgView.setImageResource(R.drawable.control_address_undeafult);
+        isSelectImgView.setImageResource(R.drawable.ic_check_unchoice);
         flag = false;
         LayoutParams imgParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         imgParams.gravity = Gravity.CENTER_VERTICAL;
@@ -128,12 +128,12 @@ public class IsSelectCell extends LinearLayout {
 
     public boolean changeSelect() {
         if (flag) {
-            isSelectImgView.setImageResource(R.drawable.control_address_undeafult);
+            isSelectImgView.setImageResource(R.drawable.ic_check_unchoice);
             flag = false;
             return flag;
         }
         flag = true;
-        isSelectImgView.setImageResource(R.drawable.control_address_deafult);
+        isSelectImgView.setImageResource(R.drawable.ic_check_choice);
         return flag;
     }
 

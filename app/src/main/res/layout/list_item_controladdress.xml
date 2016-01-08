@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/control_address_undeafult"/>
+            android:src="@drawable/ic_check_unchoice"/>
 
         <TextView
             android:id="@+id/control_address_isdefault"

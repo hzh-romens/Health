@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:src="@drawable/control_address_undeafult"
+        android:src="@drawable/ic_check_unchoice"
         android:visibility="gone"/>
 
     <com.romens.android.ui.Image.BackupImageView
