@@ -16,7 +16,7 @@ import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
-import com.romens.android.ui.Image.BackupImageView;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -72,7 +72,7 @@ public class ShopListAdapter extends RecyclerView.Adapter {
 
 
         if (goodListEntity.getPICBIG() != null && !("".equals(goodListEntity.getPICBIG()))) {
-            itemHolder.icon.setImageUrl(goodListEntity.getPICBIG(), "64_64", null);
+            itemHolder.icon.setImagePath(goodListEntity.getPICBIG());
         } else {
             itemHolder.icon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.picture_fail));
         }
@@ -82,7 +82,6 @@ public class ShopListAdapter extends RecyclerView.Adapter {
             itemHolder.realPrice.setVisibility(View.INVISIBLE);
             itemHolder.discountPrice.setVisibility(View.INVISIBLE);
         } else {
-            // itemHolder.realPrice.setVisibility(View.VISIBLE);
             itemHolder.discountPrice.setVisibility(View.VISIBLE);
             itemHolder.shop.setVisibility(View.VISIBLE);
             itemHolder.realPrice.setText("¥" + goodListEntity.getMEMBERPRICE());
@@ -156,13 +155,13 @@ public class ShopListAdapter extends RecyclerView.Adapter {
 
     public class ItemHolder extends RecyclerView.ViewHolder {
         private ImageView shop;
-        private BackupImageView icon;
+        private CloudImageView icon;
         private TextView name, discountPrice, realPrice, comment;
         private LinearLayout itemLayout;
 
         public ItemHolder(View view) {
             super(view);
-            icon = (BackupImageView) view.findViewById(R.id.iv);
+            icon = (CloudImageView) view.findViewById(R.id.iv);
             shop = (ImageView) view.findViewById(R.id.shop);
             name = (TextView) view.findViewById(R.id.name);
             discountPrice = (TextView) view.findViewById(R.id.discountPrice);
