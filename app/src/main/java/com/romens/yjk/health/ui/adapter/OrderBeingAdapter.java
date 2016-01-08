@@ -91,7 +91,6 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
                 requestConfirmReceive(userGuid, entity.getOrderId(), groupPosition, childPosition);
             }
         });
-        buyAgainBtn.setBackgroundResource(R.drawable.order_follow);
 //        buyAgainBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
