@@ -118,11 +118,11 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
                     }
                 }
             });
-            holder.defaultImg.setImageResource(R.drawable.control_address_undeafult);
+            holder.defaultImg.setImageResource(R.drawable.ic_check_unchoice);
             AddressEntity entity = data.get(index);
             if (entity.getISDEFAULT().equals("1")) {
                 currDefaultAddressIndex = index;
-                holder.defaultImg.setImageResource(R.drawable.control_address_deafult);
+                holder.defaultImg.setImageResource(R.drawable.ic_check_choice);
             }
             holder.defaultLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

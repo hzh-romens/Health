@@ -97,7 +97,7 @@ public class KeyAndViewCell extends LinearLayout {
         });
 
         radioViewMan = new ImgAndValueCell(context);
-        radioViewMan.setData(R.drawable.check_choice, "男", false);
+        radioViewMan.setData(R.drawable.ic_check_choice, "男", false);
         radioViewMan.setLeftImgPadding(16, 16);
         radioViewMan.setFocusable(true);
         LayoutParams radioViewManParams = LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT);
@@ -107,7 +107,7 @@ public class KeyAndViewCell extends LinearLayout {
         radioViewWomen = new ImgAndValueCell(context);
         radioViewWomen.setFocusable(true);
         radioViewWomen.setLeftImgPadding(16, 16);
-        radioViewWomen.setData(R.drawable.check_unchoice, "女", false);
+        radioViewWomen.setData(R.drawable.ic_check_unchoice, "女", false);
         LayoutParams radioViewWomenParams = LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT);
         radioViewWomenParams.gravity = Gravity.CENTER_VERTICAL;
         radioViewWomen.setLayoutParams(radioViewWomenParams);
@@ -204,11 +204,11 @@ public class KeyAndViewCell extends LinearLayout {
 
     public void changeRadioState(boolean flag) {
         if (flag) {
-            radioViewMan.setImgViewSource(R.drawable.check_choice);
-            radioViewWomen.setImgViewSource(R.drawable.check_unchoice);
+            radioViewMan.setImgViewSource(R.drawable.ic_check_choice);
+            radioViewWomen.setImgViewSource(R.drawable.ic_check_unchoice);
         } else {
-            radioViewMan.setImgViewSource(R.drawable.check_unchoice);
-            radioViewWomen.setImgViewSource(R.drawable.check_choice);
+            radioViewMan.setImgViewSource(R.drawable.ic_check_unchoice);
+            radioViewWomen.setImgViewSource(R.drawable.ic_check_choice);
         }
     }
 
