@@ -166,4 +166,5 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.8.1+'
     compile files('libs/pgyer_sdk_2.2.2.jar')
     compile project(':romens.images')
+    compile project(':romens.pay')
 }

@@ -1,1 +1,1 @@
-include ":romens.images", ':MaterialDesign', ':app', ':datetimepicker', ':romens.android', ':romens.extend.QR'
+include ":romens.images", ':MaterialDesign', ':app', ':datetimepicker', ':romens.android', ':romens.extend.QR',':romens.pay'
