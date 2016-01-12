@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
+import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.adapter.ContentListViewAdapter;
 import com.romens.yjk.health.ui.cells.TextViewCell;
 
@@ -47,6 +49,8 @@ public class HomeHealthNewFragment extends BaseFragment {
     private List<MenuEntity> menuListData;
     private HashMap<String, List<DrugGroupEntity>> childNodes;
     private List<DrugGroupEntity> groupNodes;
+    public static final String ARGUMENTS_KEY_ID = "key_id";
+    public static final String ARGUMENTS_KEY_NAME = "key_name";
 
     private int oldPosition = 0;
 
@@ -84,7 +88,26 @@ public class HomeHealthNewFragment extends BaseFragment {
                 }
             }
         });
+
+        contentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onDrugChildClick(position);
+            }
+        });
         return view;
+    }
+
+    private void onDrugChildClick(int position) {
+        DrugGroupEntity childNode = contentAdapter.getData().get(position);
+        if (childNode != null) {
+            Intent intent = new Intent(getActivity(), ShopListActivity.class);
+            Bundle arguments = new Bundle();
+            arguments.putString(ARGUMENTS_KEY_ID, childNode.getId());
+            arguments.putString(ARGUMENTS_KEY_NAME, childNode.getName());
+            intent.putExtras(arguments);
+            startActivity(intent);
+        }
     }
 
     @Override

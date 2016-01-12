@@ -31,7 +31,10 @@ public class ContentListViewAdapter extends BaseAdapter {
 
     public void setData(List<DrugGroupEntity> data) {
         this.data = data;
-        notifyDataSetChanged();
+    }
+
+    public List<DrugGroupEntity> getData() {
+        return data;
     }
 
     @Override
