@@ -6,13 +6,11 @@ import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.FrameLayoutFixed;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.yjk.health.R;
 
 /**
  * Created by siery on 16/1/5.
