@@ -31,7 +31,7 @@
             android:layout_marginLeft="8dp"
             android:background="@drawable/btn_primary_default"
 
-            android:src="@drawable/control_address_undeafult"/>
+            android:src="@drawable/ic_check_unchoice"/>
 
         <TextView
             android:layout_width="match_parent"

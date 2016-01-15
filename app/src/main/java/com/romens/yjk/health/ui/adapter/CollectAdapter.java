@@ -99,9 +99,9 @@ public class CollectAdapter extends BaseAdapter {
         String tempCount = entity.getSaleCount() + "件已售  " + entity.getAssessCount() + "条评论";
         holder.sellCountTextView.setText(tempCount);
         if (isSelect(entity.getId())) {
-            holder.isSelectImgView.setImageResource(R.drawable.control_address_deafult);
+            holder.isSelectImgView.setImageResource(R.drawable.ic_check_choice);
         } else {
-            holder.isSelectImgView.setImageResource(R.drawable.control_address_undeafult);
+            holder.isSelectImgView.setImageResource(R.drawable.ic_check_unchoice);
         }
         holder.addShopCarImgView.setOnClickListener(new View.OnClickListener() {
             @Override

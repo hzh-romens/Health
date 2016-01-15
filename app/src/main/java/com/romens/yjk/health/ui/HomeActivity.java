@@ -37,6 +37,7 @@ import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
+import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
@@ -187,8 +188,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFocusFragment());
-//        fragments.add(new HomeFocusFragment());
-        fragments.add(new HomeHealthFragment());
+        fragments.add(new HomeHealthNewFragment());
+//        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
         fragments.add(new HomeMyFragment());
         return fragments;
