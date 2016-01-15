@@ -13,11 +13,11 @@ import com.romens.yjk.health.ui.cells.NewsCell;
  */
 public class ADNewsControl extends ADBaseControl {
     private HealthNewsEntity entity;
-    private boolean needDivider=false;
+    private boolean needDivider = false;
 
-    public ADNewsControl bindModel(HealthNewsEntity _entity,boolean divider) {
-        entity=_entity;
-        needDivider=divider;
+    public ADNewsControl bindModel(HealthNewsEntity _entity, boolean divider) {
+        entity = _entity;
+        needDivider = divider;
         return this;
     }
 
@@ -31,7 +31,7 @@ public class ADNewsControl extends ADBaseControl {
     @Override
     public void bindViewHolder(Context context, ADHolder holder) {
         NewsCell cell = (NewsCell) holder.itemView;
-        cell.setValue(entity.content, entity.iconUrl,needDivider);
+        cell.setValue(entity.title, entity.content, entity.iconUrl, needDivider);
     }
 
     @Override
