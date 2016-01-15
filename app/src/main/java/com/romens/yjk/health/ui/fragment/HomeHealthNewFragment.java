@@ -2,23 +2,32 @@ package com.romens.yjk.health.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
-import com.romens.android.network.FacadeClient;
+import com.romens.android.AndroidUtilities;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
+import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.viewholder.ItemDecorationOrientation;
+import com.romens.android.ui.viewholder.PaddingDividerItemDecoration;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -41,65 +50,81 @@ import java.util.Map;
 public class HomeHealthNewFragment extends BaseFragment {
 
     private ListView leftMenuListView;
-    private ListView contentListView;
+    private RecyclerView contentListView;
 
     private MenuListViewAdapter menuAdapter;
     private ContentListViewAdapter contentAdapter;
 
-    private List<MenuEntity> menuListData;
-    private HashMap<String, List<DrugGroupEntity>> childNodes;
-    private List<DrugGroupEntity> groupNodes;
+    private final HashMap<String, List<DrugGroupEntity>> childNodes = new HashMap<>();
+    private final List<DrugGroupEntity> groupNodes = new ArrayList<>();
+
+    private int currSelectPosition = -1;
     public static final String ARGUMENTS_KEY_ID = "key_id";
     public static final String ARGUMENTS_KEY_NAME = "key_name";
 
-    private int oldPosition = 0;
-
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_health, null);
-        leftMenuListView = (ListView) view.findViewById(R.id.menu_list);
-        contentListView = (ListView) view.findViewById(R.id.content_list);
+        Context context = getActivity();
+        LinearLayout content = new LinearLayout(context);
+        content.setBackgroundColor(0xfff0f0f0);
+        content.setOrientation(LinearLayout.HORIZONTAL);
 
-        leftMenuListView.setVerticalScrollBarEnabled(false);
+        leftMenuListView = new ListView(context);
+        leftMenuListView.setBackgroundColor(0xffffffff);
         leftMenuListView.setDivider(null);
         leftMenuListView.setDividerHeight(0);
+        leftMenuListView.setVerticalScrollBarEnabled(false);
+        leftMenuListView.setSelector(R.drawable.list_selector);
+        leftMenuListView.setDrawSelectorOnTop(true);
+        content.addView(leftMenuListView, LayoutHelper.createLinear(96, LayoutHelper.MATCH_PARENT));
+
+        contentListView = new RecyclerView(context);
+        contentListView.setLayoutManager(new GridLayoutManager(context, 3));
+        contentListView.addItemDecoration(new ItemDecoration());
+        contentListView.setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(6), AndroidUtilities.dp(4), AndroidUtilities.dp(6));
         contentListView.setVerticalScrollBarEnabled(false);
-        contentListView.setDivider(null);
-        contentListView.setDividerHeight(0);
+        content.addView(contentListView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         leftMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (childNodes != null) {
-                    contentAdapter.setData(childNodes.get(groupNodes.get(position).getId()));
-                    changeSelect(position);
-                    menuAdapter.notifyDataSetChanged();
-                    int index;
-                    if (position > oldPosition) {
-                        index = Math.abs(position - leftMenuListView.getFirstVisiblePosition());
-                    } else {
-                        index = Math.abs(position - (leftMenuListView.getFirstVisiblePosition() + 1));
-                    }
-                    if (position != 0) {
-                        leftMenuListView.smoothScrollByOffset(index);
-                    }
-                    oldPosition = position;
-//                    leftMenuListView.smoothScrollToPosition(position);
+                    onDrugGroupSelected(position);
+//                    contentAdapter.setData(childNodes.get(groupNodes.get(position).getId()));
+//                    currSelectPosition = position;
+//                    menuAdapter.notifyDataSetChanged();
+//                    int index;
+//                    if (position > oldPosition) {
+//                        index = Math.abs(position - leftMenuListView.getFirstVisiblePosition());
+//                    } else {
+//                        index = Math.abs(position - (leftMenuListView.getFirstVisiblePosition() + 1));
+//                    }
+//                    if (position != 0) {
+//                        leftMenuListView.smoothScrollByOffset(index);
+//                    }
+//                    oldPosition = position;
+////                    leftMenuListView.smoothScrollToPosition(position);
                 }
             }
         });
-
-        contentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onDrugChildClick(position);
-            }
-        });
-        return view;
+        return content;
     }
 
-    private void onDrugChildClick(int position) {
-        DrugGroupEntity childNode = contentAdapter.getData().get(position);
+    private void onDrugGroupSelected(int position) {
+        if (groupNodes.isEmpty()) {
+            return;
+        }
+        boolean selectChanged = !(position == currSelectPosition);
+        currSelectPosition = position;
+        menuAdapter.notifyDataSetChanged();
+        leftMenuListView.smoothScrollToPosition(position);
+        if (selectChanged) {
+            contentAdapter.setData(childNodes.get(groupNodes.get(position).getId()));
+        }
+        contentAdapter.notifyDataSetChanged();
+    }
+
+    private void onDrugChildClick(DrugGroupEntity childNode) {
         if (childNode != null) {
             Intent intent = new Intent(getActivity(), ShopListActivity.class);
             Bundle arguments = new Bundle();
@@ -113,22 +138,27 @@ public class HomeHealthNewFragment extends BaseFragment {
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
         menuAdapter = new MenuListViewAdapter(getActivity());
-        contentAdapter = new ContentListViewAdapter(getActivity());
+        contentAdapter = new ContentListViewAdapter(getActivity(), new ContentListViewAdapter.ContentDelegate() {
+            @Override
+            public void onCellSelected(DrugGroupEntity entity) {
+                onDrugChildClick(entity);
+            }
+        });
         leftMenuListView.setAdapter(menuAdapter);
         contentListView.setAdapter(contentAdapter);
     }
 
     @Override
     protected void onRootActivityCreated(Bundle savedInstanceState) {
-        menuListData = new ArrayList<>();
         onDataChanged();
         requestData();
+        onDrugGroupSelected(0);
     }
 
     private void onDataChanged() {
         List<DrugGroupEntity> entities = DBInterface.instance().loadAllDrugGroup();
-        groupNodes = new ArrayList<>();
-        childNodes = new HashMap<>();
+        groupNodes.clear();
+        childNodes.clear();
         for (DrugGroupEntity entity :
                 entities) {
             if (TextUtils.isEmpty(entity.getPID())) {
@@ -143,51 +173,49 @@ public class HomeHealthNewFragment extends BaseFragment {
                 childNodes.get(entity.getPID()).add(entity);
             }
         }
-        initData();
 //        adapter.bindData(groupNodes, childNodes);
 //        adapter.notifyDataSetChanged();
         leftMenuListView.smoothScrollToPosition(0);
     }
 
-    public void initData() {
-        menuListData.clear();
-        for (int i = 0; i < groupNodes.size(); i++) {
-            menuListData.add(new MenuEntity(groupNodes.get(i).getName(), false));
-        }
-        menuAdapter.setData(menuListData);
-
-        if (menuListData.size() > 0) {
-            menuListData.get(0).isSelet = true;
-            contentAdapter.setData(childNodes.get(groupNodes.get(0).getId()));
-        }
-    }
-
     private void requestData() {
-        Map<String, Object> args = new HashMap<>();
-        int lastTime = DBInterface.instance().getDrugGroupDataLastTime();
-        // args.put("LASTTIME", lastTime);
-        // args.put("GUID","");
+        Map<String, String> args = new HashMap<>();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetMedicineKind", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
+
+        Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
+                .withProtocol(protocol)
                 .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
                 }))
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                bindData(null);
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (errorMsg == null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    bindData(responseProtocol.getResponse());
-                }
-            }
-        });
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (errorMessage == null) {
+                            ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) message.protocol;
+                            bindData(responseProtocol.getResponse());
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(getActivity(), connect);
+//        Message message = new Message.MessageBuilder()
+//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+//                }))
+//                .withProtocol(protocol)
+//                .build();
+//        FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message msg) {
+//                bindData(null);
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//                if (errorMsg == null) {
+//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+//                    bindData(responseProtocol.getResponse());
+//                }
+//            }
+//        });
     }
 
     private void bindData(List<LinkedTreeMap<String, String>> nodes) {
@@ -213,26 +241,19 @@ public class HomeHealthNewFragment extends BaseFragment {
     class MenuListViewAdapter extends BaseAdapter {
 
         private Context context;
-        private List<MenuEntity> data;
 
         public MenuListViewAdapter(Context context) {
             this.context = context;
-            data = new ArrayList<>();
-        }
-
-        public void setData(List<MenuEntity> data) {
-            this.data = data;
-            notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            return data.size();
+            return groupNodes.size();
         }
 
         @Override
-        public Object getItem(int position) {
-            return data.get(position);
+        public DrugGroupEntity getItem(int position) {
+            return groupNodes.get(position);
         }
 
         @Override
@@ -246,34 +267,22 @@ public class HomeHealthNewFragment extends BaseFragment {
                 convertView = new TextViewCell(context);
             }
             TextViewCell cell = (TextViewCell) convertView;
-            cell.setText(data.get(position).content, true);
-            if (data.get(position).isSelet) {
-                cell.showImageView();
-                cell.setBackgroundResource(R.color.title_background_grey);
-            } else {
-                cell.hiddenImageView();
-                cell.setBackgroundResource(R.color.white);
-            }
+            DrugGroupEntity groupEntity = getItem(position);
+            cell.setValue(groupEntity.getName(), position == currSelectPosition);
             return cell;
         }
     }
 
-    public void changeSelect(int position) {
-        if (menuListData != null) {
-            for (MenuEntity entity : menuListData) {
-                entity.isSelet = false;
-            }
-            menuListData.get(position).isSelet = true;
+
+    class ItemDecoration extends RecyclerView.ItemDecoration {
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            outRect.top += AndroidUtilities.dp(2);
+            outRect.bottom += AndroidUtilities.dp(4);
+            outRect.left += AndroidUtilities.dp(4);
+            outRect.right += AndroidUtilities.dp(2);
         }
     }
 
-    class MenuEntity {
-        public String content;
-        public boolean isSelet;
-
-        public MenuEntity(String content, boolean isSelet) {
-            this.content = content;
-            this.isSelet = isSelet;
-        }
-    }
 }
