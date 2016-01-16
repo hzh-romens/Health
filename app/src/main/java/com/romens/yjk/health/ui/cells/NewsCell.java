@@ -49,20 +49,30 @@ public class NewsCell extends FrameLayout {
         addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, (Gravity.LEFT) | Gravity.TOP, 8, 0, 80, 0));
 
 
-        iconView=CloudImageView.create(context);
+        iconView = CloudImageView.create(context);
         iconView.setRound(AndroidUtilities.dp(4));
         addView(iconView, LayoutHelper.createFrame(64, 64, (Gravity.RIGHT) | Gravity.TOP, 8, 0, 8, 0));
     }
 
     public void setValue(String title, String content, String iconUrl, boolean divider) {
-        String text = title + "-" + content;
-        SpannableString spanString = new SpannableString(text);
-        spanString.setSpan(new ForegroundColorSpan(0xff212121), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        //spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        nameView.setText(spanString);
+        CharSequence text=createText(title,content);
+        nameView.setText(text);
         iconView.setImagePath(iconUrl);
         needDivider = divider;
         setWillNotDraw(!divider);
+    }
+
+    public static CharSequence createText(String title, String content) {
+        String text;
+        if (!TextUtils.isEmpty(content)) {
+            text = title.concat("-").concat(content);
+        } else {
+            text = title;
+        }
+        SpannableString spanString = new SpannableString(text);
+        spanString.setSpan(new ForegroundColorSpan(0xff212121), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanString;
     }
 
     @Override
