@@ -122,6 +122,7 @@ public class HomeHealthNewFragment extends BaseFragment {
             contentAdapter.setData(childNodes.get(groupNodes.get(position).getId()));
         }
         contentAdapter.notifyDataSetChanged();
+        contentListView.smoothScrollToPosition(0);
     }
 
     private void onDrugChildClick(DrugGroupEntity childNode) {
