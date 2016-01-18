@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -387,7 +388,9 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         listView.setSelection(R.drawable.list_selector);
-        layout.addView(listView, LayoutHelper.createFrame(AndroidUtilities.dp(60), LayoutHelper.WRAP_CONTENT));
+        FrameLayout.LayoutParams layoutParams = LayoutHelper.createFrame(AndroidUtilities.dp(60), LayoutHelper.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        layout.addView(listView, layoutParams);
         listView.setAdapter(new ArrayAdapter<String>(this, R.layout.popupwindow_list_itme, listData));
 
         final PopupWindow popupWindow = new PopupWindow(layout, AndroidUtilities.dp(62), LayoutHelper.WRAP_CONTENT);
