@@ -77,6 +77,12 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         lastLocationCell = new LastLocationCell(this);
         lastLocationCell.setClickable(true);
         lastLocationCell.setBackgroundResource(R.drawable.list_selector);
+        lastLocationCell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIOpenHelper.openUserLocationActivity(HomeActivity.this);
+            }
+        });
         actionBar.addView(lastLocationCell, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
                 Gravity.CENTER_VERTICAL | Gravity.LEFT, 56, 0, 104, 0));
 

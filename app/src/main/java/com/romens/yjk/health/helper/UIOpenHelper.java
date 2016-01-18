@@ -21,6 +21,7 @@ import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
 import com.romens.yjk.health.ui.FamilyMemberActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.romens.yjk.health.ui.LocationActivity;
 import com.romens.yjk.health.ui.MemberActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
@@ -267,6 +268,14 @@ public class UIOpenHelper {
 
     public static void openHistoryActivity(Context context) {
         Intent intent = new Intent(context, HistoryActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void openUserLocationActivity(Context context){
+        Intent intent = new Intent(context, LocationActivity.class);
+        Bundle arguments=new Bundle();
+        arguments.putBoolean(LocationActivity.ARGUMENT_KEY_FROM_USER,true);
+        intent.putExtras(arguments);
         context.startActivity(intent);
     }
 

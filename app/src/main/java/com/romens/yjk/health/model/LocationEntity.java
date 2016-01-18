@@ -15,6 +15,10 @@ public class LocationEntity implements Serializable {
     public String id;
     public String name;
     public String address;
+
+    public String cityCode;
+    public String city;
+
     public double lat;
     public double lon;
     public double distance;
@@ -31,6 +35,10 @@ public class LocationEntity implements Serializable {
         id = poiItem.getPoiId();
         name = poiItem.getTitle();
         address = poiItem.getSnippet();
+
+        cityCode=poiItem.getCityCode();
+        city=poiItem.getCityName();
+
         LatLonPoint point = poiItem.getLatLonPoint();
         lat = point.getLatitude();
         lon = point.getLongitude();
