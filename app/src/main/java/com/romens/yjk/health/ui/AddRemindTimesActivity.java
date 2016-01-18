@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
+import com.romens.yjk.health.ui.cells.TextViewCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +61,10 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         FrameLayout frameLayout = new FrameLayout(this);
         container.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView = new ListView(this);
+        listView.setDivider(null);
+        listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
-        TextInfoCell cell=new TextInfoCell(this);
-        cell.setBackgroundColor(Color.WHITE);
-        cell.setText("长按删除单条记录");
-        listView.addFooterView(cell);
+        listView.addFooterView(new HintViewCell(this));
         timesAdapter = new TimesAdapter(timesData, this, this);
         listView.setAdapter(timesAdapter);
         listView.setSelector(R.drawable.list_selector);
@@ -113,6 +115,28 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
                 }
             }
         });
+    }
+
+    class HintViewCell extends FrameLayout {
+
+        public HintViewCell(Context context) {
+            super(context);
+            TextView textView = new TextView(context);
+            textView.setBackgroundColor(Color.TRANSPARENT);
+            textView.setTextColor(getResources().getColor(R.color.theme_sub_title));
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+            textView.setText("长按删除单条记录");
+            textView.setGravity(Gravity.CENTER);
+            textView.setSingleLine(true);
+            textView.setPadding(AndroidUtilities.dp(20), AndroidUtilities.dp(8), AndroidUtilities.dp(20), AndroidUtilities.dp(8));
+            FrameLayout.LayoutParams layoutParams = LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+            addView(textView, layoutParams);
+        }
+
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(48), MeasureSpec.EXACTLY));
+        }
     }
 
     @Override

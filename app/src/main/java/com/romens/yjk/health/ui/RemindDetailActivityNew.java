@@ -65,7 +65,7 @@ public class RemindDetailActivityNew extends BaseActivity {
         drugRow = rowCount++;
         countRow = rowCount++;
         timesRow = rowCount++;
-        remarkRow = rowCount++;
+//        remarkRow = rowCount++;
     }
 
     private void actionBarEvent() {

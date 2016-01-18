@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp">
 
     <TextView
         android:id="@+id/list_item_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:drawablePadding="10dp"
-        android:minHeight="?attr/actionBarSize"
         android:drawableRight="@drawable/ic_arrow_drop_down_grey600_24dp"
         android:gravity="center_vertical"
+        android:minHeight="?attr/actionBarSize"
         android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:text="08:30"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/line_color"/>
 </RelativeLayout>
