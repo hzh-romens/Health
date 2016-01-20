@@ -2,7 +2,8 @@ package com.yunuo.pay.wx;
 
 public class Constants {
     //注册的AppId，暂时是测试的
-    public static final String APP_ID = "wxd930ea5d5a258f4f";
+    // public static final String APP_ID = "wxd930ea5d5a258f4f";
+    public static final String APP_ID = "wx98680c4ae42b3fad";
 
     public static class ShowMsgActivity {
         public static final String STitle = "showmsg_title";

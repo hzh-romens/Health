@@ -1,9 +1,11 @@
-package com.yunuo.pay;
+package com.yunuo.pay.cells;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.yunuo.pay.R;
 
 /**
  * Created by HZH on 2016/1/13.

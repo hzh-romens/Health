@@ -21,13 +21,16 @@
                 <intent-filter>
                     <action android:name="android.intent.action.VIEW" />
                     <category android:name="android.intent.category.DEFAULT" />
-                    <data android:scheme="wxd930ea5d5a258f4f" />
+                    <data android:scheme="wx98680c4ae42b3fad" />
                 </intent-filter>
             </intent-filter>
         </activity>
-        <activity android:name=".apply.PayDemoActivity"></activity>
-        <activity android:name=".wx.WXActivity"></activity>
-        <activity android:name=".wx.WXPayEntryActivity"></activity>
+        <activity android:name=".apply.ApplyActivity"></activity>
+        <activity android:name=".wx.wxapi.WXActivity"></activity>
+        <activity
+            android:name=".wx.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"></activity>
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
@@ -39,11 +42,6 @@
             android:exported="false"
             android:screenOrientation="behind"></activity>
 
-        <receiver android:name=".wx.AppRegister">
-            <intent-filter>
-                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
-            </intent-filter>
-        </receiver>
 
     </application>
 

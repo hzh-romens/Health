@@ -1,10 +1,16 @@
-package com.yunuo.pay;
+package com.yunuo.pay.adapter;
 
 import android.content.Context;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.yunuo.pay.R;
+import com.yunuo.pay.cells.CheckLayoutCell;
+import com.yunuo.pay.cells.CntentCell;
+import com.yunuo.pay.cells.TextViewCell;
 
 import java.util.List;
 
@@ -15,6 +21,7 @@ public class PayAdapter extends BaseAdapter {
     private Context mContext;
     private List<String> mResult;
     private SparseArray mTypes;
+    private SparseBooleanArray mStatus;
 
     public PayAdapter(Context context) {
         this.mContext = context;
@@ -24,6 +31,16 @@ public class PayAdapter extends BaseAdapter {
         this.mResult = result;
         this.mTypes = types;
         notifyDataSetChanged();
+    }
+
+    public void setStatus(SparseBooleanArray status) {
+        this.mStatus = status;
+        notifyDataSetChanged();
+    }
+
+    private StatuNotifyDataSetChanged mListener;
+    public void setStatuNotifyDataSetChanged(StatuNotifyDataSetChanged listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -65,13 +82,17 @@ public class PayAdapter extends BaseAdapter {
             final CheckLayoutCell checkLayoutCell = (CheckLayoutCell) convertView;
             if (mTypes.get(position) == 3) {
                 checkLayoutCell.setValue(R.drawable.logos, "微信支付", "XXX", true);
+                checkLayoutCell.setCheckStatus(mStatus.get(3));
             } else if (mTypes.get(position) == 4) {
                 checkLayoutCell.setValue(R.drawable.logos, "支付宝支付", "X", false);
+                checkLayoutCell.setCheckStatus(mStatus.get(4));
             }
             checkLayoutCell.setListener(new CheckLayoutCell.checkChangeListener() {
+
                 @Override
-                public void stateChange(boolean status) {
+                public void stateChange(int flag, boolean status) {
                     checkLayoutCell.setCheckStatus(status);
+                    mListener.notify(flag, status);
                 }
             });
         }
@@ -95,4 +116,9 @@ public class PayAdapter extends BaseAdapter {
         }
         return 0;
     }
+
+    public interface StatuNotifyDataSetChanged {
+        void notify(int flag, boolean statu);
+    }
+
 }

@@ -1,14 +1,14 @@
-package com.yunuo.pay;
+package com.yunuo.pay.cells;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.yunuo.pay.wx.CheckableFrameLayout;
+import com.yunuo.pay.ListItemType;
+import com.yunuo.pay.R;
 
 /**
  * Created by HZH on 2016/1/13.
@@ -20,10 +20,16 @@ public class CheckLayoutCell extends FrameLayout {
     private Context mContext;
     private View line;
 
-    private Paint mPaint;
     private boolean mIsNeedDiver;
     private checkChangeListener mListener;
 
+    public void setCheckStatus(boolean status) {
+        checkLayout.setChecked(status);
+    }
+
+    public void setListener(checkChangeListener listener) {
+        this.mListener = listener;
+    }
 
     public CheckLayoutCell(Context context) {
         super(context);
@@ -39,9 +45,15 @@ public class CheckLayoutCell extends FrameLayout {
         checkLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.stateChange(!checkLayout.isChecked());
+                String name = nameView.getText().toString();
+                if (getResources().getString(R.string.wx).equals(name)) {
+                    mListener.stateChange(ListItemType.wxFlag, !checkLayout.isChecked());
+                } else if (getResources().getString(R.string.apply).equals(name)) {
+                    mListener.stateChange(ListItemType.applyFlag, !checkLayout.isChecked());
+                }
             }
         });
+
     }
 
 
@@ -56,17 +68,8 @@ public class CheckLayoutCell extends FrameLayout {
         }
     }
 
-    public void setCheckStatus(boolean status) {
-        checkLayout.setChecked(status);
-    }
-
-    public void setListener(checkChangeListener listener) {
-        this.mListener = listener;
-    }
 
     public interface checkChangeListener {
-        void stateChange(boolean status);
+        void stateChange(int flag, boolean status);
     }
-
-
 }

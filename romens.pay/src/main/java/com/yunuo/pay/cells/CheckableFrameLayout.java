@@ -1,4 +1,4 @@
-package com.yunuo.pay.wx;
+package com.yunuo.pay.cells;
 
 import android.content.Context;
 import android.util.AttributeSet;

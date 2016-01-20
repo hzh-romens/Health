@@ -1,4 +1,4 @@
-package com.yunuo.pay;
+package com.yunuo.pay.cells;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.yunuo.pay.R;
 
 /**
  * Created by HZH on 2016/1/13.
