@@ -52,10 +52,10 @@ public class FamilyMemberActivity extends BaseActivity {
         container.setBackgroundResource(R.color.line_color);
         setContentView(container, actionBar);
         actionBarEvent();
-        TextSettingsCell textSettingsCell = new TextSettingsCell(this);
-        textSettingsCell.setText("成员列表", true);
-        textSettingsCell.setTextColor(R.color.theme_sub_title);
-        container.addView(textSettingsCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+//        TextSettingsCell textSettingsCell = new TextSettingsCell(this);
+//        textSettingsCell.setText("成员列表", true);
+//        textSettingsCell.setTextColor(R.color.theme_sub_title);
+//        container.addView(textSettingsCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         initData();
 

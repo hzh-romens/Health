@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
 import android.location.Location;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,6 +40,9 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
         void didLoadedSearchResult(ArrayList<LocationEntity> places);
     }
 
+    private static final String POI_TYPE = "汽车服务|汽车销售|汽车维修|摩托车服务|餐饮服务|购物服务|生活服务|体育休闲服务|医疗保健服务|住宿服务|风景名胜|商务住宅|政府机构及社会团体|科教文化服务|交通设施服务|金融保险服务|公司企业|道路附属设施|地名地址信息|公共设施";
+
+
     protected boolean searching;
     protected ArrayList<LocationEntity> places = new ArrayList<>();
     private Location lastSearchLocation;
@@ -47,6 +51,10 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
 
     protected Context mContext;
     protected boolean isDestroy = false;
+
+    public enum SearchType {
+        SHOP, USER
+    }
 
     public BaseLocationAdapter(Context context) {
         this.mContext = context;
@@ -60,7 +68,7 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
         this.delegate = delegate;
     }
 
-    public void searchDelayed(final String query, final Location coordinate) {
+    public void searchDelayed( final SearchType searchType,final String query, final Location coordinate) {
         if (query == null || query.length() == 0) {
             places.clear();
             notifyDataSetChanged();
@@ -86,7 +94,11 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
                         @Override
                         public void run() {
                             lastSearchLocation = null;
-                            searchMapPlacesWithServerQuery(query, coordinate);
+                            if (searchType == SearchType.SHOP) {
+                                searchMapPlacesWithServerQuery(query, coordinate);
+                            } else {
+                                searchMapPlacesWithQuery(query, coordinate);
+                            }
                         }
                     });
                 }
@@ -104,8 +116,9 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
         }
         try {
             searching = true;
-            PoiSearch.Query mapQuery = new PoiSearch.Query(query, "", "");
-            mapQuery.setPageSize(50);// 设置每页最多返回多少条poiitem
+            String poiTyp = TextUtils.isEmpty(query) ? POI_TYPE : "";
+            PoiSearch.Query mapQuery = new PoiSearch.Query(query, poiTyp, "");
+            mapQuery.setPageSize(30);// 设置每页最多返回多少条poiitem
             mapQuery.setPageNum(0);//设置查第一页
             PoiSearch poiSearch = new PoiSearch(mContext, mapQuery);
             poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(coordinate.getLatitude(),

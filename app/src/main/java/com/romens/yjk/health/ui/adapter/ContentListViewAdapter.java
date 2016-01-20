@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -10,7 +11,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
+import com.romens.yjk.health.ui.cells.DrugMenuChildCell;
 import com.romens.yjk.health.ui.cells.TextViewCell;
 
 import java.util.ArrayList;
@@ -19,14 +22,15 @@ import java.util.List;
 /**
  * Created by anlc on 2016/1/12.
  */
-public class ContentListViewAdapter extends BaseAdapter {
+public class ContentListViewAdapter extends RecyclerView.Adapter {
 
     private Context context;
     private List<DrugGroupEntity> data;
+    private ContentDelegate delegate;
 
-    public ContentListViewAdapter(Context context) {
+    public ContentListViewAdapter(Context context, ContentDelegate delegate) {
         this.context = context;
-        data = new ArrayList<>();
+        this.delegate = delegate;
     }
 
     public void setData(List<DrugGroupEntity> data) {
@@ -38,13 +42,34 @@ public class ContentListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        return data.size();
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        DrugMenuChildCell cell = new DrugMenuChildCell(context);
+        cell.setBackgroundResource(R.drawable.drug_child_states);
+        cell.setClickable(true);
+        return new Holder(cell);
     }
 
     @Override
-    public Object getItem(int position) {
-        return data.get(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        if (holder.itemView instanceof DrugMenuChildCell) {
+            DrugMenuChildCell cell = (DrugMenuChildCell) holder.itemView;
+            cell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (delegate != null) {
+                        delegate.onCellSelected(data.get(position));
+                    }
+                }
+            });
+            cell.setValue(data.get(position).getName());
+        }
+    }
+
+    static class Holder extends RecyclerView.ViewHolder {
+
+        public Holder(View itemView) {
+            super(itemView);
+        }
     }
 
     @Override
@@ -53,9 +78,11 @@ public class ContentListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        TextViewCell cell = new TextViewCell(context);
-        cell.setText(data.get(position).getName(), false);
-        return cell;
+    public int getItemCount() {
+        return data == null ? 0 : data.size();
+    }
+
+    public interface ContentDelegate {
+        void onCellSelected(DrugGroupEntity entity);
     }
 }

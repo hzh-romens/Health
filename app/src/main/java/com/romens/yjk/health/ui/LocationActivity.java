@@ -70,6 +70,7 @@ public class LocationActivity extends BaseActivity {
     public static final String ARGUMENT_KEY_TARGET_LOCATION_LAT = "target_location_lat";
     public static final String ARGUMENT_KEY_TARGET_LOCATION_LON = "target_location_lon";
     public static final String ARGUMENT_KEY_TARGET_LOCATION_ADDRESS = "target_location_address";
+    public static final String ARGUMENT_KEY_FROM_USER = "frome_user";
 
     private FrameLayout fragmentView;
     private AMap aMap;
@@ -120,6 +121,8 @@ public class LocationActivity extends BaseActivity {
 
     private ActionBarMenuItem otherMenuItem;
 
+    private BaseLocationAdapter.SearchType searchType = BaseLocationAdapter.SearchType.SHOP;
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -139,12 +142,15 @@ public class LocationActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getIntent().getExtras();
+        boolean fromUser = false;
         if (arguments != null) {
             currQueryKeyword = arguments.getString(ARGUMENT_KEY_QUERY_KEYWORD, MAP_SEARCH_DEFAULT_KEY);
             targetLocationLat = arguments.getDouble(ARGUMENT_KEY_TARGET_LOCATION_LAT, 0);
             targetLocationLon = arguments.getDouble(ARGUMENT_KEY_TARGET_LOCATION_LON, 0);
             targetLocationAddress = arguments.getString(ARGUMENT_KEY_TARGET_LOCATION_ADDRESS, "");
+            fromUser = arguments.getBoolean(ARGUMENT_KEY_FROM_USER, false);
         }
+        searchType = fromUser ? BaseLocationAdapter.SearchType.USER : BaseLocationAdapter.SearchType.SHOP;
         isReadOnly = !TextUtils.isEmpty(targetLocationAddress);
         final Context context = this;
 
@@ -185,7 +191,11 @@ public class LocationActivity extends BaseActivity {
             actionBar.setTitle("药店位置");
             menu.addItem(share, R.drawable.share);
         } else {
-            actionBar.setTitle("附近药店");
+            if (searchType == BaseLocationAdapter.SearchType.SHOP) {
+                actionBar.setTitle("附近药店");
+            } else {
+                actionBar.setTitle("送达药品至...");
+            }
 
             ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
                 @Override
@@ -209,7 +219,7 @@ public class LocationActivity extends BaseActivity {
                     mapViewClip.setVisibility(View.VISIBLE);
                     searchListView.setVisibility(View.GONE);
                     emptyTextLayout.setVisibility(View.GONE);
-                    searchAdapter.searchDelayed(null, null);
+                    searchAdapter.searchDelayed(searchType, null, null);
                     if (otherMenuItem != null) {
                         otherMenuItem.setVisibility(View.VISIBLE);
                     }
@@ -224,7 +234,7 @@ public class LocationActivity extends BaseActivity {
                     if (text.length() != 0) {
                         searchWas = true;
                     }
-                    searchAdapter.searchDelayed(text, userLocation);
+                    searchAdapter.searchDelayed(searchType, text, userLocation);
                 }
             });
             item.getSearchField().setHint("搜索");
@@ -388,7 +398,7 @@ public class LocationActivity extends BaseActivity {
             }
 
             listView = new ListView(context);
-            listView.setAdapter(adapter = new LocationActivityAdapter(context));
+            listView.setAdapter(adapter = new LocationActivityAdapter(context,searchType));
             listView.setVerticalScrollBarEnabled(false);
             listView.setDividerHeight(0);
             listView.setDivider(null);
@@ -414,10 +424,7 @@ public class LocationActivity extends BaseActivity {
                         getMyActionBar().openSearchField("");
                     } else {
                         LocationEntity object = adapter.getItem(position);
-                        Toast.makeText(context, "-lon-->" + object.lon + "--lan->" + object.lat, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LocationActivity.this, DrugStoryDetailActivity.class);
-                        intent.putExtra("locationEntity", object);
-                        startActivity(intent);
+                        processLocationSelected(object);
                     }
                 }
             });
@@ -573,9 +580,7 @@ public class LocationActivity extends BaseActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     LocationEntity object = searchAdapter.getItem(position);
-//                    if (isReturn) {
-//                        //returnLocation(object);
-//                    }
+                    processLocationSelected(object);
                 }
             });
 
@@ -603,6 +608,22 @@ public class LocationActivity extends BaseActivity {
             positionMarker(myLocation = getLastLocation());
         }
         initMyLocation();
+    }
+
+    /**
+     * 处理位置列表行选中状态
+     *
+     * @param entity
+     */
+    private void processLocationSelected(LocationEntity entity) {
+        if (searchType == BaseLocationAdapter.SearchType.SHOP) {
+            Intent intent = new Intent(LocationActivity.this, DrugStoryDetailActivity.class);
+            intent.putExtra("locationEntity", entity);
+            startActivity(intent);
+        } else {
+            LocationHelper.updateLastLocation(LocationActivity.this, entity);
+            finish();
+        }
     }
 
     private float getLocationFitZoom() {
@@ -815,7 +836,11 @@ public class LocationActivity extends BaseActivity {
         } else if (aMap != null) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             if (adapter != null) {
-                adapter.searchMapPlacesWithServerQuery(MAP_SEARCH_DEFAULT_KEY, myLocation);
+                if(searchType== BaseLocationAdapter.SearchType.SHOP) {
+                    adapter.searchMapPlacesWithServerQuery(MAP_SEARCH_DEFAULT_KEY, myLocation);
+                }else{
+                    adapter.searchMapPlacesWithQuery(MAP_SEARCH_DEFAULT_KEY, myLocation);
+                }
                 adapter.setGpsLocation(myLocation);
             }
             if (!userLocationMoved) {

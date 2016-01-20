@@ -13,6 +13,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
 import com.romens.yjk.health.MyApplication;
+import com.romens.yjk.health.model.LocationEntity;
 
 /**
  * Created by siery on 15/8/18.
@@ -132,14 +133,14 @@ public class LocationHelper {
 
 
     public static boolean checkPermission(Context context) {
-        if(context==null){
+        if (context == null) {
             return false;
         }
         String packageName = context.getPackageName();
         if (TextUtils.isEmpty(packageName)) {
             return false;
         }
-        PackageManager packageManager =context.getPackageManager();
+        PackageManager packageManager = context.getPackageManager();
         if (packageManager != null) {
             boolean permission = (PackageManager.PERMISSION_GRANTED ==
                     packageManager.checkPermission("android.permission.ACCESS_COARSE_LOCATION", packageName));
@@ -180,6 +181,23 @@ public class LocationHelper {
             editor.putString("cityCode", location.getCityCode());
             editor.putString("city", location.getCity());
             editor.putString("address", location.getAddress());
+            editor.commit();
+        }
+        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onLastLocationChanged);
+    }
+
+    public static void updateLastLocation(Context context, LocationEntity location) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (location == null) {
+            editor.clear().commit();
+        } else {
+            editor.putFloat("lat", (float) location.lat);
+            editor.putFloat("lon", (float) location.lon);
+            editor.putFloat("accuracy", 0);
+            editor.putString("cityCode", location.cityCode);
+            editor.putString("city", location.cityCode);
+            editor.putString("address", location.address);
             editor.commit();
         }
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onLastLocationChanged);

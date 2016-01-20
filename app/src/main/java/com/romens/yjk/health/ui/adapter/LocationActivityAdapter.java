@@ -19,9 +19,11 @@ public class LocationActivityAdapter extends BaseLocationAdapter {
     private SendLocationCell sendLocationCell;
     private Location gpsLocation;
     private Location customLocation;
+    private SearchType searchType;
 
-    public LocationActivityAdapter(Context context) {
+    public LocationActivityAdapter(Context context, SearchType type) {
         super(context);
+        this.searchType = type;
     }
 
     public void setOverScrollHeight(int value) {
@@ -41,10 +43,10 @@ public class LocationActivityAdapter extends BaseLocationAdapter {
     private void updateCell() {
         if (sendLocationCell != null) {
             if (customLocation != null) {
-                sendLocationCell.setText("搜索当前地图位置附近药店)", String.format("(%f,%f)", customLocation.getLatitude(), customLocation.getLongitude()));
+                sendLocationCell.setText(searchType == SearchType.SHOP ? "搜索当前地图位置附近药店" : "搜索当前地图位置附近", String.format("(%f,%f)", customLocation.getLatitude(), customLocation.getLongitude()));
             } else {
                 if (gpsLocation != null) {
-                    sendLocationCell.setText("搜索我的位置附近药店", String.format("已定位,精确度 (%d)", (int) gpsLocation.getAccuracy()));
+                    sendLocationCell.setText(searchType == SearchType.SHOP ? "搜索我的位置附近药店" : "搜索我的位置附近", String.format("已定位,精确度 (%d)", (int) gpsLocation.getAccuracy()));
                 } else {
                     sendLocationCell.setText("我的位置", "定位中...");
                 }

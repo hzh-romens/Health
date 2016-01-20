@@ -21,6 +21,7 @@ import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
 import com.romens.yjk.health.ui.FamilyMemberActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.romens.yjk.health.ui.LocationActivity;
 import com.romens.yjk.health.ui.MemberActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
@@ -130,6 +131,23 @@ public class UIOpenHelper {
             arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
         }
         arguments.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
+        intent.putExtras(arguments);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 传入html dom 载入web页面
+     * @param context 上下文
+     * @param title 标题
+     * @param html html内容
+     */
+    public static void openWebActivityWithHtml(Context context, String title, String html) {
+        Intent intent = new Intent(context, ADWebActivity.class);
+        Bundle arguments = new Bundle();
+        if(!TextUtils.isEmpty(title)) {
+            arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
+        }
+        arguments.putString(ADWebActivity.ARGUMENTS_KEY_HTML, html);
         intent.putExtras(arguments);
         context.startActivity(intent);
     }
@@ -250,6 +268,14 @@ public class UIOpenHelper {
 
     public static void openHistoryActivity(Context context) {
         Intent intent = new Intent(context, HistoryActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void openUserLocationActivity(Context context){
+        Intent intent = new Intent(context, LocationActivity.class);
+        Bundle arguments=new Bundle();
+        arguments.putBoolean(LocationActivity.ARGUMENT_KEY_FROM_USER,true);
+        intent.putExtras(arguments);
         context.startActivity(intent);
     }
 

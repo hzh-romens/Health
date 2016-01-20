@@ -191,6 +191,11 @@ public class FamilyDrugGroupActivity extends BaseActivity {
         }
 
         @Override
+        public boolean isEnabled(int position) {
+            return position != drupTitleRow;
+        }
+
+        @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             int type = getItemViewType(position);
             if (type == 1) {
@@ -260,7 +265,8 @@ public class FamilyDrugGroupActivity extends BaseActivity {
                     /*if (i == 0) {
                         showEditRemark(position);
                         popupWindow.dismiss();
-                    } else*/ if (i == 0) {
+                    } else*/
+                    if (i == 0) {
                         deleteDb(entityList.get(position));
                         popupWindow.dismiss();
                     }

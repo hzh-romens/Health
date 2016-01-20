@@ -17,6 +17,7 @@ import com.romens.yjk.health.web.JsBaseInterface;
 public class ADWebActivity extends WebActivity {
     public static final String ARGUMENTS_KEY_TITLE = "title";
     public static final String ARGUMENTS_KEY_TARGET_URL = "target_url";
+    public static final String ARGUMENTS_KEY_HTML = "html";
 
     private JsBaseInterface adWebJsInterface;
 
@@ -41,12 +42,16 @@ public class ADWebActivity extends WebActivity {
             }
         });
 
+        adWebJsInterface = new ADWebJsInterface(this)
+                .withWebView(webView);
+        webView.addJavascriptInterface(adWebJsInterface, adWebJsInterface.toString());
+
         if (bundle.containsKey(ARGUMENTS_KEY_TARGET_URL)) {
             String url = bundle.getString(ARGUMENTS_KEY_TARGET_URL);
-            adWebJsInterface = new ADWebJsInterface(this)
-                    .withWebView(webView);
-            webView.addJavascriptInterface(adWebJsInterface, adWebJsInterface.toString());
             webView.loadUrl(url);
+        } else {
+            String html = bundle.getString(ARGUMENTS_KEY_HTML, "");
+            webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
         }
 
     }

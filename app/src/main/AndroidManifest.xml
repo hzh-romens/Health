@@ -116,8 +116,6 @@
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
         <!-- 设置环信应用的appkey -->
@@ -408,6 +406,36 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <!--************** romens pay begin **************************-->
+        <activity android:name="com.yunuo.pay.PayActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="wxd930ea5d5a258f4f" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.yunuo.pay.apply.PayDemoActivity"></activity>
+        <activity android:name="com.yunuo.pay.wx.WXActivity"></activity>
+        <activity android:name="com.yunuo.pay.wx.WXPayEntryActivity"></activity>
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"></activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"></activity>
+
+        <receiver android:name="com.yunuo.pay.wx.AppRegister">
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
+
+        <!--************** romens pay end **************************-->
 
     </application>
 

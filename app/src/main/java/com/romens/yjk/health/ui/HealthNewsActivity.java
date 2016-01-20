@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import com.romens.android.ui.support.widget.RecyclerView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.HealthNewsEntity;
 import com.romens.yjk.health.ui.cells.NewsCell;
 import com.romens.yjk.health.ui.cells.NewsTopCell;
@@ -94,7 +93,9 @@ public class HealthNewsActivity extends BaseActivity {
         recyclerView.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int i) {
-                Toast.makeText(HealthNewsActivity.this, "position:" + i, Toast.LENGTH_LONG).show();
+
+                HealthNewsEntity entity = adapter.getItem(i);
+                UIOpenHelper.openWebActivityWithHtml(HealthNewsActivity.this, entity.title, entity.getValue());
             }
         });
 
@@ -187,6 +188,8 @@ public class HealthNewsActivity extends BaseActivity {
      * @return
      */
     private List<HealthNewsEntity> asyncHandleJsonData(String data) {
+        //获取资讯数据
+        List<HealthNewsEntity> entities = new ArrayList<>();
         if (!TextUtils.isEmpty(data)) {
             try {
                 JSONObject jsonObject = new JSONObject(data);
@@ -197,32 +200,31 @@ public class HealthNewsActivity extends BaseActivity {
                     return null;
                 }
                 JSONArray dataJsonArray = jsonObject.getJSONArray("data");
-                if (dataJsonArray.length() > 0) {
-                    JSONObject jsonObject1 = dataJsonArray.getJSONObject(0);
+                int dataSize = dataJsonArray.length();
+                for (int j = 0; j < dataSize; j++) {
+                    JSONObject jsonObject1 = dataJsonArray.getJSONObject(j);
                     String newsTime = jsonObject1.getString("time");
-                    if (TextUtils.isEmpty(newsTime)) {
-                        return null;
-                    }
-                    JSONObject dataInfoJsonObject = jsonObject.getJSONObject("datainfo");
-                    if (dataInfoJsonObject.has(newsTime)) {
-                        JSONArray dataInfoJsonArray = dataInfoJsonObject.getJSONArray(newsTime);
-                        if (dataInfoJsonArray == null) {
-                            return null;
-                        }
-                        //获取资讯数据
-                        List<HealthNewsEntity> entities = new ArrayList<>();
-                        JSONObject itemTemp;
-                        for (int i = 0; i < dataInfoJsonArray.length(); i++) {
-                            itemTemp = dataInfoJsonArray.getJSONObject(i);
-                            if (itemTemp != null) {
-                                entities.add(new HealthNewsEntity(
-                                        itemTemp.getString("id"),
-                                        itemTemp.getString("text"),
-                                        itemTemp.getString("pic"),
-                                        itemTemp.getString("title")));
+                    if (!TextUtils.isEmpty(newsTime)) {
+                        JSONObject dataInfoJsonObject = jsonObject.getJSONObject("datainfo");
+                        if (dataInfoJsonObject.has(newsTime)) {
+                            JSONArray dataInfoJsonArray = dataInfoJsonObject.getJSONArray(newsTime);
+                            if (dataInfoJsonArray != null) {
+                                JSONObject itemTemp;
+                                HealthNewsEntity entityTemp;
+                                for (int i = 0; i < dataInfoJsonArray.length(); i++) {
+                                    itemTemp = dataInfoJsonArray.getJSONObject(i);
+                                    if (itemTemp != null) {
+                                        entityTemp = new HealthNewsEntity(
+                                                itemTemp.getString("id"),
+                                                itemTemp.getString("pic"),
+                                                itemTemp.getString("title"),
+                                                itemTemp.getString("text"));
+                                        entityTemp.setValue(itemTemp.getString("info"));
+                                        entities.add(entityTemp);
+                                    }
+                                }
                             }
                         }
-                        return entities;
                     }
 
                 }
@@ -230,7 +232,7 @@ public class HealthNewsActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        return null;
+        return entities;
     }
 
     static class Holder extends RecyclerView.ViewHolder {
@@ -284,11 +286,11 @@ public class HealthNewsActivity extends BaseActivity {
             int viewType = getItemViewType(position);
             if (viewType == 0) {
                 NewsTopCell cell = (NewsTopCell) holder.itemView;
-                cell.setValue(entity.content, entity.iconUrl, true);
+                cell.setValue(entity.title, entity.content, entity.iconUrl, true);
             } else if (viewType == 1) {
                 NewsCell cell = (NewsCell) holder.itemView;
                 boolean needDivider = position != (data.size() - 1);
-                cell.setValue(entity.content, entity.iconUrl, needDivider);
+                cell.setValue(entity.title, entity.content, entity.iconUrl, needDivider);
             }
         }
 
