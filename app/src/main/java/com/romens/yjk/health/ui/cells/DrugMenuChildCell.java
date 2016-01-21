@@ -36,6 +36,7 @@ public class DrugMenuChildCell extends FrameLayout {
         addView(nameTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 16, 10, 16, 0));
 
         iconView = CloudImageView.create(context);
+        iconView.setRound(AndroidUtilities.dp(4));
         addView(iconView, LayoutHelper.createFrame(48, 48, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 16, 0, 16, 10));
         iconDrawable = new RoundDrawable();
     }
@@ -45,9 +46,10 @@ public class DrugMenuChildCell extends FrameLayout {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(112), MeasureSpec.EXACTLY));
     }
 
-    public void setValue(String name) {
+    public void setValue(String name,String icon) {
         nameTextView.setText(name);
         iconDrawable.setInfo(name, 0xffe5e5e5);
         iconView.setPlaceholderImage(iconDrawable);
+        iconView.setImagePath(icon);
     }
 }
