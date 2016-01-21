@@ -124,7 +124,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
                 } else if (position == checkUpdateRow) {
-                    MonitorHelper.checkUpdate(getActivity());
+                    MonitorHelper.checkUpdate(getActivity(),true);
                 }
             }
         });
