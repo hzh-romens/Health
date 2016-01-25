@@ -558,7 +558,7 @@ public class LoginActivity extends BaseActivity {
             });
 
             timeText = new TextView(context);
-            timeText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            timeText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             timeText.setTextColor(0xff757575);
             timeText.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             timeText.setGravity(Gravity.LEFT);
@@ -574,7 +574,7 @@ public class LoginActivity extends BaseActivity {
             problemText.setText("没有收到短信,重新发送?");
             problemText.setVisibility(time < 1000 ? VISIBLE : GONE);
             problemText.setGravity(Gravity.LEFT);
-            problemText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            problemText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             problemText.setTextColor(getResources().getColor(R.color.text_primary));
             problemText.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             problemText.setPadding(0, AndroidUtilities.dp(2), 0, AndroidUtilities.dp(12));
@@ -603,7 +603,7 @@ public class LoginActivity extends BaseActivity {
             TextView wrongNumber = new TextView(context);
             wrongNumber.setGravity(Gravity.LEFT | Gravity.CENTER_HORIZONTAL);
             wrongNumber.setTextColor(getResources().getColor(R.color.text_primary));
-            wrongNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            wrongNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             wrongNumber.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             wrongNumber.setPadding(0, AndroidUtilities.dp(24), 0, 0);
             linearLayout.addView(wrongNumber);
@@ -932,7 +932,7 @@ public class LoginActivity extends BaseActivity {
 
             confirmTextView = new TextView(context);
             confirmTextView.setTextColor(0xff757575);
-            confirmTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            confirmTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             confirmTextView.setGravity(Gravity.LEFT);
             confirmTextView.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             confirmTextView.setText("输入账户密码,验证用户安全性");
@@ -976,7 +976,7 @@ public class LoginActivity extends BaseActivity {
             cancelButton.setGravity(Gravity.LEFT | Gravity.TOP);
             cancelButton.setTextColor(getResources().getColor(R.color.text_primary));
             cancelButton.setText("忘记密码?");
-            cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             cancelButton.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             cancelButton.setPadding(0, AndroidUtilities.dp(14), 0, 0);
             addView(cancelButton);
@@ -1043,7 +1043,7 @@ public class LoginActivity extends BaseActivity {
             resetAccountText.setVisibility(GONE);
             resetAccountText.setTextColor(0xff757575);
             resetAccountText.setText(String.format("为什么出现激活账户?用户首次登录%s,账户状态未未激活状态.需要激活才可以正常使用某些功能.", getString(R.string.app_name)));
-            resetAccountText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            resetAccountText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             resetAccountText.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             addView(resetAccountText);
             layoutParams = (LinearLayout.LayoutParams) resetAccountText.getLayoutParams();
@@ -1758,7 +1758,7 @@ public class LoginActivity extends BaseActivity {
             TextView textView = new TextView(context);
             textView.setText(String.format("使用手机号码快捷登录 %s.未注册用户,赶快加入我们吧,一起开启健康之旅.",getString(R.string.app_name)));
             textView.setTextColor(0xff757575);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             textView.setGravity(Gravity.LEFT);
             textView.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             addView(textView);

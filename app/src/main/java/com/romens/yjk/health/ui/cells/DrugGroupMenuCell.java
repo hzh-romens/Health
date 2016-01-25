@@ -15,14 +15,14 @@ import com.romens.yjk.health.config.ResourcesConfig;
 /**
  * Created by anlc on 2016/1/12.
  */
-public class TextViewCell extends FrameLayout {
+public class DrugGroupMenuCell extends FrameLayout {
 
     private TextView textView;
 
     private boolean isSelected = false;
     private static Paint paint;
 
-    public TextViewCell(Context context) {
+    public DrugGroupMenuCell(Context context) {
         super(context);
         if (paint == null) {
             paint = new Paint();
@@ -36,7 +36,7 @@ public class TextViewCell extends FrameLayout {
         textView.setTextColor(ResourcesConfig.bodyText1);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         textView.setIncludeFontPadding(false);
-        FrameLayout.LayoutParams params = LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+        FrameLayout.LayoutParams params = LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT,Gravity.CENTER,8,0,8,0);
         addView(textView, params);
     }
 

@@ -100,6 +100,6 @@ public class DrugGroupEntity {
      * @return
      */
     public String getIcon(){
-        return icon;
+        return icon==null?"":icon;
     }
 }

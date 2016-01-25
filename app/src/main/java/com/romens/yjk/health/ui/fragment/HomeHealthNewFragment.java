@@ -26,8 +26,6 @@ import com.romens.android.network.request.Connect;
 import com.romens.android.network.request.ConnectManager;
 import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.viewholder.ItemDecorationOrientation;
-import com.romens.android.ui.viewholder.PaddingDividerItemDecoration;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -36,7 +34,7 @@ import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.adapter.ContentListViewAdapter;
-import com.romens.yjk.health.ui.cells.TextViewCell;
+import com.romens.yjk.health.ui.cells.DrugGroupMenuCell;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -270,9 +268,9 @@ public class HomeHealthNewFragment extends BaseFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = new TextViewCell(context);
+                convertView = new DrugGroupMenuCell(context);
             }
-            TextViewCell cell = (TextViewCell) convertView;
+            DrugGroupMenuCell cell = (DrugGroupMenuCell) convertView;
             DrugGroupEntity groupEntity = getItem(position);
             cell.setValue(groupEntity.getName(), position == currSelectPosition);
             return cell;

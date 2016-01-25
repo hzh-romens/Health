@@ -2,21 +2,13 @@ package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.ui.cells.DrugMenuChildCell;
-import com.romens.yjk.health.ui.cells.TextViewCell;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
