@@ -176,7 +176,7 @@ public class HomeHealthNewFragment extends BaseFragment {
         }
 //        adapter.bindData(groupNodes, childNodes);
 //        adapter.notifyDataSetChanged();
-        leftMenuListView.smoothScrollToPosition(0);
+        onDrugGroupSelected(0);
     }
 
     private void requestData() {
@@ -230,6 +230,11 @@ public class HomeHealthNewFragment extends BaseFragment {
             entityTemp.setSortIndex(item.get("ORDERINDEX"));
             entityTemp.setCreated((int) Calendar.getInstance().getTimeInMillis());
             entityTemp.setUpdated((int) Calendar.getInstance().getTimeInMillis());
+            if (item.containsKey("MLOGO")) {
+                entityTemp.setIcon(item.get("MLOGO"));
+            } else {
+                entityTemp.setIcon("");
+            }
             needDb.add(entityTemp);
         }
         if (needDb.size() > 0) {

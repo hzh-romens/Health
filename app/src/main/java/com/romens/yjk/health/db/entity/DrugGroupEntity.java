@@ -13,6 +13,7 @@ public class DrugGroupEntity {
     private int created;
     private int updated;
     private int sortIndex;
+    private String icon;
 
     public DrugGroupEntity() {
     }
@@ -58,6 +59,14 @@ public class DrugGroupEntity {
         }
     }
 
+    /**
+     * 分类图标
+     * @param icon
+     */
+    public void setIcon(String icon){
+        this.icon=icon;
+    }
+
     public String getId() {
         return this.id;
     }
@@ -84,5 +93,13 @@ public class DrugGroupEntity {
 
     public int getSortIndex() {
         return sortIndex;
+    }
+
+    /**
+     * 分类图标
+     * @return
+     */
+    public String getIcon(){
+        return icon;
     }
 }

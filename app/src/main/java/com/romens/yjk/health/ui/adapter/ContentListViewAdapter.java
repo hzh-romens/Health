@@ -61,7 +61,8 @@ public class ContentListViewAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
-            cell.setValue(data.get(position).getName());
+            DrugGroupEntity entity = data.get(position);
+            cell.setValue(entity.getName(), entity.getIcon());
         }
     }
 
