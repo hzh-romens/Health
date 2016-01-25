@@ -39,6 +39,7 @@ import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
+import com.yunuo.pay.PayActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,8 +140,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 } else if (id == 1) {
                     if (UserConfig.isClientLogined()) {
                         //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
-                        // startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
+                        //UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
+                        startActivity(new Intent(HomeActivity.this, PayActivity.class));
                     } else {
                         //跳转至登录页面
                         //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();

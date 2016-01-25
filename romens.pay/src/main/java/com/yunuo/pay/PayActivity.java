@@ -17,7 +17,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yunuo.pay.adapter.PayAdapter;
 import com.yunuo.pay.apply.ApplyActivity;
 import com.yunuo.pay.wx.Constants;
-import com.yunuo.pay.wx.wxapi.WXActivity;
+import com.yunuo.pay.wx.WXActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class PayActivity extends Activity {
 
     private void initApi() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
-        msgApi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, true);
+        msgApi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, false);
         // 将该app注册到微信
         msgApi.registerApp(Constants.APP_ID);
     }
@@ -64,6 +64,7 @@ public class PayActivity extends Activity {
         payAdapter.bindData(result, types);
         payAdapter.setStatus(status);
         listView.setAdapter(payAdapter);
+
         applyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

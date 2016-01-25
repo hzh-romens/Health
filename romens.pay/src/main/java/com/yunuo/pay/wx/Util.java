@@ -95,7 +95,7 @@ public class Util {
             httpUrlConnection.setReadTimeout(30 * 1000);
 
             int responseCode = httpUrlConnection.getResponseCode();
-            Log.i("返回码----", responseCode + "");
+            // Log.i("返回码----", responseCode + "");
 
             if (responseCode != 200) {
                 return null;
