@@ -408,19 +408,18 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <!--************** romens pay begin **************************-->
-        <activity android:name="com.yunuo.pay.PayActivity">
+        <activity android:name="com.yunuo.pay.PayActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="wx0c8c0d4ae1fc56d8" />
+                <data android:scheme="wxd930ea5d5a258f4f" />
             </intent-filter>
         </activity>
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
         <activity android:name="com.yunuo.pay.wx.WXActivity"></activity>
-        <activity
-            android:name="com.yunuo.pay.wxapi.WXPayEntryActivity"
-            android:exported="true"
-            android:launchMode="singleTop"></activity>
+
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"

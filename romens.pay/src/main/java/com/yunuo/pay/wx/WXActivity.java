@@ -27,7 +27,7 @@ public class WXActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pay);
 
-        api = WXAPIFactory.createWXAPI(this, Constants.APP_ID, false);
+        api = WXAPIFactory.createWXAPI(this, "wxb4ba3c02aa476ea1");
         api.registerApp(Constants.APP_ID);
         //需要先获取统一生成的预付订单，再通过预付订单里面的prepay_id，然后在发起支付
         Button appayBtn = (Button) findViewById(R.id.appay_btn);
@@ -51,19 +51,19 @@ public class WXActivity extends Activity {
                                     JSONObject json = new JSONObject(s);
                                     if (null != json && !json.has("retcode")) {
                                         PayReq req = new PayReq();
-                                        //req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
-                                        //req.appId = json.getString("appid");
-                                        req.appId = Constants.APP_ID;
-                                        //  req.partnerId = json.getString("partnerid");
-                                        req.partnerId = "1309412101";
-                                        //req.prepayId = json.getString("prepayid");
-                                        req.prepayId = "wx2016012116472426f2c181b10961558638";
-                                        //  req.nonceStr = json.getString("noncestr");
-                                        req.nonceStr = "LD0TDv0OV9adtijg";
+                                        // req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
+                                        req.appId = json.getString("appid");
+                                        //  req.appId = Constants.APP_ID;
+                                        req.partnerId = json.getString("partnerid");
+                                        //   req.partnerId = "1309412101";
+                                        req.prepayId = json.getString("prepayid");
+                                        //    req.prepayId = "wx20160125085808bf27248c270841113569";
+                                        req.nonceStr = json.getString("noncestr");
+                                        //req.nonceStr = "4vFvXdM69Fhz6rSO";
                                         req.timeStamp = json.getString("timestamp");
                                         req.packageValue = json.getString("package");
-                                        //req.sign = json.getString("sign");
-                                        req.sign = "12327633FBF31F44B0624281EF2E8EC3";
+                                        req.sign = json.getString("sign");
+                                        //req.sign = "209F206825B5626E1AD98D15A852CAE6";
                                         req.extData = "app data"; // optional
                                         Toast.makeText(WXActivity.this, "正常调起支付", Toast.LENGTH_SHORT).show();
                                         // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信

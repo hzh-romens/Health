@@ -46,10 +46,12 @@ public class DrugMenuChildCell extends FrameLayout {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(112), MeasureSpec.EXACTLY));
     }
 
-    public void setValue(String name,String icon) {
+    public void setValue(String name, String icon) {
         nameTextView.setText(name);
         iconDrawable.setInfo(name, 0xffe5e5e5);
         iconView.setPlaceholderImage(iconDrawable);
-        iconView.setImagePath(icon);
+        if (icon != null) {
+            iconView.setImagePath(icon);
+        }
     }
 }

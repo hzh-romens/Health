@@ -78,7 +78,6 @@ public class PayActivity extends Activity {
                     } else if (type == ListItemType.applyFlag) {
                         showToast("支付宝支付");
                         startActivity(new Intent(PayActivity.this, ApplyActivity.class));
-
                     }
                 }
             }
