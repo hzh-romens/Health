@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class TransformDateUitls {
 
-    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public static String getYearDate(long dateLong) {
