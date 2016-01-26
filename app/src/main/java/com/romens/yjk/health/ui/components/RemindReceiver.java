@@ -6,7 +6,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.RemindEntity;
 
