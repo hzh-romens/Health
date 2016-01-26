@@ -162,9 +162,11 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     private void setData() {
         getAll(childData);
+        getTypeData();
+        Log.i("数据长度----", parentTypes.size() + "");
         adapter = new CommitOrderAdapter(this, parentData.size() + 1);
         expandableListView.setAdapter(adapter);
-        adapter.SetData(parentData, childData);
+        adapter.SetData(parentData, childData,parentTypes);
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
         runOnUiThread(new Runnable() {
@@ -175,6 +177,15 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 }
             }
         });
+    }
+
+    private List<String> parentTypes;
+
+    private void getTypeData() {
+        parentTypes = new ArrayList<>();
+        for (int i = 0; i <parentData.size()+7; i++) {
+            parentTypes.add(i+"");
+        }
     }
 
     public void getAll(HashMap<String, List<ShopCarEntity>> childData) {

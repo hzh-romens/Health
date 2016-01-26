@@ -27,18 +27,6 @@ public class MemberActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member);
-//        actionBar = (ActionBar) findViewById(R.id.action_bar);
-//        actionBar.setBackgroundColor(0xffeeeeee);
-//        actionBar.setBackButtonImage(R.drawable.ic_arrow_back_grey600_24dp);
-//        actionBar.setTitle("会员卡绑定", 0xff212121);
-//        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-//            @Override
-//            public void onItemClick(int i) {
-//                if (i == -1) {
-//                    finish();
-//                }
-//            }
-//        });
         initBindView();
         if (isMember) {
             hideMemberView();
@@ -54,7 +42,6 @@ public class MemberActivity extends BaseActivity {
 
     private void hideMemberView() {
         pwdLayout.setVisibility(View.GONE);
-        //    actionBar.setTitle("我的会员卡", 0xff212121);
         ViewStub viewById = (ViewStub) findViewById(R.id.memberLayout);
         viewById.inflate();
         isMember = true;
@@ -70,13 +57,17 @@ public class MemberActivity extends BaseActivity {
 
     public void getMemberData() {
         types = new ArrayList<String>();
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 10; i++) {
             types.add(i + "");
         }
     }
 
-    private void getMemberCardData() {
-
+    private List<String> cardData;
+    public void getMemberCardData() {
+        cardData=new ArrayList<String>();
+        cardData.add("要健康");
+        cardData.add("先声再康");
+        cardData.add("人民同泰");
     }
 
 
