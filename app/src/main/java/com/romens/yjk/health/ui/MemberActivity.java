@@ -17,28 +17,28 @@ import java.util.List;
  * Created by HZH on 2015/12/31.
  */
 public class MemberActivity extends BaseActivity {
-    private boolean isMember = false;
+    private boolean isMember = true;
     private LinearLayout btnOk, pwdLayout;
     private ActionBar actionBar;
     private List<String> types;
-    private ListView listview;
+    private ListView listview, cardList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member, R.id.action_bar);
-        actionBar = (ActionBar) findViewById(R.id.action_bar);
-        actionBar.setBackgroundColor(0xffeeeeee);
-        actionBar.setBackButtonImage(R.drawable.ic_arrow_back_grey600_24dp);
-        actionBar.setTitle("会员卡绑定", 0xff212121);
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-            @Override
-            public void onItemClick(int i) {
-                if (i == -1) {
-                    finish();
-                }
-            }
-        });
+        setContentView(R.layout.activity_member);
+//        actionBar = (ActionBar) findViewById(R.id.action_bar);
+//        actionBar.setBackgroundColor(0xffeeeeee);
+//        actionBar.setBackButtonImage(R.drawable.ic_arrow_back_grey600_24dp);
+//        actionBar.setTitle("会员卡绑定", 0xff212121);
+//        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+//            @Override
+//            public void onItemClick(int i) {
+//                if (i == -1) {
+//                    finish();
+//                }
+//            }
+//        });
         initBindView();
         if (isMember) {
             hideMemberView();
@@ -49,37 +49,34 @@ public class MemberActivity extends BaseActivity {
 
     private void initBindView() {
         pwdLayout = (LinearLayout) findViewById(R.id.pwdLayout);
-        btnOk = (LinearLayout) findViewById(R.id.btn_ok);
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideMemberView();
-                initMember();
-            }
-        });
+        cardList = (ListView) findViewById(R.id.card_list);
     }
 
     private void hideMemberView() {
         pwdLayout.setVisibility(View.GONE);
-        actionBar.setTitle("我的会员卡", 0xff212121);
+        //    actionBar.setTitle("我的会员卡", 0xff212121);
         ViewStub viewById = (ViewStub) findViewById(R.id.memberLayout);
         viewById.inflate();
         isMember = true;
     }
 
     private void initMember() {
-        listview = (ListView) findViewById(R.id.list);
+        listview = (ListView) findViewById(R.id.member_list);
         MemberAdapter memberAdapter = new MemberAdapter(this);
-        getData();
+        getMemberData();
         memberAdapter.bindData(types);
         listview.setAdapter(memberAdapter);
     }
 
-    public void getData() {
+    public void getMemberData() {
         types = new ArrayList<String>();
         for (int i = 1; i <= 4; i++) {
             types.add(i + "");
         }
+    }
+
+    private void getMemberCardData() {
+
     }
 
 

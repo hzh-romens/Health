@@ -5,10 +5,8 @@
     android:background="#f9f9f9"
     android:orientation="vertical">
 
-   <include layout="@layout/layout_actionbar"/>
 
-    <include
-        layout="@layout/layout_bind" />
+    <include layout="@layout/layout_bind" />
 
     <ViewStub
         android:id="@+id/memberLayout"
