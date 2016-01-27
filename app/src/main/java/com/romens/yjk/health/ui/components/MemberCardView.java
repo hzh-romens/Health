@@ -24,19 +24,22 @@ public class MemberCardView extends FrameLayout {
         super(context);
         FrameLayout container = new FrameLayout(context);
         container.setBackgroundColor(context.getResources().getColor(R.color.progress_bgc));
-        final ImageView image = new ImageView(context);
+        ImageView image = new ImageView(context);
         image.setBackgroundResource(R.drawable.ic_launcher);
+        ImageView bgcImage=new ImageView(context);
+        bgcImage.setBackgroundResource(R.drawable.ic_card_face);
         cardView = new CardView(context);
-        cardView.setCardElevation(5);
+        cardView.setCardElevation(4);
         cardView.setUseCompatPadding(false);
         cardView.setPreventCornerOverlap(true);
         cardView.setRadius(10f);
         numberView = new TextView(context);
         numberView.setText("测试12345");
         numberView.setTextSize(18);
-        numberView.setTextColor(Color.BLACK);
+        numberView.setTextColor(Color.WHITE);
+        cardView.addView(bgcImage,LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT,LayoutHelper.MATCH_PARENT));
         cardView.addView(numberView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT, 8, 8, 8, 8));
-        container.addView(image, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 96, Gravity.TOP, 1, 1, 1, 1));
+        container.addView(image, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 96, Gravity.TOP, 0, 1, 1, 0));
         container.addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.NO_GRAVITY, 16, 16, 16, 16));
         addView(container, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 250));
         cardView.setOnClickListener(new OnClickListener() {
