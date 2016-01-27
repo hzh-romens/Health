@@ -120,7 +120,8 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             });
             holder.defaultImg.setImageResource(R.drawable.ic_check_unchoice);
             AddressEntity entity = data.get(index);
-            if (entity.getISDEFAULT().equals("1")) {
+
+            if (entity.getISDEFAULT() != null && entity.getISDEFAULT().equals("1")) {
                 currDefaultAddressIndex = index;
                 holder.defaultImg.setImageResource(R.drawable.ic_check_choice);
             }
@@ -161,7 +162,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
 
     @Override
     public int getItemCount() {
-        return data.size() * 2 - 1;
+        return data.size() == 0 ? 0 : data.size() * 2 - 1;
     }
 
     class ControlAddressHolder extends RecyclerView.ViewHolder {
