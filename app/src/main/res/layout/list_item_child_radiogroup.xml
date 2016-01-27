@@ -30,7 +30,7 @@
             android:text="药店名"
             android:includeFontPadding="false"
             android:textColor="#333333"
-            android:textSize="@dimen/text_size_xlarge"
+            android:textSize="@dimen/text_size_large"
             android:typeface="normal" />
         <TextView
             android:layout_width="wrap_content"

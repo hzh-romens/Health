@@ -15,12 +15,12 @@ import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.romens.android.io.image.ImageManager;
 import com.romens.android.ui.cells.EmptyCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
-import com.romens.android.ui.cells.TextSettingSelectCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.DeliverytypeEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
+import com.romens.yjk.health.ui.cells.CouponItemCell;
 
 import java.util.HashMap;
 import java.util.List;
@@ -136,7 +136,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
                 sendHolder = (SendHolder) convertView.getTag();
             }
             convertView.setClickable(true);
-            sendHolder.groupname.setText("派送方式");
+            sendHolder.groupname.setText("送药方式");
             sendHolder.groupname.setClickable(true);
             sendHolder.deliverytype.setText(DeliverytypeStr);
             convertView.setOnClickListener(new View.OnClickListener() {
@@ -153,27 +153,32 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
         } else if (groupType == mFatherData.size() + 1 || groupType == mFatherData.size() + 3) {
             if (convertView == null) {
-                convertView = new TextSettingSelectCell(mContext);
+                convertView = new CouponItemCell(mContext);
             }
-            TextSettingSelectCell cell = (TextSettingSelectCell) convertView;
-            cell.setTextAndValue("优惠券", "好了", true, true);
+            convertView.setClickable(true);
+            CouponItemCell cell = (CouponItemCell) convertView;
+            cell.setValue("优惠券", "好了", R.drawable.ic_chevron_right_grey600_24dp, false);
         } else if (groupType == mFatherData.size() + 2 || groupType == mFatherData.size() + 4) {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(mContext);
             }
+            convertView.setClickable(true);
             ShadowSectionCell cell = (ShadowSectionCell) convertView;
         } else if (groupType == mFatherData.size() + 5 || groupType == mFatherData.size() + 6) {
             if (convertView == null) {
                 convertView = new TextSettingsCell(mContext);
             }
+            convertView.setClickable(true);
             TextSettingsCell cell = (TextSettingsCell) convertView;
             cell.setTextAndValue("药品金额", "多少", false);
-        }else {
-            if(convertView==null){
-                convertView=new EmptyCell(mContext);
+        } else {
+            if (convertView == null) {
+                convertView = new EmptyCell(mContext);
             }
-            EmptyCell cell= (EmptyCell) convertView;
-            cell.setHeight(24);
+            convertView.setClickable(true);
+            EmptyCell cell = (EmptyCell) convertView;
+            cell.setBackgroundColor(0xffefeff4);
+            cell.setHeight(36);
         }
         return convertView;
     }
@@ -237,22 +242,9 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-
-//    @Override
-//    public int getGroupType(int groupPosition) {
-//        //  if (groupPosition < mFatherData.size()) {
-//        //    return 0;
-//        //}
-//        //return groupPosition;
-//        Log.i("group====",groupPosition+"");
-//        return groupPosition;
-//    }
-
-
     @Override
     public int getGroupType(int groupPosition) {
         int groupType = super.getGroupType(groupPosition);
-        //Log.i("group-------", groupType + "====" + groupPosition + "------" + getGroupCount());
         if (groupPosition < mFatherData.size()) {
             return 0;
         }
@@ -262,7 +254,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     @Override
     public int getGroupTypeCount() {
         if (mParentTypes != null) {
-            return mParentTypes.size()+1;
+            return mParentTypes.size() + 1;
         }
         return 0;
     }

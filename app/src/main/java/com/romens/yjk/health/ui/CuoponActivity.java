@@ -1,13 +1,18 @@
 package com.romens.yjk.health.ui;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.widget.RadioGroup;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.adapter.CuoponFragmentPagerAdapter;
 import com.romens.yjk.health.ui.fragment.CuoponFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by HZH on 2016/1/15.
@@ -17,6 +22,9 @@ import com.romens.yjk.health.ui.fragment.CuoponFragment;
 public class CuoponActivity extends BaseActivity {
     private ActionBar actionBar;
     private RadioGroup radioGroup;
+    private ViewPager viewPager;
+    private CuoponFragmentPagerAdapter fragmentPagerAdapter;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,40 +33,7 @@ public class CuoponActivity extends BaseActivity {
         actionBar = (ActionBar) findViewById(R.id.action_bar);
         actionBar.setTitle("我的优惠券");
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-
-
-        final CuoponFragment fragment = new CuoponFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("flag", "1");
-        fragment.setArguments(bundle);
-        final FragmentManager fragmentManager = getFragmentManager();
-        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, fragment, "Cuopon");
-        fragmentTransaction.commit();
-
-        radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.now:
-                        CuoponFragment nowFragment = new CuoponFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("flag", "1");
-                        nowFragment.setArguments(bundle);
-                        fragmentManager.beginTransaction().replace(R.id.container, nowFragment, "Cuopon").commit();
-                        break;
-                    case R.id.last:
-                        CuoponFragment lastFragment = new CuoponFragment();
-                        Bundle bundles = new Bundle();
-                        bundles.putString("flag", "2");
-                        lastFragment.setArguments(bundles);
-                        fragmentManager.beginTransaction().replace(R.id.container,lastFragment, "Cuopon").commit();
-                        break;
-                }
-
-            }
-        });
+        initView();
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
@@ -67,5 +42,38 @@ public class CuoponActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void initView() {
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        tabLayout = (TabLayout) findViewById(R.id.tableLayout);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        initFragments();
+        initTitles();
+        fragmentPagerAdapter = new CuoponFragmentPagerAdapter(getSupportFragmentManager(), fragmentsList, titles);
+        viewPager.setAdapter(fragmentPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private List<Fragment> fragmentsList;
+    private List<String> titles;
+
+    private void initFragments() {
+        fragmentsList = new ArrayList<Fragment>();
+        CuoponFragment fragment = new CuoponFragment();
+        fragment.setFlag(1);
+        fragmentsList.add(fragment);
+        CuoponFragment fragment2 = new CuoponFragment();
+        fragment2.setFlag(2);
+        fragmentsList.add(fragment2);
+
+    }
+
+    private void initTitles() {
+        titles = new ArrayList<String>();
+        titles.add("可用优惠券");
+        titles.add("历史优惠券");
+        tabLayout.addTab(tabLayout.newTab().setText(titles.get(0)));
+        tabLayout.addTab(tabLayout.newTab().setText(titles.get(1)));
     }
 }

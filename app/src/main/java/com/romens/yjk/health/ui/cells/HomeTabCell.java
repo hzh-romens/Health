@@ -7,7 +7,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
@@ -49,7 +48,6 @@ public class HomeTabCell extends FrameLayout {
         nameView.setSingleLine(true);
         nameView.setGravity(Gravity.CENTER);
         addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 16, 1, 16, 8));
-
     }
 
     @Override

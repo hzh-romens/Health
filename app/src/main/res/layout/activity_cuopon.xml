@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,43 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <RadioGroup
-        android:id="@+id/radiogroup"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tableLayout"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/margin_standard"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        app:tabTextAppearance="@style/TabTextAppearance"
+        android:background="@color/white"
+        app:tabIndicatorColor="@color/theme_primary"
+        app:tabSelectedTextColor="@color/theme_primary"
+        app:tabTextColor="@color/md_black_1000" />
 
-        <RadioButton
-            android:id="@+id/now"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/left_radio_staus"
-            android:button="@null"
-            android:gravity="center"
-            android:text="测试1"
-            android:textColor="@color/md_black_1000"
-            android:textSize="@dimen/text_size_large" />
-
-        <RadioButton
-            android:id="@+id/last"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/right_radio_staus"
-            android:button="@null"
-            android:gravity="center"
-            android:text="测试2"
-            android:textColor="@color/md_black_1000"
-            android:textSize="@dimen/text_size_large" />
-
-    </RadioGroup>
-
-    <FrameLayout
-        android:id="@+id/container"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

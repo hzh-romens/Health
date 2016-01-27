@@ -27,6 +27,6 @@
         android:singleLine="true"
         android:text="药店名"
         android:textColor="#333333"
-        android:textSize="@dimen/text_size_xlarge"
+        android:textSize="@dimen/text_size_large"
         android:typeface="normal" />
 </FrameLayout>

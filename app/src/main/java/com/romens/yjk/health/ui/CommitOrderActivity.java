@@ -163,10 +163,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private void setData() {
         getAll(childData);
         getTypeData();
-        Log.i("数据长度----", parentTypes.size() + "");
         adapter = new CommitOrderAdapter(this, parentData.size() + 1);
         expandableListView.setAdapter(adapter);
-        adapter.SetData(parentData, childData,parentTypes);
+        adapter.SetData(parentData, childData, parentTypes);
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
         runOnUiThread(new Runnable() {
@@ -183,8 +182,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     private void getTypeData() {
         parentTypes = new ArrayList<>();
-        for (int i = 0; i <parentData.size()+7; i++) {
-            parentTypes.add(i+"");
+        for (int i = 0; i < parentData.size() + 8; i++) {
+            parentTypes.add(i + "");
         }
     }
 
@@ -230,8 +229,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         String textStr = str1 + counts + str2 + moneys;
         SpannableStringBuilder builder = new SpannableStringBuilder(textStr);
         // ForegroundColorSpan 为文字前景色，BackgroundColorSpan为文字背景色
-        ForegroundColorSpan greedSpan = new ForegroundColorSpan(getResources().getColor(R.color.accouns_color));
-        ForegroundColorSpan blackSpan = new ForegroundColorSpan(getResources().getColor(R.color.accouns_color));
+        ForegroundColorSpan greedSpan = new ForegroundColorSpan(getResources().getColor(R.color.theme_primary));
+        ForegroundColorSpan blackSpan = new ForegroundColorSpan(getResources().getColor(R.color.theme_primary));
         builder.setSpan(blackSpan, str1.length(), str1.length() + counts.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.setSpan(greedSpan, str1.length() + counts.length() + str2.length(), textStr.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return builder;
