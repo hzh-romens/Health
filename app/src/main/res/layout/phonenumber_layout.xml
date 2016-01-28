@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/phoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_standard"
+        android:layout_marginRight="@dimen/margin_standard"
+        android:drawableLeft="@drawable/ic_launcher"
+        android:drawablePadding="4dp"
+        android:gravity="center_vertical"
+        android:hint="请输入手机号码"
+        android:paddingBottom="@dimen/margin_small"
+        android:paddingTop="@dimen/margin_small"
+        android:textColorHint="#999999"
+        android:textSize="@dimen/text_size_large" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#999999" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/phonePassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_standard"
+            android:layout_marginRight="@dimen/margin_standard"
+            android:layout_weight="3"
+            android:drawableLeft="@drawable/ic_launcher"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:hint="请输入手机验证码"
+            android:paddingBottom="@dimen/margin_small"
+            android:paddingTop="@dimen/margin_small"
+            android:textColorHint="#999999"
+            android:textSize="@dimen/text_size_large" />
+
+        <TextView
+            android:id="@+id/send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="点击发送"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/text_size_large" />
+
+    </LinearLayout>
+
+</LinearLayout>

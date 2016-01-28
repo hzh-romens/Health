@@ -54,7 +54,6 @@ public class CuoponAdapter extends BaseAdapter {
             convertView = new CuoponCardCell(mContext);
         }
         CuoponCardCell cell = (CuoponCardCell) convertView;
-
         return convertView;
     }
 }

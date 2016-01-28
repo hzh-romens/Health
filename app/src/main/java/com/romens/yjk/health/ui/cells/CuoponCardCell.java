@@ -67,6 +67,11 @@ public class CuoponCardCell extends FrameLayout {
         statusView.setTextSize(14);
         statusView.setTextColor(0xff666666);
         cardView.addView(statusView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT, 8, 8, 16, 8));
+
+        statusIcon = new ImageView(context);
+        cardView.addView(statusIcon,LayoutHelper.createFrame(72,64,Gravity.RIGHT,16,24,16,0));
+
+        addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
     }
 
     public void setStatus(String flag) {
