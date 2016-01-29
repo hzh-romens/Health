@@ -338,7 +338,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     cell.setTextColor(0xffd01716);
                     cell.setIconText(R.drawable.ic_exit, "退出登录", true);
                 } else if (position == memberRow) {
-                    cell.setIconTextAndNav(R.drawable.ic_account, "会员管理", R.drawable.ic_chevron_right_grey600_24dp, true);
+                    cell.setIconTextAndNav(R.drawable.ic_member, "会员管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 }
             } else if (type == 4) {
                 if (view == null) {

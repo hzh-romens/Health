@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.adapter.MemberAdapter;
 
@@ -26,7 +27,27 @@ public class MemberActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member);
+        setContentView(R.layout.activity_member, R.id.action_bar);
+        actionBar = (ActionBar) findViewById(R.id.action_bar);
+        actionBar.setTitle("我的会员卡");
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int i) {
+                if (i == -1) {
+                    finish();
+                }
+            }
+        });
+        ActionBarMenu menu = actionBar.createMenu();
+        menu.addItem(0, R.drawable.ic_add_white_24dp);
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int i) {
+                if (i == 0) {
+                    //跳转到添加会员卡界面
+                }
+            }
+        });
         initBindView();
         if (isMember) {
             hideMemberView();
@@ -57,14 +78,15 @@ public class MemberActivity extends BaseActivity {
 
     public void getMemberData() {
         types = new ArrayList<String>();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 9; i++) {
             types.add(i + "");
         }
     }
 
     private List<String> cardData;
+
     public void getMemberCardData() {
-        cardData=new ArrayList<String>();
+        cardData = new ArrayList<String>();
         cardData.add("要健康");
         cardData.add("先声再康");
         cardData.add("人民同泰");

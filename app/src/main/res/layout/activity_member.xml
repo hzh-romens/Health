@@ -5,6 +5,11 @@
     android:background="#f9f9f9"
     android:orientation="vertical">
 
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
     <include layout="@layout/layout_bind" />
 

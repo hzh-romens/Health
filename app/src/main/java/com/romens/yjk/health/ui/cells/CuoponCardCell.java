@@ -69,9 +69,9 @@ public class CuoponCardCell extends FrameLayout {
         cardView.addView(statusView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT, 8, 8, 16, 8));
 
         statusIcon = new ImageView(context);
-        cardView.addView(statusIcon,LayoutHelper.createFrame(72,64,Gravity.RIGHT,16,24,16,0));
+        cardView.addView(statusIcon, LayoutHelper.createFrame(72, 64, Gravity.RIGHT, 16, 24, 16, 0));
 
-        addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.NO_GRAVITY, 16, 8, 16, 8));
     }
 
     public void setStatus(String flag) {

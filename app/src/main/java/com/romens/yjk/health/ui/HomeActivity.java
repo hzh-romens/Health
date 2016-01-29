@@ -139,8 +139,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 } else if (id == 1) {
                     if (UserConfig.isClientLogined()) {
                         //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                        //                       UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
-                        startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
+                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
+                        //startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
+                        //startActivity(new Intent(HomeActivity.this, BindMemberActivity.class));
                     } else {
                         //跳转至登录页面
                         //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();

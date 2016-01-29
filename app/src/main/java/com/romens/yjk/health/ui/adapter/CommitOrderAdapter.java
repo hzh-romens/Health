@@ -170,7 +170,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             }
             convertView.setClickable(true);
             TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setTextAndValue("药品金额", "多少", false);
+            cell.setTextAndValue("药品金额", "多少", true);
         } else {
             if (convertView == null) {
                 convertView = new EmptyCell(mContext);

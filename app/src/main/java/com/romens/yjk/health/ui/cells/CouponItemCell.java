@@ -19,7 +19,6 @@ public class CouponItemCell extends FrameLayout {
     private TextView nameView, descriptionView;
     private ImageView drawable;
     private int drawRes;
-    //    private boolean display;
     private boolean mLine;
     private Paint mPaint;
 
@@ -35,13 +34,13 @@ public class CouponItemCell extends FrameLayout {
         nameView = new TextView(context);
         nameView.setTextSize(16.0f);
         nameView.setTextColor(0xff333333);
-        container.addView(nameView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT|Gravity.CENTER_VERTICAL, 8, 8, 8, 8));
+        container.addView(nameView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL, 8, 8, 8, 8));
         descriptionView = new TextView(context);
         descriptionView.setTextSize(14);
         descriptionView.setTextColor(0xff333333);
         descriptionView.setEllipsize(TextUtils.TruncateAt.END);
         descriptionView.setMaxLines(1);
-        container.addView(descriptionView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT|Gravity.CENTER_VERTICAL, 8, 8, 48, 8));
+        container.addView(descriptionView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 8, 8, 42, 8));
         drawable = new ImageView(context);
         container.addView(drawable, LayoutHelper.createFrame(48, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT, 8, 8, 0, 8));
         addView(container, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.NO_GRAVITY, 8, 8, 0, 8));
