@@ -99,7 +99,9 @@ public class DrugGroupDao extends AbstractDao<DrugGroupEntity, String> {
         stmt.bindLong(6, entity.getCreated());
         stmt.bindLong(7, entity.getUpdated());
         stmt.bindLong(8, entity.getSortIndex());
-        stmt.bindString(9, entity.getIcon());
+        if (entity.getIcon() != null) {
+            stmt.bindString(9, entity.getIcon());
+        }
     }
 
     /**
