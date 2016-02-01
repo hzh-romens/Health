@@ -85,10 +85,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         actionBar.addView(lastLocationCell, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
                 Gravity.CENTER_VERTICAL | Gravity.LEFT, 56, 0, 104, 0));
 
-        tabsCell.addView(R.drawable.ic_search_grey600_24dp, "首页");
-        tabsCell.addView(R.drawable.ic_local_hospital_grey600_24dp, "健康");
-        tabsCell.addView(R.drawable.ic_whatshot_grey600_24dp, "发现");
-        tabsCell.addView(R.drawable.ic_person_grey600_24dp, "我的");
+        tabsCell.addView(R.drawable.ic_tab_home, R.drawable.ic_tab_home_pressed, "首页");
+        tabsCell.addView(R.drawable.ic_tab_fl, R.drawable.ic_tab_fl_pressed, "分类");
+        tabsCell.addView(R.drawable.ic_tab_fx, R.drawable.ic_tab_fx_pressed, "发现");
+        tabsCell.addView(R.drawable.ic_tab_my, R.drawable.ic_tab_my_pressed, "我的");
         pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
         viewPager.setAdapter(pagerAdapter);
         tabsCell.setSelected(0);

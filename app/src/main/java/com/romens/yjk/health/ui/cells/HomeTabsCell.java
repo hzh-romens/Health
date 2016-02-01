@@ -54,12 +54,16 @@ public class HomeTabsCell extends LinearLayout implements ViewPager.OnPageChange
 
 
     public void addView(int iconResId, CharSequence name) {
+        addView(iconResId, 0, name);
+    }
+
+    public void addView(int iconResId, int selectedIconResId, CharSequence name) {
         HomeTabCell cell = new HomeTabCell(getContext());
         cell.setClickable(true);
         cell.setBackgroundResource(R.drawable.list_selector);
         cell.setTag(getChildCount());
         addView(cell, new LinearLayout.LayoutParams(0, LayoutHelper.WRAP_CONTENT, 1));
-        cell.setValue(iconResId, name);
+        cell.setValue(iconResId, selectedIconResId, name);
         cell.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -7,6 +7,7 @@ import android.webkit.WebViewClient;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.ui.activity.WebActivity;
 import com.romens.yjk.health.web.ADWebJsInterface;
 import com.romens.yjk.health.web.JsBaseInterface;
@@ -44,7 +45,9 @@ public class IMActivity extends WebActivity {
     }
 
     private String buildIMURL() {
-        String url = "http://139.129.4.154/yyzs/kefu/h5.html?tenantId=247&appkey=liyoujing#huanxinkefu&to=123123";
+        String token = FacadeToken.getInstance().getAuthToken();
+        String url = String.format("http://139.129.4.154/yyzs/kefu/h5.html?tenantId=247&appkey=liyoujing#huanxinkefu&to=123123&token=%s", token == null ? "" : token);
+
         return url;
     }
 

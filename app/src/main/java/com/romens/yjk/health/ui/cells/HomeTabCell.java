@@ -20,6 +20,9 @@ public class HomeTabCell extends FrameLayout {
     private ImageView iconView;
     private TextView nameView;
 
+    private int iconResId;
+    private int selectedIconResId;
+
     public HomeTabCell(Context context) {
         super(context);
         init(context);
@@ -56,15 +59,31 @@ public class HomeTabCell extends FrameLayout {
     }
 
     public void setValue(int iconResId, CharSequence name) {
-        iconView.setImageResource(iconResId);
-        nameView.setText(name);
+        this.iconResId = iconResId;
+        this.selectedIconResId = 0;
+        this.iconView.setImageResource(iconResId);
+        this.nameView.setText(name);
     }
+
+    public void setValue(int iconResId, int selectedIconResId, CharSequence name) {
+        this.iconResId = iconResId;
+        this.selectedIconResId = selectedIconResId;
+        this.iconView.setImageResource(iconResId);
+        this.nameView.setText(name);
+    }
+
 
     public void select(boolean isSelected) {
         if (isSelected) {
+            if (selectedIconResId != 0) {
+                iconView.setImageResource(selectedIconResId);
+            }
             iconView.setColorFilter(ResourcesConfig.primaryColor);
             nameView.setTextColor(ResourcesConfig.primaryColor);
         } else {
+            if (selectedIconResId != 0) {
+                iconView.setImageResource(iconResId);
+            }
             iconView.clearColorFilter();
             nameView.setTextColor(0xff424242);
         }

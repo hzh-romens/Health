@@ -8,8 +8,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 160121
-        versionName "1.6.8"
+        versionCode 160201
+        versionName "1.7.0"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
                                 CHANNEL_PACKAGE  : applicationId,
