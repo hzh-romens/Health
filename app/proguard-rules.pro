@@ -254,3 +254,12 @@ public static final int *;
 -keep class com.romens.images.**{
     public protected *;
 }
+
+#pay
+-dontwarn com.tencent.mm.sdk.**
+-keep class com.tencent.mm.sdk.**  {* ;}
+
+-dontwarn com.romens.yjk.health.njxszk.wxapi.**
+-keep class com.romens.yjk.health.njxszk.wxapi.**{
+    public protected *;
+}

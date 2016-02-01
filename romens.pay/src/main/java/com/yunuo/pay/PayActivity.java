@@ -12,12 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.yunuo.pay.adapter.PayAdapter;
 import com.yunuo.pay.apply.ApplyActivity;
-import com.yunuo.pay.wx.Constants;
-import com.yunuo.pay.wx.WXActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +29,9 @@ public class PayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initApi();
         initView();
     }
 
-
-    private IWXAPI msgApi;
-
-    private void initApi() {
-        // 通过WXAPIFactory工厂，获取IWXAPI的实例
-        msgApi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, false);
-        // 将该app注册到微信
-        msgApi.registerApp(Constants.APP_ID);
-    }
 
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -74,7 +61,7 @@ public class PayActivity extends Activity {
                 } else {
                     if (type == ListItemType.wxFlag) {
                         showToast("微信支付");
-                        startActivity(new Intent(PayActivity.this, WXActivity.class));
+                        startActivity(new Intent(PayActivity.this, WXPayActivity.class));
                     } else if (type == ListItemType.applyFlag) {
                         showToast("支付宝支付");
                         startActivity(new Intent(PayActivity.this, ApplyActivity.class));

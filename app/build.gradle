@@ -12,6 +12,7 @@ android {
         versionName "1.6.8"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
+                                CHANNEL_PACKAGE  : applicationId,
                                 APK_CHANNEL_VALUE: "4;romens",
                                 IM_SDK_APPKEY    : "romens#kfly20jp",
                                 PGYER_APPID      : "c369efd3284683568819c1767a19c5ed",
@@ -31,6 +32,7 @@ android {
         channel_yjk {
             applicationId "com.romens.yjk.health"
             manifestPlaceholders = [CHANNEL          : "yjk",
+                                    CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "19;romens",
                                     IM_SDK_APPKEY    : "romens#wsc609129",
                                     PGYER_APPID      : "c369efd3284683568819c1767a19c5ed",
@@ -40,6 +42,7 @@ android {
         channel_nj_xszk {
             applicationId "com.romens.yjk.health.njxszk"
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
+                                    CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "4;njxs",
                                     IM_SDK_APPKEY    : "romens#kfly20jp",
                                     PGYER_APPID      : "99bf48ef0effc80d5a611179ee675fc1",
@@ -49,6 +52,7 @@ android {
         channel_hy_rmtt {
             applicationId "com.romens.yjk.health.hyrmtt"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
+                                    CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "20;rmtt",
                                     IM_SDK_APPKEY    : "romens#yjkim8jrgju",
                                     PGYER_APPID      : "92ecc14bb2dd3a009af7257c32a1a97c",
@@ -129,6 +133,7 @@ configurations {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:support-v4:22.+'
     compile 'com.android.support:appcompat-v7:22.+'
     compile 'com.android.support:cardview-v7:22.+'
     compile 'com.android.support:palette-v7:22.+'

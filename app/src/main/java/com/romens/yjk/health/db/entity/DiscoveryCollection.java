@@ -11,6 +11,7 @@ import com.romens.yjk.health.ui.HealthNewsActivity;
 import com.romens.yjk.health.ui.LocationActivity;
 import com.romens.yjk.health.ui.RemindActivity;
 import com.romens.yjk.health.ui.activity.ScannerActivity;
+import com.romens.yjk.health.ui.im.IMActivity;
 
 /**
  * Created by siery on 15/5/22.
@@ -25,11 +26,9 @@ public class DiscoveryCollection {
 
         }else{
             String value = entity.getValue();
-            if (!value.equals(PharmicCounseling.value)) {
-                if (!TextUtils.isEmpty(value)) {
-                    onFocusItemAction(context, entity.getKey(), value);
-                    return true;
-                }
+            if (!TextUtils.isEmpty(value)) {
+                onFocusItemAction(context, entity.getKey(), value);
+                return true;
             }
         }
         return false;
@@ -39,14 +38,22 @@ public class DiscoveryCollection {
         if (TextUtils.isEmpty(className)) {
             return false;
         }
-
-        Intent intent = new Intent();
-        ComponentName component=new ComponentName(context,className);
-        intent.setComponent(component);
-        if (TextUtils.equals("YBZQ", id)) {
-            intent.putExtra("title", "医保专区");
+        Intent intent;
+        if(TextUtils.equals(PharmicCounseling.value,className)){
+            intent=new Intent(context, IMActivity.class);
+        }else{
+            intent= new Intent();
+            ComponentName component=new ComponentName(context,className);
+            intent.setComponent(component);
+            if (TextUtils.equals("YBZQ", id)) {
+                intent.putExtra("title", "医保专区");
+            }
         }
-        context.startActivity(intent);
+        if(intent!=null){
+            context.startActivity(intent);
+        }
+
+
 
 //        if (btnString.equals(FindDrugWithScanner.name)) {
 //            String action = FindDrugWithScanner.value;
@@ -93,7 +100,7 @@ public class DiscoveryCollection {
 
     public static final class PharmicCounseling {
         public static final String key = "intent_pharmic_counseling";
-        public static final String value = "";
+        public static final String value = "IM_Pharmic_Counseling";
         public static final int iconRes = R.drawable.attach_counsel_states;
         public static final String iconUrl = "";
         public static final String name = "用药咨询";

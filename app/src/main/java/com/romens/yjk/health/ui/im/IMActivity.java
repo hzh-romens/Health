@@ -1,10 +1,12 @@
 package com.romens.yjk.health.ui.im;
 
 import android.os.Bundle;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.activity.WebActivity;
 import com.romens.yjk.health.web.ADWebJsInterface;
 import com.romens.yjk.health.web.JsBaseInterface;
@@ -13,10 +15,6 @@ import com.romens.yjk.health.web.JsBaseInterface;
  * Created by siery on 16/1/28.
  */
 public class IMActivity extends WebActivity {
-    public static final String ARGUMENTS_KEY_TITLE = "title";
-    public static final String ARGUMENTS_KEY_TARGET_URL = "target_url";
-    public static final String ARGUMENTS_KEY_HTML = "html";
-
     private JsBaseInterface adWebJsInterface;
 
     @Override
@@ -24,12 +22,9 @@ public class IMActivity extends WebActivity {
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
         ActionBar actionBar = getMyActionBar();
-        if (bundle.containsKey(ARGUMENTS_KEY_TITLE)) {
-            String title = bundle.getString(ARGUMENTS_KEY_TITLE);
-            setActionBarTitle(actionBar, title);
-        } else {
-            setActionBarTitle(actionBar, "");
-        }
+        actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
+        setActionBarColor(actionBar, 0xff42b8f4);
+        needActionBarDivider(actionBar, false);
 
         WebView webView = getWebView();
         webView.setWebViewClient(new WebViewClient() {
@@ -39,19 +34,18 @@ public class IMActivity extends WebActivity {
                 return true;
             }
         });
-
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         adWebJsInterface = new ADWebJsInterface(this)
                 .withWebView(webView);
         webView.addJavascriptInterface(adWebJsInterface, adWebJsInterface.toString());
 
-        if (bundle.containsKey(ARGUMENTS_KEY_TARGET_URL)) {
-            String url = bundle.getString(ARGUMENTS_KEY_TARGET_URL);
-            webView.loadUrl(url);
-        } else {
-            String html = bundle.getString(ARGUMENTS_KEY_HTML, "");
-            webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
-        }
+        String url = buildIMURL();
+        webView.loadUrl(url);
+    }
 
+    private String buildIMURL() {
+        String url = "http://139.129.4.154/yyzs/kefu/h5.html?tenantId=247&appkey=liyoujing#huanxinkefu&to=123123";
+        return url;
     }
 
     @Override

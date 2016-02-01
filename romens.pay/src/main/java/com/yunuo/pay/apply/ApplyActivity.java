@@ -125,12 +125,12 @@ public class ApplyActivity extends FragmentActivity {
                 // 构造PayTask 对象
                 PayTask alipay = new PayTask(ApplyActivity.this);
                 // 调用支付接口，获取支付结果
-                String result = alipay.pay(payInfo);
-
-                Message msg = new Message();
-                msg.what = SDK_PAY_FLAG;
-                msg.obj = result;
-                mHandler.sendMessage(msg);
+//                String result = alipay.pay(payInfo);
+//
+//                Message msg = new Message();
+//                msg.what = SDK_PAY_FLAG;
+//                msg.obj = result;
+//                mHandler.sendMessage(msg);
             }
         };
 

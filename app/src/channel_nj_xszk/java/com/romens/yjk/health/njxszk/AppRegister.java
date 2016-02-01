@@ -1,6 +1,6 @@
 package com.romens.yjk.health.njxszk;
 
-import com.romens.yjk.health.wxapi.AppBaseRegister;
+import com.yunuo.pay.wx.AppBaseRegister;
 
 /**
  * Created by siery on 16/1/25.
