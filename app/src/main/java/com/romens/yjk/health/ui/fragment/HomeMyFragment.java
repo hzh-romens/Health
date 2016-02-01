@@ -124,7 +124,9 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     updateData();
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
                 } else if (position == checkUpdateRow) {
-                    MonitorHelper.checkUpdate(getActivity(),true);
+                    MonitorHelper.checkUpdate(getActivity(), true);
+                } else if (position == memberRow) {
+                    UIOpenHelper.openMemberActivity(getActivity());
                 }
             }
         });
@@ -156,6 +158,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             userInfoSectionRow1 = rowCount++;
             accountRow = rowCount++;
             myOrderRow = rowCount++;
+            memberRow = rowCount++;
             collectRow = rowCount++;
             historyRow = rowCount++;
             addressRow = rowCount++;
@@ -166,6 +169,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
             userInfoSectionRow1 = -1;
             addressRow = -1;
             myOrderRow = -1;
+            memberRow = -1;
             collectRow = -1;
             historyRow = -1;
             exitRow = -1;
@@ -212,6 +216,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
     private int checkUpdateRow;
 
     private int supportRow;
+    private int memberRow;
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
@@ -263,7 +268,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 return 0;
             } else if (i == userInfoSectionRow1) {
                 return 2;
-            } else if (i == addressRow || i == myOrderRow || i == exitRow) {
+            } else if (i == addressRow || i == myOrderRow || i == exitRow || i == memberRow) {
                 return 3;
             } else if (i == collectRow || i == historyRow || i == accountRow) {
                 return 3;
@@ -332,6 +337,8 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                 } else if (position == exitRow) {
                     cell.setTextColor(0xffd01716);
                     cell.setIconText(R.drawable.ic_exit, "退出登录", true);
+                } else if (position == memberRow) {
+                    cell.setIconTextAndNav(R.drawable.ic_member, "会员管理", R.drawable.ic_chevron_right_grey600_24dp, true);
                 }
             } else if (type == 4) {
                 if (view == null) {

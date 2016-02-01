@@ -278,5 +278,4 @@ public class UIOpenHelper {
         intent.putExtras(arguments);
         context.startActivity(intent);
     }
-
 }

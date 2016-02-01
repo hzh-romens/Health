@@ -5,10 +5,13 @@
     android:background="#f9f9f9"
     android:orientation="vertical">
 
-   <include layout="@layout/layout_actionbar"/>
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <include
-        layout="@layout/layout_bind" />
+
+    <include layout="@layout/layout_bind" />
 
     <ViewStub
         android:id="@+id/memberLayout"

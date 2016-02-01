@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:background="@color/white"
+    android:id="@+id/group_name_layout"
+    android:layout_width="match_parent"
     android:layout_height="53dp"
-    android:id="@+id/group_name_layout">
+    android:background="@color/white"
+    android:orientation="horizontal">
+
     <View
+        android:id="@+id/empty_view"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
+        android:layout_height="12dp"
         android:background="@drawable/greydivider"
-        android:visibility="visible"
-        android:id="@+id/empty_view"/>
-        <TextView
-            android:padding="@dimen/padding_inner"
-            android:layout_marginLeft="@dimen/padding_inner"
-            android:layout_marginTop="5dp"
-            android:background="@color/white"
-            android:layout_height="48dp"
-            android:layout_width="wrap_content"
-            android:text="药店名"
-            android:gravity="center"
-            android:id="@+id/group_name"
-            android:typeface="normal"
-            android:textSize="@dimen/text_size_xlarge"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:textColor="#333333"/>
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginLeft="@dimen/padding_inner"
+        android:layout_marginTop="12dp"
+        android:background="@color/white"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:padding="@dimen/padding_inner"
+        android:singleLine="true"
+        android:text="药店名"
+        android:textColor="#333333"
+        android:textSize="@dimen/text_size_large"
+        android:typeface="normal" />
 </FrameLayout>

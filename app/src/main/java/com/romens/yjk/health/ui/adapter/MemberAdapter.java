@@ -5,8 +5,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.romens.yjk.health.ui.cells.MemberTextViewCell;
-import com.romens.yjk.health.ui.cells.ProgressBarCell;
+import com.romens.android.ui.cells.EmptyCell;
+import com.romens.android.ui.cells.ShadowSectionCell;
+import com.romens.android.ui.cells.TextIconCell;
+import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.cells.MemberDetailCell;
+import com.romens.yjk.health.ui.components.MemberCardView;
 
 import java.util.List;
 
@@ -50,23 +54,50 @@ public class MemberAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (getItemViewType(position) == 1) {
             if (convertView == null) {
-                convertView = new ProgressBarCell(mContext);
+                convertView = new MemberCardView(mContext);
             }
-            ProgressBarCell progressBarCell = (ProgressBarCell) convertView;
-            progressBarCell.setValue(500, 100);
-        } else if (getItemViewType(position) == 2 || getItemViewType(position) == 3 || getItemViewType(position) == 4) {
+            MemberCardView memberCardView = (MemberCardView) convertView;
+        } else if (getItemViewType(position) == 2) {
             if (convertView == null) {
-                convertView = new MemberTextViewCell(mContext);
+                convertView = new MemberDetailCell(mContext);
             }
-            MemberTextViewCell textViewCell = (MemberTextViewCell) convertView;
-            if (getItemViewType(position) == 2) {
-                textViewCell.setValue("我的账户", "12345678");
-            } else if (getItemViewType(position) == 3) {
-                textViewCell.setValue("会员等级", "铜牌会员");
-            } else if (getItemViewType(position) == 4) {
-                textViewCell.setValue("会员积分", "50");
+            MemberDetailCell cell = (MemberDetailCell) convertView;
+            cell.setValue("LV5", "100", "20");
+        } else if (getItemViewType(position) == 4 || getItemViewType(position) == 6 || getItemViewType(position) == 7
+                || getItemViewType(position) == 9 || getItemViewType(position) == 10) {
+            if (convertView == null) {
+                convertView = new TextIconCell(mContext);
             }
+            TextIconCell textIconCell = (TextIconCell) convertView;
+            if (getItemViewType(position) == 4) {
+                textIconCell.setIconTextAndNav(R.drawable.ic_member_code, "会员条形码", R.drawable.ic_chevron_right_grey600_24dp, true);
+            } else if (getItemViewType(position) == 6) {
+                textIconCell.setIconTextAndNav(R.drawable.ic_member_coupon, "优惠券", R.drawable.ic_chevron_right_grey600_24dp, true);
+            } else if (getItemViewType(position) == 7) {
+                textIconCell.setIconTextAndNav(R.drawable.ic_member_point, "积分商城", R.drawable.ic_chevron_right_grey600_24dp, true);
+            } else if (getItemViewType(position) == 9) {
+                textIconCell.setIconTextAndNav(R.drawable.ic_member_infor, "个人资料", R.drawable.ic_chevron_right_grey600_24dp, true);
+            } else if (getItemViewType(position) == 10) {
+                textIconCell.setIconTextAndNav(R.drawable.ic_member_detail, "消费明细", R.drawable.ic_chevron_right_grey600_24dp, true);
+            }
+        } else if (getItemViewType(position) == 3 || getItemViewType(position) == 5 || getItemViewType(position) == 8) {
+            if (convertView == null) {
+                convertView = new ShadowSectionCell(mContext);
+            }
+            ShadowSectionCell cell = (ShadowSectionCell) convertView;
+        } else {
+            if (convertView == null) {
+                convertView = new EmptyCell(mContext);
+            }
+            EmptyCell cell = (EmptyCell) convertView;
+            cell.setHeight(24);
+            cell.setBackgroundColor(0xff666666);
         }
         return convertView;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 11;
     }
 }

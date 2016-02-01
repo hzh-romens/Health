@@ -82,13 +82,6 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         adapter = new AddRemindAdapter(this, timesDataTemp);
         listView.setAdapter(adapter);
         container.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
     }
 
     private void initData() {

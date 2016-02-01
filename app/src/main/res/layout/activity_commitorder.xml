@@ -36,7 +36,7 @@
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/md_grey_100"
+        android:background="@color/white"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
             android:id="@+id/accounts"
             android:layout_width="96dp"
             android:layout_height="match_parent"
-            android:background="#66cc00"
+            android:background="@color/theme_primary"
             android:gravity="center"
             android:singleLine="true"
             android:text="去结算"
