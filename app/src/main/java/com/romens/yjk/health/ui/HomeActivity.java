@@ -38,6 +38,7 @@ import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
+import com.romens.yjk.health.ui.fragment.ShopCarFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         tabsCell.addView(R.drawable.ic_tab_home, R.drawable.ic_tab_home_pressed, "首页");
         tabsCell.addView(R.drawable.ic_tab_fl, R.drawable.ic_tab_fl_pressed, "分类");
         tabsCell.addView(R.drawable.ic_tab_fx, R.drawable.ic_tab_fx_pressed, "发现");
+        tabsCell.addView(R.drawable.ic_tab_shopping, R.drawable.ic_tab_shopping_pressed, "购物车");
         tabsCell.addView(R.drawable.ic_tab_my, R.drawable.ic_tab_my_pressed, "我的");
         pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
         viewPager.setAdapter(pagerAdapter);
@@ -188,6 +190,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         titles.add("首页");
         titles.add("健康");
         titles.add("发现");
+        titles.add("购物车");
         titles.add("我的");
         return titles;
     }
@@ -198,6 +201,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         fragments.add(new HomeHealthNewFragment());
 //        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
+        fragments.add(new ShopCarFragment());
         fragments.add(new HomeMyFragment());
         return fragments;
     }

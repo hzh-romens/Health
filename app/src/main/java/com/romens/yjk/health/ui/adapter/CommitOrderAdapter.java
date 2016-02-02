@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.romens.android.io.image.ImageManager;
 import com.romens.android.ui.cells.EmptyCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
@@ -20,6 +20,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.DeliverytypeEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
+import com.romens.yjk.health.ui.cells.BillCell;
 import com.romens.yjk.health.ui.cells.CouponItemCell;
 
 import java.util.HashMap;
@@ -68,18 +69,24 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 //        }
 //        return 0;
         if (mFatherData != null) {
-            return mParentTypes.size();
+            return mParentTypes.size() + 1;
         }
         return 0;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (groupPosition == sendFlag) {
+        // if (groupPosition == sendFlag) {
+        //    return 0;
+        //}
+        // List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID());
+        // return shopCarEntities == null ? 0 : shopCarEntities.size();
+        if (groupPosition < mFatherData.size()) {
+            List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID());
+            return shopCarEntities == null ? 0 : shopCarEntities.size();
+        } else {
             return 0;
         }
-        List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID());
-        return shopCarEntities == null ? 0 : shopCarEntities.size();
     }
 
     @Override
@@ -113,71 +120,95 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         if (groupType == 0) {
             ParentHolder parentHolder = null;
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
-                parentHolder = new ParentHolder();
-                parentHolder.parentName = (TextView) convertView.findViewById(R.id.group_name);
-                parentHolder.groupnameLayout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
-                convertView.setTag(parentHolder);
-            } else {
-                parentHolder = (ParentHolder) convertView.getTag();
+                convertView = new TextSettingsCell(mContext);
+                //   convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
+                // parentHolder = new ParentHolder();
+                //parentHolder.parentName = (TextView) convertView.findViewById(R.id.group_name);
+                //parentHolder.groupnameLayout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
+                //convertView.setTag(parentHolder);
             }
+            //else {
+            //  parentHolder = (ParentHolder) convertView.getTag();
+            //}
             convertView.setClickable(true);
-            parentHolder.parentName.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
-            parentHolder.groupnameLayout.setClickable(true);
+            TextSettingsCell cell = new TextSettingsCell(mContext);
+            cell.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName(), false);
+            // parentHolder.parentName.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
+            //parentHolder.groupnameLayout.setClickable(true);
         } else if (groupType == mFatherData.size()) {
-            final SendHolder sendHolder;
+            //  final SendHolder sendHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
-                sendHolder = new SendHolder();
-                sendHolder.groupname = (TextView) convertView.findViewById(R.id.name);
-                sendHolder.deliverytype = (TextView) convertView.findViewById(R.id.tv_deliverytype);
-                convertView.setTag(sendHolder);
-            } else {
-                sendHolder = (SendHolder) convertView.getTag();
+                //convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
+                convertView = new TextSettingsCell(mContext);
+                //     sendHolder = new SendHolder();
+                //   sendHolder.groupname = (TextView) convertView.findViewById(R.id.name);
+                //  sendHolder.deliverytype = (TextView) convertView.findViewById(R.id.tv_deliverytype);
+                //  convertView.setTag(sendHolder);
             }
-            convertView.setClickable(true);
-            sendHolder.groupname.setText("送药方式");
-            sendHolder.groupname.setClickable(true);
-            sendHolder.deliverytype.setText(DeliverytypeStr);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ListDialogFragment
-                            .createBuilder(mContext, mFragmentManger)
-                            .setTitle("配送方式")
-                            .setItems(choice)
-                            .setRequestCode(9)
-                            .show();
-                }
-            });
+            TextSettingsCell cell = (TextSettingsCell) convertView;
+            cell.setText("测试", false);
+            //else {
+            //   sendHolder = (SendHolder) convertView.getTag();
+            //  }
+            // convertView.setClickable(true);
+            //   sendHolder.groupname.setText("送药方式");
+            //  sendHolder.groupname.setClickable(true);
+//            convertView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ListDialogFragment
+//                            .createBuilder(mContext, mFragmentManger)
+//                            .setTitle("配送方式")
+//                            .setItems(choice)
+//                            .setRequestCode(9)
+//                            .show();
+//                }
+//            });
 
-        } else if (groupType == mFatherData.size() + 1 || groupType == mFatherData.size() + 3) {
+        } else if (groupType == mFatherData.size() + 1) {
             if (convertView == null) {
                 convertView = new CouponItemCell(mContext);
             }
             convertView.setClickable(true);
             CouponItemCell cell = (CouponItemCell) convertView;
-            cell.setValue("优惠券", "好了", R.drawable.ic_chevron_right_grey600_24dp, false);
+            cell.setValue("优惠券", "满120减10", R.drawable.ic_chevron_right_grey600_24dp, false);
         } else if (groupType == mFatherData.size() + 2 || groupType == mFatherData.size() + 4) {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(mContext);
             }
+            //   convertView.setClickable(true);
+            // Log.i("tag----", groupType + "");
+            //  ShadowSectionCell cell = (ShadowSectionCell) convertView;
+            //   cell.setClickable(true);
+        } else if (groupType == mFatherData.size() + 3) {
+            if (convertView == null) {
+                convertView = new BillCell(mContext);
+            }
             convertView.setClickable(true);
-            ShadowSectionCell cell = (ShadowSectionCell) convertView;
-        } else if (groupType == mFatherData.size() + 5 || groupType == mFatherData.size() + 6) {
+            BillCell cell = (BillCell) convertView;
+            cell.setValue("测试");
+        } else if (groupType == mFatherData.size() + 5) {
             if (convertView == null) {
                 convertView = new TextSettingsCell(mContext);
             }
             convertView.setClickable(true);
             TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setTextAndValue("药品金额", "多少", true);
-        } else {
+            if (groupType == mFatherData.size() + 5) {
+                cell.setTextAndValue("药品金额", "¥120", false);
+            } else if (groupType == mFatherData.size() + 6) {
+                cell.setTextAndValue("药品优惠", "¥10", false);
+            }
+            // if (groupType == mFatherData.size() + 7)
+
+        }else if (groupType == mFatherData.size() + 6){
+
+        }else {
             if (convertView == null) {
                 convertView = new EmptyCell(mContext);
             }
             convertView.setClickable(true);
             EmptyCell cell = (EmptyCell) convertView;
-            cell.setBackgroundColor(0xffefeff4);
+            cell.setBackgroundColor(0xeeeeee);
             cell.setHeight(36);
         }
         return convertView;
@@ -245,9 +276,11 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     @Override
     public int getGroupType(int groupPosition) {
         int groupType = super.getGroupType(groupPosition);
+        Log.i("-------", groupPosition + "===" + mFatherData.size());
         if (groupPosition < mFatherData.size()) {
             return 0;
         }
+        //    Log.i("指针-----", mParentTypes.size())
         return Integer.parseInt(mParentTypes.get(groupPosition));
     }
 

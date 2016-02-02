@@ -99,7 +99,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+                //  UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+                finish();
             }
         });
 
@@ -109,6 +110,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         getAdressData();
         getIntentData();
         getSendData();
+        getCuopon();
     }
 
 
@@ -375,7 +377,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+            // UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+            finish();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -390,5 +393,36 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 }
             }
         }
+    }
+
+    public void getCuopon() {
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetCoupon", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+//                }))
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Log.e("GetCoupon", "ERROR");
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (errorMsg == null) {
+                    //ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    //List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
+                    Log.i("优惠券信息======", responseProtocol.getResponse());
+                } else {
+                    Log.e("GetCoupon", errorMsg.msg);
+                }
+            }
+        });
     }
 }

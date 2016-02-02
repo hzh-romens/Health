@@ -17,6 +17,7 @@ import com.romens.yjk.health.ui.cells.EditTextCells;
 /**
  * Created by HZH on 2016/1/28.
  */
+
 public class BindMemberActivity extends BaseActivity {
     private FrameLayout pharmacy, container;
     private CardView btnOk;

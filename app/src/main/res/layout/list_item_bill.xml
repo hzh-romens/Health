@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingBottom="@dimen/margin_standard"
+            android:paddingLeft="@dimen/margin_standard"
+            android:paddingTop="@dimen/margin_standard"
+            android:text="是否需要发票"
+            android:textColor="@color/md_black_1000"
+            android:textSize="@dimen/text_size_large" />
+
+        <!--<android.support.v7.widget.SwitchCompat-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+        <com.gc.materialdesign.views.Switch
+            android:id="@+id/btn_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_small" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/md_grey_200" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/margin_standard"
+        android:paddingLeft="@dimen/margin_standard"
+        android:paddingTop="@dimen/margin_standard"
+        android:text="发票类型：普通发票（个人）"
+        android:textColor="#666666"
+        android:textSize="@dimen/text_size_medium" />
+
+    <EditText
+        android:id="@+id/edit_bill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_standard"
+        android:layout_marginLeft="@dimen/margin_standard"
+        android:layout_marginRight="@dimen/margin_standard"
+        android:background="@drawable/edit_bill"
+        android:hint="请输入发票抬头"
+        android:paddingBottom="@dimen/margin_standard"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingTop="@dimen/margin_standard"
+        android:textColor="@color/md_black_1000"
+        android:textColorHint="#666666"
+        android:textSize="@dimen/text_size_medium" />
+
+</LinearLayout>
