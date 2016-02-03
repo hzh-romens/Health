@@ -1,21 +1,18 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.romens.android.io.image.ImageManager;
-import com.romens.android.ui.cells.EmptyCell;
+import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextSettingsCell;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.DeliverytypeEntity;
 import com.romens.yjk.health.model.ParentEntity;
@@ -36,11 +33,29 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     private HashMap<String, List<ShopCarEntity>> mChildData;
     private Context mContext;
     private CheckDataCallBack checkDataCallBack;
+    private SwitchChangeListener mListener;
+    private EditTextChangeListener mEditListener;
     private int sendFlag;
     private String DeliverytypeStr = "";
 
     public void setCheckDataChangeListener(CheckDataCallBack checkDataCallBack) {
         this.checkDataCallBack = checkDataCallBack;
+    }
+
+    public void setSwitchChangeListener(SwitchChangeListener listener) {
+        this.mListener = listener;
+    }
+
+    public void setEditTextChangeListener(EditTextChangeListener listener) {
+        this.mEditListener = listener;
+    }
+
+    public interface EditTextChangeListener {
+        void textValueChange(String value);
+    }
+
+    public interface SwitchChangeListener {
+        void getSwitchValue(boolean value);
     }
 
     //接口回调，用于数据刷新
@@ -64,23 +79,14 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-//        if (mFatherData != null) {
-//            return mFatherData.size() + 5;
-//        }
-//        return 0;
-        if (mFatherData != null) {
-            return mParentTypes.size() + 1;
+        if (mParentTypes != null) {
+            return mParentTypes.size();
         }
         return 0;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        // if (groupPosition == sendFlag) {
-        //    return 0;
-        //}
-        // List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID());
-        // return shopCarEntities == null ? 0 : shopCarEntities.size();
         if (groupPosition < mFatherData.size()) {
             List<ShopCarEntity> shopCarEntities = mChildData.get(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopID());
             return shopCarEntities == null ? 0 : shopCarEntities.size();
@@ -120,51 +126,43 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         if (groupType == 0) {
             ParentHolder parentHolder = null;
             if (convertView == null) {
-                convertView = new TextSettingsCell(mContext);
-                //   convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
-                // parentHolder = new ParentHolder();
-                //parentHolder.parentName = (TextView) convertView.findViewById(R.id.group_name);
-                //parentHolder.groupnameLayout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
-                //convertView.setTag(parentHolder);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_group, null);
+                parentHolder = new ParentHolder();
+                parentHolder.parentName = (TextView) convertView.findViewById(R.id.group_name);
+                parentHolder.groupnameLayout = (FrameLayout) convertView.findViewById(R.id.group_name_layout);
+                convertView.setTag(parentHolder);
+            } else {
+                parentHolder = (ParentHolder) convertView.getTag();
             }
-            //else {
-            //  parentHolder = (ParentHolder) convertView.getTag();
-            //}
             convertView.setClickable(true);
-            TextSettingsCell cell = new TextSettingsCell(mContext);
-            cell.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName(), false);
-            // parentHolder.parentName.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
-            //parentHolder.groupnameLayout.setClickable(true);
+            parentHolder.parentName.setText(mFatherData.get(getCurrentGroupPosition(groupPosition)).getShopName());
+            parentHolder.groupnameLayout.setClickable(true);
         } else if (groupType == mFatherData.size()) {
-            //  final SendHolder sendHolder;
+            final SendHolder sendHolder;
             if (convertView == null) {
-                //convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
-                convertView = new TextSettingsCell(mContext);
-                //     sendHolder = new SendHolder();
-                //   sendHolder.groupname = (TextView) convertView.findViewById(R.id.name);
-                //  sendHolder.deliverytype = (TextView) convertView.findViewById(R.id.tv_deliverytype);
-                //  convertView.setTag(sendHolder);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_child_radiogroup, null);
+                sendHolder = new SendHolder();
+                sendHolder.groupname = (TextView) convertView.findViewById(R.id.name);
+                sendHolder.deliverytype = (TextView) convertView.findViewById(R.id.tv_deliverytype);
+                convertView.setTag(sendHolder);
+            } else {
+                sendHolder = (SendHolder) convertView.getTag();
             }
-            TextSettingsCell cell = (TextSettingsCell) convertView;
-            cell.setText("测试", false);
-            //else {
-            //   sendHolder = (SendHolder) convertView.getTag();
-            //  }
-            // convertView.setClickable(true);
-            //   sendHolder.groupname.setText("送药方式");
-            //  sendHolder.groupname.setClickable(true);
-//            convertView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    ListDialogFragment
-//                            .createBuilder(mContext, mFragmentManger)
-//                            .setTitle("配送方式")
-//                            .setItems(choice)
-//                            .setRequestCode(9)
-//                            .show();
-//                }
-//            });
-
+            convertView.setClickable(true);
+            sendHolder.groupname.setText("送药方式");
+            sendHolder.groupname.setClickable(true);
+            sendHolder.deliverytype.setText(DeliverytypeStr);
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ListDialogFragment
+                            .createBuilder(mContext, mFragmentManger)
+                            .setTitle("配送方式")
+                            .setItems(choice)
+                            .setRequestCode(9)
+                            .show();
+                }
+            });
         } else if (groupType == mFatherData.size() + 1) {
             if (convertView == null) {
                 convertView = new CouponItemCell(mContext);
@@ -176,40 +174,35 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(mContext);
             }
-            //   convertView.setClickable(true);
-            // Log.i("tag----", groupType + "");
-            //  ShadowSectionCell cell = (ShadowSectionCell) convertView;
-            //   cell.setClickable(true);
         } else if (groupType == mFatherData.size() + 3) {
             if (convertView == null) {
                 convertView = new BillCell(mContext);
             }
             convertView.setClickable(true);
             BillCell cell = (BillCell) convertView;
-            cell.setValue("测试");
-        } else if (groupType == mFatherData.size() + 5) {
+            cell.setChangeListener(new BillCell.SwitchChangeListener() {
+                @Override
+                public void changeListener(boolean isChecked) {
+                    mListener.getSwitchValue(isChecked);
+                }
+            });
+            cell.setEditTextChangeListener(new BillCell.EditTextChangeListener() {
+                @Override
+                public void textChangeListenr(String value) {
+                    mEditListener.textValueChange(value);
+                }
+            });
+        } else if (groupType == mFatherData.size() + 5 || groupType == mFatherData.size() + 6) {
             if (convertView == null) {
                 convertView = new TextSettingsCell(mContext);
             }
             convertView.setClickable(true);
             TextSettingsCell cell = (TextSettingsCell) convertView;
             if (groupType == mFatherData.size() + 5) {
-                cell.setTextAndValue("药品金额", "¥120", false);
+                cell.setTextAndValue("药品金额", "¥120", true);
             } else if (groupType == mFatherData.size() + 6) {
-                cell.setTextAndValue("药品优惠", "¥10", false);
+                cell.setTextAndValue("药品优惠", "¥10", true);
             }
-            // if (groupType == mFatherData.size() + 7)
-
-        }else if (groupType == mFatherData.size() + 6){
-
-        }else {
-            if (convertView == null) {
-                convertView = new EmptyCell(mContext);
-            }
-            convertView.setClickable(true);
-            EmptyCell cell = (EmptyCell) convertView;
-            cell.setBackgroundColor(0xeeeeee);
-            cell.setHeight(36);
         }
         return convertView;
     }
@@ -226,7 +219,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_order2, null);
             childHolder = new ChildHolder();
-            childHolder.imageView = (ImageView) convertView.findViewById(R.id.iv);
+            childHolder.imageView = (CloudImageView) convertView.findViewById(R.id.iv);
             childHolder.count = (TextView) convertView.findViewById(R.id.tv_count);
             childHolder.info = (TextView) convertView.findViewById(R.id.tv_infor);
             childHolder.name = (TextView) convertView.findViewById(R.id.tv_name);
@@ -240,13 +233,17 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         childHolder.name.setText(shopCarEntity.getNAME());
         childHolder.info.setText(shopCarEntity.getSPEC());
         childHolder.count.setText(shopCarEntity.getBUYCOUNT() + "");
-        Drawable defaultDrawables = childHolder.imageView.getDrawable();
-        ImageManager.loadForView(mContext, childHolder.imageView, shopCarEntity.getGOODURL(), defaultDrawables, defaultDrawables);
+        if (shopCarEntity.getGOODURL() != null && !("".equals(shopCarEntity.getGOODURL()))) {
+            childHolder.imageView.setImagePath(shopCarEntity.getGOODURL());
+        } else {
+            childHolder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.picture_fail));
+        }
         return convertView;
     }
 
+
     class ChildHolder {
-        private ImageView imageView;
+        private CloudImageView imageView;
         private TextView name, info, price, count;
     }
 
@@ -275,21 +272,16 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupType(int groupPosition) {
-        int groupType = super.getGroupType(groupPosition);
-        Log.i("-------", groupPosition + "===" + mFatherData.size());
         if (groupPosition < mFatherData.size()) {
             return 0;
+        } else {
+            return Integer.parseInt(mParentTypes.get(groupPosition - 1));
         }
-        //    Log.i("指针-----", mParentTypes.size())
-        return Integer.parseInt(mParentTypes.get(groupPosition));
     }
 
     @Override
     public int getGroupTypeCount() {
-        if (mParentTypes != null) {
-            return mParentTypes.size() + 1;
-        }
-        return 0;
+        return 8;
     }
 
     private String[] choice;

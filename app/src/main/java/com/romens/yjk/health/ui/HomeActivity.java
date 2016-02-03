@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui;
 
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -25,13 +24,11 @@ import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
 import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
@@ -121,7 +118,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         actionBar.setBackButtonImage(R.drawable.ic_app_icon);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
-        shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
+        //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
 
 //        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
 //        debugMenu.addSubItem(2, "测试促销详情", 0);
@@ -138,18 +135,21 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 if (id == 0) {
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
-                } else if (id == 1) {
-                    if (UserConfig.isClientLogined()) {
-                        //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
-                        //startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
-                        //startActivity(new Intent(HomeActivity.this, BindMemberActivity.class));
-                    } else {
-                        //跳转至登录页面
-                        //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-                    }
-                }/*  else if (key == 2) {
+                }
+//                else if (id == 1) {
+//                    if (UserConfig.isClientLogined()) {
+//                        //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+//                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
+//                        //startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
+//                        //startActivity(new Intent(HomeActivity.this, BindMemberActivity.class));
+//                    }
+//                    else {
+//                        //跳转至登录页面
+//                        //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+//                    }
+//                }
+                /*  else if (key == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (key == 3) {
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));

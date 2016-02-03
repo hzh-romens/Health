@@ -64,6 +64,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private double sumMoney;
     private String addressId; //送货地址id
     private String deliveryType;//送货方式
+    private String mBillName; //发票抬头名称
+    private boolean needBill;
 
 
     @Override
@@ -178,13 +180,27 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 }
             }
         });
+        adapter.setSwitchChangeListener(new CommitOrderAdapter.SwitchChangeListener() {
+            @Override
+            public void getSwitchValue(boolean value) {
+                needBill = value;
+
+            }
+        });
+        adapter.setEditTextChangeListener(new CommitOrderAdapter.EditTextChangeListener() {
+            @Override
+            public void textValueChange(String value) {
+                mBillName = value;
+                Log.i("发票内容-----", mBillName);
+            }
+        });
     }
 
     private List<String> parentTypes;
 
     private void getTypeData() {
         parentTypes = new ArrayList<>();
-        for (int i = 0; i < parentData.size() + 8; i++) {
+        for (int i = 1; i <= parentData.size() + 7; i++) {
             parentTypes.add(i + "");
         }
     }
@@ -214,7 +230,16 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             public void onClick(View v) {
                 needShowProgress("正在提交..");
                 if (deliveryType != null && !("".equals(deliveryType))) {
-                    commitOrder(filteData, sumCount);
+                    if (needBill) {
+                        if ("".equals(mBillName) || mBillName != null) {
+                            needHideProgress();
+                            DialogUtils dialogUtils = new DialogUtils();
+                            dialogUtils.show_infor("请输入发票内容", CommitOrderActivity.this, "提示");
+                        } else {
+                            commitOrder(filteData, sumCount);
+                        }
+                    }
+
                 } else {
                     needHideProgress();
                     DialogUtils dialogUtils = new DialogUtils();
@@ -255,7 +280,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     //向服务器提交订单
     private void commitOrder(List<FilterChildEntity> data, final int count) {
-        String jsonData = getJsonData(data, deliveryType, addressId);
+        String jsonData = getJsonData(data, deliveryType, addressId, mBillName);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", jsonData).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
@@ -302,12 +327,14 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
     }
 
-    public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid) {
+    public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid, String billName) {
         Gson gson = new Gson();
         CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
         commitOrderEntity.setDELIVERYTYPE(deliverytype);
         commitOrderEntity.setADDRESSID(addressid);
         commitOrderEntity.setGOODSLIST(data);
+        commitOrderEntity.setBILLNAME(billName);
+        commitOrderEntity.setCOUPONGUID("");
         String JSON_DATA = gson.toJson(commitOrderEntity);
         return JSON_DATA;
     }
@@ -402,8 +429,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
-//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-//                }))
                 .build();
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
@@ -415,10 +440,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             public void onResult(Message msg, Message errorMsg) {
                 needHideProgress();
                 if (errorMsg == null) {
-                    //ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    //List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
-                    Log.i("优惠券信息======", responseProtocol.getResponse());
                 } else {
                     Log.e("GetCoupon", errorMsg.msg);
                 }

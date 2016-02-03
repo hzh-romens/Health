@@ -91,6 +91,9 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/YJKHealth/romens.android/unspecified/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/YJKHealth/romens.extend.QR/unspecified/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/YJKHealth/romens.images/unspecified/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/cardview-v7/22.2.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/design/22.2.1/jars" />
@@ -157,8 +160,8 @@
     <orderEntry type="library" exported="" name="mta-stats-sdk-2.0.4" level="project" />
     <orderEntry type="library" exported="" name="Android_2DMapApi_V2.5.0" level="project" />
     <orderEntry type="library" exported="" name="drawee-0.8.1" level="project" />
-    <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="minlog-1.2" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="MapApiServices" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
@@ -171,5 +174,8 @@
     <orderEntry type="module" module-name="romens.images" exported="" />
     <orderEntry type="module" module-name="datetimepicker" exported="" />
     <orderEntry type="module" module-name="romens.extend.QR" exported="" />
+    <orderEntry type="library" exported="" name="romens.android-unspecified" level="project" />
+    <orderEntry type="library" exported="" name="romens.images-unspecified" level="project" />
+    <orderEntry type="library" exported="" name="romens.extend.QR-unspecified" level="project" />
   </component>
 </module>
