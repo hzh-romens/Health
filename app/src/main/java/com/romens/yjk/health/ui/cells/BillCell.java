@@ -32,9 +32,13 @@ public class BillCell extends FrameLayout {
                     mListener.changeListener(view.isCheck());
                 }
                 if (check) {
+                    editText.setFocusableInTouchMode(true);
+                    editText.setFocusable(true);
                     editText.requestFocus();
+                    //弹出软键盘
                 } else {
-                    editText.clearFocus();
+                    editText.setFocusable(false);
+                    editText.setFocusableInTouchMode(false);
                 }
             }
         });

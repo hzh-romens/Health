@@ -293,6 +293,7 @@
             android:name=".ui.CommitOrderActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.NewShoppingAddressActivity"

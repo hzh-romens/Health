@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
-
+    <!--android:descendantFocusability="afterDescendants"-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -51,10 +51,14 @@
         android:layout_marginLeft="@dimen/margin_standard"
         android:layout_marginRight="@dimen/margin_standard"
         android:background="@drawable/edit_bill"
+        android:enabled="true"
         android:hint="请输入发票抬头"
+        android:inputType="textPhonetic"
         android:padding="@dimen/margin_small"
         android:textColor="@color/md_black_1000"
         android:textColorHint="#666666"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/text_size_medium" >
+    <requestFocus />
+    </EditText>
 
 </LinearLayout>
