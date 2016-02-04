@@ -108,7 +108,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                Log.i("点击的Grouposition----", groupPosition + "");
+                Intent intent = new Intent(CommitOrderActivity.this, CuoponActivity.class);
+                startActivityForResult(intent, 1);
                 return true;
             }
         });
@@ -119,7 +120,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         getAdressData();
         getIntentData();
         getSendData();
-        getCuopon();
     }
 
 
@@ -428,29 +428,5 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         }
     }
 
-    public void getCuopon() {
-        Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetCoupon", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("GetCoupon", "ERROR");
-            }
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                } else {
-                    Log.e("GetCoupon", errorMsg.msg);
-                }
-            }
-        });
-    }
 }

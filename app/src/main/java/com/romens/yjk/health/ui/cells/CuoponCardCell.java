@@ -75,29 +75,41 @@ public class CuoponCardCell extends FrameLayout {
     }
 
     public void setStatus(String flag) {
-        if ("未使用".equals(flag)) {
+        if ("1".equals(flag)) {
             statusView.setText("已使用");
-        } else if ("已使用".equals(flag)) {
-            statusView.setText("已使用");
+            setStatusImage(R.drawable.ic_cuopon_used);
+        } else if ("0".equals(flag)) {
+            statusView.setText("未使用");
         } else {
             statusView.setText("已过期");
+            setStatusImage(R.drawable.ic_coupon_expired);
         }
     }
 
     public void setStatusImage(int resId) {
         statusIcon.setImageResource(resId);
-        image.setImageResource(resId);
+        //image.setImageResource(resId);
     }
 
     public void setPriceColor() {
 
     }
 
-    public void setValue(String price) {
-        SpannableString span = new SpannableString(price);
+    private String mIsused, mName, mEnddate, mLimitamount, mPrice;
+
+    public void setValue(String startDate, String amount, String isused, String name, String enddate, String limitamount, String shuoming) {
+        SpannableString span = new SpannableString(amount);
         span.setSpan(new AbsoluteSizeSpan(22), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        span.setSpan(new AbsoluteSizeSpan(18), 1, price.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new AbsoluteSizeSpan(18), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         priceView.setText(span);
+        nameView.setText(name);
+        addressView.setText(shuoming);
+        conditionView.setText(limitamount);
+        timeView.setText("有效期" + startDate + "-" + enddate);
+        this.mIsused = isused;
+        this.mEnddate = enddate;
+        this.mName = name;
+        this.mLimitamount = limitamount;
     }
 
     @Override
