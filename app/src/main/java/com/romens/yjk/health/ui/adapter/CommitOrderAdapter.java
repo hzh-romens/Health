@@ -167,7 +167,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             if (convertView == null) {
                 convertView = new CouponItemCell(mContext);
             }
-            convertView.setClickable(true);
+            // convertView.setClickable(true);
             CouponItemCell cell = (CouponItemCell) convertView;
             cell.setValue("优惠券", "满120减10", R.drawable.ic_chevron_right_grey600_24dp, false);
         } else if (groupType == mFatherData.size() + 2 || groupType == mFatherData.size() + 4) {
@@ -198,6 +198,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             }
             convertView.setClickable(true);
             TextSettingsCell cell = (TextSettingsCell) convertView;
+            cell.setValueTextColor(mContext.getResources().getColor(R.color.theme_primary));
             if (groupType == mFatherData.size() + 5) {
                 cell.setTextAndValue("药品金额", "¥120", true);
             } else if (groupType == mFatherData.size() + 6) {

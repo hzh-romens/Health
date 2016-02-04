@@ -105,6 +105,13 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 finish();
             }
         });
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                Log.i("点击的Grouposition----", groupPosition + "");
+                return true;
+            }
+        });
 
     }
 
@@ -191,7 +198,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             @Override
             public void textValueChange(String value) {
                 mBillName = value;
-                Log.i("发票内容-----", mBillName);
             }
         });
     }
@@ -231,8 +237,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needShowProgress("正在提交..");
                 if (deliveryType != null && !("".equals(deliveryType))) {
                     if (needBill) {
-                        Log.i("--------", (mBillName == null) + "~~" + mBillName);
-                        if ("".equals(mBillName) || mBillName != null||(mBillName == null)) {
+                        if ("".equals(mBillName) || mBillName != null || (mBillName == null)) {
                             needHideProgress();
                             DialogUtils dialogUtils = new DialogUtils();
                             dialogUtils.show_infor("请输入发票内容", CommitOrderActivity.this, "提示");

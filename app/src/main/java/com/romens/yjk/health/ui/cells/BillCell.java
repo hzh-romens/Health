@@ -5,38 +5,45 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
-import com.gc.materialdesign.views.Switch;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.components.SwitchButton;
 
 /**
  * Created by HZH on 2016/2/2.
  */
 public class BillCell extends FrameLayout {
-    private Switch switchBtn;
+    private SwitchButton switchBtn;
     private EditText editText;
+    private LinearLayout linearLayout;
     private SwitchChangeListener mListener;
 
     public BillCell(final Context context) {
         super(context);
         View view = View.inflate(context, R.layout.list_item_bill, null);
-        switchBtn = (Switch) view.findViewById(R.id.btn_switch);
+        switchBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
         editText = (EditText) view.findViewById(R.id.edit_bill);
+        linearLayout = (LinearLayout) view.findViewById(R.id.linelayout);
         addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        switchBtn.setOncheckListener(new Switch.OnCheckListener() {
+        switchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheck(Switch view, boolean check) {
-                if (view != null && mListener != null) {
-                    mListener.changeListener(view.isCheck());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (buttonView != null && mListener != null) {
+                    mListener.changeListener(buttonView.isChecked());
                 }
-                if (check) {
+                if (isChecked) {
                     editText.setFocusableInTouchMode(true);
                     editText.setFocusable(true);
                     editText.requestFocus();
+                    linearLayout.setVisibility(VISIBLE);
                     //弹出软键盘
                 } else {
+                    linearLayout.setVisibility(GONE);
+
                     editText.setFocusable(false);
                     editText.setFocusableInTouchMode(false);
                 }
