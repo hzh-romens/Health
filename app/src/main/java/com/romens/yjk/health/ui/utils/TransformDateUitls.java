@@ -12,6 +12,7 @@ public class TransformDateUitls {
 
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    public static SimpleDateFormat dataAllFormat = new SimpleDateFormat("yyyy年MM月dd HH:mm");
 
     public static String getYearDate(long dateLong) {
         Calendar dateCalendar = Calendar.getInstance();
@@ -42,6 +43,10 @@ public class TransformDateUitls {
         int hour = timeCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = timeCalendar.get(Calendar.MINUTE);
         return hour + ":" + minute;
+    }
+
+    public static String getDateString(long dateLong) {
+        return dataAllFormat.format(new Date(dateLong));
     }
 
     public static Date getDate(long dateLong) {

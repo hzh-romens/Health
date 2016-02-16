@@ -143,6 +143,7 @@ public class RemindActivity extends BaseActivity {
         public void setData(List<RemindEntity> data) {
             this.data = data;
         }
+
         public RemindAdapter(List<RemindEntity> data, Context context) {
             this.data = data;
             this.context = context;
@@ -251,8 +252,13 @@ public class RemindActivity extends BaseActivity {
         Calendar currentDate = Calendar.getInstance();
         long intervalTime = 1000 * 60 * 60 * 24 * entity.getIntervalDay();
         if (!timeStr.equals("-1")) {
-            long time = TransformDateUitls.getTimeLong(timeStr);
-            long remindTime = (startDateLong + time) + currentDate.getTimeZone().getRawOffset();
+//            long time = TransformDateUitls.getTimeLong(timeStr);
+//            long remindTime = (startDateLong+time) + currentDate.getTimeZone().getRawOffset();
+            long startTime = TransformDateUitls.getTimeLong(timeStr) + startDateLong;
+            long remindTime = startTime + currentDate.getTimeZone().getRawOffset();
+            if (remindTime < currentDate.getTimeInMillis()) {
+                remindTime += intervalTime;
+            }
             Intent intent = new Intent(RemindActivity.this, RemindReceiver.class);
             intent.putExtra("type", (int) remindTime);
             intent.putExtra("remindInfoEntity", entity);
