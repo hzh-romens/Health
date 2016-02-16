@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -162,6 +163,11 @@ public class RemindActivity extends BaseActivity {
             LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
             cell.setLayoutParams(layoutParams);
             cell.setData(R.drawable.remind_drug, entity.getDrug(), true);
+            if (entity.getIsRemind() == 0) {
+                cell.setCheck(false);
+            } else {
+                cell.setCheck(true);
+            }
             cell.setOnSwitchClickLinstener(new RemindItemCell.onSwitchClickLinstener() {
                 @Override
                 public void onSwitchClick() {
@@ -174,20 +180,21 @@ public class RemindActivity extends BaseActivity {
                         entity.setIsRemind(0);
                         cancelRemind(entity);
                     }
+                    DBInterface.instance().openWritableDb().getRemindDao().insertOrReplace(entity);
                 }
             });
             cell.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(RemindActivity.this, RemindDetailActivityNew.class);
-                    intent.putExtra("detailEntity", data.get(position));
+                    intent.putExtra("detailEntity", entity);
                     startActivity(intent);
                 }
             });
             cell.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    removeDialogView(data.get(position));
+                    removeDialogView(entity);
                     return false;
                 }
             });

@@ -25,7 +25,7 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property User = new Property(1, String.class, "user", false, "USER");
         public final static Property Drug = new Property(2, String.class, "drug", false, "DRUG");
         public final static Property IntervalDay = new Property(3, String.class, "intervalDay", false, "INTERVALDAY");
@@ -104,7 +104,7 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
      * Drops the underlying database table.
      */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
-        String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'"+ TABLENAME +"'";
+        String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'" + TABLENAME + "'";
         db.execSQL(sql);
     }
 
@@ -114,16 +114,20 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, RemindEntity entity) {
         stmt.clearBindings();
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, entity.getId());
+        }
         stmt.bindString(2, entity.getUser());
         stmt.bindString(3, entity.getDrug());
         stmt.bindLong(4, entity.getIntervalDay());
         stmt.bindString(5, entity.getStartDate());
 
         stmt.bindString(6, entity.getFirstTime());
-        stmt.bindString(7,entity.getSecondtime());
-        stmt.bindString(8,entity.getThreeTime());
-        stmt.bindString(9,entity.getFourTime());
-        stmt.bindString(10,entity.getFiveTime());
+        stmt.bindString(7, entity.getSecondtime());
+        stmt.bindString(8, entity.getThreeTime());
+        stmt.bindString(9, entity.getFourTime());
+        stmt.bindString(10, entity.getFiveTime());
         stmt.bindLong(11, entity.getTimesInDay());
         stmt.bindLong(12, entity.getIsRemind());
         stmt.bindString(13, entity.getDosage());
@@ -213,7 +217,7 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
         return true;
     }
 
-    public  List<RemindEntity> readDb(RemindDao remindDao) {
+    public List<RemindEntity> readDb(RemindDao remindDao) {
         List<RemindEntity> entities = remindDao.queryBuilder().orderDesc(RemindDao.Properties.Id).list();
         return entities;
     }
