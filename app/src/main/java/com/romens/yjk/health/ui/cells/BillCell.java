@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -21,9 +22,11 @@ public class BillCell extends FrameLayout {
     private EditText editText;
     private LinearLayout linearLayout;
     private SwitchChangeListener mListener;
+    private InputMethodManager manager;
 
     public BillCell(final Context context) {
         super(context);
+        manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         View view = View.inflate(context, R.layout.list_item_bill, null);
         switchBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
         editText = (EditText) view.findViewById(R.id.edit_bill);
@@ -41,11 +44,12 @@ public class BillCell extends FrameLayout {
                     editText.requestFocus();
                     linearLayout.setVisibility(VISIBLE);
                     //弹出软键盘
+                    showInputManager();
                 } else {
                     linearLayout.setVisibility(GONE);
-
                     editText.setFocusable(false);
                     editText.setFocusableInTouchMode(false);
+                    hideInputManager();
                 }
             }
         });
@@ -84,4 +88,16 @@ public class BillCell extends FrameLayout {
     public interface EditTextChangeListener {
         void textChangeListenr(String value);
     }
+
+    //手动显示键盘
+    public void showInputManager() {
+        manager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    //手动隐藏键盘
+    public void hideInputManager() {
+        manager.hideSoftInputFromWindow(getWindowToken(), 0);
+    }
+
+
 }

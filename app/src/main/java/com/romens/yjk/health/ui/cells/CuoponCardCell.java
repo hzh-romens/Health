@@ -39,11 +39,11 @@ public class CuoponCardCell extends FrameLayout {
         nameView = new TextView(context);
         nameView.setTextColor(context.getResources().getColor(R.color.theme_primary));
         nameView.setText("优惠券");
-        nameView.setTextSize(16);
+        nameView.setTextSize(18);
         cardView.addView(nameView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 16, 16, 8, 16));
 
         addressView = new TextView(context);
-        addressView.setTextSize(16);
+        addressView.setTextSize(18);
         addressView.setMaxLines(1);
         addressView.setEllipsize(TextUtils.TruncateAt.END);
         addressView.setTextColor(Color.BLACK);
@@ -51,6 +51,7 @@ public class CuoponCardCell extends FrameLayout {
 
         priceView = new TextView(context);
         priceView.setTextColor(context.getResources().getColor(R.color.theme_primary));
+        priceView.setTextSize(30);
         cardView.addView(priceView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 48, Gravity.LEFT, 16, 56, 16, 16));
 
         conditionView = new TextView(context);
@@ -69,7 +70,7 @@ public class CuoponCardCell extends FrameLayout {
         cardView.addView(statusView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT, 8, 8, 16, 8));
 
         statusIcon = new ImageView(context);
-        cardView.addView(statusIcon, LayoutHelper.createFrame(72, 64, Gravity.RIGHT, 16, 24, 16, 0));
+        cardView.addView(statusIcon, LayoutHelper.createFrame(96, 96, Gravity.RIGHT, 16, 24, 16, 0));
 
         addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.NO_GRAVITY, 16, 8, 16, 8));
     }
@@ -87,7 +88,8 @@ public class CuoponCardCell extends FrameLayout {
     }
 
     public void setStatusImage(int resId) {
-        statusIcon.setImageResource(resId);
+        // statusIcon.setImageResource(resId);
+        statusIcon.setBackgroundResource(resId);
         //image.setImageResource(resId);
     }
 
@@ -97,10 +99,10 @@ public class CuoponCardCell extends FrameLayout {
 
     private String mIsused, mName, mEnddate, mLimitamount, mPrice;
 
-    public void setValue(String startDate, String amount, String isused, String name, String enddate, String limitamount, String shuoming) {
-        SpannableString span = new SpannableString(amount);
-        span.setSpan(new AbsoluteSizeSpan(22), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        span.setSpan(new AbsoluteSizeSpan(18), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    public void setValue(String isused, String name, String enddate, String limitamount, String shuoming, String amount, String startDate) {
+        SpannableString span = new SpannableString("¥" + amount);
+        span.setSpan(new AbsoluteSizeSpan(30), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new AbsoluteSizeSpan(26, true), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         priceView.setText(span);
         nameView.setText(name);
         addressView.setText(shuoming);
