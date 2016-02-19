@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.yunuo.pay.cells.ButtonCell;
+import com.yunuo.pay.cells.ButtonCells;
 import com.yunuo.pay.cells.CntentCell;
 import com.yunuo.pay.cells.StatusCell;
 
@@ -99,9 +99,9 @@ public class PayResultAdapter extends BaseAdapter {
             }
         } else if (viewType == 3) {
             if (convertView == null) {
-                convertView = new ButtonCell(mContext);
+                convertView = new ButtonCells(mContext);
             }
-            ButtonCell cell = (ButtonCell) convertView;
+            ButtonCells cell = (ButtonCells) convertView;
             cell.setValue(mResult.get(0));
         }
         return convertView;

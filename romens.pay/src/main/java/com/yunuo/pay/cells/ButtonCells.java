@@ -11,10 +11,10 @@ import com.yunuo.pay.R;
 /**
  * Created by HZH on 2016/2/19.
  */
-public class ButtonCell extends FrameLayout {
+public class ButtonCells extends FrameLayout {
     private TextView sureButton;
 
-    public ButtonCell(Context context) {
+    public ButtonCells(Context context) {
         super(context);
         View view = View.inflate(context, R.layout.list_item_button, null);
         sureButton = (TextView) view.findViewById(R.id.button);

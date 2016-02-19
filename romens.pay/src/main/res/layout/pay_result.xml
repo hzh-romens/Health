@@ -12,9 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ToolbarTheme"
-        app:titleTextAppearance="@style/ToolbarTitle" />
+        android:background="?attr/colorPrimary" />
 
     <ListView
         android:id="@+id/listview"
