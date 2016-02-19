@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.AddNewRemindActivity;
@@ -170,6 +173,12 @@ public class UIOpenHelper {
     public static void openAddShippingAddress(Activity context, int requestCode) {
         Intent intent = new Intent(context, NewShoppingAddressActivity.class);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void openAddShippingAddress(Activity context, AddressEntity entity) {
+        Intent intent = new Intent(context, NewShoppingAddressActivity.class);
+        intent.putExtra("responseUpDataEntity", entity);
+        context.startActivity(intent);
     }
 
     public static void openShippingAddress(Activity context, int requestCode) {

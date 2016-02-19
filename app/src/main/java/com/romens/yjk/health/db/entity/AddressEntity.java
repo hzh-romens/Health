@@ -22,6 +22,10 @@ public class AddressEntity implements Serializable {
     private String ADDRESS;
     private String ISDEFAULT;
     private String ADDRESSTYPE;
+
+    private String PROVINCENAME;
+    private String CITYNAME;
+    private String REGIONNAME;
 //    private String USERGUID;
 
 //    public String getUSERGUID() {
@@ -31,6 +35,31 @@ public class AddressEntity implements Serializable {
 //    public void setUSERGUID(String USERGUID) {
 //        this.USERGUID = USERGUID;
 //    }
+
+
+    public String getPROVINCENAME() {
+        return PROVINCENAME;
+    }
+
+    public void setPROVINCENAME(String PROVINCENAME) {
+        this.PROVINCENAME = PROVINCENAME;
+    }
+
+    public String getCITYNAME() {
+        return CITYNAME;
+    }
+
+    public void setCITYNAME(String CITYNAME) {
+        this.CITYNAME = CITYNAME;
+    }
+
+    public String getREGIONNAME() {
+        return REGIONNAME;
+    }
+
+    public void setREGIONNAME(String REGIONNAME) {
+        this.REGIONNAME = REGIONNAME;
+    }
 
     public String getADDRESSID() {
         return ADDRESSID;
@@ -117,6 +146,9 @@ public class AddressEntity implements Serializable {
         entity.setREGION(item.get("REGION"));
         entity.setRECEIVER(item.get("RECEIVER"));
 //        entity.setUSERGUID(item.get("USERGUID"));
+        entity.setPROVINCENAME(item.get("PROVINCENAME"));
+        entity.setCITYNAME(item.get("CITYNAME"));
+        entity.setREGIONNAME(item.get("REGIONNAME"));
 
         return entity;
     }
