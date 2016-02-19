@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui;
 
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -35,11 +34,9 @@ import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
-import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
 import com.romens.yjk.health.ui.fragment.ShopCarFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
-import com.yunuo.pay.PayResultActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,8 +134,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     startActivity(new Intent(HomeActivity.this, FamilyDrugGroupActivity.class));
                 } else*/
                 if (id == 0) {
-                  //  UIOpenHelper.openSearchActivity(HomeActivity.this);
-                    startActivity(new Intent(HomeActivity.this, PayResultActivity.class));
+                    UIOpenHelper.openSearchActivity(HomeActivity.this);
+                  //  startActivity(new Intent(HomeActivity.this, PayResultActivity.class));
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 }
 //                else if (id == 1) {
