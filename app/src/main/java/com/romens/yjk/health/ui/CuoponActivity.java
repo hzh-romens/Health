@@ -1,9 +1,11 @@
 package com.romens.yjk.health.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.RadioGroup;
 
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -75,5 +77,11 @@ public class CuoponActivity extends BaseActivity {
         titles.add("历史优惠券");
         tabLayout.addTab(tabLayout.newTab().setText(titles.get(0)));
         tabLayout.addTab(tabLayout.newTab().setText(titles.get(1)));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("Fragment返回码-----", resultCode + "");
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

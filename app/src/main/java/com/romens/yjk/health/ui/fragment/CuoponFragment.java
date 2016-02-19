@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.romens.android.network.FacadeArgs;
@@ -20,6 +22,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.model.CuoponEntity;
+import com.romens.yjk.health.ui.CommitOrderActivity;
 import com.romens.yjk.health.ui.adapter.CuoponAdapter;
 
 import java.util.List;
@@ -43,13 +46,21 @@ public class CuoponFragment extends Fragment {
         if (mFlag == 1) {
             requestType = "GetCoupon";
             getCuopon();
-            cuoponAdapter.bindData(result);
+            //cuoponAdapter.bindData(result);
         } else {
             requestType = "GetCouponHistory";
             getCuopon();
-            cuoponAdapter.bindData(result);
+            //cuoponAdapter.bindData(result);
         }
-        listView.setAdapter(cuoponAdapter);
+        // listView.setAdapter(cuoponAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
+                getActivity().setResult(4, intent);
+                getActivity().finish();
+            }
+        });
         return view;
     }
 
@@ -85,6 +96,8 @@ public class CuoponFragment extends Fragment {
                         result.clear();
                     }
                     result = CuoponEntity.toEntity(response);
+                    cuoponAdapter.bindData(result);
+                    listView.setAdapter(cuoponAdapter);
                 } else {
                     Log.e("GetCoupon", errorMsg.msg);
                 }

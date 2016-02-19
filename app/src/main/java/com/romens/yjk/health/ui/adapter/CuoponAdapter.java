@@ -56,7 +56,8 @@ public class CuoponAdapter extends BaseAdapter {
         }
         CuoponCardCell cell = (CuoponCardCell) convertView;
         CuoponEntity entity = mResult.get(position);
-        cell.setValue(entity.getIsused(),entity.getName(),entity.getEnddate(),entity.getLimitamount(),entity.getShuoming(),entity.getAmount(),entity.getStartdate());
+        cell.setValue(entity.getIsused(), entity.getName(), entity.getEnddate(), entity.getLimitamount(), entity.getShuoming(), entity.getAmount(), entity.getStartdate());
+        cell.setStatus("1");
         return convertView;
     }
 }
