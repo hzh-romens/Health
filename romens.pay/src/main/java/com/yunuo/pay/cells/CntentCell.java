@@ -13,15 +13,15 @@ import com.yunuo.pay.R;
  * Created by HZH on 2016/1/13.
  */
 public class CntentCell extends LinearLayout {
-    private TextView detailView;
-    private TextView priceView;
+    private TextView descriptionView;
+    private TextView valueView;
 
     public CntentCell(Context context) {
         super(context);
         initPaint();
         View view = View.inflate(context, R.layout.list_item_content, null);
-        detailView = (TextView) view.findViewById(R.id.tv_detail);
-        priceView = (TextView) view.findViewById(R.id.tv_price);
+        descriptionView = (TextView) view.findViewById(R.id.tv_describtion);
+        valueView = (TextView) view.findViewById(R.id.tv_value);
         addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -34,8 +34,12 @@ public class CntentCell extends LinearLayout {
     }
 
     public void setValue(String detail, String price) {
-        detailView.setText("订单详情：" + detail);
-        priceView.setText("订单金额：¥" + price);
+        descriptionView.setText(detail + ":");
+        valueView.setText("¥" + price);
+    }
+    public void setDetail(String detail, String value) {
+        descriptionView.setText(detail);
+        valueView.setText(value);
     }
 
 

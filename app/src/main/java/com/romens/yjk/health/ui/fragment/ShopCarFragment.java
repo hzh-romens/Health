@@ -480,5 +480,8 @@ public class ShopCarFragment extends BaseFragment {
         progressDialog = null;
     }
 
+    public static void setValue(String value) {
+        Log.i("刷新值====", "" + value);
+    }
 
 }

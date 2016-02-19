@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
 import com.romens.yjk.health.ui.fragment.ShopCarFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
+import com.yunuo.pay.PayResultActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +109,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     lastLocationCell.setVisibility(View.GONE);
                     getMyActionBar().setTitle(getString(R.string.app_name));
                 }
+
             }
 
             @Override
@@ -134,7 +137,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     startActivity(new Intent(HomeActivity.this, FamilyDrugGroupActivity.class));
                 } else*/
                 if (id == 0) {
-                    UIOpenHelper.openSearchActivity(HomeActivity.this);
+                  //  UIOpenHelper.openSearchActivity(HomeActivity.this);
+                    startActivity(new Intent(HomeActivity.this, PayResultActivity.class));
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 }
 //                else if (id == 1) {
@@ -196,6 +200,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         return titles;
     }
 
+
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFocusFragment());
@@ -216,6 +221,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             if (shoppingCartItem != null) {
                 int count = (int) args[0];
                 updateShoppingCartCount(count);
+
             }
         } else if (id == AppNotificationCenter.onLastLocationChanged) {
             updateLastLocation();
