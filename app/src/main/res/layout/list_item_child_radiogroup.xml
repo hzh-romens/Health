@@ -26,21 +26,24 @@
             android:layout_marginTop="12dp"
             android:background="@color/white"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:padding="@dimen/padding_inner"
             android:text="药店名"
-            android:includeFontPadding="false"
             android:textColor="#333333"
             android:textSize="@dimen/text_size_large"
             android:typeface="normal" />
+
         <TextView
+            android:id="@+id/tv_deliverytype"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:id="@+id/tv_deliverytype"
-           android:layout_gravity="right|center_vertical"
-            android:gravity="center"
+            android:layout_gravity="right|center_vertical"
             android:layout_marginRight="@dimen/padding_outter"
-            android:textSize="@dimen/text_size_large"
-            android:textColor="#333333" />
+            android:layout_marginTop="@dimen/margin_small"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:textColor="#333333"
+            android:textSize="@dimen/text_size_large" />
     </FrameLayout>
 
 </LinearLayout>

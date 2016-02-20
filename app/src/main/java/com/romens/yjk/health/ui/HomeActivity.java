@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui;
 
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -25,19 +24,18 @@ import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
 import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyFragment;
+import com.romens.yjk.health.ui.fragment.ShopCarFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
 import java.util.ArrayList;
@@ -88,6 +86,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         tabsCell.addView(R.drawable.ic_tab_home, R.drawable.ic_tab_home_pressed, "首页");
         tabsCell.addView(R.drawable.ic_tab_fl, R.drawable.ic_tab_fl_pressed, "分类");
         tabsCell.addView(R.drawable.ic_tab_fx, R.drawable.ic_tab_fx_pressed, "发现");
+        tabsCell.addView(R.drawable.ic_tab_shopping, R.drawable.ic_tab_shopping_pressed, "购物车");
         tabsCell.addView(R.drawable.ic_tab_my, R.drawable.ic_tab_my_pressed, "我的");
         pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
         viewPager.setAdapter(pagerAdapter);
@@ -119,7 +118,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         actionBar.setBackButtonImage(R.drawable.ic_app_icon);
         ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
-        shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
+        //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
 
 //        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
 //        debugMenu.addSubItem(2, "测试促销详情", 0);
@@ -136,18 +135,21 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 if (id == 0) {
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
-                } else if (id == 1) {
-                    if (UserConfig.isClientLogined()) {
-                        //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
-                        //startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
-                        //startActivity(new Intent(HomeActivity.this, BindMemberActivity.class));
-                    } else {
-                        //跳转至登录页面
-                        //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-                    }
-                }/*  else if (key == 2) {
+                }
+//                else if (id == 1) {
+//                    if (UserConfig.isClientLogined()) {
+//                        //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+//                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
+//                        //startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
+//                        //startActivity(new Intent(HomeActivity.this, BindMemberActivity.class));
+//                    }
+//                    else {
+//                        //跳转至登录页面
+//                        //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+//                    }
+//                }
+                /*  else if (key == 2) {
                     startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
                 } else if (key == 3) {
                     startActivity(new Intent(HomeActivity.this, LocationActivity.class));
@@ -188,6 +190,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         titles.add("首页");
         titles.add("健康");
         titles.add("发现");
+        titles.add("购物车");
         titles.add("我的");
         return titles;
     }
@@ -198,6 +201,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         fragments.add(new HomeHealthNewFragment());
 //        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
+        fragments.add(new ShopCarFragment());
         fragments.add(new HomeMyFragment());
         return fragments;
     }

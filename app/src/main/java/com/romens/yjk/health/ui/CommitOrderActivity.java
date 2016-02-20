@@ -64,6 +64,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private double sumMoney;
     private String addressId; //送货地址id
     private String deliveryType;//送货方式
+    private String mBillName; //发票抬头名称
+    private boolean needBill;
 
 
     @Override
@@ -99,7 +101,16 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+                //  UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+                finish();
+            }
+        });
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                Intent intent = new Intent(CommitOrderActivity.this, CuoponActivity.class);
+                startActivityForResult(intent, 1);
+                return true;
             }
         });
 
@@ -176,13 +187,26 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 }
             }
         });
+        adapter.setSwitchChangeListener(new CommitOrderAdapter.SwitchChangeListener() {
+            @Override
+            public void getSwitchValue(boolean value) {
+                needBill = value;
+
+            }
+        });
+        adapter.setEditTextChangeListener(new CommitOrderAdapter.EditTextChangeListener() {
+            @Override
+            public void textValueChange(String value) {
+                mBillName = value;
+            }
+        });
     }
 
     private List<String> parentTypes;
 
     private void getTypeData() {
         parentTypes = new ArrayList<>();
-        for (int i = 0; i < parentData.size() + 8; i++) {
+        for (int i = 1; i <= parentData.size() + 7; i++) {
             parentTypes.add(i + "");
         }
     }
@@ -212,7 +236,16 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             public void onClick(View v) {
                 needShowProgress("正在提交..");
                 if (deliveryType != null && !("".equals(deliveryType))) {
-                    commitOrder(filteData, sumCount);
+                    if (needBill) {
+                        if ("".equals(mBillName) || mBillName != null || (mBillName == null)) {
+                            needHideProgress();
+                            DialogUtils dialogUtils = new DialogUtils();
+                            dialogUtils.show_infor("请输入发票内容", CommitOrderActivity.this, "提示");
+                        } else {
+                            commitOrder(filteData, sumCount);
+                        }
+                    }
+
                 } else {
                     needHideProgress();
                     DialogUtils dialogUtils = new DialogUtils();
@@ -253,7 +286,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     //向服务器提交订单
     private void commitOrder(List<FilterChildEntity> data, final int count) {
-        String jsonData = getJsonData(data, deliveryType, addressId);
+        String jsonData = getJsonData(data, deliveryType, addressId, mBillName);
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", jsonData).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
@@ -300,12 +333,14 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         });
     }
 
-    public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid) {
+    public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid, String billName) {
         Gson gson = new Gson();
         CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
         commitOrderEntity.setDELIVERYTYPE(deliverytype);
         commitOrderEntity.setADDRESSID(addressid);
         commitOrderEntity.setGOODSLIST(data);
+        commitOrderEntity.setBILLNAME(billName);
+        commitOrderEntity.setCOUPONGUID("");
         String JSON_DATA = gson.toJson(commitOrderEntity);
         return JSON_DATA;
     }
@@ -375,7 +410,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+            // UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+            finish();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -391,4 +427,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             }
         }
     }
+
+
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/cardSign"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@color/theme_primary" />
+
+    <TextView
+        android:id="@+id/cardName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/nearby_pharmacy_header_width"
+        android:layout_marginTop="@dimen/margin_small"
+        android:drawableLeft="@drawable/ic_launcher"
+        android:gravity="center"
+        android:text="要健康"
+        android:textColor="@color/md_black_1000"
+        android:textSize="@dimen/text_size_xlarge" />
+
+    <TextView
+        android:id="@+id/accountName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/nearby_pharmacy_header_width"
+        android:text="张某某"
+        android:textColor="#666666"
+        android:textSize="@dimen/margin_standard" />
+
+    <TextView
+        android:id="@+id/cardNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/margin_small"
+        android:text="NO12345678"
+        android:textColor="@color/theme_primary"
+        android:textSize="@dimen/margin_standard" />
+
+</android.support.v7.widget.CardView>

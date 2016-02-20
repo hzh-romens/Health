@@ -21,25 +21,28 @@ import com.romens.yjk.health.R;
 public class DialogUtils {
     /**
      * 弹出一个自定义对话框（确定，取消）
+     *
      * @num 数量
      * @title 标题名
      */
-    private int startNum=0;
+    private int startNum = 0;
     private QuantityOfGoodsCallBack mQuantityOfGoodsCallBack;
     private CancelListenerCallBack cancelListenerCallBack;
     private ConfirmListenerCallBack confirmListenerCallBack;
-    public interface QuantityOfGoodsCallBack{
+
+    public interface QuantityOfGoodsCallBack {
         void getGoodsNum(int num);
     }
-    public void show (String num, final Context owner, String title,QuantityOfGoodsCallBack quantityOfGoodsCallBack) {
 
-        mQuantityOfGoodsCallBack=quantityOfGoodsCallBack;
+    public void show(String num, final Context owner, String title, QuantityOfGoodsCallBack quantityOfGoodsCallBack) {
+
+        mQuantityOfGoodsCallBack = quantityOfGoodsCallBack;
         View v = LayoutInflater.from(owner).inflate(R.layout.dialog_shop_count, null);
-        TextView dialog_btnCancel= (TextView) v.findViewById(R.id.dialog_btnCancel);
-        TextView  dialog_btnSure= (TextView) v.findViewById(R.id.dialog_btnSure);
-        final EditText dialog_editextNum= (EditText) v.findViewById(R.id.dialog_editextNum);
-        Button  dialog_btnAdd= (Button) v.findViewById(R.id.dialog_btnAdd);
-        Button  dialog_btnReduce= (Button) v.findViewById(R.id.dialog_btnReduce);
+        TextView dialog_btnCancel = (TextView) v.findViewById(R.id.dialog_btnCancel);
+        TextView dialog_btnSure = (TextView) v.findViewById(R.id.dialog_btnSure);
+        final EditText dialog_editextNum = (EditText) v.findViewById(R.id.dialog_editextNum);
+        Button dialog_btnAdd = (Button) v.findViewById(R.id.dialog_btnAdd);
+        Button dialog_btnReduce = (Button) v.findViewById(R.id.dialog_btnReduce);
         dialog_editextNum.setText(num);
 
         Dialog dlg = new Dialog(owner, R.style.Base_Theme_AppCompat_Dialog);
@@ -52,7 +55,7 @@ public class DialogUtils {
         lp.gravity = Gravity.CENTER;
         WindowManager wm = (WindowManager) owner.getSystemService(Context.WINDOW_SERVICE);
         lp.width = wm.getDefaultDisplay().getWidth();
-        lp.horizontalMargin=20;
+        lp.horizontalMargin = 20;
         w.setAttributes(lp);
 
 
@@ -80,10 +83,10 @@ public class DialogUtils {
 
         dialog_btnSure.setTag(dlg);
         dialog_btnCancel.setTag(dlg);
-        dialog_btnSure.setOnClickListener (new View.OnClickListener() {
+        dialog_btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog dlg = (Dialog ) v.getTag ();
+                Dialog dlg = (Dialog) v.getTag();
                 int i = Integer.parseInt(dialog_editextNum.getText().toString());
                 mQuantityOfGoodsCallBack.getGoodsNum(i);
                 dlg.cancel();
@@ -91,10 +94,10 @@ public class DialogUtils {
             }
         });
 
-        dialog_btnCancel.setOnClickListener (new View.OnClickListener() {
+        dialog_btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog dlg = (Dialog ) v.getTag ();
+                Dialog dlg = (Dialog) v.getTag();
                 dlg.cancel();
             }
         });
@@ -103,10 +106,11 @@ public class DialogUtils {
 
     /**
      * 弹出一个对话框（只有确定）
+     *
      * @param infor
      * @param owner
      */
-    public void show_infor(String infor, Activity owner,String title) {
+    public void show_infor(String infor, Activity owner, String title) {
 
         View v = owner.getLayoutInflater().inflate(
                 R.layout.dialog_page_standard_infor, null);
@@ -154,15 +158,17 @@ public class DialogUtils {
             }
         });
     }
+
     /**
      * 弹出一个对话框（有确定和取消）
+     *
      * @param infor
      * @param owner
      */
-    public void show_infor_two(String infor, Activity owner,String title, final ConfirmListenerCallBack confirmListenerCallBack, final CancelListenerCallBack cancelListenerCallBack) {
+    public void show_infor_two(String infor, Activity owner, String title, final ConfirmListenerCallBack confirmListenerCallBack, final CancelListenerCallBack cancelListenerCallBack) {
 
-        this.cancelListenerCallBack=cancelListenerCallBack;
-        this.confirmListenerCallBack=confirmListenerCallBack;
+        this.cancelListenerCallBack = cancelListenerCallBack;
+        this.confirmListenerCallBack = confirmListenerCallBack;
         View v = owner.getLayoutInflater().inflate(
                 R.layout.dialog_page_standard_infor, null);
         TextView tv = (TextView) v.findViewById(R.id.tv_tips);
@@ -186,10 +192,10 @@ public class DialogUtils {
         dlg.show();
 
         View ok = v.findViewById(R.id.btn_ok);
-        View cancle=v.findViewById(R.id.btn_cancel);
+        View cancle = v.findViewById(R.id.btn_cancel);
 
-        ok.setTag(R.id.btn_ok,dlg);
-        cancle.setTag(R.id.btn_cancel,dlg);
+        ok.setTag(R.id.btn_ok, dlg);
+        cancle.setTag(R.id.btn_cancel, dlg);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,12 +214,15 @@ public class DialogUtils {
             }
         });
     }
-    public interface ConfirmListenerCallBack{
+
+    public interface ConfirmListenerCallBack {
         void ConfirmListener();
     }
-    public interface CancelListenerCallBack{
+
+    public interface CancelListenerCallBack {
         void CancelListener();
     }
+
 
 
 }

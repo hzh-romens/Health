@@ -11,6 +11,26 @@ public class CommitOrderEntity {
     private String DELIVERYTYPE;//送货方式
     private List<FilterChildEntity> GOODSLIST;
 
+
+    private String COUPONGUID;// 优惠券GUID
+    private String BILLNAME; //发票抬头名称
+
+    public String getCOUPONGUID() {
+        return COUPONGUID;
+    }
+
+    public void setCOUPONGUID(String COUPONGUID) {
+        this.COUPONGUID = COUPONGUID;
+    }
+
+    public String getBILLNAME() {
+        return BILLNAME;
+    }
+
+    public void setBILLNAME(String BILLNAME) {
+        this.BILLNAME = BILLNAME;
+    }
+
     public String getADDRESSID() {
         return ADDRESSID;
     }

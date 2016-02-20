@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewStub;
@@ -9,6 +10,7 @@ import android.widget.ListView;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.adapter.CardListAdapter;
 import com.romens.yjk.health.ui.adapter.MemberAdapter;
 
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class MemberActivity extends BaseActivity {
     private ActionBar actionBar;
     private List<String> types;
     private ListView listview, cardList;
+    private CardListAdapter cardListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,7 @@ public class MemberActivity extends BaseActivity {
             public void onItemClick(int i) {
                 if (i == 0) {
                     //跳转到添加会员卡界面
+                    startActivity(new Intent(MemberActivity.this, BindMemberActivity.class));
                 }
             }
         });
@@ -59,6 +63,10 @@ public class MemberActivity extends BaseActivity {
     private void initBindView() {
         pwdLayout = (LinearLayout) findViewById(R.id.pwdLayout);
         cardList = (ListView) findViewById(R.id.card_list);
+        cardListAdapter = new CardListAdapter(this);
+        getMemberCardData();
+        cardListAdapter.BindData(cardData);
+        cardList.setAdapter(cardListAdapter);
     }
 
     private void hideMemberView() {

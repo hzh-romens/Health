@@ -3,53 +3,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.romens.yjk.health.ui.ShopCarActivity">
-    <RelativeLayout
-        style="@style/titleStytle"
-        android:orientation="horizontal"
-        android:background="@color/theme_primary">
-        <ImageView
-            style="@style/iv_back_style"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padding_outter"
-            android:id="@+id/back"
-            android:background="@drawable/ic_ab_back"
-            android:layout_alignParentLeft="true"/>
-        <TextView
-            android:layout_centerInParent="true"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="64dp"
-            android:layout_marginTop="@dimen/padding_inner"
-            android:layout_marginBottom="@dimen/padding_inner"
-            android:layout_marginRight="48dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:text="购物车"
-            android:inputType="textPhonetic"
-            android:imeOptions="actionSearch"
-            android:layout_height="match_parent"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_title"
-            />
-        <ImageView   android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/padding_outter"
-            android:layout_marginRight="@dimen/padding_outter"
-            android:layout_centerVertical="true"
-            android:id="@+id/edit"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:src="@drawable/ic_delete_white"
-            android:includeFontPadding="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/title_text_size" />
-    </RelativeLayout>
+    <!--<RelativeLayout-->
+    <!--style="@style/titleStytle"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:background="@color/theme_primary">-->
+    <!--<ImageView-->
+    <!--style="@style/iv_back_style"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginLeft="@dimen/padding_outter"-->
+    <!--android:id="@+id/back"-->
+    <!--android:background="@drawable/ic_ab_back"-->
+    <!--android:layout_alignParentLeft="true"/>-->
+    <!--<TextView-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_marginLeft="64dp"-->
+    <!--android:layout_marginTop="@dimen/padding_inner"-->
+    <!--android:layout_marginBottom="@dimen/padding_inner"-->
+    <!--android:layout_marginRight="48dp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:paddingLeft="8dp"-->
+    <!--android:text="购物车"-->
+    <!--android:inputType="textPhonetic"-->
+    <!--android:imeOptions="actionSearch"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="@dimen/text_size_title"-->
+    <!--/>-->
+    <!--<ImageView   android:layout_width="wrap_content"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginLeft="@dimen/padding_outter"-->
+    <!--android:layout_marginRight="@dimen/padding_outter"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:id="@+id/edit"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:gravity="center"-->
+    <!--android:src="@drawable/ic_delete_white"-->
+    <!--android:includeFontPadding="false"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="@dimen/title_text_size" />-->
+    <!--android:layout_marginTop="52dp"-->
+    <!--</RelativeLayout>-->
 
     <ExpandableListView
         android:id="@+id/ev"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="45dp"
-        android:layout_marginTop="52dp"
         android:groupIndicator="@null" />
 
     <LinearLayout
@@ -78,8 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="4dip"
-            android:text="全选"
             android:includeFontPadding="false"
+            android:text="全选"
             android:textColor="@color/md_white_1000"
             android:textSize="@dimen/text_size_small" />
 
@@ -90,8 +90,8 @@
             android:layout_marginBottom="2dip"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="合计:"
             android:includeFontPadding="false"
+            android:text="合计:"
             android:textColor="@android:color/white"
             android:textSize="@dimen/title_text_size" />
 
@@ -103,9 +103,9 @@
             android:layout_gravity="center_vertical"
             android:background="#66cc00"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:singleLine="true"
             android:text="结算"
-            android:includeFontPadding="false"
             android:textColor="@color/md_white_1000"
             android:textSize="@dimen/text_size_xlarge" />
     </LinearLayout>
