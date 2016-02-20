@@ -77,11 +77,14 @@
   public static final android.os.Parcelable$Creator *;
 }
 -keepattributes Signature
+-keepattributes *Annotation*
 
 -keepclassmembers class * {
    public <init>(org.json.JSONObject);
 }
 
+-dontwarn javax.xml.**
+-dontwarn javax.xml.stream.events.**
 
 #-dontwarn com.romens.rcp.**
 #-keep class com.romens.rcp.** { *; }
@@ -151,6 +154,21 @@
 
 -dontwarn okio.**
 -keep class okio.**{*;}
+
+
+#jackson
+-keepattributes *Annotation*,EnclosingMethod,Signature
+-keepnames class com.fasterxml.jackson.** { *; }
+-dontwarn com.fasterxml.jackson.core.**
+-dontwarn com.fasterxml.jackson.annotation.**
+-dontwarn com.fasterxml.jackson.databind.**
+
+-keep class fasterxml.jackson.core.** { *; }
+-keep class fasterxml.jackson.annotation.** { *; }
+-keep class fasterxml.jackson.databind.** { *; }
+
+-keepclassmembers public final enum  com.fasterxml.jackson.annotation.JsonAutoDetect$Visibility {
+ public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
 
 #romens.android
 -dontwarn com.fima.cardsui.**
@@ -241,12 +259,6 @@ public static final int *;
 -dontwarn com.romens.yjk.health.ui.components.**
 -keep public class com.romens.yjk.health.ui.components.**{*;}
 
-#qq mta
--keep class com.tencent.stat.**  {* ;}
--keep class com.tencent.mid.**  {* ;}
-
-
-
 #romens.images
 -dontwarn com.facebook.**
 -keep class com.facebook.**{*;}
@@ -256,8 +268,15 @@ public static final int *;
 }
 
 #pay
+#wx
+-dontwarn com.tencent.**
+-keep class com.tencent.** {*;}
 -dontwarn com.tencent.mm.sdk.**
 -keep class com.tencent.mm.sdk.**  {* ;}
+#qq mta
+-keep class com.tencent.stat.**  {* ;}
+-keep class com.tencent.mid.**  {* ;}
+
 
 -dontwarn com.romens.yjk.health.njxszk.wxapi.**
 -keep class com.romens.yjk.health.njxszk.wxapi.**{

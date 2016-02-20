@@ -46,14 +46,14 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private LastLocationCell lastLocationCell;
     private ViewPager viewPager;
     private HomePagerAdapter pagerAdapter;
-    private ActionBarMenuItem shoppingCartItem;
+    private ActionBarMenuItem moreMenuItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
 
         ShoppingServiceFragment.instance(getSupportFragmentManager());
 
@@ -214,13 +214,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.loginSuccess) {
             UIOpenHelper.syncFavorites(HomeActivity.this);
-        } else if (id == AppNotificationCenter.onShoppingCartChanged) {
-            if (shoppingCartItem != null) {
-                int count = (int) args[0];
-                updateShoppingCartCount(count);
-
-            }
-        } else if (id == AppNotificationCenter.onLastLocationChanged) {
+        }  else if (id == AppNotificationCenter.onLastLocationChanged) {
             updateLastLocation();
         }
     }
@@ -235,13 +229,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     public void onDestroy() {
         stopLocation();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
-        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
         super.onDestroy();
-    }
-
-    private void updateShoppingCartCount(int count) {
-        Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(HomeActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
-        shoppingCartItem.setIcon(shoppingCartCountBitmap);
     }
 
     class HomePagerAdapter extends FragmentViewPagerAdapter {

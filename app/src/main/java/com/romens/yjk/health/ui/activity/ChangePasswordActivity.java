@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -16,30 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.network.FacadeClient;
-import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
-import com.romens.android.network.protocol.FacadeProtocol;
-import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.erp.chain.R;
-import com.romens.erp.chain.config.AppFacadeConfig;
-import com.romens.erp.chain.config.AppFacadeToken;
-import com.romens.erp.chain.config.ResourcesConfig;
-import com.romens.erp.chain.helper.UIOpenHelper;
-import com.romens.erp.chain.ui.BaseActionBarActivityWithAnalytics;
-import com.romens.erp.library.db.entity.FacadesEntity;
-import com.romens.erp.library.facade.FacadeToken;
-import com.romens.erp.library.http.FacadeManager;
+import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.ResourcesConfig;
 
-import java.util.HashMap;
 
 public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
 
@@ -51,13 +35,13 @@ public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
 
     private final static int done_button = 1;
 
-    private FacadesEntity currUser;
+    //private FacadesEntity currUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        currUser = FacadeManager.getInstance().getFacadesEntity(AppFacadeConfig.KEY);
+        //currUser = FacadeManager.getInstance().getFacadesEntity(AppFacadeConfig.KEY);
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
 
         ActionBar actionBar = new ActionBar(this);
@@ -223,11 +207,11 @@ public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
 
         String userId = null;
         String userPassCode = null;
-        if (currUser != null) {
-            Pair<String, String> token = currUser.handleToken();
-            userId = token == null ? null : token.first;
-            userPassCode = token == null ? null : token.second;
-        }
+//        if (currUser != null) {
+//            Pair<String, String> token = currUser.handleToken();
+//            userId = token == null ? null : token.first;
+//            userPassCode = token == null ? null : token.second;
+//        }
 
         if (TextUtils.isEmpty(userId)) {
             Toast.makeText(ChangePasswordActivity.this, "获取当前用户信息异常,请稍后重试!", Toast.LENGTH_SHORT).show();
@@ -238,46 +222,46 @@ public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
             Toast.makeText(ChangePasswordActivity.this, "原密码不正确", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        HashMap<String, Object> args = new HashMap<>();
-        args.put("PHONENUMBER", userId);
-        args.put("NEWPWD", newPassword);
-        FacadeProtocol protocol = new FacadeProtocol(AppFacadeConfig.getUrl(), "handle", "ChangePwd", args);
-        protocol.withToken(AppFacadeToken.getInstance().value());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
-                }))
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                needHideProgress();
-                Toast.makeText(ChangePasswordActivity.this, "请求被拒绝", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
-                if (errorMsg == null) {
-                    String error = null;
-                    ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
-                    LinkedTreeMap<String, String> result = response.getResponse();
-                    if (result != null && result.size() > 0) {
-                        error = result.containsKey("ERROR") ? result.get("ERROR") : null;
-                    }
-                    if (TextUtils.isEmpty(error)) {
-                        UIOpenHelper.openLoginActivity(ChangePasswordActivity.this, true);
-                        finish();
-                    } else {
-                        Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
-                    }
-
-                } else {
-                    Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        //修改密码请求服务器方法
+//        HashMap<String, Object> args = new HashMap<>();
+//        args.put("PHONENUMBER", userId);
+//        args.put("NEWPWD", newPassword);
+//        FacadeProtocol protocol = new FacadeProtocol(AppFacadeConfig.getUrl(), "handle", "ChangePwd", args);
+//        protocol.withToken(AppFacadeToken.getInstance().value());
+//        Message message = new Message.MessageBuilder()
+//                .withProtocol(protocol)
+//                .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
+//                }))
+//                .build();
+//        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message msg) {
+//                needHideProgress();
+//                Toast.makeText(ChangePasswordActivity.this, "请求被拒绝", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//                needHideProgress();
+//                if (errorMsg == null) {
+//                    String error = null;
+//                    ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
+//                    LinkedTreeMap<String, String> result = response.getResponse();
+//                    if (result != null && result.size() > 0) {
+//                        error = result.containsKey("ERROR") ? result.get("ERROR") : null;
+//                    }
+//                    if (TextUtils.isEmpty(error)) {
+//                        UIOpenHelper.openLoginActivity(ChangePasswordActivity.this, true);
+//                        finish();
+//                    } else {
+//                        Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                } else {
+//                    Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
     }
 
 

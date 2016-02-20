@@ -15,10 +15,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
     productFlavors {
     }
 }
@@ -36,5 +42,17 @@ dependencies {
     compile 'com.google.guava:guava:16.0.1'
     compile files('libs/libammsdk.jar')
     compile files('libs/alipaySdk-20160120.jar')
-    compile project(':romens.android')
+
+
+    //romens.android
+    compile 'romens:com.romens.android:1.9.0@aar'
+    compile 'com.squareup.okhttp:okhttp:2.7.4'
+    compile 'com.squareup.okio:okio:1.6.0'
+    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.1'
+    compile 'com.github.bumptech.glide:glide:3.6.0'
+
+    //image
+    compile 'romens:com.romens.images:1.0.1@aar'
+    compile 'com.facebook.fresco:fresco:0.8.1+'
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ public class ScannerMenuCell extends LinearLayout {
     private ImageView iconView;
     private TextView nameView;
 
+    private int defaultColor;
     private int highlightColor;
     private boolean checked = false;
 
@@ -38,15 +40,17 @@ public class ScannerMenuCell extends LinearLayout {
     }
 
     private void init(Context context) {
+        defaultColor = 0xffffffff;
         highlightColor = 0xff2baf2b;
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
 
         iconView = new ImageView(context);
-        addView(iconView, LayoutHelper.createLinear(50, 50));
+        iconView.setColorFilter(defaultColor);
+        addView(iconView, LayoutHelper.createLinear(48, 48));
 
         nameView = new TextView(context);
-        nameView.setTextColor(0xffffffff);
+        nameView.setTextColor(defaultColor);
         nameView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         nameView.setLines(1);
         nameView.setMaxLines(1);
@@ -65,6 +69,11 @@ public class ScannerMenuCell extends LinearLayout {
         updated();
     }
 
+    public void setDefaultColor(int color) {
+        defaultColor = color;
+        updated();
+    }
+
     public void setChecked(boolean value) {
         checked = value;
         updated();
@@ -75,15 +84,15 @@ public class ScannerMenuCell extends LinearLayout {
             iconView.setColorFilter(highlightColor);
             nameView.setTextColor(highlightColor);
         } else {
-            iconView.setColorFilter(0xffffffff);
-            nameView.setTextColor(0xffffffff);
+            iconView.setColorFilter(defaultColor);
+            nameView.setTextColor(defaultColor);
         }
     }
 
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(100), MeasureSpec.EXACTLY));
+        super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(100), View.MeasureSpec.EXACTLY));
     }
 
 }
