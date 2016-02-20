@@ -150,22 +150,27 @@ public class ControlAddressActivity extends BaseActivity {
         noHaveAddressLayout.setVisibility(View.GONE);
         havaAddressLayout.setVisibility(View.VISIBLE);
 
-        adapter.setOnViewClickListener(new ControlAddressAdapter.OnViewClickListener() {
-            @Override
-            public void onClick(int position) {
-                chooseItemBackEvent(position);
-            }
-        });
+//        adapter.setOnViewClickListener(new ControlAddressAdapter.OnViewClickListener() {
+//            @Override
+//            public void onClick(int position) {
+//                chooseItemBackEvent(position);
+//            }
+//        });
 
-        adapter.setOnItemLongClickLinstener(new ControlAddressAdapter.onItemLongClickLinstener() {
+        adapter.setOnItemLongClickLinstener(new ControlAddressAdapter.onItemLongClickListener() {
             @Override
-            public void itemLongClickLinstener(int position) {
+            public void itemLongClickListener(int position) {
                 removeDialogView(position);
             }
 
             @Override
-            public void isDefaultClickLLinstener(int postion) {
-                requestDefaultChanged(userGuid, addressListEntitis.get(postion).getADDRESSID(), postion);
+            public void isDefaultClickLListener(int position) {
+                requestDefaultChanged(userGuid, addressListEntitis.get(position).getADDRESSID(), position);
+            }
+
+            @Override
+            public void itemClickListener(int position) {
+                chooseItemBackEvent(position);
             }
         });
     }
@@ -430,8 +435,9 @@ public class ControlAddressActivity extends BaseActivity {
             intent.putExtra("responseCommitEntity", entity);
             setResult(2, intent);
             finish();
+        } else {
+            UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position));
         }
-
     }
 
     private void backEvent() {

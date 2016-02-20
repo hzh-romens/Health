@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -22,7 +23,13 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
+import com.romens.yjk.health.db.DBHelper;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.DiscoveryDao;
+import com.romens.yjk.health.db.dao.LocationAddressDao;
+import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
+import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.ui.activity.BaseActivity;
 import com.romens.yjk.health.ui.activity.LocationAddressSelectActivity;
 import com.romens.yjk.health.ui.cells.InputTextCell;
@@ -49,6 +56,7 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
 
     private String userGuid;
 
+    private AddressEntity toCommitEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,22 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
         actionBarEven();
 
         initView();
+
+        Intent intent = getIntent();
+        toCommitEntity = (AddressEntity) intent.getSerializableExtra("responseUpDataEntity");
+        if (toCommitEntity != null) {
+            locationValues[0] = toCommitEntity.getPROVINCE();
+            LocationAddressDao dao = DBInterface.instance().openReadableDb().getLocationAddressDao();
+            if (toCommitEntity.getREGION() != null) {
+                locationValues[1] = dao.queryBuilder()
+                        .where(LocationAddressDao.Properties.Key.eq(toCommitEntity.getREGION()))
+                        .orderDesc(LocationAddressDao.Properties.Key)
+                        .limit(1)
+                        .unique().getParentId();
+            }
+            locationValues[2] = toCommitEntity.getREGION();
+            initViewData(toCommitEntity);
+        }
     }
 
     @Override
@@ -112,12 +136,14 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
 
     private void saveAddress2Sevice(String receiver, String contectPhone, String[] guids, String AddressDetail) {
         AddressEntity entity = new AddressEntity();
-        entity.setADDRESSID("");
+        if (toCommitEntity != null) {
+            entity.setADDRESSID(toCommitEntity.getADDRESSID());
+        }
         entity.setRECEIVER(receiver);
         entity.setCONTACTPHONE(contectPhone);
         entity.setPROVINCE(guids[0]);
-        entity.setCITY(guids[0]);
-        entity.setREGION(guids[0]);
+        entity.setCITY(guids[1]);
+        entity.setREGION(guids[2]);
         entity.setADDRESS(AddressDetail);
         entity.setISDEFAULT("0");
         entity.setADDRESSTYPE("1");
@@ -167,6 +193,13 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
         });
     }
 
+    private void initViewData(AddressEntity entity) {
+        editUserView.setTextAndValue("联系人:", entity.getRECEIVER(), "", false, true);
+        editPhoneView.setTextAndValue("联系人电话:", entity.getCONTACTPHONE(), "", false, true);
+        editAddressDetailView.setTextAndValue("详细地址:", entity.getADDRESS(), "", false, true);
+        editAddressIdView.setTextAndValue("所在地区:", entity.getPROVINCENAME(), entity.getCITYNAME(), entity.getREGIONNAME(), false, true);
+    }
+
     private void initView() {
         editUserView = (InputTextCell) findViewById(R.id.new_shopping_address_user_name);
         editUserView.setTextAndValue("联系人:", "", "请输入联系人", false, true);
@@ -190,16 +223,16 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
             @Override
             public void onClick(View v) {
                 final int deep = 1;
-                String name = locationNames[deep-1];
-                String value = locationValues[deep-1];
+                String name = locationNames[deep - 1];
+                String value = locationValues[deep - 1];
                 LocationAddressHelper.openLocationCityOrCountySelect(NewShoppingAddressActivity.this, deep, name, value);
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final int deep = 2;
-                String name = locationNames[deep-1];
-                String value = locationValues[deep-1];
+                String name = locationNames[deep - 1];
+                String value = locationValues[deep - 1];
                 LocationAddressHelper.openLocationCityOrCountySelect(NewShoppingAddressActivity.this, deep, name, value);
             }
         });

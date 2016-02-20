@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.AddNewRemindActivity;
@@ -32,6 +35,7 @@ import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
+import com.yunuo.pay.PayActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -127,7 +131,7 @@ public class UIOpenHelper {
     public static void openWebActivity(Context context, String title, String url) {
         Intent intent = new Intent(context, ADWebActivity.class);
         Bundle arguments = new Bundle();
-        if(!TextUtils.isEmpty(title)) {
+        if (!TextUtils.isEmpty(title)) {
             arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
         }
         arguments.putString(ADWebActivity.ARGUMENTS_KEY_TARGET_URL, url);
@@ -137,14 +141,15 @@ public class UIOpenHelper {
 
     /**
      * 传入html dom 载入web页面
+     *
      * @param context 上下文
-     * @param title 标题
-     * @param html html内容
+     * @param title   标题
+     * @param html    html内容
      */
     public static void openWebActivityWithHtml(Context context, String title, String html) {
         Intent intent = new Intent(context, ADWebActivity.class);
         Bundle arguments = new Bundle();
-        if(!TextUtils.isEmpty(title)) {
+        if (!TextUtils.isEmpty(title)) {
             arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
         }
         arguments.putString(ADWebActivity.ARGUMENTS_KEY_HTML, html);
@@ -168,6 +173,12 @@ public class UIOpenHelper {
     public static void openAddShippingAddress(Activity context, int requestCode) {
         Intent intent = new Intent(context, NewShoppingAddressActivity.class);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void openAddShippingAddress(Activity context, AddressEntity entity) {
+        Intent intent = new Intent(context, NewShoppingAddressActivity.class);
+        intent.putExtra("responseUpDataEntity", entity);
+        context.startActivity(intent);
     }
 
     public static void openShippingAddress(Activity context, int requestCode) {
@@ -271,11 +282,19 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
-    public static void openUserLocationActivity(Context context){
+    public static void openUserLocationActivity(Context context) {
         Intent intent = new Intent(context, LocationActivity.class);
-        Bundle arguments=new Bundle();
-        arguments.putBoolean(LocationActivity.ARGUMENT_KEY_FROM_USER,true);
+        Bundle arguments = new Bundle();
+        arguments.putBoolean(LocationActivity.ARGUMENT_KEY_FROM_USER, true);
         intent.putExtras(arguments);
+        context.startActivity(intent);
+    }
+
+    public static void openPayActivity(Context context, String deliveryName, double sumMoney, String orderNumber) {
+        Intent intent = new Intent(context, PayActivity.class);
+        intent.putExtra("sumMoney", sumMoney);
+        intent.putExtra("deliveryName", deliveryName);
+        intent.putExtra("orderNumber", orderNumber);
         context.startActivity(intent);
     }
 }

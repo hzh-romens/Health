@@ -34,7 +34,7 @@ import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
-import com.romens.yjk.health.ui.fragment.HomeMyFragment;
+import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
 import com.romens.yjk.health.ui.fragment.ShopCarFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
@@ -106,6 +106,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     lastLocationCell.setVisibility(View.GONE);
                     getMyActionBar().setTitle(getString(R.string.app_name));
                 }
+
             }
 
             @Override
@@ -134,6 +135,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 } else*/
                 if (id == 0) {
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
+                  //  startActivity(new Intent(HomeActivity.this, PayResultActivity.class));
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 }
 //                else if (id == 1) {
@@ -195,6 +197,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         return titles;
     }
 
+
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFocusFragment());
@@ -202,7 +205,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 //        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
         fragments.add(new ShopCarFragment());
-        fragments.add(new HomeMyFragment());
+//        fragments.add(new HomeMyFragment());
+        fragments.add(new HomeMyNewFragment());
         return fragments;
     }
 
@@ -214,6 +218,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
             if (shoppingCartItem != null) {
                 int count = (int) args[0];
                 updateShoppingCartCount(count);
+
             }
         } else if (id == AppNotificationCenter.onLastLocationChanged) {
             updateLastLocation();

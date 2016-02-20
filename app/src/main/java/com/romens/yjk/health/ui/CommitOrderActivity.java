@@ -64,7 +64,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private double sumMoney;
     private String addressId; //送货地址id
     private String deliveryType;//送货方式
-    private String mBillName; //发票抬头名称
+    private String mBillName = ""; //发票抬头名称
     private boolean needBill;
 
 
@@ -108,6 +108,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
                 Intent intent = new Intent(CommitOrderActivity.this, CuoponActivity.class);
                 startActivityForResult(intent, 1);
                 return true;
@@ -237,13 +238,15 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needShowProgress("正在提交..");
                 if (deliveryType != null && !("".equals(deliveryType))) {
                     if (needBill) {
-                        if ("".equals(mBillName) || mBillName != null || (mBillName == null)) {
+                        if ("".equals(mBillName) || (mBillName == null)) {
                             needHideProgress();
                             DialogUtils dialogUtils = new DialogUtils();
                             dialogUtils.show_infor("请输入发票内容", CommitOrderActivity.this, "提示");
                         } else {
                             commitOrder(filteData, sumCount);
                         }
+                    } else {
+                        commitOrder(filteData, sumCount);
                     }
 
                 } else {
@@ -251,7 +254,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                     DialogUtils dialogUtils = new DialogUtils();
                     dialogUtils.show_infor("请选择派送方式", CommitOrderActivity.this, "提示");
                 }
-
             }
         });
     }
@@ -280,6 +282,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             addressId = addressEntity.getADDRESSID();
         } else if (resultCode == 3) {
             showBuilder();
+        } else if (resultCode == 4) {
         }
     }
 
@@ -305,24 +308,33 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.i("responseProtocol", responseProtocol.toString());
+                    Log.i("responseProtocol--------", responseProtocol.getResponse());
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String success = jsonObject.getString("success");
-                        Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
+
                         if (success.equals("yes")) {
-                            i.putExtra("success", "true");
-                            i.putExtra("sumMoney", sumMoney + "");
-                            i.putExtra("orderNumber", jsonObject.getString("msg1"));
-                            i.putExtra("time", jsonObject.getString("msg2"));
-                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
+                            if ("支付宝支付".equals(deliveryName) || "微信支付".equals(deliveryName)) {
+                                UIOpenHelper.openPayActivity(CommitOrderActivity.this, deliveryName, sumMoney, jsonObject.getString("msg1"));
+                            } else {
+                                Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
+                                i.putExtra("success", "true");
+                                i.putExtra("sumMoney", sumMoney + "");
+                                i.putExtra("orderNumber", jsonObject.getString("msg1"));
+                                i.putExtra("time", jsonObject.getString("msg2"));
+                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
+                                startActivity(i);
+                                finish();
+                            }
                         } else {
+                            Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
                             String errorMsgs = jsonObject.getString("errorMsg");
                             i.putExtra("success", "false");
                             i.putExtra("errormsg", errorMsgs);
+                            startActivity(i);
+                            finish();
                         }
-                        startActivity(i);
-                        finish();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -416,6 +428,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         return super.onKeyDown(keyCode, event);
     }
 
+    private String deliveryName;
+
     @Override
     public void onListItemSelected(CharSequence charSequence, int number, int requestCode) {
         if (requestCode == 9) {
@@ -423,6 +437,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             for (int i = 0; i < result.size(); i++) {
                 if (charSequence.toString().equals(result.get(i).getNAME())) {
                     deliveryType = result.get(i).getGUID();
+                    deliveryName = result.get(i).getNAME();
                 }
             }
         }

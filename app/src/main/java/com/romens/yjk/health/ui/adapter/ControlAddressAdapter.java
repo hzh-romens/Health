@@ -35,16 +35,18 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
     private List<AddressEntity> data;
     private int currDefaultAddressIndex = -1;
 
-    private onItemLongClickLinstener onItemLongClickLinstener;
+    private onItemLongClickListener onItemLongClickListener;
 
-    public void setOnItemLongClickLinstener(ControlAddressAdapter.onItemLongClickLinstener onItemLongClickLinstener) {
-        this.onItemLongClickLinstener = onItemLongClickLinstener;
+    public void setOnItemLongClickLinstener(ControlAddressAdapter.onItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
     }
 
-    public interface onItemLongClickLinstener {
-        void itemLongClickLinstener(int position);
+    public interface onItemLongClickListener {
+        void itemLongClickListener(int position);
 
-        void isDefaultClickLLinstener(int postion);
+        void isDefaultClickLListener(int position);
+
+        void itemClickListener(int position);
     }
 
     public void setData(List<AddressEntity> data) {
@@ -104,8 +106,8 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             holder.outsideLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (onItemLongClickLinstener != null) {
-                        onItemLongClickLinstener.itemLongClickLinstener(index);
+                    if (onItemLongClickListener != null) {
+                        onItemLongClickListener.itemLongClickListener(index);
                     }
                     return false;
                 }
@@ -113,8 +115,8 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             holder.outsideLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onViewClickListener != null) {
-                        onViewClickListener.onClick(position / 2);
+                    if (onItemLongClickListener != null) {
+                        onItemLongClickListener.itemClickListener(position / 2);
                     }
                 }
             });
@@ -128,8 +130,8 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             holder.defaultLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onItemLongClickLinstener != null) {
-                        onItemLongClickLinstener.isDefaultClickLLinstener(index);
+                    if (onItemLongClickListener != null) {
+                        onItemLongClickListener.isDefaultClickLListener(index);
                     }
                 }
             });
@@ -137,8 +139,8 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             holder.isDefault.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onItemLongClickLinstener != null) {
-                        onItemLongClickLinstener.isDefaultClickLLinstener(index);
+                    if (onItemLongClickListener != null) {
+                        onItemLongClickListener.isDefaultClickLListener(index);
                     }
                 }
             });
@@ -185,15 +187,5 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             outsideLayout = (LinearLayout) itemView.findViewById(R.id.control_address_layout);
             defaultLayout = (RelativeLayout) itemView.findViewById(R.id.control_address_defult_layout);
         }
-    }
-
-    private OnViewClickListener onViewClickListener;
-
-    public void setOnViewClickListener(OnViewClickListener onViewClickListener) {
-        this.onViewClickListener = onViewClickListener;
-    }
-
-    public interface OnViewClickListener {
-        void onClick(int position);
     }
 }

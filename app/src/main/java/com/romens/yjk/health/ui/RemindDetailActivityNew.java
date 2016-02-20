@@ -126,17 +126,21 @@ public class RemindDetailActivityNew extends BaseActivity {
                 if (convertView == null) {
                     convertView = new RemindItemCell(context);
                 }
-                RemindItemCell cell = (RemindItemCell) convertView;
+                final RemindItemCell cell = (RemindItemCell) convertView;
                 cell.setData(R.drawable.remind_drug, detailEntity.getDrug(), true);
-//                if (detailEntity.getIsRemind() == 0) {
-//                    cell.setCheck(false);
-//                } else {
-//                    cell.setCheck(true);
-//                }
+                if (detailEntity.getIsRemind() == 0) {
+                    cell.setCheck(false);
+                } else {
+                    cell.setCheck(true);
+                }
                 cell.setOnSwitchClickLinstener(new RemindItemCell.onSwitchClickLinstener() {
                     @Override
                     public void onSwitchClick() {
-
+                        if (detailEntity.getIsRemind() == 0) {
+                            cell.setCheck(true);
+                        } else {
+                            cell.setCheck(false);
+                        }
                     }
                 });
             } else if (type == 2) {

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -143,6 +144,7 @@ public class RemindActivity extends BaseActivity {
         public void setData(List<RemindEntity> data) {
             this.data = data;
         }
+
         public RemindAdapter(List<RemindEntity> data, Context context) {
             this.data = data;
             this.context = context;
@@ -161,6 +163,11 @@ public class RemindActivity extends BaseActivity {
             LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
             cell.setLayoutParams(layoutParams);
             cell.setData(R.drawable.remind_drug, entity.getDrug(), true);
+            if (entity.getIsRemind() == 0) {
+                cell.setCheck(false);
+            } else {
+                cell.setCheck(true);
+            }
             cell.setOnSwitchClickLinstener(new RemindItemCell.onSwitchClickLinstener() {
                 @Override
                 public void onSwitchClick() {
@@ -173,20 +180,21 @@ public class RemindActivity extends BaseActivity {
                         entity.setIsRemind(0);
                         cancelRemind(entity);
                     }
+                    DBInterface.instance().openWritableDb().getRemindDao().insertOrReplace(entity);
                 }
             });
             cell.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(RemindActivity.this, RemindDetailActivityNew.class);
-                    intent.putExtra("detailEntity", data.get(position));
+                    intent.putExtra("detailEntity", entity);
                     startActivity(intent);
                 }
             });
             cell.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    removeDialogView(data.get(position));
+                    removeDialogView(entity);
                     return false;
                 }
             });
@@ -251,8 +259,13 @@ public class RemindActivity extends BaseActivity {
         Calendar currentDate = Calendar.getInstance();
         long intervalTime = 1000 * 60 * 60 * 24 * entity.getIntervalDay();
         if (!timeStr.equals("-1")) {
-            long time = TransformDateUitls.getTimeLong(timeStr);
-            long remindTime = (startDateLong + time) + currentDate.getTimeZone().getRawOffset();
+//            long time = TransformDateUitls.getTimeLong(timeStr);
+//            long remindTime = (startDateLong+time) + currentDate.getTimeZone().getRawOffset();
+            long startTime = TransformDateUitls.getTimeLong(timeStr) + startDateLong;
+            long remindTime = startTime + currentDate.getTimeZone().getRawOffset();
+            if (remindTime < currentDate.getTimeInMillis()) {
+                remindTime += intervalTime;
+            }
             Intent intent = new Intent(RemindActivity.this, RemindReceiver.class);
             intent.putExtra("type", (int) remindTime);
             intent.putExtra("remindInfoEntity", entity);
