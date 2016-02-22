@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.yunuo.pay.adapter.PayResultAdapter;
 
@@ -76,18 +75,19 @@ public class PayResultActivity extends Activity {
         });
         listView = (ListView) findViewById(R.id.listview);
 
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem item = menu.findItem(R.id.action_close);
-        TextView textView = new TextView(this);
-        textView.setTextColor(0xffffffff);
-        textView.setTextSize(14);
-        textView.setText("关闭");
-        item.setActionView(textView);
+//        MenuItem item = menu.findItem(R.id.action_settings);
+//        TextView textView = new TextView(this);
+//        textView.setTextColor(0xffffffff);
+//        textView.setTextSize(14);
+//        textView.setText("关闭");
+//        item.setActionView(R.layout.list_item_apply);
         return true;
     }
 
