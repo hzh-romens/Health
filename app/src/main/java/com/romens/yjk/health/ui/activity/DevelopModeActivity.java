@@ -31,6 +31,15 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
         ActionBar actionBar = new ActionBar(this);
         container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         setContentView(container, actionBar);
+        actionBar.setTitle("开发者模式");
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+                if (id == -1) {
+                    finish();
+                }
+            }
+        });
         ListView listView = new ListView(this);
         container.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView.setDivider(null);
