@@ -166,7 +166,7 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.ScannerActivity"
+            android:name=".ui.activity.ScannerNewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"></activity>
@@ -424,6 +424,8 @@
         <!--************** romens pay begin **************************-->
         <activity android:name="com.yunuo.pay.PayActivity"></activity>
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
+        <activity
+            android:name="com.yunuo.pay.PayResultActivity"></activity>
         <activity
             android:name="com.yunuo.pay.WXPayActivity"
             android:exported="true"

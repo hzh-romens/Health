@@ -6,18 +6,22 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.network.FacadeClient;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -41,10 +45,7 @@ import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.HealthActivity;
 import com.romens.yjk.health.ui.cells.DrugCell;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -279,90 +280,99 @@ public class SearchActivity extends BaseActivity {
 
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetSearchInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(SearchActivity.this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                changeSearchProgress(false);
-                handleSearchDataResponse(null);
-            }
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                changeSearchProgress(false);
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    handleSearchDataResponse(responseProtocol.getResponse());
-                } else {
-                    handleSearchDataResponse(null);
-                }
-            }
-        });
+        Connect connect = new RMConnect.Builder(SearchActivity.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        changeSearchProgress(false);
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            handleSearchDataResponse(responseProtocol.getResponse());
+                        } else {
+                            handleSearchDataResponse(null);
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(this, connect);
+//        Message message = new Message.MessageBuilder()
+//                .withProtocol(protocol)
+//                .build();
+//        FacadeClient.request(SearchActivity.this, message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message msg) {
+//                changeSearchProgress(false);
+//                handleSearchDataResponse(null);
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//
+//            }
+//        });
     }
 
 
     @Override
     public void onDestroy() {
-        FacadeClient.cancel(this);
+        ConnectManager.getInstance().destroyInitiator(SearchActivity.class);
         super.onDestroy();
     }
 
-    private void handleSearchDataResponse(String response) {
+    private void handleSearchDataResponse(JsonNode response) {
         searchResultEntities.clear();
-        if (TextUtils.isEmpty(response)) {
+        if (response == null) {
             return;
         }
-        try {
-            JSONArray jsonArray = new JSONArray(response);
-            final int groupSize = jsonArray.length();
-            if (searchType == SEARCH_TYPE_BARCODE) {
-                for (int i = 0; i < groupSize; i++) {
-                    handleSearchDataResponseSectionForBarCode(jsonArray.getJSONObject(i), searchResultEntities);
-                }
-            } else {
-                for (int i = 0; i < groupSize; i++) {
-                    handleSearchDataResponseSection(jsonArray.getJSONObject(i), searchResultEntities);
-                }
+        final int groupSize = response.size();
+        if (searchType == SEARCH_TYPE_BARCODE) {
+            for (int i = 0; i < groupSize; i++) {
+                handleSearchDataResponseSectionForBarCode(response.get(i), searchResultEntities);
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } else {
+            for (int i = 0; i < groupSize; i++) {
+                handleSearchDataResponseSection(response.get(i), searchResultEntities);
+            }
         }
         updateAdapter();
     }
 
-    private void handleSearchDataResponseSectionForBarCode(JSONObject jsonObject, List<SearchResultEntity> searchResult) throws JSONException {
-        if (jsonObject == null) {
+    private void handleSearchDataResponseSectionForBarCode(JsonNode jsonNode, List<SearchResultEntity> searchResult) {
+        if (jsonNode == null) {
             return;
         }
-        searchResult.add(new SearchResultEntity(jsonObject.getString("Guid"), jsonObject.getString("MedicineTitle"), "0")
-                .addProperty("FactoryName", jsonObject.getString("FactoryName"))
+        searchResult.add(new SearchResultEntity(jsonNode.get("GUID").asText(), jsonNode.get("NAME").asText(), "0")
                 .withViewType(4));
     }
 
-    private void handleSearchDataResponseSection(JSONObject jsonObject, List<SearchResultEntity> searchResult) throws JSONException {
-        if (jsonObject == null) {
+    private void handleSearchDataResponseSection(JsonNode jsonNode, List<SearchResultEntity> searchResult) {
+        if (jsonNode == null) {
             return;
         }
-        String sectionName = jsonObject.getString("TYPENAME");
-        String sectionType = jsonObject.getString("TYPE");
-        String result = jsonObject.getString("RESULT");
-        JSONArray jsonArray = new JSONArray(result);
+        String sectionName = jsonNode.get("TYPENAME").asText();
+        String sectionType = jsonNode.get("TYPE").asText();
+        String result = jsonNode.get("RESULT").asText();
+        JsonNode jsonArray = null;
+        try {
+            jsonArray = JacksonMapper.getInstance().readTree(result);
+        } catch (IOException e) {
+            return;
+        }
         if (jsonArray != null) {
-            int size = jsonArray.length();
+            int size = jsonArray.size();
             if (size > 0) {
                 searchResult.add(new SearchResultEntity("", sectionName, sectionType).withViewType(2));
-                JSONObject item;
+                JsonNode item;
                 for (int i = 0; i < size; i++) {
-                    item = jsonArray.getJSONObject(i);
+                    item = jsonArray.get(i);
                     if (TextUtils.equals("0", sectionType)) {
-                        searchResult.add(new SearchResultEntity(item.getString("MERCHANDISEID"), item.getString("MEDICINENAME"), sectionType)
-                                .addProperty("MEDICINESPEC", item.getString("MEDICINESPEC"))
+                        searchResult.add(new SearchResultEntity(item.get("MERCHANDISEID").asText(), item.get("MEDICINENAME").asText(), sectionType)
+                                .addProperty("MEDICINESPEC", item.get("MEDICINESPEC").asText())
                                 .withViewType(4));
                     } else if (TextUtils.equals("1", sectionType)) {
-                        searchResult.add(new SearchResultEntity(item.getString("DISEASEID"), item.getString("DISEASENAME"), sectionType)
+                        searchResult.add(new SearchResultEntity(item.get("DISEASEID").asText(), item.get("DISEASENAME").asText(), sectionType)
                                 .withViewType(3));
                     }
                 }

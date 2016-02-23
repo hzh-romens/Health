@@ -12,6 +12,7 @@ import com.romens.yjk.health.ui.HealthNewsActivity;
 import com.romens.yjk.health.ui.LocationActivity;
 import com.romens.yjk.health.ui.RemindActivity;
 import com.romens.yjk.health.ui.activity.ScannerActivity;
+import com.romens.yjk.health.ui.activity.ScannerNewActivity;
 import com.romens.yjk.health.ui.im.IMActivity;
 
 /**
@@ -143,7 +144,7 @@ public class DiscoveryCollection {
 
     public static final class FindDrugWithScanner {
         public static final String key = "intent_find_drug_with_scanner";
-        public static final String value = ScannerActivity.class.getName();
+        public static final String value = ScannerNewActivity.class.getName();
         public static final int iconRes = R.drawable.attach_sort_states;
         public static final String iconUrl = "";
         public static final String name = "扫码识药";

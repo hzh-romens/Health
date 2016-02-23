@@ -33,20 +33,15 @@ public class MemberActivity extends BaseActivity {
         setContentView(R.layout.activity_member, R.id.action_bar);
         actionBar = (ActionBar) findViewById(R.id.action_bar);
         actionBar.setTitle("我的会员卡");
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-            @Override
-            public void onItemClick(int i) {
-                if (i == -1) {
-                    finish();
-                }
-            }
-        });
+
         ActionBarMenu menu = actionBar.createMenu();
         menu.addItem(0, R.drawable.ic_add_white_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
-                if (i == 0) {
+                if (i == -1) {
+                    finish();
+                } else if (i == 0) {
                     //跳转到添加会员卡界面
                     startActivity(new Intent(MemberActivity.this, BindMemberActivity.class));
                 }
