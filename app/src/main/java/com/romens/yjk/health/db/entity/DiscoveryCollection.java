@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HealthNewsActivity;
@@ -24,7 +25,7 @@ public class DiscoveryCollection {
         }
         if (key.startsWith("http")) {
 
-        }else{
+        } else {
             String value = entity.getValue();
             if (!TextUtils.isEmpty(value)) {
                 onFocusItemAction(context, entity.getKey(), value);
@@ -38,21 +39,22 @@ public class DiscoveryCollection {
         if (TextUtils.isEmpty(className)) {
             return false;
         }
-        Intent intent;
-        if(TextUtils.equals(PharmicCounseling.value,className)){
-            intent=new Intent(context, IMActivity.class);
-        }else{
-            intent= new Intent();
-            ComponentName component=new ComponentName(context,className);
+        Intent intent = null;
+        if (TextUtils.equals(PharmicCounseling.value, className)) {
+            intent = new Intent(context, IMActivity.class);
+        } else if (TextUtils.equals(IHealth.value, className)) {
+            Toast.makeText(context, "正在开发，尽请期待!", Toast.LENGTH_SHORT).show();
+        } else {
+            intent = new Intent();
+            ComponentName component = new ComponentName(context, className);
             intent.setComponent(component);
             if (TextUtils.equals("YBZQ", id)) {
                 intent.putExtra("title", "医保专区");
             }
         }
-        if(intent!=null){
+        if (intent != null) {
             context.startActivity(intent);
         }
-
 
 
 //        if (btnString.equals(FindDrugWithScanner.name)) {
@@ -150,4 +152,14 @@ public class DiscoveryCollection {
         public static final int primaryColor = 0xFFA1887F;
     }
 
+    public static final class IHealth {
+        public static final String key = "intent_person_health";
+        public static final String value = "com.romens.rhealth.ihealth";
+        public static final int iconRes = R.drawable.ic_health;
+        public static final String iconUrl = "";
+        public static final String name = "个人健康";
+        public static final int isCover = 0;
+        public static final int sortIndex = 6;
+        public static final int primaryColor = 0xFFA1887F;
+    }
 }

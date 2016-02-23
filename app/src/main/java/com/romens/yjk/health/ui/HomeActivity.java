@@ -7,10 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -24,17 +29,19 @@ import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.cells.AccountSettingCell;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
 import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
-import com.romens.yjk.health.ui.fragment.HomeMyFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
 import com.romens.yjk.health.ui.fragment.ShopCarFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
@@ -49,6 +56,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private HomePagerAdapter pagerAdapter;
     private ActionBarMenuItem shoppingCartItem;
 
+//    private DrawerLayout drawerLayout;
+//    private HomeMyNewFragment homeMyFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +68,54 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
         ShoppingServiceFragment.instance(getSupportFragmentManager());
 
+//        drawerLayout = new DrawerLayout(this);
+
+//        final AccountSettingCell accountSettingCell = new AccountSettingCell(this);
+//        DrawerLayout.LayoutParams params = new DrawerLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        params.gravity = Gravity.RIGHT;
+//        accountSettingCell.setLayoutParams(params);
+//        drawerLayout.addView(accountSettingCell);
+
+//        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+//            @Override
+//            public void onDrawerSlide(View drawerView, float slideOffset) {
+//
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                accountSettingCell.setFocusable(true);
+//            }
+//
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//
+//            }
+//
+//            @Override
+//            public void onDrawerStateChanged(int newState) {
+//
+//            }
+//        });
+
+//        accountSettingCell.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (position == 2) {
+//                    Toast.makeText(HomeActivity.this, "click", Toast.LENGTH_SHORT).show();
+//                    UserConfig.clearUser();
+//                    UserConfig.clearConfig();
+//                    FacadeToken.getInstance().expired();
+//                    homeMyFragment.setUserEntity(null);
+//                    homeMyFragment.updateData();
+//                    AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
+//                }
+//            }
+//        });
+
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
-        ActionBar actionBar = new ActionBar(this);
+//        drawerLayout.addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        final ActionBar actionBar = new ActionBar(this);
 
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         FrameLayout frameLayout = new FrameLayout(this);
@@ -71,53 +127,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         frameLayout.addView(tabsCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
         tabsCell.setViewPager(viewPager);
         setContentView(content, actionBar);
-        //定位
-        lastLocationCell = new LastLocationCell(this);
-        lastLocationCell.setClickable(true);
-        lastLocationCell.setBackgroundResource(R.drawable.list_selector);
-        lastLocationCell.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UIOpenHelper.openUserLocationActivity(HomeActivity.this);
-            }
-        });
-        actionBar.addView(lastLocationCell, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
-                Gravity.CENTER_VERTICAL | Gravity.LEFT, 56, 0, 104, 0));
-
-        tabsCell.addView(R.drawable.ic_tab_home, R.drawable.ic_tab_home_pressed, "首页");
-        tabsCell.addView(R.drawable.ic_tab_fl, R.drawable.ic_tab_fl_pressed, "分类");
-        tabsCell.addView(R.drawable.ic_tab_fx, R.drawable.ic_tab_fx_pressed, "发现");
-        tabsCell.addView(R.drawable.ic_tab_shopping, R.drawable.ic_tab_shopping_pressed, "购物车");
-        tabsCell.addView(R.drawable.ic_tab_my, R.drawable.ic_tab_my_pressed, "我的");
-        pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
-        viewPager.setAdapter(pagerAdapter);
-        tabsCell.setSelected(0);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    lastLocationCell.setVisibility(View.VISIBLE);
-                    getMyActionBar().setTitle("");
-                } else {
-                    lastLocationCell.setVisibility(View.GONE);
-                    getMyActionBar().setTitle(getString(R.string.app_name));
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
         //actionBar.setTitle(getString(R.string.app_name));
         actionBar.setBackButtonImage(R.drawable.ic_app_icon);
-        ActionBarMenu actionBarMenu = actionBar.createMenu();
+        final ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
 
@@ -161,6 +174,67 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 } else if (key == 6) {
                     startActivity(new Intent(HomeActivity.this, DrugStoryDetailActivity.class));
                 }*/
+            }
+        });
+
+//        final ImageView accountSettingIcon = new ImageView(HomeActivity.this);
+//        accountSettingIcon.setVisibility(View.GONE);
+//        accountSettingIcon.setImageResource(R.drawable.ic_setting);
+//        accountSettingIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                drawerLayout.openDrawer(Gravity.RIGHT);
+//            }
+//        });
+//        actionBar.addView(accountSettingIcon, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT,
+//                Gravity.CENTER_VERTICAL | Gravity.RIGHT, 8, 0, 48, 0));
+
+        //定位
+        lastLocationCell = new LastLocationCell(this);
+        lastLocationCell.setClickable(true);
+        lastLocationCell.setBackgroundResource(R.drawable.list_selector);
+        lastLocationCell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIOpenHelper.openUserLocationActivity(HomeActivity.this);
+            }
+        });
+        actionBar.addView(lastLocationCell, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
+                Gravity.CENTER_VERTICAL | Gravity.LEFT, 56, 0, 104, 0));
+
+        tabsCell.addView(R.drawable.ic_tab_home, R.drawable.ic_tab_home_pressed, "首页");
+        tabsCell.addView(R.drawable.ic_tab_fl, R.drawable.ic_tab_fl_pressed, "分类");
+        tabsCell.addView(R.drawable.ic_tab_fx, R.drawable.ic_tab_fx_pressed, "发现");
+        tabsCell.addView(R.drawable.ic_tab_shopping, R.drawable.ic_tab_shopping_pressed, "购物车");
+        tabsCell.addView(R.drawable.ic_tab_my, R.drawable.ic_tab_my_pressed, "我的");
+        pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), initPagerTitle(), initFragment());
+        viewPager.setAdapter(pagerAdapter);
+        tabsCell.setSelected(0);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    lastLocationCell.setVisibility(View.VISIBLE);
+                    getMyActionBar().setTitle("");
+                } else {
+                    lastLocationCell.setVisibility(View.GONE);
+                    getMyActionBar().setTitle(getString(R.string.app_name));
+                }
+//                if (position == 4) {
+//                    accountSettingIcon.setVisibility(View.VISIBLE);
+//                } else {
+//                    accountSettingIcon.setVisibility(View.GONE);
+//                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 
@@ -357,5 +431,4 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         }
         mAMapLocationManager = null;
     }
-
 }
