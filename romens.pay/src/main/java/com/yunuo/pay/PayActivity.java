@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.yunuo.pay.adapter.PayAdapter;
+import com.yunuo.pay.apply.ApplyActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +32,15 @@ public class PayActivity extends Activity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         deliveryName = intent.getStringExtra("deliveryName");
-        sumMoney = intent.getDoubleExtra("sumMoney", 0);
         orderNumber = intent.getStringExtra("orderNumber");
+        sumMoney = intent.getDoubleExtra("sumMoney", 0);
         initView();
     }
 
 
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(deliveryName);
+        toolbar.setTitle("在线支付");
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -59,12 +60,31 @@ public class PayActivity extends Activity {
         applyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ("微信支付".equals(deliveryName)) {
-
-                } else if ("支付宝支付".equals(deliveryName)) {
-
+                int type = status.indexOfValue(true) + ListItemType.wxFlag;
+                if (type - ListItemType.wxFlag < 0) {
+                    showToast("请选择您的支付方式");
+                } else {
+                    if (type == ListItemType.wxFlag) {
+                        showToast("微信支付");
+                        startActivity(new Intent(PayActivity.this, WXPayActivity.class));
+                    } else if (type == ListItemType.applyFlag) {
+                        showToast("支付宝支付");
+                        startActivity(new Intent(PayActivity.this, ApplyActivity.class));
+                    }
                 }
-                startActivity(new Intent(PayActivity.this, PayResultActivity.class));
+            }
+        });
+        payAdapter.setStatuNotifyDataSetChanged(new PayAdapter.StatuNotifyDataSetChanged() {
+            @Override
+            public void notify(int flag, boolean statu) {
+                for (int i = ListItemType.wxFlag; i < ListItemType.wxFlag + status.size(); i++) {
+                    if (flag == i) {
+                        status.put(i, statu);
+                    } else {
+                        status.put(i, false);
+                    }
+                }
+                payAdapter.setStatus(status);
             }
         });
     }
@@ -80,9 +100,13 @@ public class PayActivity extends Activity {
         status = new SparseBooleanArray();
         result.add(orderNumber);
         result.add(sumMoney + "");
-        types.append(0, ListItemType.orderCode);
-        types.append(1, ListItemType.sumPrices);
-        types.append(2, ListItemType.beneficary);
+        types.append(0, ListItemType.contentFlag);
+        types.append(1, ListItemType.contentFlag);
+        types.append(2, ListItemType.titleFlag);
+        types.append(3, ListItemType.wxFlag);
+        types.append(4, ListItemType.applyFlag);
+        status.append(ListItemType.wxFlag, false);
+        status.append(ListItemType.applyFlag, false);
     }
 
     public void showToast(String info) {

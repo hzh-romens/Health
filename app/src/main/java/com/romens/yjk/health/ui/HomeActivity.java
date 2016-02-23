@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui;
 
 
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -135,7 +134,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 } else*/
                 if (id == 0) {
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
-                  //  startActivity(new Intent(HomeActivity.this, PayResultActivity.class));
+                    // startActivity(new Intent(HomeActivity.this, PayResultActivity.class));
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 }
 //                else if (id == 1) {
@@ -214,7 +213,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.loginSuccess) {
             UIOpenHelper.syncFavorites(HomeActivity.this);
-        }  else if (id == AppNotificationCenter.onLastLocationChanged) {
+        } else if (id == AppNotificationCenter.onLastLocationChanged) {
             updateLastLocation();
         }
     }

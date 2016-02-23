@@ -305,6 +305,7 @@ public class ShopCarFragment extends BaseFragment {
                     if (errorMsg == null) {
                         ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                         JSONArray jsonArray = new JSONArray(responseProtocol.getResponse());
+                        Log.i("是否执行了-----", responseProtocol.getResponse());
                         resultToJson(jsonArray);
                     } else {
                         resultToJson(null);
@@ -327,6 +328,7 @@ public class ShopCarFragment extends BaseFragment {
             List<ParentEntity> parentResult = new ArrayList<ParentEntity>();
             HashMap<String, List<ShopCarEntity>> childResult = new HashMap<String, List<ShopCarEntity>>();
             shopAdapter.bindData(parentResult, childResult);
+            shopAdapter.notifyDataSetChanged();
             shopAdapter.setCallBack(new ShopAdapter.AdapterCallBack() {
                 @Override
                 public void UpdateData() {

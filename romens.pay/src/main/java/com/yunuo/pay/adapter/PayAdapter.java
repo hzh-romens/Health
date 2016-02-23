@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.yunuo.pay.R;
+import com.yunuo.pay.cells.CheckLayoutCell;
 import com.yunuo.pay.cells.CntentCell;
+import com.yunuo.pay.cells.TextViewCell;
 
 import java.util.List;
 
@@ -43,8 +46,8 @@ public class PayAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (mResult != null) {
-            return mResult.size();
+        if (mTypes != null) {
+            return mTypes.size();
         }
         return 0;
     }
@@ -61,16 +64,63 @@ public class PayAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = new CntentCell(mContext);
+        int itemViewType = getItemViewType(position);
+        if (itemViewType == 1) {
+            if (convertView == null) {
+                convertView = new CntentCell(mContext);
+            }
+            CntentCell cntentCell = (CntentCell) convertView;
+            if (position == 0) {
+                cntentCell.setDetail("订单号", mResult.get(position));
+            } else if (position == 1) {
+                cntentCell.setDetail("价格", "¥" + mResult.get(position));
+            }
+
+        } else if (itemViewType == 2) {
+            if (convertView == null) {
+                convertView = new TextViewCell(mContext);
+            }
+            TextViewCell textViewCell = (TextViewCell) convertView;
+        } else if (itemViewType == 3) {
+            if (convertView == null) {
+                convertView = new CheckLayoutCell(mContext);
+            }
+            final CheckLayoutCell checkLayoutCell = (CheckLayoutCell) convertView;
+            if (mTypes.get(position) == 3) {
+                checkLayoutCell.setValue(R.drawable.logos, "微信支付", "", true);
+                checkLayoutCell.setCheckStatus(mStatus.get(3));
+            } else if (mTypes.get(position) == 4) {
+                checkLayoutCell.setValue(R.drawable.logos, "支付宝支付", "", false);
+                checkLayoutCell.setCheckStatus(mStatus.get(4));
+            }
+            checkLayoutCell.setListener(new CheckLayoutCell.checkChangeListener() {
+
+                @Override
+                public void stateChange(int flag, boolean status) {
+                    checkLayoutCell.setCheckStatus(status);
+                    mListener.notify(flag, status);
+                }
+            });
         }
-        CntentCell cell = (CntentCell) convertView;
-        if (mTypes.get(position) == 1) {
-            cell.setValue("订单号码", mResult.get(position));
-        } else if (mTypes.get(position) == 2) {
-            cell.setValue("商品价格", mResult.get(position));
-        }
+
         return convertView;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 4;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (1 == mTypes.get(position)) {
+            return 1;
+        } else if (2 == mTypes.get(position)) {
+            return 2;
+        } else if (3 == mTypes.get(position) || 4 == mTypes.get(position)) {
+            return 3;
+        }
+        return 0;
     }
 
     public interface StatuNotifyDataSetChanged {

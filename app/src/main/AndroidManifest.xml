@@ -418,7 +418,9 @@
         <activity android:name="com.yunuo.pay.PayActivity"></activity>
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
         <activity
-            android:name="com.yunuo.pay.PayResultActivity"></activity>
+            android:name="com.yunuo.pay.PayResultActivity"
+            android:theme="@style/NoActionBarTheme"
+            ></activity>
         <activity
             android:name="com.yunuo.pay.WXPayActivity"
             android:exported="true"

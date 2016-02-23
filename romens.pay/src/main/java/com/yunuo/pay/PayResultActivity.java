@@ -1,8 +1,8 @@
 package com.yunuo.pay;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by HZH on 2016/2/19.
  */
-public class PayResultActivity extends Activity {
+public class PayResultActivity extends AppCompatActivity {
     private ListView listView;
     private Toolbar toolbar;
     private PayResultAdapter adapter;
@@ -74,8 +74,6 @@ public class PayResultActivity extends Activity {
             }
         });
         listView = (ListView) findViewById(R.id.listview);
-
-
     }
 
     @Override
@@ -91,18 +89,4 @@ public class PayResultActivity extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_close) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

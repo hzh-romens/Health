@@ -1,5 +1,9 @@
 package com.romens.yjk.health.model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,37 +114,37 @@ public class CuoponEntity {
     public static List<CuoponEntity> toEntity(String json) {
         List<CuoponEntity> result = new ArrayList<CuoponEntity>();
         CuoponEntity entity = new CuoponEntity();
-        //  try {
-        //   JSONArray array = new JSONArray(json);
-        // for (int i = 0; i < array.length(); i++) {
-        //   JSONObject jsonObject = array.getJSONObject(i);
-        // entity.setCouponguid(jsonObject.getString("COUPONGUID"));
-        entity.setCouponguid("1");
-        //entity.setGuid(jsonObject.getString("GUID"));
-        entity.setGuid("1");
-        //entity.setOrgguid(jsonObject.getString("ORGGUID"));
-        entity.setOrgguid("1");
-        // entity.setGettime(jsonObject.getString("GETTIME"));
-        entity.setGettime("1");
-        //       entity.setAmount(jsonObject.getString("AMOUNT"));
-        entity.setAmount("fdsfsd");
-        // entity.setEnddate(jsonObject.getString("ENDDATE"));
-        entity.setEnddate("2016-2-18");
-        //entity.setIsused(jsonObject.getString("ISUSED"));
-        entity.setIsused("dfsdf");
-        //entity.setLimitamount(jsonObject.getString("LIMITAMOUNT"));
-        entity.setLimitamount("满200可使用");
-        //entity.setName(jsonObject.getString("NAME"));
-        entity.setName("优惠卷");
-        //entity.setShuoming(jsonObject.getString("SHUOMING"));
-        entity.setShuoming("北京朝阳区");
-        // entity.setStartdate(jsonObject.getString("STARTDATE"));
-        entity.setStartdate("2016-2-17");
-        result.add(entity);
-        //   }
-        //} catch (JSONException e) {
-        //  e.printStackTrace();
-        // }
+        try {
+            JSONArray array = new JSONArray(json);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+                entity.setCouponguid(jsonObject.getString("COUPONGUID"));
+
+                entity.setGuid(jsonObject.getString("GUID"));
+
+                entity.setOrgguid(jsonObject.getString("ORGGUID"));
+
+                entity.setGettime(jsonObject.getString("GETTIME"));
+
+                entity.setAmount(jsonObject.getString("AMOUNT"));
+
+                entity.setEnddate(jsonObject.getString("ENDDATE"));
+
+                entity.setIsused(jsonObject.getString("ISUSED"));
+
+                entity.setLimitamount(jsonObject.getString("LIMITAMOUNT"));
+
+                entity.setName(jsonObject.getString("NAME"));
+
+                entity.setShuoming(jsonObject.getString("SHUOMING"));
+
+                entity.setStartdate(jsonObject.getString("STARTDATE"));
+
+                result.add(entity);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 }

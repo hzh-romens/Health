@@ -46,13 +46,10 @@ public class CuoponFragment extends Fragment {
         if (mFlag == 1) {
             requestType = "GetCoupon";
             getCuopon();
-            //cuoponAdapter.bindData(result);
         } else {
             requestType = "GetCouponHistory";
             getCuopon();
-            //cuoponAdapter.bindData(result);
         }
-        // listView.setAdapter(cuoponAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,7 +62,6 @@ public class CuoponFragment extends Fragment {
     }
 
     private List<CuoponEntity> result;
-    // private List<CuoponEntity> others;
 
 
     public void setFlag(int flag) {
@@ -88,7 +84,6 @@ public class CuoponFragment extends Fragment {
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                //  needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String response = responseProtocol.getResponse();
