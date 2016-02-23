@@ -5,11 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.romens.yjk.health.db.entity.DiscoveryCollection;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.NearbyPharmacy;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.InformationNews;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.FindDrugWithScanner;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.MedicationReminders;
 import com.romens.yjk.health.db.entity.DiscoveryCollection.PharmicCounseling;
+import com.romens.yjk.health.db.entity.DiscoveryCollection.IHealth;
 
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 
@@ -168,6 +170,23 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         value.put("IS_COVER", PharmicCounseling.isCover);
         value.put("SORT_INDEX", PharmicCounseling.sortIndex);
         value.put("PRIMARY_COLOR", PharmicCounseling.primaryColor);
+        values.putAll(value);
+        db.insert(TABLENAME, null, values);
+
+        //个人健康
+        value = new ContentValues();
+        value.put("KEY", IHealth.key);
+        value.put("ICON_RES", IHealth.iconRes);
+        value.put("ICON_URL", IHealth.iconUrl);
+        value.put("NAME", IHealth.name);
+        value.put("VALUE", IHealth.value);
+        value.put("STATUS", 0);
+        time = (int) Calendar.getInstance().getTimeInMillis();
+        value.put("CREATED", time);
+        value.put("UPDATED", time);
+        value.put("IS_COVER", IHealth.isCover);
+        value.put("SORT_INDEX", IHealth.sortIndex);
+        value.put("PRIMARY_COLOR", IHealth.primaryColor);
         values.putAll(value);
         db.insert(TABLENAME, null, values);
     }

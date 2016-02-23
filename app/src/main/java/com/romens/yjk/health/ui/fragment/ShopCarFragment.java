@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.romens.yjk.health.model.ShopCarEntity;
 import com.romens.yjk.health.ui.CommitOrderActivity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
+import com.romens.yjk.health.ui.utils.UIHelper;
 import com.romens.yjk.health.ui.utils.UIUtils;
 
 import org.json.JSONArray;
@@ -54,16 +56,18 @@ public class ShopCarFragment extends BaseFragment {
     private ImageView btnBack, delete;
     private List<ShopCarEntity> datas;
     private ShopAdapter shopAdapter;
+    private SwipeRefreshLayout refreshLayout;
+
 
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_shop_car, container, false);
+        View view = inflater.inflate(R.layout.activity_shop_car_fragment, container, false);
         initView(view);
         //获取数据
-        needShowProgress("正在加载...");
         shopAdapter = new ShopAdapter(getActivity());
         expandableListView.setAdapter(shopAdapter);
-        getShopCarData();
+        // needShowProgress("正在加载...");
+        //getShopCarData();
         //向服务器提交购物车信息并跳转到订单页面
         accountsView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,25 +130,27 @@ public class ShopCarFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getShopCarData();
+    }
+
     private void initView(View view) {
         checkAll = (CheckableFrameLayout) view.findViewById(R.id.all_choice);
         sumMoneyView = (TextView) view.findViewById(R.id.tv_all1);
         accountsView = (TextView) view.findViewById(R.id.accounts);
         expandableListView = (ExpandableListView) view.findViewById(R.id.ev);
-        //   btnBack = (ImageView) view.findViewById(R.id.back);
-        //  delete = (ImageView) view.findViewById(R.id.edit);
-//        btnBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getActivity().finish();
-//            }
-//        });
-//        delete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showDialog();
-//            }
-//        });
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
+        UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
+        UIHelper.updateSwipeRefreshProgressBarTop(getActivity(), refreshLayout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getShopCarData();
+            }
+        });
+        refreshLayout.setRefreshing(true);
     }
 
 
@@ -260,7 +266,7 @@ public class ShopCarFragment extends BaseFragment {
                         }
                     } else {
                         //暂时这样做
-                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -reduceCount);
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, -reduceCount);
                         getShopCarData();
                     }
                 } else {
@@ -273,6 +279,7 @@ public class ShopCarFragment extends BaseFragment {
 
     //获取购物车的信息
     private void getShopCarData() {
+        refreshLayout.setRefreshing(true);
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         if (UserConfig.isClientLogined()) {
             args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
@@ -292,6 +299,7 @@ public class ShopCarFragment extends BaseFragment {
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                refreshLayout.setRefreshing(false);
                 needHideProgress();
                 try {
                     if (errorMsg == null) {
@@ -395,6 +403,7 @@ public class ShopCarFragment extends BaseFragment {
             }
         });
 
+
     }
 
     //向服务器提交购物车信息
@@ -480,8 +489,5 @@ public class ShopCarFragment extends BaseFragment {
         progressDialog = null;
     }
 
-    public static void setValue(String value) {
-        Log.i("刷新值====", "" + value);
-    }
 
 }

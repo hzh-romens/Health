@@ -66,13 +66,15 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
         userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_shopping_address, R.id.action_bar);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        actionBarEven();
+        ActionBar actionBar = getMyActionBar();
+        actionBarEven(actionBar);
 
         initView();
 
         Intent intent = getIntent();
         toCommitEntity = (AddressEntity) intent.getSerializableExtra("responseUpDataEntity");
         if (toCommitEntity != null) {
+            actionBar.setTitle("修改收货地址");
             locationValues[0] = toCommitEntity.getPROVINCE();
             LocationAddressDao dao = DBInterface.instance().openReadableDb().getLocationAddressDao();
             if (toCommitEntity.getREGION() != null) {
@@ -94,8 +96,7 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
         super.onDestroy();
     }
 
-    private void actionBarEven() {
-        ActionBar actionBar = getMyActionBar();
+    private void actionBarEven(ActionBar actionBar) {
         ActionBarMenu menu = actionBar.createMenu();
         menu.addItem(0, R.drawable.checkbig);
 

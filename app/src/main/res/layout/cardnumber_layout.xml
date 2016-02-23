@@ -17,6 +17,7 @@
         android:hint="请输入会员卡号"
         android:paddingBottom="@dimen/margin_small"
         android:paddingTop="@dimen/margin_small"
+        android:background="@null"
         android:textColorHint="#999999"
         android:textSize="@dimen/text_size_large" />
 
@@ -36,6 +37,7 @@
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
         android:hint="请输入会员卡密码"
+        android:background="@null"
         android:paddingBottom="@dimen/margin_small"
         android:paddingTop="@dimen/margin_small"
         android:textColorHint="#999999"
