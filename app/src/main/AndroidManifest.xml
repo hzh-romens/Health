@@ -161,6 +161,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.activity.ChangePasswordActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
@@ -426,8 +432,7 @@
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
         <activity
             android:name="com.yunuo.pay.PayResultActivity"
-            android:theme="@style/NoActionBarTheme"
-            ></activity>
+            android:theme="@style/NoActionBarTheme"></activity>
         <activity
             android:name="com.yunuo.pay.WXPayActivity"
             android:exported="true"

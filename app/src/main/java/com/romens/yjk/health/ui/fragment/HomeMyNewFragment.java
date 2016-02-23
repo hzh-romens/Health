@@ -34,6 +34,7 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
@@ -59,8 +60,6 @@ import java.util.Map;
  */
 public class HomeMyNewFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
     private ListView listView;
-
-    private UserEntity userEntity;
     private ListAdapter adapter;
 
     public void onCreate(Bundle saveInstanceState) {
@@ -88,10 +87,6 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         listView.setAdapter(adapter);
     }
 
-    public void setUserEntity(UserEntity userEntity) {
-        this.userEntity = userEntity;
-    }
-
     @Override
     public void onDestroy() {
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
@@ -104,15 +99,9 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     }
 
     public void updateData() {
-        if (UserConfig.isClientLogined()) {
-            UserEntity clientUserEntity = UserConfig.getClientUserEntity();
-            userEntity = new UserEntity(0, clientUserEntity.getGuid(), clientUserEntity.getName(), clientUserEntity.getAvatar(), clientUserEntity.getPhone(), clientUserEntity.getEmail(), clientUserEntity.getDepartmentId(), 0);
-        } else {
-            userEntity = null;
-        }
-
+        UserEntity clientUser=UserSession.getInstance().get();
         rowCount = 0;
-        if (userEntity != null) {
+        if (clientUser != null) {
             loginRow = -1;
             userProfileRow = rowCount++;
             userInfoSectionRow1 = rowCount++;
@@ -124,7 +113,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
             personControlRow = -1;
         }
 
-        if (userEntity != null) {
+        if (clientUser != null) {
             otherSectionRow = rowCount++;
             otherControlRow = rowCount++;
             checkUpdateRow = -1;
@@ -233,7 +222,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                     view = new NewUserProfileCell(adapterContext);
                 }
                 NewUserProfileCell cell = (NewUserProfileCell) view;
-                cell.setUser(userEntity);
+                UserEntity clientUser=UserSession.getInstance().get();
+                cell.setUser(clientUser);
             } else if (type == 1) {
                 if (view == null) {
                     view = new TextIconCell(adapterContext);
@@ -276,7 +266,6 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                                 UserConfig.clearUser();
                                 UserConfig.clearConfig();
                                 FacadeToken.getInstance().expired();
-                                userEntity = null;
                                 updateData();
                                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
                             }
@@ -361,7 +350,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == UserGuidConfig.RESPONSE_SETTING_TO_HOMEMY) {
-            userEntity = null;
+            //userEntity = null;
             updateData();
         }
     }

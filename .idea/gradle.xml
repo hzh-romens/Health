@@ -12,8 +12,16 @@
             <option value="$PROJECT_DIR$/MaterialDesign" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/datetimepicker" />
-            <option value="$PROJECT_DIR$/romens.android" />
-            <option value="$PROJECT_DIR$/romens.extend.QR" />
+            <option value="$PROJECT_DIR$/romens.images" />
+            <option value="$PROJECT_DIR$/romens.pay" />
+          </set>
+        </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/MaterialDesign" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/datetimepicker" />
             <option value="$PROJECT_DIR$/romens.images" />
             <option value="$PROJECT_DIR$/romens.pay" />
           </set>

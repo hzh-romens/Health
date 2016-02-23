@@ -30,6 +30,7 @@ import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
+import com.romens.yjk.health.ui.activity.ChangePasswordActivity;
 import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
@@ -58,6 +59,11 @@ public class UIOpenHelper {
     public static void openLoginActivity(Activity activity, int requestCode) {
         Intent intent = new Intent(activity, LoginActivity.class);
         activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void openChangedPasswordActivity(Context context){
+        Intent intent = new Intent(context, ChangePasswordActivity.class);
+        context.startActivity(intent);
     }
 
     public static void openQRScanActivity(Activity context, int requestCode) {
