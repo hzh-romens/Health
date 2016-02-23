@@ -167,6 +167,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.activity.DevelopModeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"

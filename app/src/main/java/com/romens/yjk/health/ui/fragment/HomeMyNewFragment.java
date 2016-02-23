@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,13 +21,11 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
-import com.romens.android.ui.cells.HeaderCell;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextIconCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.DevelopModeManager;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
@@ -78,6 +73,14 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == developModeRow) {
+                    DevelopModeManager.openDebug(getActivity());
+                }
+            }
+        });
         return content;
     }
 
@@ -99,7 +102,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     }
 
     public void updateData() {
-        UserEntity clientUser=UserSession.getInstance().get();
+        UserEntity clientUser = UserSession.getInstance().get();
         rowCount = 0;
         if (clientUser != null) {
             loginRow = -1;
@@ -124,6 +127,11 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         }
 
         supportRow = rowCount++;
+        if (DevelopModeManager.enable()) {
+            developModeRow = rowCount++;
+        } else {
+            developModeRow = -1;
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -141,6 +149,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     private int checkUpdateRow;
 
     private int supportRow;
+
+    private int developModeRow;
 
     @Override
     public void didReceivedNotification(int i, Object... objects) {
@@ -163,7 +173,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 
         @Override
         public boolean isEnabled(int i) {
-            return i != userInfoSectionRow1;
+            return i == developModeRow;
         }
 
         @Override
@@ -198,7 +208,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 return 3;
             } else if (i == loginRow) {
                 return 4;
-            } else if (i == checkUpdateRow) {
+            } else if (i == checkUpdateRow || i == developModeRow) {
                 return 5;
             }
             return -1;
@@ -222,7 +232,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                     view = new NewUserProfileCell(adapterContext);
                 }
                 NewUserProfileCell cell = (NewUserProfileCell) view;
-                UserEntity clientUser=UserSession.getInstance().get();
+                UserEntity clientUser = UserSession.getInstance().get();
                 cell.setUser(clientUser);
             } else if (type == 1) {
                 if (view == null) {
@@ -340,6 +350,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                     } catch (PackageManager.NameNotFoundException e) {
                         cell.setText("检查更新", true);
                     }
+                } else if (position == developModeRow) {
+                    cell.setTextAndValue("开发模式入口", "已开启", true);
                 }
             }
             return view;
