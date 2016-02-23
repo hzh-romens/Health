@@ -1,15 +1,21 @@
 package com.romens.yjk.health.ui;
 
 
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -23,11 +29,14 @@ import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.cells.AccountSettingCell;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
 import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
@@ -45,19 +54,68 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private LastLocationCell lastLocationCell;
     private ViewPager viewPager;
     private HomePagerAdapter pagerAdapter;
-    private ActionBarMenuItem moreMenuItem;
+    private ActionBarMenuItem shoppingCartItem;
 
+//    private DrawerLayout drawerLayout;
+//    private HomeMyNewFragment homeMyFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
 
         ShoppingServiceFragment.instance(getSupportFragmentManager());
 
+//        drawerLayout = new DrawerLayout(this);
+
+//        final AccountSettingCell accountSettingCell = new AccountSettingCell(this);
+//        DrawerLayout.LayoutParams params = new DrawerLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        params.gravity = Gravity.RIGHT;
+//        accountSettingCell.setLayoutParams(params);
+//        drawerLayout.addView(accountSettingCell);
+
+//        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+//            @Override
+//            public void onDrawerSlide(View drawerView, float slideOffset) {
+//
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                accountSettingCell.setFocusable(true);
+//            }
+//
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//
+//            }
+//
+//            @Override
+//            public void onDrawerStateChanged(int newState) {
+//
+//            }
+//        });
+
+//        accountSettingCell.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (position == 2) {
+//                    Toast.makeText(HomeActivity.this, "click", Toast.LENGTH_SHORT).show();
+//                    UserConfig.clearUser();
+//                    UserConfig.clearConfig();
+//                    FacadeToken.getInstance().expired();
+//                    homeMyFragment.setUserEntity(null);
+//                    homeMyFragment.updateData();
+//                    AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
+//                }
+//            }
+//        });
+
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
-        ActionBar actionBar = new ActionBar(this);
+//        drawerLayout.addView(content, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        final ActionBar actionBar = new ActionBar(this);
 
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         FrameLayout frameLayout = new FrameLayout(this);
@@ -69,6 +127,68 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         frameLayout.addView(tabsCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
         tabsCell.setViewPager(viewPager);
         setContentView(content, actionBar);
+
+        //actionBar.setTitle(getString(R.string.app_name));
+        actionBar.setBackButtonImage(R.drawable.ic_app_icon);
+        final ActionBarMenu actionBarMenu = actionBar.createMenu();
+        actionBarMenu.addItem(0, R.drawable.ic_menu_search);
+        //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
+
+//        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
+//        debugMenu.addSubItem(2, "测试促销详情", 0);
+//        debugMenu.addSubItem(3, "测试附近药店", 0);
+//        debugMenu.addSubItem(4, "我的订单", 0);
+//        debugMenu.addSubItem(5, "地址管理", 0);
+//        debugMenu.addSubItem(6, "药店详情", 0);
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+               /* if (id == -1) {
+                    startActivity(new Intent(HomeActivity.this, FamilyDrugGroupActivity.class));
+                } else*/
+                if (id == 0) {
+                    UIOpenHelper.openSearchActivity(HomeActivity.this);
+                    //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
+                }
+//                else if (id == 1) {
+//                    if (UserConfig.isClientLogined()) {
+//                        //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
+//                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
+//                        //startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
+//                        //startActivity(new Intent(HomeActivity.this, BindMemberActivity.class));
+//                    }
+//                    else {
+//                        //跳转至登录页面
+//                        //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+//                    }
+//                }
+                /*  else if (key == 2) {
+                    startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
+                } else if (key == 3) {
+                    startActivity(new Intent(HomeActivity.this, LocationActivity.class));
+                } else if (key == 4) {
+                    startActivity(new Intent(HomeActivity.this, MyOrderActivity.class));
+                } else if (key == 5) {
+                    startActivity(new Intent(HomeActivity.this, ControlAddressActivity.class));
+                } else if (key == 6) {
+                    startActivity(new Intent(HomeActivity.this, DrugStoryDetailActivity.class));
+                }*/
+            }
+        });
+
+//        final ImageView accountSettingIcon = new ImageView(HomeActivity.this);
+//        accountSettingIcon.setVisibility(View.GONE);
+//        accountSettingIcon.setImageResource(R.drawable.ic_setting);
+//        accountSettingIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                drawerLayout.openDrawer(Gravity.RIGHT);
+//            }
+//        });
+//        actionBar.addView(accountSettingIcon, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT,
+//                Gravity.CENTER_VERTICAL | Gravity.RIGHT, 8, 0, 48, 0));
+
         //定位
         lastLocationCell = new LastLocationCell(this);
         lastLocationCell.setClickable(true);
@@ -105,62 +225,16 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     lastLocationCell.setVisibility(View.GONE);
                     getMyActionBar().setTitle(getString(R.string.app_name));
                 }
-
+//                if (position == 4) {
+//                    accountSettingIcon.setVisibility(View.VISIBLE);
+//                } else {
+//                    accountSettingIcon.setVisibility(View.GONE);
+//                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
-            }
-        });
-
-        //actionBar.setTitle(getString(R.string.app_name));
-        actionBar.setBackButtonImage(R.drawable.ic_app_icon);
-        ActionBarMenu actionBarMenu = actionBar.createMenu();
-        actionBarMenu.addItem(0, R.drawable.ic_menu_search);
-        //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
-
-//        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
-//        debugMenu.addSubItem(2, "测试促销详情", 0);
-//        debugMenu.addSubItem(3, "测试附近药店", 0);
-//        debugMenu.addSubItem(4, "我的订单", 0);
-//        debugMenu.addSubItem(5, "地址管理", 0);
-//        debugMenu.addSubItem(6, "药店详情", 0);
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-            @Override
-            public void onItemClick(int id) {
-               /* if (id == -1) {
-                    startActivity(new Intent(HomeActivity.this, FamilyDrugGroupActivity.class));
-                } else*/
-                if (id == 0) {
-                    UIOpenHelper.openSearchActivity(HomeActivity.this);
-                    // startActivity(new Intent(HomeActivity.this, PayResultActivity.class));
-                    //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
-                }
-//                else if (id == 1) {
-//                    if (UserConfig.isClientLogined()) {
-//                        //startActivity(new Intent(HomeActivity.this, ShopCarActivity.class));
-//                        UIOpenHelper.openShoppingCartActivity(HomeActivity.this);
-//                        //startActivity(new Intent(HomeActivity.this, CuoponActivity.class));
-//                        //startActivity(new Intent(HomeActivity.this, BindMemberActivity.class));
-//                    }
-//                    else {
-//                        //跳转至登录页面
-//                        //Toast.makeText(HomeActivity.this, "请您先登录", Toast.LENGTH_SHORT).show();
-//                        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-//                    }
-//                }
-                /*  else if (key == 2) {
-                    startActivity(new Intent(HomeActivity.this, SalesPromotionActivity.class));
-                } else if (key == 3) {
-                    startActivity(new Intent(HomeActivity.this, LocationActivity.class));
-                } else if (key == 4) {
-                    startActivity(new Intent(HomeActivity.this, MyOrderActivity.class));
-                } else if (key == 5) {
-                    startActivity(new Intent(HomeActivity.this, ControlAddressActivity.class));
-                } else if (key == 6) {
-                    startActivity(new Intent(HomeActivity.this, DrugStoryDetailActivity.class));
-                }*/
             }
         });
 
@@ -196,7 +270,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         return titles;
     }
 
-
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeFocusFragment());
@@ -213,6 +286,11 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.loginSuccess) {
             UIOpenHelper.syncFavorites(HomeActivity.this);
+        } else if (id == AppNotificationCenter.onShoppingCartChanged) {
+            if (shoppingCartItem != null) {
+                int count = (int) args[0];
+                updateShoppingCartCount(count);
+            }
         } else if (id == AppNotificationCenter.onLastLocationChanged) {
             updateLastLocation();
         }
@@ -228,7 +306,13 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     public void onDestroy() {
         stopLocation();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
         super.onDestroy();
+    }
+
+    private void updateShoppingCartCount(int count) {
+        Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(HomeActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
+        shoppingCartItem.setIcon(shoppingCartCountBitmap);
     }
 
     class HomePagerAdapter extends FragmentViewPagerAdapter {
@@ -347,5 +431,4 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         }
         mAMapLocationManager = null;
     }
-
 }

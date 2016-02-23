@@ -32,6 +32,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.MonitorHelper;
@@ -41,6 +42,7 @@ import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.SettingActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.GridViewCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
@@ -86,6 +88,10 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         listView.setAdapter(adapter);
     }
 
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
     @Override
     public void onDestroy() {
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
@@ -97,7 +103,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         updateData();
     }
 
-    private void updateData() {
+    public void updateData() {
         if (UserConfig.isClientLogined()) {
             UserEntity clientUserEntity = UserConfig.getClientUserEntity();
             userEntity = new UserEntity(0, clientUserEntity.getGuid(), clientUserEntity.getName(), clientUserEntity.getAvatar(), clientUserEntity.getPhone(), clientUserEntity.getEmail(), clientUserEntity.getDepartmentId(), 0);
@@ -256,7 +262,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                             } else if (position == 1) {//我的订单
                                 startActivity(new Intent(getActivity(), MyOrderActivity.class));
                             } else if (position == 2) {//会员管理
-                                UIOpenHelper.openMemberActivity(getActivity());
+                                Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
+//                                UIOpenHelper.openMemberActivity(getActivity());
                             } else if (position == 3) {//我的收藏
                                 UIOpenHelper.openFavoritesActivity(getActivity());
                             } else if (position == 4) {//历史浏览
@@ -288,7 +295,9 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                             } else if (position == 2) {//检查更新
                                 MonitorHelper.checkUpdate(getActivity(), true);
                             } else if (position == 3) {//设置
-                                Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(adapterContext, SettingActivity.class);
+                                startActivityForResult(intent, UserGuidConfig.REQUEST_HOMEMY_TO_SETTING);
                             }
                         }
                     });
@@ -345,6 +354,15 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 }
             }
             return view;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == UserGuidConfig.RESPONSE_SETTING_TO_HOMEMY) {
+            userEntity = null;
+            updateData();
         }
     }
 
