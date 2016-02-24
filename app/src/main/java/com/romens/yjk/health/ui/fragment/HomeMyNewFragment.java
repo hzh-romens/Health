@@ -387,10 +387,10 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 }
                 KeyAndImgCell cell = (KeyAndImgCell) view;
 //                cell.setBackgroundResource(R.drawable.greydivider);
-                cell.setLeftTextViewPadding(32, 0);
+                cell.setLeftTextViewPadding(24, 0);
                 cell.setKeyColor(0xff121212);
                 cell.setInfo("全部订单", "查看全部订单", R.drawable.y, true);
-                cell.setDivider(true, AndroidUtilities.dp(8), 0);
+                cell.setDivider(true, AndroidUtilities.dp(24), 0);
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
