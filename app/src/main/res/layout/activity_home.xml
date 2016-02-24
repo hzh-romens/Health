@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <!--<include layout="@layout/toolbar_actionbar"/>-->
+    <include layout="@layout/layout_actionbar"/>
 
-    <com.romens.android.ui.ActionBar.ActionBarLayout
-        android:id="@+id/content_layout"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <include layout="@layout/toolbar_actionbar"/>
-    </com.romens.android.ui.ActionBar.ActionBarLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="right">
-
-        <ListView
-            android:id="@+id/list_view"
+        <LinearLayout
+            android:id="@+id/content_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </LinearLayout>
 
-</android.support.v4.widget.DrawerLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@color/title_background_grey">
+
+            <ListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>
