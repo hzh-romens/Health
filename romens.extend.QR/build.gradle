@@ -1,2 +1,0 @@
-configurations.create("default")
-artifacts.add("default", file('Romens.Extend.QR-release-v1.1.1-c150512.aar'))

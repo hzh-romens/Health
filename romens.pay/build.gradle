@@ -28,6 +28,10 @@ android {
     productFlavors {
     }
 }
+configurations {
+    all*.exclude group: 'android.support.v4', module: 'support-v4'
+    all*.exclude group: 'android.support.v7', module: 'support-v7'
+}
 
 
 dependencies {

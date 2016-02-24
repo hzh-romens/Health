@@ -78,12 +78,14 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "boolean","ENABLE_DEVELOP_MODE","true"
             //manifestPlaceholders = [LOCATION_SDK_KEY: "7827d8503aac9c36d00ccae581aa84a6"]
             //manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             debuggable true
             signingConfig signingConfigs.debug
         }
         release {
+            buildConfigField "boolean","ENABLE_DEVELOP_MODE","false"
             //manifestPlaceholders = [LOCATION_SDK_KEY: "f22aabde9a3424ab5ac5e23bafaf5bad"]
             //manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             minifyEnabled true

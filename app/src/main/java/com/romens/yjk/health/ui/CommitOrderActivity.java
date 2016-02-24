@@ -308,7 +308,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    Log.i("responseProtocol--------", responseProtocol.getResponse());
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String success = jsonObject.getString("success");

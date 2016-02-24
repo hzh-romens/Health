@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yunuo.pay.ListItemType;
 import com.yunuo.pay.R;
 
 /**
@@ -44,12 +45,12 @@ public class CheckLayoutCell extends FrameLayout {
         checkLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                String name = nameView.getText().toString();
-//                if (getResources().getString(R.string.wx).equals(name)) {
-//                    mListener.stateChange(ListItemType.wxFlag, !checkLayout.isChecked());
-//                } else if (getResources().getString(R.string.apply).equals(name)) {
-//                    mListener.stateChange(ListItemType.applyFlag, !checkLayout.isChecked());
-//                }
+                String name = nameView.getText().toString();
+                if (getResources().getString(R.string.wx).equals(name)) {
+                    mListener.stateChange(ListItemType.wxFlag, !checkLayout.isChecked());
+                } else if (getResources().getString(R.string.apply).equals(name)) {
+                    mListener.stateChange(ListItemType.applyFlag, !checkLayout.isChecked());
+                }
             }
         });
 

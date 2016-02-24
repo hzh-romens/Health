@@ -241,5 +241,11 @@
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">16sp</item>
         </style>
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- toolbar（actionbar）颜色 -->
+        <item name="colorPrimary">@color/theme_primary</item>
+        <!--toolbar标题文字颜色-->
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
 
 </resources>

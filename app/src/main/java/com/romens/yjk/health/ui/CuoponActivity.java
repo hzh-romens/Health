@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.widget.RadioGroup;
 
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -81,7 +80,6 @@ public class CuoponActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("Fragment返回码-----", resultCode + "");
         super.onActivityResult(requestCode, resultCode, data);
     }
 }
