@@ -22,6 +22,7 @@ import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.romens.yjk.health.ui.HomeNewActivity;
 import com.tencent.stat.StatService;
 
 /**
@@ -63,7 +64,7 @@ public class IntroActivityNew extends Activity {
     }
 
     private void openHomeActivity() {
-        Intent intent2 = new Intent(this, HomeActivity.class);
+        Intent intent2 = new Intent(this, HomeNewActivity.class);
         intent2.putExtra("fromIntro", true);
         startActivity(intent2);
         finish();

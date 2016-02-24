@@ -113,9 +113,28 @@ public class KeyAndViewCell extends LinearLayout {
         radioViewWomen.setLayoutParams(radioViewWomenParams);
         addView(radioViewWomen);
 
+        rightTextView = new TextView(context);
+        rightTextView.setSingleLine(true);
+        rightTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+        rightTextView.setTextColor(getResources().getColor(R.color.theme_sub_title));
+        rightTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        LayoutParams rightTextViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+        rightTextViewParams.weight = 1;
+        rightTextView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(0));
+        rightTextView.setLayoutParams(rightTextViewParams);
+        addView(rightTextView);
+        rightTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onTextViewClickListener != null) {
+                    onTextViewClickListener.textViewClick();
+                }
+            }
+        });
+
         rightImgView = new ImageView(context);
-        rightImgView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
-        LayoutParams imgParams = new LayoutParams(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(40));
+        rightImgView.setPadding(AndroidUtilities.dp(-8), AndroidUtilities.dp(8), AndroidUtilities.dp(0), AndroidUtilities.dp(8));
+        LayoutParams imgParams = new LayoutParams(AndroidUtilities.dp(28), AndroidUtilities.dp(28));
         imgParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
         rightImgView.setLayoutParams(imgParams);
         addView(rightImgView);
@@ -128,25 +147,7 @@ public class KeyAndViewCell extends LinearLayout {
             }
         });
 
-        rightTextView = new TextView(context);
-        rightTextView.setSingleLine(true);
-        rightTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-        rightTextView.setTextColor(getResources().getColor(R.color.theme_sub_title));
-        rightTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        LayoutParams rightTextViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
-        rightTextView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(0));
-        rightTextView.setLayoutParams(rightTextViewParams);
-        addView(rightTextView);
         hideView("");
-
-        rightTextView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onTextViewClickListener != null) {
-                    onTextViewClickListener.textViewClick();
-                }
-            }
-        });
     }
 
     public void hideView(String key) {
@@ -177,6 +178,16 @@ public class KeyAndViewCell extends LinearLayout {
         setWillNotDraw(!needDivider);
     }
 
+    public void setKeyAndRightText(String key, String text, int imgId, boolean needDivider) {
+        hideView(key);
+        rightTextView.setText(text);
+        rightImgView.setImageResource(imgId);
+        rightTextView.setVisibility(VISIBLE);
+        rightImgView.setVisibility(VISIBLE);
+        this.needDivider = needDivider;
+        setWillNotDraw(!needDivider);
+    }
+
     public void setKeyAndEditHint(String key, String editHint, boolean needDivider) {
         hideView(key);
         editText.setHint(editHint);
@@ -200,6 +211,13 @@ public class KeyAndViewCell extends LinearLayout {
 
     public void setKeyTextColor(int color) {
         keyTextView.setTextColor(color);
+    }
+
+    public void setKeyPadding(int keySizeId, int leftPadding, int rightPadding) {
+        keyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, keySizeId);
+        keyTextView.setPadding(AndroidUtilities.dp(leftPadding), AndroidUtilities.dp(0),
+                AndroidUtilities.dp(rightPadding), AndroidUtilities.dp(0));
+        requestLayout();
     }
 
     public void changeRadioState(boolean flag) {

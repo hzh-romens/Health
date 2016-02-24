@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,13 +21,10 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
-import com.romens.android.ui.cells.HeaderCell;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextIconCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
@@ -41,10 +35,13 @@ import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
+import com.romens.yjk.health.ui.HomeNewActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.SettingActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.GridViewCell;
+import com.romens.yjk.health.ui.cells.KeyAndImgCell;
+import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
@@ -90,6 +87,11 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 
     public void setUserEntity(UserEntity userEntity) {
         this.userEntity = userEntity;
+        updateData();
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
     }
 
     @Override
@@ -107,6 +109,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         if (UserConfig.isClientLogined()) {
             UserEntity clientUserEntity = UserConfig.getClientUserEntity();
             userEntity = new UserEntity(0, clientUserEntity.getGuid(), clientUserEntity.getName(), clientUserEntity.getAvatar(), clientUserEntity.getPhone(), clientUserEntity.getEmail(), clientUserEntity.getDepartmentId(), 0);
+            HomeNewActivity homeNewActivity = (HomeNewActivity) getActivity();
+            homeNewActivity.accountSettingIcon.setVisibility(View.VISIBLE);
         } else {
             userEntity = null;
         }
@@ -115,11 +119,15 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         if (userEntity != null) {
             loginRow = -1;
             userProfileRow = rowCount++;
+            orderTitleRow = rowCount++;
+            orderControlRow = rowCount++;
             userInfoSectionRow1 = rowCount++;
             personControlRow = rowCount++;
         } else {
             loginRow = rowCount++;
             userProfileRow = -1;
+            orderTitleRow = -1;
+            orderControlRow = -1;
             userInfoSectionRow1 = -1;
             personControlRow = -1;
         }
@@ -142,8 +150,10 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     private int loginRow;
     private int userProfileRow;
 
-    private int userInfoSectionRow1;
+    private int orderTitleRow;
+    private int orderControlRow;
 
+    private int userInfoSectionRow1;
     private int personControlRow;
 
     private int otherSectionRow;
@@ -203,7 +213,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 return 0;
             } else if (i == userInfoSectionRow1 || i == otherSectionRow) {
                 return 1;
-            } else if (i == personControlRow || i == otherControlRow) {
+            } else if (i == personControlRow || i == otherControlRow || i == orderControlRow) {
                 return 2;
             } else if (i == supportRow) {
                 return 3;
@@ -211,6 +221,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 return 4;
             } else if (i == checkUpdateRow) {
                 return 5;
+            } else if (i == orderTitleRow) {
+                return 6;
             }
             return -1;
         }
@@ -259,20 +271,20 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             if (position == 0) {//账户管理
                                 UIOpenHelper.openAccountSettingActivity(getActivity());
-                            } else if (position == 1) {//我的订单
+                            } /*else if (position == 1) {//我的订单
                                 startActivity(new Intent(getActivity(), MyOrderActivity.class));
-                            } else if (position == 2) {//会员管理
+                            }*/ else if (position == 1) {//会员管理
                                 Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
 //                                UIOpenHelper.openMemberActivity(getActivity());
-                            } else if (position == 3) {//我的收藏
+                            } else if (position == 2) {//我的收藏
                                 UIOpenHelper.openFavoritesActivity(getActivity());
-                            } else if (position == 4) {//历史浏览
+                            } else if (position == 3) {//历史浏览
                                 startActivity(new Intent(getActivity(), HistoryActivity.class));
-                            } else if (position == 5) {//收货地址管理
+                            } else if (position == 4) {//收货地址管理
                                 startActivity(new Intent(getActivity(), ControlAddressActivity.class));
-                            } else if (position == 6) {//个人健康
+                            } else if (position == 5) {//个人健康
                                 Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
-                            } else if (position == 7) {
+                            } else if (position == 6) {
                                 UserConfig.clearUser();
                                 UserConfig.clearConfig();
                                 FacadeToken.getInstance().expired();
@@ -299,6 +311,23 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                                 Intent intent = new Intent(adapterContext, SettingActivity.class);
                                 startActivityForResult(intent, UserGuidConfig.REQUEST_HOMEMY_TO_SETTING);
                             }
+                        }
+                    });
+                } else if (position == orderControlRow) {
+                    final List<Map<String, Object>> otherControlList = initOrderControlData();
+                    cell.setData(otherControlList);
+                    cell.getGridView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+                            if (position == 0) {//处理中
+                                intent.putExtra("fragmentIndex", 1);
+                            } else if (position == 1) {//已完成
+                                intent.putExtra("fragmentIndex", 2);
+                            } else if (position == 2) {//已评价
+                                intent.putExtra("fragmentIndex", 3);
+                            }
+                            startActivity(intent);
                         }
                     });
                 }
@@ -352,18 +381,54 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                         cell.setText("检查更新", true);
                     }
                 }
+            } else if (type == 6) {
+                if (view == null) {
+                    view = new KeyAndImgCell(adapterContext);
+                }
+                KeyAndImgCell cell = (KeyAndImgCell) view;
+//                cell.setBackgroundResource(R.drawable.greydivider);
+                cell.setLeftTextViewPadding(32, 0);
+                cell.setKeyColor(0xff121212);
+                cell.setInfo("全部订单", "查看全部订单", R.drawable.y, true);
+                cell.setDivider(true, AndroidUtilities.dp(8), 0);
+                cell.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getActivity(), MyOrderActivity.class));
+                    }
+                });
             }
             return view;
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == UserGuidConfig.RESPONSE_SETTING_TO_HOMEMY) {
-            userEntity = null;
-            updateData();
-        }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == UserGuidConfig.RESPONSE_SETTING_TO_HOMEMY) {
+//            userEntity = null;
+//            updateData();
+//        }
+//    }
+
+    private List<Map<String, Object>> initOrderControlData() {
+        List<Map<String, Object>> personControlList = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "待处理");
+        map.put("icon", R.drawable.ic_being);
+        personControlList.add(map);
+
+        map = new HashMap<>();
+        map.put("name", "已完成");
+        map.put("icon", R.drawable.ic_complete);
+        personControlList.add(map);
+
+        map = new HashMap<>();
+        map.put("name", "已评价");
+        map.put("icon", R.drawable.ic_evaluate);
+        personControlList.add(map);
+
+        return personControlList;
     }
 
     private List<Map<String, Object>> initOtherControlData() {
@@ -383,10 +448,10 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         map.put("icon", R.drawable.ic_checkup);
         personControlList.add(map);
 
-        map = new HashMap<>();
-        map.put("name", "设置");
-        map.put("icon", R.drawable.ic_setting);
-        personControlList.add(map);
+//        map = new HashMap<>();
+//        map.put("name", "设置");
+//        map.put("icon", R.drawable.ic_setting);
+//        personControlList.add(map);
 
         return personControlList;
     }
@@ -398,10 +463,10 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         map.put("icon", R.drawable.ic_account);
         personControlList.add(map);
 
-        map = new HashMap<>();
-        map.put("name", "我的订单");
-        map.put("icon", R.drawable.ic_order);
-        personControlList.add(map);
+//        map = new HashMap<>();
+//        map.put("name", "我的订单");
+//        map.put("icon", R.drawable.ic_order);
+//        personControlList.add(map);
 
         map = new HashMap<>();
         map.put("name", "会员管理");
