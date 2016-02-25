@@ -36,6 +36,7 @@ import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HelpActivity;
+import com.romens.yjk.health.ui.HelpNewActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.SettingActivity;
@@ -298,7 +299,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             if (position == 0) {//帮助
-                                startActivity(new Intent(getActivity(), HelpActivity.class));
+                                startActivity(new Intent(getActivity(), HelpNewActivity.class));
                             } else if (position == 1) {//意见反馈
                                 startActivity(new Intent(getActivity(), FeedBackActivity.class));
                             } else if (position == 2) {//检查更新
