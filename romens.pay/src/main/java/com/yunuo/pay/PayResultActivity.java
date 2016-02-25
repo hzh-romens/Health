@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ public class PayResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pay_result);
         initView();
+        setSupportActionBar(toolbar);
         UpdateSucceessData();
         setData();
     }
@@ -70,6 +72,7 @@ public class PayResultActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("点击了------", "是");
                 finish();
             }
         });
@@ -78,15 +81,20 @@ public class PayResultActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-//        MenuItem item = menu.findItem(R.id.action_settings);
-//        TextView textView = new TextView(this);
-//        textView.setTextColor(0xffffffff);
-//        textView.setTextSize(14);
-//        textView.setText("关闭");
-//        item.setActionView(R.layout.list_item_apply);
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == 16908332) {
+            finish();
+        } else if (id == R.id.action_close) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -426,8 +426,8 @@
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
         <activity
             android:name="com.yunuo.pay.PayResultActivity"
-            android:theme="@style/NoActionBarTheme"
-            ></activity>
+            android:label="交易详情"
+            android:theme="@style/NoActionBarTheme"></activity>
         <activity
             android:name="com.yunuo.pay.WXPayActivity"
             android:exported="true"
