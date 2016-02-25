@@ -10,6 +10,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -17,6 +18,7 @@ import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -35,7 +37,7 @@ import java.util.Map;
  */
 public class OrderEvaluateActivity extends BaseActivity {
 
-    //    private BackupImageView leftImageView;
+    private BackupImageView leftImageView;
     private TextView titleTextView;
     //    private TextView specTextView;
     private TextView moneyTextView;
@@ -70,9 +72,13 @@ public class OrderEvaluateActivity extends BaseActivity {
         fragmentIndex = intent.getIntExtra("fragmentIndex", 0);
         if (null != entity) {
             titleTextView.setText(entity.getGoodsName());
-            moneyTextView.setText("x" + entity.getOrderPrice());
+            moneyTextView.setText("￥" + entity.getOrderPrice());
             dateTextView.setText(entity.getCreateDate());
-            countTextView.setText(entity.getCreateDate());
+            if (entity.getPicSmall() != null) {
+                leftImageView.setImageUrl(entity.getPicSmall(), null, null);
+            } else {
+                leftImageView.setImageResource(R.drawable.no_img_upload);
+            }
         }
     }
 
@@ -81,6 +87,7 @@ public class OrderEvaluateActivity extends BaseActivity {
         moneyTextView = (TextView) findViewById(R.id.order_money);
         dateTextView = (TextView) findViewById(R.id.order_date);
         countTextView = (TextView) findViewById(R.id.order_count);
+        leftImageView = (BackupImageView) findViewById(R.id.order_img);
 
         qualityRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_quality_ratingbar);
         speedRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_speed_ratingbar);
