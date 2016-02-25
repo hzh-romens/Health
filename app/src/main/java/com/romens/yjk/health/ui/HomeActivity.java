@@ -131,7 +131,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
         otherMenu = actionBarMenu.addItem(1, R.drawable.ic_more_vert_white_24dp);
-        otherMenu.addSubItem(2, "关于", 0);
+        otherMenu.addSubItem(2, "关于", R.drawable.ic_about);
         otherMenu.addSubItem(3, "修改密码", R.drawable.ic_change_password);
         otherMenu.addSubItem(4, "退出登录", R.drawable.ic_exit);
 
