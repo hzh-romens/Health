@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,8 +21,6 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
-import com.romens.android.ui.cells.HeaderCell;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextIconCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
@@ -42,13 +37,11 @@ import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
-import com.romens.yjk.health.ui.HomeNewActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.SettingActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.GridViewCell;
 import com.romens.yjk.health.ui.cells.KeyAndImgCell;
-import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
@@ -98,10 +91,6 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         listView.setAdapter(adapter);
     }
 
-    public void setUserEntity(UserEntity userEntity) {
-        this.userEntity = userEntity;
-    }
-
     @Override
     public void onDestroy() {
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
@@ -114,15 +103,10 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     }
 
     public void updateData() {
-        if (UserConfig.isClientLogined()) {
-            UserEntity clientUserEntity = UserConfig.getClientUserEntity();
-            userEntity = new UserEntity(0, clientUserEntity.getGuid(), clientUserEntity.getName(), clientUserEntity.getAvatar(), clientUserEntity.getPhone(), clientUserEntity.getEmail(), clientUserEntity.getDepartmentId(), 0);
-        } else {
-            userEntity = null;
-        }
+        UserEntity clientUser = UserSession.getInstance().get();
 
         rowCount = 0;
-        if (userEntity != null) {
+        if (clientUser != null) {
             loginRow = -1;
             userProfileRow = rowCount++;
             orderTitleRow = rowCount++;
@@ -444,6 +428,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         personControlList.add(map);
 
         return personControlList;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

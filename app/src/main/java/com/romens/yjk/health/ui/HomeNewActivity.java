@@ -164,11 +164,11 @@ public class HomeNewActivity extends BaseActivity implements AppNotificationCent
                     lastLocationCell.setVisibility(View.GONE);
                     getMyActionBar().setTitle(getString(R.string.app_name));
                 }
-                if (position == 4 && homeMyFragment.getUserEntity() != null) {
-                    accountSettingIcon.setVisibility(View.VISIBLE);
-                } else {
-                    accountSettingIcon.setVisibility(View.GONE);
-                }
+//                if (position == 4 && homeMyFragment.getUserEntity() != null) {
+//                    accountSettingIcon.setVisibility(View.VISIBLE);
+//                } else {
+//                    accountSettingIcon.setVisibility(View.GONE);
+//                }
             }
 
             @Override
@@ -345,7 +345,7 @@ public class HomeNewActivity extends BaseActivity implements AppNotificationCent
                     UserConfig.clearUser();
                     UserConfig.clearConfig();
                     FacadeToken.getInstance().expired();
-                    homeMyFragment.setUserEntity(null);
+                    //homeMyFragment.setUserEntity(null);
                     AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -100000);
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                     accountSettingIcon.setVisibility(View.GONE);

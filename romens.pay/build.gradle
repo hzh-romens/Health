@@ -49,7 +49,7 @@ dependencies {
 
 
     //romens.android
-    compile 'romens:com.romens.android:1.9.0@aar'
+    compile 'romens:com.romens.android:1.9.1@aar'
     compile 'com.squareup.okhttp:okhttp:2.7.4'
     compile 'com.squareup.okio:okio:1.6.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'

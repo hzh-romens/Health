@@ -25,7 +25,6 @@ import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
@@ -133,8 +132,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
         otherMenu = actionBarMenu.addItem(1, R.drawable.ic_more_vert_white_24dp);
         otherMenu.addSubItem(2, "关于", 0);
-        otherMenu.addSubItem(3, "修改密码", 0);
-        otherMenu.addSubItem(4, "退出登录", 0);
+        otherMenu.addSubItem(3, "修改密码", R.drawable.ic_change_password);
+        otherMenu.addSubItem(4, "退出登录", R.drawable.ic_exit);
 
 //        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
 //        debugMenu.addSubItem(2, "测试促销详情", 0);
