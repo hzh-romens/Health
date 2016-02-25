@@ -12,11 +12,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.base.BaseActionBarActivity;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -26,9 +31,6 @@ import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.MedicineGoodsItem;
 import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.activity.LoginActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +55,7 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
         super.onCreate(state);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
 
-}
+    }
 
     @Override
     public void onResume() {
@@ -79,38 +81,63 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
             args.put("USERGUID", UserConfig.getClientUserId());
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
-            Message message = new Message.MessageBuilder()
+
+            Connect connect = new RMConnect.Builder(ShoppingServiceFragment.class)
                     .withProtocol(protocol)
-                    .build();
-            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-                    shoppingCartCount = 0;
-                }
-
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    if (errorMsg == null) {
-                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                        String response = responseProtocol.getResponse();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            if (jsonObject.has("BUYCOUNT")) {
-                                shoppingCartCount = jsonObject.getInt("BUYCOUNT");
-                                if (shoppingCartCount < 0) {
-                                    shoppingCartCount = 0;
+                    .withParser(new JSONNodeParser())
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            if (errorMessage == null) {
+                                ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                JsonNode response = responseProtocol.getResponse();
+                                if (response.has("BUYCOUNT")) {
+                                    shoppingCartCount = response.get("BUYCOUNT").asInt(0);
+                                    if (shoppingCartCount < 0) {
+                                        shoppingCartCount = 0;
+                                    }
+                                    AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, shoppingCartCount);
+                                    return;
                                 }
-                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, shoppingCartCount);
-                                return;
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            shoppingCartCount = 0;
                         }
+                    }).build();
+            ConnectManager.getInstance().request(getActivity(), connect);
 
-                    }
-                    shoppingCartCount = 0;
-                }
-            });
+
+//            Message message = new Message.MessageBuilder()
+//                    .withProtocol(protocol)
+//                    .build();
+//            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+//                @Override
+//                public void onTokenTimeout(Message msg) {
+//                    shoppingCartCount = 0;
+//                }
+//
+//                @Override
+//                public void onResult(Message msg, Message errorMsg) {
+//                    if (errorMsg == null) {
+//                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+//                        String response = responseProtocol.getResponse();
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(response);
+//                            if (jsonObject.has("BUYCOUNT")) {
+//                                shoppingCartCount = jsonObject.getInt("BUYCOUNT");
+//                                if (shoppingCartCount < 0) {
+//                                    shoppingCartCount = 0;
+//                                }
+//                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, shoppingCartCount);
+//                                return;
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                    shoppingCartCount = 0;
+//                }
+//            });
         }
     }
 
@@ -128,34 +155,58 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
             args.put("PRICE", price);
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
-            Message message = new Message.MessageBuilder()
-                    .withProtocol(protocol)
-                    .build();
-            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-                    needHideProgress();
-                    Toast.makeText(getActivity(), "请求被拒绝", Toast.LENGTH_SHORT).show();
-                }
 
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    needHideProgress();
-                    if (errorMsg == null) {
-                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                        String response = responseProtocol.getResponse();
-                        if ("ERROE".equals(response)) {
-                            showAddShoppingCartError("未知原因");
-                        } else {
-                            Toast.makeText(getActivity(), "成功加入购物车", Toast.LENGTH_SHORT).show();
-                            shoppingCartCount++;
-                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, shoppingCartCount);
+            Connect connect = new RMConnect.Builder(ShoppingServiceFragment.class)
+                    .withProtocol(protocol)
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            needHideProgress();
+                            if (errorMessage == null) {
+                                ResponseProtocol<String> responseProtocol = (ResponseProtocol) message.protocol;
+                                String response = responseProtocol.getResponse();
+                                if ("ERROE".equals(response)) {
+                                    showAddShoppingCartError("未知原因");
+                                } else {
+                                    Toast.makeText(getActivity(), "成功加入购物车", Toast.LENGTH_SHORT).show();
+                                    shoppingCartCount++;
+                                    AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, shoppingCartCount);
+                                }
+                            } else {
+                                showAddShoppingCartError(errorMessage.msg);
+                            }
                         }
-                    } else {
-                        showAddShoppingCartError(errorMsg.msg);
-                    }
-                }
-            });
+                    }).build();
+            ConnectManager.getInstance().request(getActivity(), connect);
+
+//            Message message = new Message.MessageBuilder()
+//                    .withProtocol(protocol)
+//                    .build();
+//            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+//                @Override
+//                public void onTokenTimeout(Message msg) {
+//                    needHideProgress();
+//                    Toast.makeText(getActivity(), "请求被拒绝", Toast.LENGTH_SHORT).show();
+//                }
+//
+//                @Override
+//                public void onResult(Message msg, Message errorMsg) {
+//                    needHideProgress();
+//                    if (errorMsg == null) {
+//                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+//                        String response = responseProtocol.getResponse();
+//                        if ("ERROE".equals(response)) {
+//                            showAddShoppingCartError("未知原因");
+//                        } else {
+//                            Toast.makeText(getActivity(), "成功加入购物车", Toast.LENGTH_SHORT).show();
+//                            shoppingCartCount++;
+//                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged, shoppingCartCount);
+//                        }
+//                    } else {
+//                        showAddShoppingCartError(errorMsg.msg);
+//                    }
+//                }
+//            });
         } else {
             new AlertDialog.Builder(getActivity())
                     .setTitle("提示")

@@ -17,8 +17,6 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.romens.android.AndroidUtilities;
-import com.romens.android.ui.Image.BackupImageView;
 import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;

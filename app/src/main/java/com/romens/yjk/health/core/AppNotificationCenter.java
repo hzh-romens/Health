@@ -7,6 +7,8 @@ public class AppNotificationCenter extends NotificationCenter {
     private static int appTotalEvents = maxCursor;
 
     public static final int loginSuccess = appTotalEvents++;
+    public static final int loginOut=appTotalEvents++;
+
     public static final int shoppingCartCountChanged = appTotalEvents++;
 
     //AppConfig

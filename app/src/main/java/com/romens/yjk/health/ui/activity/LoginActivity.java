@@ -56,6 +56,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.im.IMHXSDKHelper;
 import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.components.SlideView;
@@ -330,6 +331,7 @@ public class LoginActivity extends BaseActivity {
 
     protected void onLoginCallback(boolean isSuccess) {
         if (isSuccess) {
+            UserSession.getInstance().onChanged();
             AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.loginSuccess);
             Intent data = new Intent();
             setResult(RESULT_OK, data);

@@ -8,8 +8,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 160201
-        versionName "1.7.0"
+        versionCode 160225
+        versionName "1.7.1"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
                                 CHANNEL_PACKAGE  : applicationId,
@@ -78,12 +78,14 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "boolean","ENABLE_DEVELOP_MODE","true"
             //manifestPlaceholders = [LOCATION_SDK_KEY: "7827d8503aac9c36d00ccae581aa84a6"]
             //manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             debuggable true
             signingConfig signingConfigs.debug
         }
         release {
+            buildConfigField "boolean","ENABLE_DEVELOP_MODE","false"
             //manifestPlaceholders = [LOCATION_SDK_KEY: "f22aabde9a3424ab5ac5e23bafaf5bad"]
             //manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             minifyEnabled true
@@ -172,7 +174,7 @@ dependencies {
     compile project(':romens.pay')
 
     //romens.android
-    compile 'romens:com.romens.android:1.9.0@aar'
+    compile 'romens:com.romens.android:1.9.1@aar'
     compile 'com.squareup.okhttp:okhttp:2.7.4'
     compile 'com.squareup.okio:okio:1.6.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'

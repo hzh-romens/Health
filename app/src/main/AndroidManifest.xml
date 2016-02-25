@@ -161,6 +161,18 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.activity.ChangePasswordActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.DevelopModeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
@@ -245,6 +257,14 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
 
+
+        <activity
+            android:name=".ui.activity.CommitOrderActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+
         <activity
             android:name=".ui.RemindActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -295,6 +315,8 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
+
         <activity
             android:name=".ui.NewShoppingAddressActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -421,12 +443,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
+        <activity
+            android:name=".ui.HomeNewActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
         <!--************** romens pay begin **************************-->
         <activity android:name="com.yunuo.pay.PayActivity"></activity>
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
         <activity
             android:name="com.yunuo.pay.PayResultActivity"
-            android:label="交易详情"
             android:theme="@style/NoActionBarTheme"></activity>
         <activity
             android:name="com.yunuo.pay.WXPayActivity"
@@ -489,6 +517,19 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <!--**************** im end *****************-->
+
+
+
+
+
+
+        <!--**************** 医保支付 begin *************-->
+        <activity
+            android:name="com.romens.yjk.health.hyrmtt.pay.YBPayResult"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="true"
+            android:launchMode="singleTask"></activity>
+        <!--**************** 医保支付 end *************-->
 
     </application>
 

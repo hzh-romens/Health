@@ -1,2 +1,0 @@
-configurations.create("default")
-artifacts.add("default", file('romens.android-v1.8.0-c160126.aar'))

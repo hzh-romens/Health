@@ -21,6 +21,7 @@ public class KeyAndImgCell extends LinearLayout {
 
     private TextView leftTextView;
     private ImageView rightImageView;
+    private TextView rightTextView;
 
     private boolean needDivider = false;
     private int dividerLeftPadding = 0;
@@ -47,11 +48,23 @@ public class KeyAndImgCell extends LinearLayout {
         leftTextView.setLayoutParams(infoViewParams);
         addView(leftTextView);
 
+        rightTextView = new TextView(context);
+        rightTextView.setBackgroundColor(Color.TRANSPARENT);
+        rightTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        rightTextView.setSingleLine(true);
+        rightTextView.setVisibility(GONE);
+        rightTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+        rightTextView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(0), AndroidUtilities.dp(4));
+        LayoutParams rightViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+        rightViewParams.weight = 1;
+        rightTextView.setLayoutParams(rightViewParams);
+        addView(rightTextView);
+
         rightImageView = new ImageView(context);
-        rightImageView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
+        rightImageView.setPadding(AndroidUtilities.dp(0), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         rightImageView.setImageResource(R.drawable.y);
         LayoutParams imgParams = new LayoutParams(AndroidUtilities.dp(24), AndroidUtilities.dp(24));
-        imgParams.setMargins(0,0,AndroidUtilities.dp(8),0);
+        imgParams.setMargins(0, 0, AndroidUtilities.dp(8), 0);
         imgParams.gravity = Gravity.CENTER_VERTICAL;
         rightImageView.setLayoutParams(imgParams);
         addView(rightImageView);
@@ -64,6 +77,26 @@ public class KeyAndImgCell extends LinearLayout {
         this.needDivider = needDivider;
         leftTextView.setText(leftViewText);
         setWillNotDraw(!needDivider);
+    }
+
+    public void setInfo(String leftViewText, String rightViewText, int rightImgResource, boolean needDivider) {
+        this.needDivider = needDivider;
+        LayoutParams layoutParams = (LayoutParams) rightImageView.getLayoutParams();
+        layoutParams.width = AndroidUtilities.dp(40);
+        layoutParams.height = AndroidUtilities.dp(40);
+        rightImageView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+        rightImageView.setLayoutParams(layoutParams);
+        rightImageView.setImageResource(rightImgResource);
+        leftTextView.setText(leftViewText);
+        rightTextView.setText(rightViewText);
+        rightTextView.setVisibility(VISIBLE);
+        setWillNotDraw(!needDivider);
+    }
+
+    public void setLeftTextViewPadding(int leftPadding, int rightPadding) {
+        leftTextView.setPadding(AndroidUtilities.dp(leftPadding),AndroidUtilities.dp(0),
+                AndroidUtilities.dp(rightPadding),AndroidUtilities.dp(0));
+        requestLayout();
     }
 
     public void setInfo(String leftViewText, int rightImgResource, boolean needDivider) {

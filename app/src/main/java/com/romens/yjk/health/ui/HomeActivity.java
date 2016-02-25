@@ -1,7 +1,8 @@
 package com.romens.yjk.health.ui;
 
 
-import android.graphics.Bitmap;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,9 +25,11 @@ import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
+import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
@@ -46,7 +49,8 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     private LastLocationCell lastLocationCell;
     private ViewPager viewPager;
     private HomePagerAdapter pagerAdapter;
-    private ActionBarMenuItem shoppingCartItem;
+
+    private ActionBarMenuItem otherMenu;
 
 //    private DrawerLayout drawerLayout;
 //    private HomeMyNewFragment homeMyFragment;
@@ -122,9 +126,14 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
         //actionBar.setTitle(getString(R.string.app_name));
         actionBar.setBackButtonImage(R.drawable.ic_app_icon);
+
         final ActionBarMenu actionBarMenu = actionBar.createMenu();
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
+        otherMenu = actionBarMenu.addItem(1, R.drawable.ic_more_vert_white_24dp);
+        otherMenu.addSubItem(2, "关于", 0);
+        otherMenu.addSubItem(3, "修改密码", R.drawable.ic_change_password);
+        otherMenu.addSubItem(4, "退出登录", R.drawable.ic_exit);
 
 //        ActionBarMenuItem debugMenu = actionBarMenu.addItem(1, R.drawable.ic_ab_other);
 //        debugMenu.addSubItem(2, "测试促销详情", 0);
@@ -141,6 +150,12 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 if (id == 0) {
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
+                } else if (id == 2) {
+
+                } else if (id == 3) {
+                    UIOpenHelper.openChangedPasswordActivity(HomeActivity.this);
+                } else if (id == 4) {
+                    needLogout();
                 }
 //                else if (id == 1) {
 //                    if (UserConfig.isClientLogined()) {
@@ -232,9 +247,40 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
         //requestShopCarCountData();
         setupConfig();
+        onLoginStateChanged();
         initLastLocation();
         UIOpenHelper.syncFavorites(this);
         MonitorHelper.checkUpdate(this);
+    }
+
+    /**
+     * 登录状态变化
+     */
+    private void onLoginStateChanged() {
+        if (UserConfig.isClientLogined()) {
+            otherMenu.showSubItem(3);
+            otherMenu.showSubItem(4);
+        } else {
+            otherMenu.hideSubItem(3);
+            otherMenu.hideSubItem(4);
+        }
+    }
+
+    /**
+     * 退出登录
+     */
+    private void needLogout() {
+        new AlertDialog.Builder(HomeActivity.this)
+                .setTitle(getString(R.string.app_name))
+                .setMessage("是否确定退出应用?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        UserSession.getInstance().needLoginOut();
+                    }
+                }).setNegativeButton("取消", null)
+                .create().show();
     }
 
     private void setupConfig() {
@@ -277,12 +323,10 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == AppNotificationCenter.loginSuccess) {
+            onLoginStateChanged();
             UIOpenHelper.syncFavorites(HomeActivity.this);
-        } else if (id == AppNotificationCenter.onShoppingCartChanged) {
-            if (shoppingCartItem != null) {
-                int count = (int) args[0];
-                updateShoppingCartCount(count);
-            }
+        } else if (id == AppNotificationCenter.loginOut) {
+            onLoginStateChanged();
         } else if (id == AppNotificationCenter.onLastLocationChanged) {
             updateLastLocation();
         }
@@ -300,11 +344,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
         super.onDestroy();
-    }
-
-    private void updateShoppingCartCount(int count) {
-        Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(HomeActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
-        shoppingCartItem.setIcon(shoppingCartCountBitmap);
     }
 
     class HomePagerAdapter extends FragmentViewPagerAdapter {
