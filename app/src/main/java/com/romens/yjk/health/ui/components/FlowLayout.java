@@ -255,7 +255,7 @@ public class FlowLayout extends ViewGroup {
 //                        view.measure(widthMeasureSpec, heightMeasureSpec);
 //                    }
                     //布局View，将剩余的宽度平分到两边的距离
-                    if (i == 0) {
+                    if (i == 0 && !isAlignLeft) {
                         left = surplusWidth / 2;
                     }
                     view.layout(left, top + topOffset, left + childWidth, top + topOffset + childHeight);
@@ -270,6 +270,14 @@ public class FlowLayout extends ViewGroup {
                 }
             }
         }
+    }
+
+    private boolean isAlignLeft = false;
+
+    public void setIsAlignLeft(boolean isAlignLeft, int paddingLeftSize) {
+        this.isAlignLeft = isAlignLeft;
+        setLeft(paddingLeftSize);
+        requestLayout();
     }
 
     //更新加入适配器

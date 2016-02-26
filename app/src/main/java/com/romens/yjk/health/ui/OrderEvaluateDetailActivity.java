@@ -13,6 +13,7 @@ import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -32,7 +33,7 @@ import java.util.Map;
  */
 public class OrderEvaluateDetailActivity extends BaseActivity {
 
-    //    private BackupImageView leftImageView;
+    private BackupImageView leftImageView;
     private TextView titleTextView;
     //    private TextView specTextView;
     private TextView moneyTextView;
@@ -63,6 +64,11 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
             titleTextView.setText(entity.getGoodsName());
             moneyTextView.setText("￥" + entity.getOrderPrice());
             dateTextView.setText(entity.getCreateDate());
+            if (entity.getPicSmall() != null) {
+                leftImageView.setImageUrl(entity.getPicSmall(), null, null);
+            } else {
+                leftImageView.setImageResource(R.drawable.no_img_upload);
+            }
         }
     }
 
@@ -153,6 +159,7 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
         moneyTextView = (TextView) findViewById(R.id.order_money);
         dateTextView = (TextView) findViewById(R.id.order_date);
         countTextView = (TextView) findViewById(R.id.order_count);
+        leftImageView = (BackupImageView) findViewById(R.id.order_img);
 
         qualityRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_quality_ratingbar);
         speedRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_speed_ratingbar);
