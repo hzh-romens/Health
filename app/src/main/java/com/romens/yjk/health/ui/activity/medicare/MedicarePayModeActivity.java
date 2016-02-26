@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.activity.medicare;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,7 +36,6 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.pay.MedicarePayMode;
 import com.romens.yjk.health.pay.PayBaseActivity;
-import com.romens.yjk.health.pay.PayParams;
 import com.romens.yjk.health.pay.PayParamsForYBHEB;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -54,7 +55,7 @@ import java.util.Map;
  * @create 16/2/26
  * @description
  */
-public class MedicarePayModeActivity extends PayBaseActivity {
+public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> {
     public static final String ARGUMENTS_KEY_NEED_REDIRECT = "key_need_redirect";
     private ProgressBar progressBar;
     private TextView emptyTextView;
@@ -148,15 +149,17 @@ public class MedicarePayModeActivity extends PayBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                tryPayRequest();
+                String medicareCardNo = data.getStringExtra("MEDICARENO");
+                tryPayRequest(medicareCardNo);
             }
         }
     }
 
-    private void tryPayRequest() {
+    private void tryPayRequest(String medicareCardNo) {
         needShowProgress("正在请求支付,请稍候...");
         Map<String, Object> args = new HashMap<>();
         args.put("BILLNO", billNo);
+        args.put("MEDICARECARD", medicareCardNo);
         args.put("PAYMODE", "YB_HEB");
 
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBillPayRequestParams", args);
@@ -191,21 +194,14 @@ public class MedicarePayModeActivity extends PayBaseActivity {
     private void onPayRequestSuccess(JsonNode response) {
         String payMode = response.get("PayMode").asText();
         JsonNode payParamsNode = response.get("PayParams");
-        String medicareNo = payParamsNode.get("MedicareNo").asText();
 
-        PayParams payParams = new PayParamsForYBHEB();
-        String flowNo = "WGC067" + billNo;
-        payParams.put(PayParamsForYBHEB.KEY_FLOW_NO, flowNo);
-        payParams.put(PayParamsForYBHEB.KEY_BILL_NO, billNo);
-        String tranferNo = createDate("yyyyMMddHHmmss") + flowNo;
-        payParams.put(PayParamsForYBHEB.KEY_TRANSFER_FLOW_NO, tranferNo);
-        payParams.put(PayParamsForYBHEB.KEY_END_DATE, createDate("yyyyMMddHHmmss"));
-        payParams.put(PayParamsForYBHEB.KEY_O2TRSN, "C067");
-        payParams.put(PayParamsForYBHEB.KEY_OPERATOR, "HY_RMTT_YJK_ANDROID");
-        String amount = billAmount.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        payParams.put(PayParamsForYBHEB.KEY_BILL_AMOUNT, amount);
-        payParams.put(PayParamsForYBHEB.KEY_MEDICARE_NO, medicareNo);
-        if (sendPayRequest(payMode, payParams)) {
+        PayParamsForYBHEB payParams = new PayParamsForYBHEB();
+        Iterator<String> fieldNames = payParamsNode.fieldNames();
+        while (fieldNames.hasNext()) {
+            String fieldName = fieldNames.next();
+            payParams.put(fieldName, payParamsNode.get(fieldName).asText());
+        }
+        if (sendPayRequest(payParams)) {
             finish();
         }
     }
@@ -244,6 +240,18 @@ public class MedicarePayModeActivity extends PayBaseActivity {
     private int payModeEndRow;
     private int payModeDividerRow;
     private int payActionRow;
+
+    @Override
+    protected boolean sendPayRequest(PayParamsForYBHEB payParams) {
+        ComponentName componentName = new ComponentName("com.yitong.hrb.people.android",
+                "com.yitong.hrb.people.android.activity.GifViewActivity");
+        Intent intent = new Intent();
+        Bundle bundle = payParams.toBundle();
+        intent.putExtra("bundle", bundle);
+        intent.setComponent(componentName);
+        startActivity(intent);
+        return true;
+    }
 
     class ListAdapter extends BaseAdapter {
 

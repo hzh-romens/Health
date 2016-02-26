@@ -9,8 +9,6 @@ import java.util.Map;
  * @description
  */
 public abstract class PayParams {
-    public static final String KEY_BILL_NO = "BILL_NO";
-    public static final String KEY_BILL_AMOUNT = "BILL_AMOUNT";
 
     private final Map<String, String> params = new HashMap<>();
 
