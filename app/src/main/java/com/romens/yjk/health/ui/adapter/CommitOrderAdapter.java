@@ -37,31 +37,7 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
     private EditTextChangeListener mEditListener;
     private int sendFlag;
     private String DeliverytypeStr = "";
-
-    public void setCheckDataChangeListener(CheckDataCallBack checkDataCallBack) {
-        this.checkDataCallBack = checkDataCallBack;
-    }
-
-    public void setSwitchChangeListener(SwitchChangeListener listener) {
-        this.mListener = listener;
-    }
-
-    public void setEditTextChangeListener(EditTextChangeListener listener) {
-        this.mEditListener = listener;
-    }
-
-    public interface EditTextChangeListener {
-        void textValueChange(String value);
-    }
-
-    public interface SwitchChangeListener {
-        void getSwitchValue(boolean value);
-    }
-
-    //接口回调，用于数据刷新
-    public interface CheckDataCallBack {
-        void getCheckData(String flag);
-    }
+    private String mCouponValue, mLimitValue, mCoupon;
 
     public CommitOrderAdapter(Context context, int realCoutn) {
         this.mContext = context;
@@ -169,7 +145,11 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             }
             // convertView.setClickable(true);
             CouponItemCell cell = (CouponItemCell) convertView;
-            cell.setValue("优惠券", "满120减10", R.drawable.ic_chevron_right_grey600_24dp, false);
+            if ("".equals(mCoupon) || mCoupon == null) {
+                cell.setValue("优惠券", "", R.drawable.ic_chevron_right_grey600_24dp, false);
+            } else {
+                cell.setValue("优惠券", mCouponValue, R.drawable.ic_chevron_right_grey600_24dp, false);
+            }
         } else if (groupType == mFatherData.size() + 2 || groupType == mFatherData.size() + 4) {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(mContext);
@@ -200,19 +180,18 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
             TextSettingsCell cell = (TextSettingsCell) convertView;
             cell.setValueTextColor(mContext.getResources().getColor(R.color.theme_primary));
             if (groupType == mFatherData.size() + 5) {
-                cell.setTextAndValue("药品金额", "¥120", true);
+                cell.setTextAndValue("药品金额", "¥" + mSumMoney, true);
             } else if (groupType == mFatherData.size() + 6) {
-                cell.setTextAndValue("药品优惠", "¥10", true);
+                if ("".equals(mCoupon) || mCoupon == null) {
+                    cell.setTextAndValue("药品优惠", "暂无优惠", true);
+                } else {
+                    cell.setTextAndValue("药品优惠", "¥" + mCoupon, true);
+                }
             }
         }
         return convertView;
     }
 
-
-    public void SetValue(String value) {
-        DeliverytypeStr = value;
-        notifyDataSetChanged();
-    }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
@@ -301,5 +280,48 @@ public class CommitOrderAdapter extends BaseExpandableListAdapter {
         this.mFragmentManger = fragmentManger;
     }
 
+    public void SetValue(String value) {
+        DeliverytypeStr = value;
+        notifyDataSetChanged();
+    }
+
+    public void setCheckDataChangeListener(CheckDataCallBack checkDataCallBack) {
+        this.checkDataCallBack = checkDataCallBack;
+    }
+
+    public void setSwitchChangeListener(SwitchChangeListener listener) {
+        this.mListener = listener;
+    }
+
+    public void setEditTextChangeListener(EditTextChangeListener listener) {
+        this.mEditListener = listener;
+    }
+
+    public interface EditTextChangeListener {
+        void textValueChange(String value);
+    }
+
+    public interface SwitchChangeListener {
+        void getSwitchValue(boolean value);
+    }
+
+    public void setCoupon(String couponValue, String limitValue) {
+        this.mLimitValue = limitValue;
+        this.mCoupon = couponValue;
+        mCouponValue = "满" + mLimitValue + "优惠" + mCoupon;
+        notifyDataSetChanged();
+    }
+
+    private double mSumMoney;
+
+    public void setSumMoney(double sumMoney) {
+        this.mSumMoney = sumMoney;
+        notifyDataSetChanged();
+    }
+
+    //接口回调，用于数据刷新
+    public interface CheckDataCallBack {
+        void getCheckData(String flag);
+    }
 
 }

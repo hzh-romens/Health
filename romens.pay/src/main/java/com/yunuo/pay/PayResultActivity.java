@@ -69,13 +69,6 @@ public class PayResultActivity extends AppCompatActivity {
         toolbar.setTitle("交易详情");
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("点击了------", "是");
-                finish();
-            }
-        });
         listView = (ListView) findViewById(R.id.listview);
     }
 

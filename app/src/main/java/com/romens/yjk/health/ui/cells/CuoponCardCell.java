@@ -25,12 +25,14 @@ public class CuoponCardCell extends FrameLayout {
     private TextView nameView, addressView, priceView, conditionView, timeView, statusView;
     private Paint mPaint;
     private ImageView image, statusIcon;
+    private Context mContext;
 
     public CuoponCardCell(Context context) {
         super(context);
         if (mPaint == null) {
             mPaint = new Paint();
         }
+        this.mContext = context;
         setWillNotDraw(false);
         cardView = new CardView(context);
         image = new ImageView(context);
@@ -62,7 +64,9 @@ public class CuoponCardCell extends FrameLayout {
         timeView = new TextView(context);
         timeView.setTextSize(14);
         timeView.setTextColor(0xff666666);
-        cardView.addView(timeView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 8, 16, 8));
+        timeView.setMaxLines(1);
+        timeView.setEllipsize(TextUtils.TruncateAt.END);
+        cardView.addView(timeView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 8, 48, 8));
 
         statusView = new TextView(context);
         statusView.setTextSize(14);
@@ -76,14 +80,18 @@ public class CuoponCardCell extends FrameLayout {
     }
 
     public void setStatus(String flag) {
+        //未使用字体颜色:#aaaaaa
         if ("1".equals(flag)) {
             statusView.setText("已使用");
             setStatusImage(R.drawable.ic_cuopon_used);
+            setHistoryTextColor();
         } else if ("0".equals(flag)) {
             statusView.setText("未使用");
+            setTextColor();
         } else {
             statusView.setText("已过期");
             setStatusImage(R.drawable.ic_coupon_expired);
+            setHistoryTextColor();
         }
     }
 
@@ -93,20 +101,17 @@ public class CuoponCardCell extends FrameLayout {
         //image.setImageResource(resId);
     }
 
-    public void setPriceColor() {
-
-    }
 
     private String mIsused, mName, mEnddate, mLimitamount, mPrice;
 
     public void setValue(String isused, String name, String enddate, String limitamount, String shuoming, String amount, String startDate) {
         SpannableString span = new SpannableString("¥" + amount);
         span.setSpan(new AbsoluteSizeSpan(30), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        span.setSpan(new AbsoluteSizeSpan(26, true), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // span.setSpan(new AbsoluteSizeSpan(26, true), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         priceView.setText(span);
         nameView.setText(name);
         addressView.setText(shuoming);
-        conditionView.setText(limitamount);
+        conditionView.setText("满" + limitamount + "可用");
         timeView.setText("有效期" + startDate + "-" + enddate);
         this.mIsused = isused;
         this.mEnddate = enddate;
@@ -117,5 +122,19 @@ public class CuoponCardCell extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+    }
+
+    public void setTextColor() {
+        nameView.setTextColor(mContext.getResources().getColor(R.color.theme_primary));
+        priceView.setTextColor(mContext.getResources().getColor(R.color.theme_primary));
+        addressView.setTextColor(Color.BLACK);
+        conditionView.setTextColor(Color.BLACK);
+    }
+
+    public void setHistoryTextColor() {
+        nameView.setTextColor(0xff666666);
+        priceView.setTextColor(0xff666666);
+        addressView.setTextColor(0xff666666);
+        conditionView.setTextColor(0xff666666);
     }
 }

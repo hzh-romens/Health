@@ -314,7 +314,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         fragments.add(new HomeHealthNewFragment());
 //        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
-        fragments.add(new ShopCarFragment());
+        ShopCarFragment shopCarFragment = new ShopCarFragment();
+        shopCarFragment.setTitleView(false);
+        fragments.add(shopCarFragment);
 //        fragments.add(new HomeMyFragment());
         fragments.add(new HomeMyNewFragment());
         return fragments;

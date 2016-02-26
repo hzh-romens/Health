@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -53,9 +54,17 @@ public class CuoponFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
-                getActivity().setResult(4, intent);
-                getActivity().finish();
+                if ("GetCoupon".equals(requestType)) {
+                    Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
+                    String amount = result.get(position).getAmount();
+                    String limitamount = result.get(position).getLimitamount();
+                    intent.putExtra("limitAmount", Double.parseDouble(limitamount));
+                    intent.putExtra("amount", Double.parseDouble(amount));
+                    getActivity().setResult(4, intent);
+                    getActivity().finish();
+                } else {
+                    Toast.makeText(getActivity(), "该优惠卷无效", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return view;
