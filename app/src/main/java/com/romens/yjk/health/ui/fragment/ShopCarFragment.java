@@ -30,7 +30,7 @@ import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
-import com.romens.yjk.health.ui.CommitOrderActivity;
+import com.romens.yjk.health.ui.activity.CommitOrderActivity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.utils.UIHelper;

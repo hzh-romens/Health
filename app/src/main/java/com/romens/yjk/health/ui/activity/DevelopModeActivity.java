@@ -14,6 +14,7 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.activity.medicare.MedicarePayModeActivity;
 import com.romens.yjk.health.ui.components.logger.Log;
 
 /**
@@ -45,13 +46,16 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setSelector(R.drawable.list_selector);
+
+
         adapter = new ListAdapter();
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == testYBZFRow) {
-                    onTestYBZFRow();
+                    Intent intent = new Intent(DevelopModeActivity.this, MedicarePayModeActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -66,14 +70,15 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
         bundle.putString("flowno", "");
         bundle.putString("orderno", "");
         bundle.putString("EndDate", "");
-        bundle.putString("MerType", "");
-        bundle.putString("acctFlag", "");
+        bundle.putString("MerType", "0");
+        bundle.putString("acctFlag", "1");
         bundle.putString("payAmount", "");
         bundle.putString("agtname", "");
         bundle.putString("cardNo", "");
-        bundle.putString("O2TRSN", "");
+        bundle.putString("O2TRSN", "C067");
         bundle.putString("transferFlowNo", "");
-        bundle.putString("BusiPeriod", "");
+        bundle.putString("BusiPeriod", "20150000");
+        bundle.putString("hrbbType", "1");
         intent.putExtra("bundle", bundle);
         intent.setComponent(componentName);
         startActivityForResult(intent, 0);

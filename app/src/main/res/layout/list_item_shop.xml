@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
     <!--android:padding="8dp">-->
 
     <LinearLayout
@@ -36,86 +35,86 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_inner"
             android:layout_marginLeft="@dimen/padding_inner"
             android:layout_marginRight="@dimen/padding_inner"
-            >
+            android:layout_marginTop="@dimen/padding_inner">
             <!--android:padding="@dimen/padding_inner"-->
-        <TextView
-            android:id="@+id/tv_shop_infor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:layout_marginRight="48dp"
-            android:includeFontPadding="false"
-           android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="left|center_vertical"
-            android:text="多少分开始动画，建设的快速离开ssdsakdsa"
-            android:textColor="#666666"
-            android:textSize="@dimen/title_sub_size"
-            android:gravity="center"
-            android:typeface="monospace" />
             <TextView
+                android:id="@+id/tv_shop_infor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginRight="48dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:text="多少分开始动画，建设的快速离开ssdsakdsa"
+                android:textColor="#666666"
+                android:textSize="@dimen/title_sub_size"
+                android:typeface="monospace" />
+
+            <TextView
+                android:id="@id/discountPrice"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:textColor="@android:color/background_dark"
-                android:includeFontPadding="false"
-                android:id="@id/discountPrice"
-                android:textSize="@dimen/title_sub_size"
+                android:layout_centerVertical="true"
                 android:layout_gravity="right|center_vertical"
                 android:gravity="center"
-                android:text="¥15.1"/>
-            </FrameLayout>
+                android:includeFontPadding="false"
+                android:text="¥15.1"
+                android:textColor="@android:color/background_dark"
+                android:textSize="@dimen/title_sub_size" />
+        </FrameLayout>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/padding_inner"
             android:layout_marginLeft="@dimen/padding_inner"
-            android:layout_marginTop="@dimen/padding_inner"
-            >
+            android:layout_marginRight="@dimen/padding_inner"
+            android:layout_marginTop="@dimen/padding_inner">
 
-        <TextView
-            android:id="@+id/tv_store"
-            android:layout_width="wrap_content"
-            android:layout_gravity="left"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:layout_marginRight="48dp"
-            android:text="青岛药店"
-            android:includeFontPadding="false"
-            android:gravity="center_vertical"
-            android:textColor="#666666"
-            android:textSize="@dimen/title_sub_size"
-            android:typeface="normal" />
             <TextView
+                android:id="@+id/tv_store"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginRight="48dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:text="青岛药店"
+                android:textColor="#666666"
+                android:textSize="@dimen/title_sub_size"
+                android:typeface="normal" />
+
+            <TextView
+                android:id="@id/realPrice"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
-                android:id="@id/realPrice"
-                android:text="¥16"
                 android:layout_gravity="right"
-                android:includeFontPadding="false"
-                android:textSize="@dimen/text_size_small"
                 android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="¥16"
                 android:textColor="#999999"
-                />
-            </FrameLayout>
+                android:textSize="@dimen/text_size_small" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginTop="@dimen/padding_inner"
-            android:layout_marginLeft="@dimen/padding_inner"
             android:layout_marginBottom="3dip"
+            android:layout_marginLeft="@dimen/padding_inner"
+            android:layout_marginTop="@dimen/padding_inner"
             android:orientation="horizontal">
 
             <Button
@@ -132,8 +131,8 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/shopping_cart_product_num_edit"
                 android:gravity="center"
-                android:text="1"
                 android:includeFontPadding="false"
+                android:text="1"
                 android:textColor="#333333"
                 android:textSize="@dimen/text_size_large"
                 android:typeface="normal" />

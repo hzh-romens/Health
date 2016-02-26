@@ -1,8 +1,6 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +10,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.romens.android.io.image.ImageManager;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
+import com.romens.yjk.health.ui.cells.ShoppingCartGoodsCell;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
-import com.romens.yjk.health.ui.utils.DialogUtils;
-import com.romens.yjk.health.ui.utils.UIUtils;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -191,115 +188,155 @@ public class ShopAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final ChildHolder holder;
+
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_shop, null);
-            holder = new ChildHolder();
-            holder.addButton = (Button) convertView.findViewById(R.id.bt_add);
-            holder.reduceButton = (Button) convertView.findViewById(R.id.bt_reduce);
-            holder.checkBox = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
-            holder.medicinalIcon = (ImageView) convertView.findViewById(R.id.iv_detail);
-            holder.numView = (TextView) convertView.findViewById(R.id.et_num);
-            holder.inforView = (TextView) convertView.findViewById(R.id.tv_shop_infor);
-            holder.realPriceView = (TextView) convertView.findViewById(R.id.realPrice);
-            holder.discountPriceView = (TextView) convertView.findViewById(R.id.discountPrice);
-            holder.storeView = (TextView) convertView.findViewById(R.id.tv_store);
-            convertView.setTag(holder);
-        } else {
-            holder = (ChildHolder) convertView.getTag();
+            convertView = new ShoppingCartGoodsCell(mContext);
         }
+
+        ShoppingCartGoodsCell cell = (ShoppingCartGoodsCell) convertView;
+        cell.setDelegate(new ShoppingCartGoodsCell.Delegate() {
+            @Override
+            public void onCheckableClick() {
+                boolean checked = childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+                SwitchChildItem(groupPosition, mFatherData.get(groupPosition).getShopID(), childPosition, !checked);
+            }
+
+            @Override
+            public void onGoodsCountChanged(int number) {
+                ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+                entity.setBUYCOUNT(number);
+                updateData();
+            }
+
+            @Override
+            public void onNeedInputGoodsCount() {
+
+            }
+
+            @Override
+            public void onItemClick() {
+
+            }
+        });
         final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
-        holder.numView.setText(entity.getBUYCOUNT() + "");
-        holder.discountPriceView.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
-        holder.realPriceView.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
-        holder.realPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        holder.inforView.setText(entity.getNAME());
-        holder.storeView.setText(entity.getSPEC());
-        Drawable defaultDrawables = holder.medicinalIcon.getDrawable();
-        ImageManager.loadForView(mContext, holder.medicinalIcon, entity.getGOODURL(), defaultDrawables, defaultDrawables);
-        holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SwitchChildItem(groupPosition, mFatherData.get(groupPosition).getShopID(), childPosition, !holder.checkBox.isChecked());
-            }
-        });
+        boolean checked = childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+        String iconPath = entity.getGOODURL();
+        String name = entity.getNAME();
+        String desc = "规格:" + entity.getSPEC();
+        BigDecimal marketPrice = new BigDecimal(entity.getGOODSPRICE());
+        BigDecimal userPrice = new BigDecimal(entity.getGOODSPRICE());
+        int count = entity.getBUYCOUNT();
+        cell.setValue(checked, iconPath, name, desc, userPrice, marketPrice, count, true);
 
-        holder.numView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogUtils dialogUtils = new DialogUtils();
-                dialogUtils.show(holder.numView.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
-                    @Override
-                    public void getGoodsNum(int num) {
-                        int startNum = entity.getBUYCOUNT();
-                        if (holder.checkBox.isChecked()) {
-                            if (startNum > num) {
-                                int reduce = startNum - num;
-                                double reduceMoney = reduce * entity.getGOODSPRICE();
-                                sumMoney = sumMoney - reduceMoney;
-                                updateData();
-                            } else {
-                                int add = num - startNum;
-                                double addMoney = add * entity.getGOODSPRICE();
-                                sumMoney = sumMoney + addMoney;
-                                updateData();
-                            }
-                            entity.setBUYCOUNT(num);
-                            holder.numView.setText(num + "");
-                        } else {
-                            entity.setBUYCOUNT(num);
-                            holder.numView.setText(num + "");
-                        }
-                    }
-                });
-            }
-        });
-
-        //增加
-        holder.addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int num = Integer.parseInt(holder.numView.getText().toString());
-                int startNum = num;
-                if (holder.checkBox.isChecked()) {
-                    num++;
-                    entity.setBUYCOUNT(num);
-                    double addMoney = entity.getGOODSPRICE() * (num - startNum);
-                    sumMoney = sumMoney + addMoney;
-                    holder.numView.setText(num + "");
-                    updateData();
-                } else {
-                    num++;
-                    entity.setBUYCOUNT(num);
-                    holder.numView.setText(num + "");
-                    updateData();
-                }
-            }
-        });
-
-        //减少
-        holder.reduceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int num = Integer.parseInt(holder.numView.getText().toString());
-                int startNum = num;
-                if (num > 1) {
-                    if (holder.checkBox.isChecked()) {
-                        num--;
-                        entity.setBUYCOUNT(num);
-                        double addMoney = entity.getGOODSPRICE() * (startNum - num);
-                        sumMoney = sumMoney - addMoney;
-                        holder.numView.setText(num + "");
-                        updateData();
-                    } else {
-                        num--;
-                        entity.setBUYCOUNT(num);
-                        holder.numView.setText(num + "");
-                    }
-                }
-            }
-        });
+//        final ChildHolder holder;
+//        if (convertView == null) {
+//            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_shop, null);
+//            holder = new ChildHolder();
+//            holder.addButton = (Button) convertView.findViewById(R.id.bt_add);
+//            holder.reduceButton = (Button) convertView.findViewById(R.id.bt_reduce);
+//            holder.checkBox = (CheckableFrameLayout) convertView.findViewById(R.id.checkbox);
+//            holder.medicinalIcon = (ImageView) convertView.findViewById(R.id.iv_detail);
+//            holder.numView = (TextView) convertView.findViewById(R.id.et_num);
+//            holder.inforView = (TextView) convertView.findViewById(R.id.tv_shop_infor);
+//            holder.realPriceView = (TextView) convertView.findViewById(R.id.realPrice);
+//            holder.discountPriceView = (TextView) convertView.findViewById(R.id.discountPrice);
+//            holder.storeView = (TextView) convertView.findViewById(R.id.tv_store);
+//            convertView.setTag(holder);
+//        } else {
+//            holder = (ChildHolder) convertView.getTag();
+//        }
+//        final ShopCarEntity entity = mChildData.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
+//        holder.numView.setText(entity.getBUYCOUNT() + "");
+//        holder.discountPriceView.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
+//        holder.realPriceView.setText("¥" + UIUtils.getDouvleValue(entity.getGOODSPRICE() + ""));
+//        holder.realPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+//        holder.inforView.setText(entity.getNAME());
+//        holder.storeView.setText(entity.getSPEC());
+//        Drawable defaultDrawables = holder.medicinalIcon.getDrawable();
+//        ImageManager.loadForView(mContext, holder.medicinalIcon, entity.getGOODURL(), defaultDrawables, defaultDrawables);
+//        holder.checkBox.setChecked(childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition));
+//        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SwitchChildItem(groupPosition, mFatherData.get(groupPosition).getShopID(), childPosition, !holder.checkBox.isChecked());
+//            }
+//        });
+//
+//        holder.numView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DialogUtils dialogUtils = new DialogUtils();
+//                dialogUtils.show(holder.numView.getText().toString(), mContext, "", new DialogUtils.QuantityOfGoodsCallBack() {
+//                    @Override
+//                    public void getGoodsNum(int num) {
+//                        int startNum = entity.getBUYCOUNT();
+//                        if (holder.checkBox.isChecked()) {
+//                            if (startNum > num) {
+//                                int reduce = startNum - num;
+//                                double reduceMoney = reduce * entity.getGOODSPRICE();
+//                                sumMoney = sumMoney - reduceMoney;
+//                                updateData();
+//                            } else {
+//                                int add = num - startNum;
+//                                double addMoney = add * entity.getGOODSPRICE();
+//                                sumMoney = sumMoney + addMoney;
+//                                updateData();
+//                            }
+//                            entity.setBUYCOUNT(num);
+//                            holder.numView.setText(num + "");
+//                        } else {
+//                            entity.setBUYCOUNT(num);
+//                            holder.numView.setText(num + "");
+//                        }
+//                    }
+//                });
+//            }
+//        });
+//
+//        //增加
+//        holder.addButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int num = Integer.parseInt(holder.numView.getText().toString());
+//                int startNum = num;
+//                if (holder.checkBox.isChecked()) {
+//                    num++;
+//                    entity.setBUYCOUNT(num);
+//                    double addMoney = entity.getGOODSPRICE() * (num - startNum);
+//                    sumMoney = sumMoney + addMoney;
+//                    holder.numView.setText(num + "");
+//                    updateData();
+//                } else {
+//                    num++;
+//                    entity.setBUYCOUNT(num);
+//                    holder.numView.setText(num + "");
+//                    updateData();
+//                }
+//            }
+//        });
+//
+//        //减少
+//        holder.reduceButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int num = Integer.parseInt(holder.numView.getText().toString());
+//                int startNum = num;
+//                if (num > 1) {
+//                    if (holder.checkBox.isChecked()) {
+//                        num--;
+//                        entity.setBUYCOUNT(num);
+//                        double addMoney = entity.getGOODSPRICE() * (startNum - num);
+//                        sumMoney = sumMoney - addMoney;
+//                        holder.numView.setText(num + "");
+//                        updateData();
+//                    } else {
+//                        num--;
+//                        entity.setBUYCOUNT(num);
+//                        holder.numView.setText(num + "");
+//                    }
+//                }
+//            }
+//        });
         return convertView;
     }
 

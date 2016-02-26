@@ -519,16 +519,32 @@
         <!--**************** im end *****************-->
 
 
-
-
-
-
         <!--**************** 医保支付 begin *************-->
         <activity
             android:name="com.romens.yjk.health.hyrmtt.pay.YBPayResult"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="true"
             android:launchMode="singleTask"></activity>
+
+        <activity
+            android:name=".ui.activity.medicare.MedicareCardListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.activity.medicare.BindUserMedicareNoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.activity.medicare.MedicarePayModeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+
         <!--**************** 医保支付 end *************-->
 
     </application>

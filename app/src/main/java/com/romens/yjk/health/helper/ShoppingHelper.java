@@ -4,6 +4,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 
 import com.romens.yjk.health.config.ResourcesConfig;
@@ -41,6 +42,24 @@ public class ShoppingHelper {
             return spannableString;
         }
         return null;
+    }
+
+    public static CharSequence createPriceCompare(BigDecimal marketPrice, BigDecimal userPrice) {
+        CharSequence userPriceText = formatPrice(userPrice);
+        if (marketPrice.compareTo(userPrice) == 0) {
+            return userPriceText;
+        }
+        SpannableStringBuilder priceText = new SpannableStringBuilder();
+        priceText.append(userPriceText);
+        priceText.append(" ");
+        DecimalFormat decimalFormat = new DecimalFormat("￥#,##0.00");
+        String marketPriceText = decimalFormat.format(marketPrice);
+        SpannableString spannableString = new SpannableString(marketPriceText);
+        int length = marketPriceText.length();
+        spannableString.setSpan(new StrikethroughSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(0xff757575), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        priceText.append(spannableString);
+        return priceText;
     }
 
     public static CharSequence createMemberPriceInfo(BigDecimal price) {
