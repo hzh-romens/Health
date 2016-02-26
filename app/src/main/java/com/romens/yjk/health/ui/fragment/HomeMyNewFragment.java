@@ -35,6 +35,7 @@ import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
+import com.romens.yjk.health.ui.FeedBackNewActivity;
 import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HelpNewActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
@@ -89,12 +90,14 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     @Override
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginOut);
         listView.setAdapter(adapter);
     }
 
     @Override
     public void onDestroy() {
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginOut);
         super.onDestroy();
     }
 
@@ -164,6 +167,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     @Override
     public void didReceivedNotification(int i, Object... objects) {
         if (i == AppNotificationCenter.loginSuccess) {
+            updateData();
+        }else if (i == AppNotificationCenter.loginOut) {
             updateData();
         }
     }
@@ -301,7 +306,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                             if (position == 0) {//帮助
                                 startActivity(new Intent(getActivity(), HelpNewActivity.class));
                             } else if (position == 1) {//意见反馈
-                                startActivity(new Intent(getActivity(), FeedBackActivity.class));
+                                startActivity(new Intent(getActivity(), FeedBackNewActivity.class));
                             } else if (position == 2) {//检查更新
                                 MonitorHelper.checkUpdate(getActivity(), true);
                             } else if (position == 3) {//设置
