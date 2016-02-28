@@ -1,4 +1,5 @@
 <resources>
+
     <style name="AppTheme" parent="@style/Theme.Romens.Default">
         <item name="colorPrimary">@color/theme_primary</item>
         <item name="colorPrimaryDark">@color/theme_primary_dark</item>
@@ -27,6 +28,7 @@
         <item name="android:scaleType">centerInside</item>
         <item name="android:layout_gravity">center</item>
     </style>
+
     <style name="title_textview_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
@@ -36,6 +38,7 @@
         <item name="android:includeFontPadding">false</item>
         <item name="android:gravity">center</item>
     </style>
+
     <style name="ImageStyle">
         <item name="android:layout_marginBottom">@dimen/padding_inner</item>
         <item name="android:layout_marginLeft">@dimen/padding_outter</item>
@@ -238,14 +241,17 @@
         <item name="android:minHeight">15dp</item>
         <item name="android:maxHeight">15dp</item>
     </style>
+
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">16sp</item>
-        </style>
+    </style>
+
     <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- toolbar（actionbar）颜色 -->
         <item name="colorPrimary">@color/theme_primary</item>
         <!--toolbar标题文字颜色-->
         <item name="android:textColorPrimary">@color/white</item>
     </style>
+
 
 </resources>

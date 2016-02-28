@@ -4,58 +4,69 @@
     android:layout_height="match_parent"
     tools:context="com.romens.yjk.health.ui.ShopCarActivity">
 
-    <RelativeLayout
-        style="@style/titleStytle"
-        android:background="@color/theme_primary"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/back"
-            style="@style/iv_back_style"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padding_outter"
-            android:background="@drawable/ic_ab_back" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/padding_inner"
-            android:layout_marginLeft="64dp"
-            android:layout_marginRight="48dp"
-            android:layout_marginTop="@dimen/padding_inner"
-            android:gravity="center_vertical"
-            android:imeOptions="actionSearch"
-            android:inputType="textPhonetic"
-            android:paddingLeft="8dp"
-            android:text="购物车"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_title" />
-
-        <ImageView
-            android:id="@+id/edit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padding_outter"
-            android:layout_marginRight="@dimen/padding_outter"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:src="@drawable/ic_delete_white"
-            android:textColor="@color/white"
-            android:textSize="@dimen/title_text_size" />
-
-    </RelativeLayout>
-
-    <ExpandableListView
-        android:id="@+id/ev"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="45dp"
-        android:layout_marginTop="54dp"
-        android:groupIndicator="@null" />
+        android:orientation="vertical">
+
+        <RelativeLayout
+            style="@style/titleStytle"
+            android:background="@color/theme_primary"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/back"
+                style="@style/iv_back_style"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/padding_outter"
+                android:background="@drawable/ic_ab_back" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/padding_inner"
+                android:layout_marginLeft="64dp"
+                android:layout_marginRight="48dp"
+                android:layout_marginTop="@dimen/padding_inner"
+                android:gravity="center_vertical"
+                android:imeOptions="actionSearch"
+                android:inputType="textPhonetic"
+                android:paddingLeft="8dp"
+                android:text="购物车"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_title" />
+
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/padding_outter"
+                android:layout_marginRight="@dimen/padding_outter"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:src="@drawable/ic_delete_white"
+                android:textColor="@color/white"
+                android:textSize="@dimen/title_text_size" />
+
+        </RelativeLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ExpandableListView
+                android:id="@+id/ev"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:groupIndicator="@null" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

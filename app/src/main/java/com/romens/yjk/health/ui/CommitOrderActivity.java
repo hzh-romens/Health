@@ -178,6 +178,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         adapter = new CommitOrderAdapter(this, parentData.size() + 1);
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData, parentTypes);
+        double lastMoney = sumMoney - coupon;
+        adapter.setSumMoney(lastMoney);
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
         runOnUiThread(new Runnable() {
@@ -231,6 +233,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         String moneys = "¥" + UIUtils.getDouvleValue(sumMoney + "");
         sumMoneys.setText(getColorText(counts, moneys));
 
+
         //订单提交，并跳转到下一个页面
         accounts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,6 +275,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     }
 
 
+    private double coupon;
+    private double limitAmount;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -283,6 +289,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         } else if (resultCode == 3) {
             showBuilder();
         } else if (resultCode == 4) {
+            coupon = data.getDoubleExtra("amount", 0);
+            limitAmount = data.getDoubleExtra("limitAmount", 0);
+            adapter.setCoupon(coupon + "", limitAmount + "");
         }
     }
 
@@ -318,7 +327,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                             } else {
                                 Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
                                 i.putExtra("success", "true");
-                                i.putExtra("sumMoney", sumMoney + "");
+                                i.putExtra("sumMoney", (sumMoney - coupon) + "");
                                 i.putExtra("orderNumber", jsonObject.getString("msg1"));
                                 i.putExtra("time", jsonObject.getString("msg2"));
                                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
