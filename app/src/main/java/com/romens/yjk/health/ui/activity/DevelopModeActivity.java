@@ -56,6 +56,9 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
                 if (position == testYBZFRow) {
                     Intent intent = new Intent(DevelopModeActivity.this, MedicarePayModeActivity.class);
                     startActivity(intent);
+                } else if (position == testShoppingCartRow) {
+                    Intent intent = new Intent(DevelopModeActivity.this, ShoppingCartActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -92,11 +95,13 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
     private void updateAdapter() {
         rowCount = 0;
         testYBZFRow = rowCount++;
+        testShoppingCartRow = rowCount++;
         adapter.notifyDataSetChanged();
     }
 
     private int rowCount;
     private int testYBZFRow;
+    private int testShoppingCartRow;
 
     class ListAdapter extends BaseAdapter {
 
@@ -123,6 +128,8 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
             TextSettingsCell cell = (TextSettingsCell) convertView;
             if (position == testYBZFRow) {
                 cell.setText("医保支付测试", true);
+            } else if (position == testShoppingCartRow) {
+                cell.setText("购物车测试", true);
             }
             return convertView;
         }

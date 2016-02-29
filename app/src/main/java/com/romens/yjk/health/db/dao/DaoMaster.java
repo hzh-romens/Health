@@ -15,7 +15,7 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
  * Master of DAO (schema version 12): knows all DAOs.
 */
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 51;
+    public static final int SCHEMA_VERSION = 53;
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
@@ -32,6 +32,9 @@ public class DaoMaster extends AbstractDaoMaster {
         FamilyDrugGroupDao.createTable(db, ifNotExists);
         HistoryDao.createTable(db, ifNotExists);
         FavoritesDao.createTable(db, ifNotExists);
+
+        //购物车
+        ShoppingCartDataDao.createTable(db,ifNotExists);
     }
     
     /** Drops underlying database table using DAOs. */
@@ -49,6 +52,9 @@ public class DaoMaster extends AbstractDaoMaster {
         FamilyDrugGroupDao.dropTable(db,ifExists);
         HistoryDao.dropTable(db,ifExists);
         FavoritesDao.dropTable(db, ifExists);
+
+        //购物车
+        ShoppingCartDataDao.dropTable(db,ifExists);
     }
 
     public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion){
@@ -65,6 +71,9 @@ public class DaoMaster extends AbstractDaoMaster {
         FamilyDrugGroupDao.upgradeTable(db, oldVersion, newVersion);
         HistoryDao.upgradeTable(db, oldVersion, newVersion);
         FavoritesDao.upgradeTable(db, oldVersion, newVersion);
+
+        //购物车
+        ShoppingCartDataDao.upgradeTable(db, oldVersion, newVersion);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -108,6 +117,9 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(FamilyDrugGroupDao.class);
         registerDaoClass(HistoryDao.class);
         registerDaoClass(FavoritesDao.class);
+
+        //购物车
+        registerDaoClass(ShoppingCartDataDao.class);
     }
     
     public DaoSession newSession() {

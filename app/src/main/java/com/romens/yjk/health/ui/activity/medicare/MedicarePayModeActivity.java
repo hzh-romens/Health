@@ -1,7 +1,9 @@
 package com.romens.yjk.health.ui.activity.medicare;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -35,6 +37,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.pay.MedicarePayMode;
+import com.romens.yjk.health.pay.PayAppManager;
 import com.romens.yjk.health.pay.PayBaseActivity;
 import com.romens.yjk.health.pay.PayParamsForYBHEB;
 import com.romens.yjk.health.ui.cells.ActionCell;
@@ -118,7 +121,7 @@ public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == payActionRow) {
-                    needSelectMedicareCardPay();
+                    tryPayRequest();
                 }
             }
         });
@@ -137,6 +140,26 @@ public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> 
         } else {
             finish();
         }
+    }
+
+    private void tryPayRequest() {
+        if (selectedPayModeKey == 0) {
+            if (!PayAppManager.isSetupYBHEB(this)) {
+                new AlertDialog.Builder(this)
+                        .setTitle("医保支付")
+                        .setMessage("检测手机没有安装 哈尔滨银行 所需的支付客户端,是否跳转到银行官方页面下载?")
+                        .setPositiveButton("现在去下载", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                PayAppManager.needDownloadPayApp(MedicarePayModeActivity.this, medicarePayModes.get(0).mode);
+                            }
+                        }).setNegativeButton("取消", null)
+                        .create().show();
+                return;
+            }
+        }
+        needSelectMedicareCardPay();
     }
 
     private void needSelectMedicareCardPay() {
@@ -208,7 +231,11 @@ public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> 
 
     private void initPayMode() {
         medicarePayModes.clear();
-        medicarePayModes.put(0, new MedicarePayMode(0, R.drawable.medicare_pay_haerbin, "哈尔滨银行", "支持使用哈尔滨银行账户支付"));
+        medicarePayModes.put(0, new MedicarePayMode.Builder(0)
+                .withIconResId(R.drawable.medicare_pay_haerbin)
+                .withName("哈尔滨银行")
+                .withDesc("支持使用哈尔滨银行账户进行医保支付")
+                .withMode("YB_HEB").build());
         selectedPayModeKey = 0;
     }
 

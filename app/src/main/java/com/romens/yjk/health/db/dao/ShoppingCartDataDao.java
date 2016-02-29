@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.romens.android.io.SerializedData;
-import com.romens.yjk.health.db.entity.ShoppingCartEntity;
+import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
@@ -16,7 +16,7 @@ import de.greenrobot.dao.internal.DaoConfig;
  * @create 16/2/27
  * @description
  */
-public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String> {
+public class ShoppingCartDataDao extends AbstractDao<ShoppingCartDataEntity, String> {
 
     public static final String TABLENAME = "SHOPPINGCARTDATA";
 
@@ -26,10 +26,9 @@ public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String>
      */
     public static class Properties {
         public final static Property Guid = new Property(0, String.class, "guid", true, "GUID");
-        public final static Property Parent = new Property(1, long.class, "parent", false, "PARENT");
-        public final static Property CreateDate = new Property(2, long.class, "createDate", false, "CREATEDATE");
-        public final static Property Data = new Property(3, byte[].class, "data", false, "DATA");
-        public final static Property Updated = new Property(4, long.class, "updated", false, "UPDATED");
+        public final static Property CreateDate = new Property(1, long.class, "createDate", false, "CREATEDATE");
+        public final static Property Data = new Property(2, byte[].class, "data", false, "DATA");
+        public final static Property Updated = new Property(3, long.class, "updated", false, "UPDATED");
     }
 
 
@@ -45,7 +44,7 @@ public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String>
 
 
     private void registerSerialize() {
-        SerializedData.getInstance().register(ShoppingCartEntity.ClassId, ShoppingCartEntity.class);
+        SerializedData.getInstance().register(ShoppingCartDataEntity.ClassId, ShoppingCartDataEntity.class);
     }
 
     /**
@@ -55,15 +54,12 @@ public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String>
         String constraint = ifNotExists ? "IF NOT EXISTS " : "";
         db.execSQL("CREATE TABLE " + constraint + "'" + TABLENAME + "' (" +
                 "'GUID' TEXT PRIMARY KEY," +
-                "'PARENT' INTEGER NOT NULL," +
                 "'CREATEDATE' TEXT NOT NULL," +
                 "'DATA' BLOB ," +
                 "'UPDATED' INTEGER NOT NULL );");
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_SHOPPINGCARTDATA_CREATEDATE ON SHOPPINGCARTDATA" +
                 " (CREATEDATE);");
-        db.execSQL("CREATE INDEX " + constraint + "IDX_SHOPPINGCARTDATA_PARENT ON SHOPPINGCARTDATA" +
-                " (PARENT);");
         db.execSQL("CREATE INDEX " + constraint + "IDX_SHOPPINGCARTDATA_UPDATED ON SHOPPINGCARTDATA" +
                 " (UPDATED);");
     }
@@ -85,17 +81,16 @@ public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String>
      * @inheritdoc
      */
     @Override
-    protected void bindValues(SQLiteStatement stmt, ShoppingCartEntity entity) {
+    protected void bindValues(SQLiteStatement stmt, ShoppingCartDataEntity entity) {
         stmt.clearBindings();
 
         String id = entity.getGuid();
         if (id != null) {
             stmt.bindString(1, id);
         }
-        stmt.bindLong(2, entity.getParent());
-        stmt.bindLong(3, entity.getCrateTime());
-        stmt.bindBlob(4, SerializedData.getInstance().toBytes(entity));
-        stmt.bindLong(5, entity.getUpdateTime());
+        stmt.bindLong(2, entity.getCrated());
+        stmt.bindBlob(3, SerializedData.getInstance().toBytes(entity));
+        stmt.bindLong(4, entity.getUpdated());
     }
 
     /**
@@ -110,8 +105,8 @@ public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String>
      * @inheritdoc
      */
     @Override
-    public ShoppingCartEntity readEntity(Cursor cursor, int offset) {
-        ShoppingCartEntity entity = (ShoppingCartEntity) SerializedData.getInstance().toEntity(ShoppingCartEntity.ClassId, cursor.getBlob(offset + 3));
+    public ShoppingCartDataEntity readEntity(Cursor cursor, int offset) {
+        ShoppingCartDataEntity entity = (ShoppingCartDataEntity) SerializedData.getInstance().toEntity(ShoppingCartDataEntity.ClassId, cursor.getBlob(offset + 2));
         return entity;
     }
 
@@ -119,15 +114,15 @@ public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String>
      * @inheritdoc
      */
     @Override
-    public void readEntity(Cursor cursor, ShoppingCartEntity entity, int offset) {
-        entity = (ShoppingCartEntity) SerializedData.getInstance().toEntity(ShoppingCartEntity.ClassId, cursor.getBlob(offset + 3));
+    public void readEntity(Cursor cursor, ShoppingCartDataEntity entity, int offset) {
+        entity = (ShoppingCartDataEntity) SerializedData.getInstance().toEntity(ShoppingCartDataEntity.ClassId, cursor.getBlob(offset + 2));
     }
 
     /**
      * @inheritdoc
      */
     @Override
-    protected String updateKeyAfterInsert(ShoppingCartEntity entity, long rowId) {
+    protected String updateKeyAfterInsert(ShoppingCartDataEntity entity, long rowId) {
         return entity.getGuid();
     }
 
@@ -135,7 +130,7 @@ public class ShoppingCartDataDao extends AbstractDao<ShoppingCartEntity, String>
      * @inheritdoc
      */
     @Override
-    public String getKey(ShoppingCartEntity entity) {
+    public String getKey(ShoppingCartDataEntity entity) {
         if (entity != null) {
             return entity.getGuid();
         } else {

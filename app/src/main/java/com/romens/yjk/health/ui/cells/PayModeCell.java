@@ -13,7 +13,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.AvatarDrawable;
 import com.romens.images.ui.CloudImageView;
-import com.romens.yjk.health.ui.components.CheckImageView;
+import com.romens.yjk.health.ui.components.CheckableView;
 
 /**
  * @author Zhou Lisi
@@ -25,7 +25,7 @@ public class PayModeCell extends FrameLayout {
     private CloudImageView avatarImageView;
     private TextView nameTextView;
     private TextView descTextView;
-    private CheckImageView checkBox;
+    private CheckableView checkBox;
 
     private AvatarDrawable avatarDrawable;
 
@@ -65,7 +65,7 @@ public class PayModeCell extends FrameLayout {
         descTextView.setGravity((Gravity.LEFT) | Gravity.CENTER_VERTICAL);
         addView(descTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT, 76, 33, 48, 0));
 
-        checkBox = new CheckImageView(context);
+        checkBox = new CheckableView(context);
         addView(checkBox, LayoutHelper.createFrame(24, 24, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 16, 0));
     }
 

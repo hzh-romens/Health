@@ -39,6 +39,7 @@ import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
 import com.romens.yjk.health.ui.fragment.ShopCarFragment;
+import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
 import java.util.ArrayList;
@@ -206,7 +207,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                 UIOpenHelper.openUserLocationActivity(HomeActivity.this);
             }
         });
-        actionBar.addView(lastLocationCell, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
+        actionBar.addView(lastLocationCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT,
                 Gravity.CENTER_VERTICAL | Gravity.LEFT, 56, 0, 104, 0));
 
         tabsCell.addView(R.drawable.ic_tab_home, R.drawable.ic_tab_home_pressed, "首页");
@@ -314,9 +315,9 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         fragments.add(new HomeHealthNewFragment());
 //        fragments.add(new HomeHealthFragment());
         fragments.add(new HomeDiscoveryFragment());
-        ShopCarFragment shopCarFragment = new ShopCarFragment();
-        shopCarFragment.setTitleView(false);
-        fragments.add(shopCarFragment);
+//        ShopCarFragment shopCarFragment = new ShopCarFragment();
+//        shopCarFragment.setTitleView(false);
+        fragments.add(new ShoppingCartFragment());
 //        fragments.add(new HomeMyFragment());
         fragments.add(new HomeMyNewFragment());
         return fragments;

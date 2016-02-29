@@ -35,7 +35,7 @@ public class AddSubView extends LinearLayout {
     public interface AddSubDelegate {
         void onNumSelect();
 
-        boolean onNumberChanged(int number);
+        void onNumberChanged(int number);
     }
 
     public AddSubView(Context context) {
@@ -65,9 +65,10 @@ public class AddSubView extends LinearLayout {
         final int borderColor = 0xffbdbdbd;
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER_VERTICAL);
-        ShapeDrawable shapeDrawable = createShape(borderColor);
-        setPadding(AndroidUtilities.dp(1), AndroidUtilities.dp(1), AndroidUtilities.dp(1), AndroidUtilities.dp(1));
-        setBackgroundDrawable(shapeDrawable);
+        setBackgroundResource(R.drawable.border_grey_default);
+//        ShapeDrawable shapeDrawable = createShape(borderColor);
+//        setPadding(AndroidUtilities.dp(1), AndroidUtilities.dp(1), AndroidUtilities.dp(1), AndroidUtilities.dp(1));
+//        setBackgroundDrawable(shapeDrawable);
 
         ImageView subView = new ImageView(context);
         subView.setClickable(true);
@@ -86,7 +87,8 @@ public class AddSubView extends LinearLayout {
         numTextView.setEllipsize(TextUtils.TruncateAt.END);
         numTextView.setGravity(Gravity.CENTER);
         numTextView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(2), AndroidUtilities.dp(8), AndroidUtilities.dp(2));
-        addView(numTextView, LayoutHelper.createLinear(48, 32));
+        AndroidUtilities.setMaterialTypeface(numTextView);
+        addView(numTextView, LayoutHelper.createLinear(48, 30));
 
         ImageView addView = new ImageView(context);
         addView.setScaleType(ImageView.ScaleType.CENTER);
@@ -136,13 +138,9 @@ public class AddSubView extends LinearLayout {
     }
 
     private void changeValue(int value) {
+        setValue(value);
         if (addSubDelegate != null) {
-            boolean isValid = addSubDelegate.onNumberChanged(number);
-            if (isValid) {
-                setValue(value);
-            }
-        } else {
-            setValue(value);
+            addSubDelegate.onNumberChanged(value);
         }
     }
 

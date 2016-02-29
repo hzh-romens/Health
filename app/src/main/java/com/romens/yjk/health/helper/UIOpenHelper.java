@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.google.gson.Gson;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
@@ -29,6 +27,7 @@ import com.romens.yjk.health.ui.MemberActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
+import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.activity.ChangePasswordActivity;
 import com.romens.yjk.health.ui.activity.FavoritesActivity;
@@ -36,6 +35,7 @@ import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
+import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.yunuo.pay.PayActivity;
 
 import java.io.Serializable;
@@ -61,7 +61,7 @@ public class UIOpenHelper {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void openChangedPasswordActivity(Context context){
+    public static void openChangedPasswordActivity(Context context) {
         Intent intent = new Intent(context, ChangePasswordActivity.class);
         context.startActivity(intent);
     }
@@ -301,6 +301,15 @@ public class UIOpenHelper {
         intent.putExtra("sumMoney", sumMoney);
         intent.putExtra("deliveryName", deliveryName);
         intent.putExtra("orderNumber", orderNumber);
+        context.startActivity(intent);
+    }
+
+    public static void openMedicineClass(Context context, String id, String name) {
+        Intent intent = new Intent(context, ShopListActivity.class);
+        Bundle arguments = new Bundle();
+        arguments.putString(HomeHealthNewFragment.ARGUMENTS_KEY_ID, id);
+        arguments.putString(HomeHealthNewFragment.ARGUMENTS_KEY_NAME, name);
+        intent.putExtras(arguments);
         context.startActivity(intent);
     }
 }

@@ -54,14 +54,20 @@ public abstract class ADBaseControl {
     public static void onActonForImageAD(Context context, Bundle arguments) {
         int type = arguments.getInt("TYPE");
         if (type == 1) {
-            String id = arguments.getString("ID");
-            if (TextUtils.equals("YBZQ", id)) {
+            String action = arguments.getString("ACTION");
+            if (TextUtils.equals("YBZQ", action)) {
                 //跳转到医保专区
                 ComponentName component = new ComponentName(context, MedicineGroupActivity.class.getName());
                 Intent intent = new Intent();
                 intent.setComponent(component);
                 intent.putExtra("title", "医保专区");
                 context.startActivity(intent);
+            } else if (TextUtils.equals("OPENCLASS", action)) {
+                String id = arguments.getString("ID");
+                String name = arguments.getString("NAME");
+                UIOpenHelper.openMedicineClass(context, id, name);
+            } else if (TextUtils.equals("OPENGOODS", action)) {
+                onActionForProduct(context, arguments);
             }
         } else {
             String action = arguments.getString("ACTION");
@@ -102,7 +108,7 @@ public abstract class ADBaseControl {
             String valueTemp;
             for (int i = 0; i < size; i++) {
                 valueTemp = getPrimaryIdValue(ids.get(i));
-                url = url.replace("{" + i + "}", valueTemp==null?"":valueTemp);
+                url = url.replace("{" + i + "}", valueTemp == null ? "" : valueTemp);
             }
         }
         if (url.startsWith("/")) {

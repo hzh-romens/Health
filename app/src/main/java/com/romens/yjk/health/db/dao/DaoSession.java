@@ -14,7 +14,7 @@ import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
-import com.romens.yjk.health.model.CollectDataEntity;
+import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 
 import java.util.Map;
@@ -72,6 +72,11 @@ public class DaoSession extends AbstractDaoSession {
 
     private final FavoritesDao favoritesDao;
     private final DaoConfig favoritesDataDaoConfig;
+
+
+    //购物车
+    private final ShoppingCartDataDao shoppingCartDataDao;
+    private final DaoConfig shoppingCartDataDaoConfig;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -142,6 +147,14 @@ public class DaoSession extends AbstractDaoSession {
         favoritesDataDaoConfig.initIdentityScope(type);
         favoritesDao = new FavoritesDao(favoritesDataDaoConfig, this);
         registerDao(FavoritesEntity.class, favoritesDao);
+
+
+        //购物车
+
+        shoppingCartDataDaoConfig = daoConfigMap.get(ShoppingCartDataDao.class).clone();
+        shoppingCartDataDaoConfig.initIdentityScope(type);
+        shoppingCartDataDao = new ShoppingCartDataDao(shoppingCartDataDaoConfig, this);
+        registerDao(ShoppingCartDataEntity.class, shoppingCartDataDao);
     }
 
     public void clear() {
@@ -158,6 +171,9 @@ public class DaoSession extends AbstractDaoSession {
         familyDrugGroupDaoConfig.getIdentityScope().clear();
         historyDaoConfig.getIdentityScope().clear();
         favoritesDataDaoConfig.getIdentityScope().clear();
+
+        //购物车
+        shoppingCartDataDaoConfig.getIdentityScope().clear();
     }
 
     public DataCacheDao getDataCacheDao() {
@@ -211,5 +227,15 @@ public class DaoSession extends AbstractDaoSession {
 
     public FavoritesDao getFavoritesDao() {
         return favoritesDao;
+    }
+
+
+    /**
+     * 购物车
+     *
+     * @return
+     */
+    public ShoppingCartDataDao getShoppingCartDataDao() {
+        return shoppingCartDataDao;
     }
 }

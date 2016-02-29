@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
@@ -13,12 +14,15 @@ import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.dao.FavoritesDao;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.dao.ShopCarDao;
+import com.romens.yjk.health.db.dao.ShoppingCartDataDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
+import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.query.DeleteQuery;
@@ -241,5 +245,57 @@ public class DBInterface {
                 .where(FavoritesDao.Properties.MerchandiseId.in(medicineGuid))
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
+    }
+
+
+    /**
+     * 获取当前本地购物车
+     *
+     * @return
+     */
+    public List<ShoppingCartDataEntity> getCurrClientShoppingCart() {
+        ShoppingCartDataDao dao = openReadableDb().getShoppingCartDataDao();
+        List<ShoppingCartDataEntity> entities = dao.queryBuilder()
+                .orderAsc(ShoppingCartDataDao.Properties.CreateDate).list();
+        return entities;
+    }
+
+    public void syncClientShoppingCart(List<ShoppingCartDataEntity> list) {
+        ShoppingCartDataDao dao = openWritableDb().getShoppingCartDataDao();
+        dao.deleteAll();
+        if (list != null && list.size() > 0) {
+            dao.insertOrReplaceInTx(list);
+        }
+    }
+
+    public void updateShoppingCartCount(ShoppingCartDataEntity entity) {
+        ShoppingCartDataDao dao = openWritableDb().getShoppingCartDataDao();
+        dao.insertOrReplace(entity);
+    }
+
+    public void deleteShoppingCartGoods(String... entity) {
+        ShoppingCartDataDao dao = openWritableDb().getShoppingCartDataDao();
+        dao.deleteByKeyInTx(entity);
+    }
+
+    public long getClientShoppingCartUpdated() {
+        ShoppingCartDataDao dao = openReadableDb().getShoppingCartDataDao();
+        ShoppingCartDataEntity entity = dao.queryBuilder()
+                .orderDesc(ShoppingCartDataDao.Properties.Updated)
+                .limit(1)
+                .unique();
+        if (entity == null) {
+            return 0;
+        } else {
+            return entity.getUpdated();
+        }
+    }
+
+    public List<ShoppingCartDataEntity> findShoppingCartData(ArrayList<String> ids) {
+        ShoppingCartDataDao dao = openReadableDb().getShoppingCartDataDao();
+        List<ShoppingCartDataEntity> entities = dao.queryBuilder().where(ShoppingCartDataDao.Properties.Guid.in(ids))
+                .orderDesc(ShoppingCartDataDao.Properties.CreateDate)
+                .list();
+        return entities;
     }
 }

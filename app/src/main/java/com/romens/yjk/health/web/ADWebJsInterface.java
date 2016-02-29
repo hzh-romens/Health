@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
-import android.widget.Toast;
 
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.helper.UIOpenHelper;
 
 import org.json.JSONException;
@@ -32,6 +32,18 @@ public class ADWebJsInterface extends JsBaseInterface {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @JavascriptInterface
+    public void login() {
+        UIOpenHelper.openLoginActivity(context);
+    }
+
+
+    @JavascriptInterface
+    public String getToken() {
+        String token = FacadeToken.getInstance().getAuthToken();
+        return token;
     }
 
     @Override

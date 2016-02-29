@@ -1,20 +1,18 @@
 package com.romens.yjk.health.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.gc.materialdesign.views.ProgressBarDeterminate;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.web.ADWebJsInterface;
 import com.romens.yjk.health.web.JsBaseInterface;
 
 /**
  * Created by siery on 15/9/9.
  */
-public class ADWebActivity extends WebActivity {
+public class ADWebActivity extends WebActivity implements AppNotificationCenter.NotificationCenterDelegate {
     public static final String ARGUMENTS_KEY_TITLE = "title";
     public static final String ARGUMENTS_KEY_TARGET_URL = "target_url";
     public static final String ARGUMENTS_KEY_HTML = "html";
@@ -67,6 +65,13 @@ public class ADWebActivity extends WebActivity {
             getWebView().goBack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.loginSuccess) {
+            getWebView().reload();
         }
     }
 }

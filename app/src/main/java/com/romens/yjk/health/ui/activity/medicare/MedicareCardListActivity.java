@@ -84,10 +84,10 @@ public class MedicareCardListActivity extends BaseActionBarActivityWithAnalytics
         actionBarMenu.addItem(0, R.drawable.ic_add_white_24dp);
         if (onlySelect) {
             actionBar.setBackButtonImage(R.drawable.ic_close_white_24dp);
-            actionBar.setTitle("选择支付的医保卡");
+            actionBar.setTitle("选择支付的社会保障卡");
         } else {
             actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
-            actionBar.setTitle("已绑定的医保卡");
+            actionBar.setTitle("已绑定的社会保障卡");
         }
 
         FrameLayout listContainer = new FrameLayout(this);
@@ -107,7 +107,7 @@ public class MedicareCardListActivity extends BaseActionBarActivityWithAnalytics
         emptyTextView.setTextSize(20);
         emptyTextView.setLineSpacing(AndroidUtilities.dp(4), 1.0f);
         emptyTextView.setGravity(Gravity.CENTER);
-        String emptyText = "点击右上角 # 可以添加医保卡";
+        String emptyText = "点击右上角 # 可以添加社会保障卡";
         int index = emptyText.indexOf("#");
         SpannableString helperSpan = new SpannableString(emptyText);
         helperSpan.setSpan(new ImageSpan(this, R.drawable.ic_add_grey600_24dp), index, index + 1, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);

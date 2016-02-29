@@ -196,7 +196,7 @@ public class ShopAdapter extends BaseExpandableListAdapter {
         ShoppingCartGoodsCell cell = (ShoppingCartGoodsCell) convertView;
         cell.setDelegate(new ShoppingCartGoodsCell.Delegate() {
             @Override
-            public void onCheckableClick() {
+            public void onCheckableClick(boolean isChecked) {
                 boolean checked = childStatusList.get(mFatherData.get(groupPosition).getShopID()).get(childPosition);
                 SwitchChildItem(groupPosition, mFatherData.get(groupPosition).getShopID(), childPosition, !checked);
             }
@@ -215,6 +215,11 @@ public class ShopAdapter extends BaseExpandableListAdapter {
 
             @Override
             public void onItemClick() {
+
+            }
+
+            @Override
+            public void onDelete() {
 
             }
         });

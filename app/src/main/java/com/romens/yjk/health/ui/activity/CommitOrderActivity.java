@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +19,15 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.entity.ShopEntity;
+import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.ui.components.CardSelector;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Zhou Lisi
@@ -27,15 +35,21 @@ import com.romens.yjk.health.ui.components.CardSelector;
  * @description
  */
 public class CommitOrderActivity extends BaseActionBarActivityWithAnalytics {
+    public static final String ARGUMENTS_KEY_SELECT_GOODS = "key_select_goods";
+
     private RecyclerView listView;
     private ListAdapter adapter;
 
     private FrameLayout bottomBar;
     private TextView amountDescView;
 
+    private final List<ShopEntity> shopEntities = new ArrayList<>();
+    private final Map<String, List<ShoppingCartDataEntity>> needCommitGoods = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         content.setBackgroundColor(0xffffffff);
         ActionBar actionBar = new ActionBar(this);
@@ -48,7 +62,7 @@ public class CommitOrderActivity extends BaseActionBarActivityWithAnalytics {
         listView.setLayoutManager(new LinearLayoutManager(this));
         dataContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP, 0, 0, 0, 64));
 
-        bottomBar= new FrameLayout(this);
+        bottomBar = new FrameLayout(this);
         bottomBar.setBackgroundColor(0xfff0f0f0);
         dataContainer.addView(bottomBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 64, Gravity.BOTTOM));
         amountDescView = new TextView(this);
@@ -82,19 +96,48 @@ public class CommitOrderActivity extends BaseActionBarActivityWithAnalytics {
         adapter = new ListAdapter();
         listView.setAdapter(adapter);
 
+        handleShoppingCartData();
         updateAdapter();
     }
 
+    private void handleShoppingCartData() {
+        shopEntities.clear();
+        needCommitGoods.clear();
+
+        Intent intent = getIntent();
+        ArrayList<String> needCommitGoodIds = intent.getStringArrayListExtra(ARGUMENTS_KEY_SELECT_GOODS);
+        List<ShoppingCartDataEntity> data = DBInterface.instance().findShoppingCartData(needCommitGoodIds);
+        for (ShoppingCartDataEntity entity :
+                data) {
+            String shopID = entity.getShopID();
+            if (!needCommitGoods.containsKey(shopID)) {
+                shopEntities.add(new ShopEntity(shopID, entity.getShopName()));
+                needCommitGoods.put(shopID, new ArrayList<ShoppingCartDataEntity>());
+            }
+            needCommitGoods.get(shopID).add(entity);
+        }
+    }
+
     private int rowCount;
-    private int a;
-    private int b;
-    private int c;
+    private int addressSection;
+    private int addressSection1;
+    private int addressLoadingRow;
+    private int addressRow;
+
+    private int payModeSection;
+    private int payModeSection1;
+    private int payModeRow;
+
+    private boolean isLoadingDefaultAddress;
+
 
     private void updateAdapter() {
         rowCount = 0;
-        a = rowCount++;
-        b = rowCount++;
-        c = rowCount++;
+        addressSection = rowCount++;
+        addressSection1 = rowCount++;
+        if(isLoadingDefaultAddress){
+
+        }
     }
 
 
