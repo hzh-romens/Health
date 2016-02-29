@@ -1,1 +1,1 @@
-include ':romens.pay', ':MaterialDesign', ':app', ':datetimepicker', ':wxapi'
+include ':wxapi', ':MaterialDesign', ':app', ':datetimepicker', ':romens.images', ':romens.pay'
