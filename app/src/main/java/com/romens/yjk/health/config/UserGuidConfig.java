@@ -17,6 +17,7 @@ public class UserGuidConfig {
     public final static int RESPONSE_EDITACTIVITY = 1008;
     public final static int RESPONSE_USERLABELS_TO_ACCOUNTSETTING = 1012;
     public final static int RESPONSE_SETTING_TO_HOMEMY = 1012;
+    public final static int RESPONSE_CHOOSETAG_TO_FEEDBACK = 1014;
 
 
     public final static int REQUEST_REMIND_TO_MEMBER = 1002;
@@ -27,5 +28,6 @@ public class UserGuidConfig {
     public final static int REQUEST_ACCOUNTSETTING2_TO_EDITACTIVITY = 1010;
     public final static int REQUEST_ACCOUNTSETTING_TO_USERLABELS = 1011;
     public final static int REQUEST_HOMEMY_TO_SETTING = 1013;
+    public final static int REQUEST_FEEDBACK_TO_CHOOSETAG = 1015;
 
 }

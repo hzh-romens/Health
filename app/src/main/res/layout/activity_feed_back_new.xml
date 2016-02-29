@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/title_background_grey"
               android:orientation="vertical">
 
     <com.romens.android.ui.ActionBar.ActionBar
@@ -9,54 +10,78 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/my_feedback_tag_title"
-        android:textColor="@color/theme_sub_title"
-        android:textSize="@dimen/title_sub_size"/>
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="8dp"-->
+    <!--android:text="@string/my_feedback_tag_title"-->
+    <!--android:textColor="@color/theme_sub_title"-->
+    <!--android:textSize="@dimen/title_sub_size"/>-->
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_margin="8dp"
-        android:background="#ccc"
-        android:padding="8dp"/>
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0.5dp"-->
+    <!--android:layout_margin="8dp"-->
+    <!--android:background="#ccc"-->
+    <!--android:padding="8dp"/>-->
 
-    <com.romens.yjk.health.ui.components.FlowLayout
-        android:id="@+id/feed_back_flow_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"/>
+    <!--<com.romens.yjk.health.ui.components.FlowLayout-->
+    <!--android:id="@+id/feed_back_flow_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="8dp"/>-->
 
     <EditText
         android:id="@+id/feed_back_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:paddingLeft="8dp"
-        android:paddingTop="4dp"
-        android:paddingRight="4dp"
-        android:paddingBottom="4dp"
-        android:background="@drawable/bg_light_gray"
+        android:background="@drawable/bg_white"
         android:gravity="top|left"
+        android:hint="请输入反馈内容..."
         android:minLines="5"
+        android:padding="16dp"
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/title_sub_size"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_white"
+        android:orientation="vertical">
+
         <TextView
-            android:id="@+id/feed_back_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_submit_btn"
-            android:paddingBottom="8dp"
-            android:gravity="center"
+            android:padding="16dp"
+            android:text="意见标签"
+            android:textColor="@color/theme_sub_title"
+            android:textSize="@dimen/title_sub_size"/>
+
+        <TextView
+            android:id="@+id/feed_back_choose_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/y"
+            android:hint="点击选择反馈标签"
+            android:paddingBottom="16dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:layout_margin="8dp"
-            android:paddingTop="8dp"
-            android:text="@string/submit"
-            android:textColor="@color/white"/>
+            android:paddingRight="16dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/feed_back_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_submit_btn"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:text="@string/submit"
+        android:textColor="@color/white"/>
 
 </LinearLayout>
