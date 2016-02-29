@@ -95,7 +95,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIOpenHelper.openControlAddressActivityForResult(CommitOrderActivity.this);
+                UIOpenHelper.openControlAddressActivityForResult(CommitOrderActivity.this,2);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {

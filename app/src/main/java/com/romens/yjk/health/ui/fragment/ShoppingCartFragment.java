@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.fragment;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.helper.ShoppingHelper;
-import com.romens.yjk.health.ui.activity.CommitOrderActivity;
+import com.romens.yjk.health.ui.activity.CommitOrderBaseActivity;
 import com.romens.yjk.health.ui.cells.ShoppingCartEmptyCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartGoodsCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartStoreCell;
@@ -187,8 +188,11 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
             ToastCell.toast(getActivity(), "请至少选择一个商品!");
             return;
         }
-        Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
-        intent.putStringArrayListExtra(CommitOrderActivity.ARGUMENTS_KEY_SELECT_GOODS, selectGoods);
+        String packName = getActivity().getPackageName();
+        ComponentName componentName = new ComponentName(packName, packName + ".ui.activity.CommitOrderActivity");
+        Intent intent = new Intent();
+        intent.setComponent(componentName);
+        intent.putStringArrayListExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SELECT_GOODS, selectGoods);
         startActivity(intent);
     }
 
@@ -743,7 +747,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
     /**
      * 购物车行UI基类
      */
-    private static abstract class ShoppingCartItem {
+    public static abstract class ShoppingCartItem {
 
         public abstract int getItemViewType();
 

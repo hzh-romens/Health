@@ -36,9 +36,10 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
-import com.romens.yjk.health.pay.MedicarePayMode;
+import com.romens.yjk.health.pay.PayMode;
 import com.romens.yjk.health.pay.PayAppManager;
 import com.romens.yjk.health.pay.PayBaseActivity;
+import com.romens.yjk.health.pay.PayModeEnum;
 import com.romens.yjk.health.pay.PayParamsForYBHEB;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
@@ -65,7 +66,7 @@ public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> 
 
     private ListAdapter adapter;
     private int selectedPayModeKey;
-    private final SparseArray<MedicarePayMode> medicarePayModes = new SparseArray<>();
+    private final SparseArray<PayMode> medicarePayModes = new SparseArray<>();
 
     private boolean needRedirect = false;
     private String billNo;
@@ -183,7 +184,9 @@ public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> 
         Map<String, Object> args = new HashMap<>();
         args.put("BILLNO", billNo);
         args.put("MEDICARECARD", medicareCardNo);
-        args.put("PAYMODE", "YB_HEB");
+
+        String payMode = medicarePayModes.get(selectedPayModeKey).getPayModeDesc();
+        args.put("PAYMODE", payMode);
 
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBillPayRequestParams", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
@@ -231,11 +234,11 @@ public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> 
 
     private void initPayMode() {
         medicarePayModes.clear();
-        medicarePayModes.put(0, new MedicarePayMode.Builder(0)
+        medicarePayModes.put(0, new PayMode.Builder(0)
                 .withIconResId(R.drawable.medicare_pay_haerbin)
                 .withName("哈尔滨银行")
                 .withDesc("支持使用哈尔滨银行账户进行医保支付")
-                .withMode("YB_HEB").build());
+                .withMode(PayModeEnum.YB_HEB).build());
         selectedPayModeKey = 0;
     }
 
@@ -381,7 +384,7 @@ public class MedicarePayModeActivity extends PayBaseActivity<PayParamsForYBHEB> 
 
                 PayModeCell cell = (PayModeCell) convertView;
                 int key = payModeStartRow - position;
-                MedicarePayMode mode = medicarePayModes.get(key);
+                PayMode mode = medicarePayModes.get(key);
                 cell.setValue(mode.iconResId, mode.name, mode.desc, key == selectedPayModeKey, position != payModeEndRow);
             } else if (viewType == 4) {
                 if (convertView == null) {
