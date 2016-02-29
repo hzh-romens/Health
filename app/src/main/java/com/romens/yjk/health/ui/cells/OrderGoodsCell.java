@@ -127,7 +127,7 @@ public class OrderGoodsCell extends FrameLayout {
         CharSequence priceText = ShoppingHelper.formatPrice(price);
         priceView.setText(priceText);
 
-        countView.setText(String.format("数量:%d", count));
+        countView.setText(String.format("数量: %d", count));
 
         needDivider = divider;
         setWillNotDraw(!divider);

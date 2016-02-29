@@ -1,9 +1,7 @@
 package com.romens.yjk.health.ui.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -70,12 +68,17 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
 //    private TextView amountDescView;
 
     private final HashMap<String, String> addressInfo = new HashMap<>();
-    private final List<OrderPayType> supportOrderPayTypes = new ArrayList<>();
     private final List<ShopEntity> shopEntities = new ArrayList<>();
     private final Map<String, List<ShoppingCartDataEntity>> needCommitGoods = new HashMap<>();
     private int selectOrderPayType = 0;
 
     private List<OrderItem> orderItems;
+
+    private int selectPayType = 0;
+    private int selectDeliveryType = 0;
+
+    private static final int REQUEST_CODE_ADDRESS = 0;
+    private static final int REQUEST_CODE_PAY_DELIVERY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,14 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         setContentView(content, actionBar);
         actionBar.setTitle("提交订单");
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+                if (id == -1) {
+                    finish();
+                }
+            }
+        });
         FrameLayout dataContainer = new FrameLayout(this);
         content.addView(dataContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView = new RecyclerView(this);
@@ -132,11 +143,6 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         });
         listView.setAdapter(adapter);
 
-        //加载支付方式
-        List<OrderPayType> orderPayTypes = onSupportOrderPayType();
-        if (orderPayTypes != null && orderPayTypes.size() > 0) {
-            supportOrderPayTypes.addAll(orderPayTypes);
-        }
         handleShoppingCartData();
         updateAdapter();
         getUserDefaultAddress();
@@ -146,21 +152,12 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         if (position == addressRow) {
             UIOpenHelper.openControlAddressActivityForResult(CommitOrderBaseActivity.this, 0);
         } else if (position == orderPayTypeRow) {
-            final int size = supportOrderPayTypes.size();
-            String[] orderPayTypes = new String[size];
-            for (int i = 0; i < size; i++) {
-                orderPayTypes[i] = supportOrderPayTypes.get(i).name;
-            }
-            new AlertDialog.Builder(CommitOrderBaseActivity.this)
-                    .setTitle("付款方式")
-                    .setSingleChoiceItems(orderPayTypes, selectOrderPayType, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            selectOrderPayType = which;
-                            updateAdapter();
-                        }
-                    }).create().show();
+            Intent intent = new Intent(CommitOrderBaseActivity.this, OrderPayTypeActivity.class);
+            boolean supportMedicareCard = supportMedicareCardPay();
+            intent.putExtra("SupportMedicareCard", supportMedicareCard);
+            intent.putExtra("PayType", selectPayType);
+            intent.putExtra("DeliveryType", selectDeliveryType);
+            startActivityForResult(intent, REQUEST_CODE_PAY_DELIVERY);
         } else if (position == couponRow) {
 
         }
@@ -253,7 +250,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
+        if (requestCode == REQUEST_CODE_ADDRESS) {
             if (resultCode == RESULT_OK) {
                 AddressEntity addressEntity = (AddressEntity) data.getSerializableExtra("responseCommitEntity");
                 addressInfo.clear();
@@ -264,6 +261,12 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 addressInfo.put("CITYNAME", addressEntity.getCITYNAME());
                 addressInfo.put("REGIONNAME", addressEntity.getREGIONNAME());
                 addressInfo.put("ADDRESS", addressEntity.getADDRESS());
+                updateAdapter();
+            }
+        } else if (requestCode == REQUEST_CODE_PAY_DELIVERY) {
+            if (resultCode == RESULT_OK) {
+                selectPayType = data.getIntExtra("PayType", 0);
+                selectDeliveryType = data.getIntExtra("DeliveryType", 0);
                 updateAdapter();
             }
         }
@@ -314,8 +317,6 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
 
         adapter.notifyDataSetChanged();
     }
-
-    protected abstract List<OrderPayType> onSupportOrderPayType();
 
 
     public interface AdapterDelegate {
@@ -431,8 +432,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                         cell.setTextAndValue("", "点击选择送货地址", true, false);
                     }
                 } else if (position == orderPayTypeRow) {
-                    String payType = supportOrderPayTypes.get(selectOrderPayType).name;
-                    cell.setTextAndValue("付款方式", payType, true, true);
+                    String payAndDelivery = String.format("%s (%s)", OrderPayTypeActivity.payType[selectPayType], OrderPayTypeActivity.deliveryType[selectDeliveryType]);
+                    cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
                     cell.setTextAndValue("优惠券", "点击选择优惠券", true, false);
                 }
@@ -478,6 +479,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             return rowCount;
         }
     }
+
+    protected abstract boolean supportMedicareCardPay();
 
     static class Holder extends RecyclerView.ViewHolder {
 

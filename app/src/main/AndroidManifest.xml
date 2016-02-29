@@ -274,6 +274,13 @@
 
 
         <activity
+            android:name=".ui.activity.OrderPayTypeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+
+        <activity
             android:name=".ui.RemindActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
