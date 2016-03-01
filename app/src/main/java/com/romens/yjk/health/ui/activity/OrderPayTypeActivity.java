@@ -21,6 +21,7 @@ import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.DoubleTextCheckCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.TextCheckCell;
+import com.romens.yjk.health.ui.cells.TipCell;
 
 /**
  * @author Zhou Lisi
@@ -35,7 +36,7 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
     private int selectPayType = 0;
     private int selectDelivery = 0;
 
-    public static final String[] payType = new String[]{"在线支付", "收货付款", "医保支付"};
+    public static final String[] payType = new String[]{"在线支付", "货到付款", "医保在线支付"};
     public static final String[] deliveryType = new String[]{"到店自提", "送货上门", "快递送货"};
 
     @Override
@@ -116,18 +117,22 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
 
     private void updateAdapter() {
         rowCount = 0;
+        tipRow = rowCount++;
         payTypeSection = rowCount++;
         payTypeForOnlineRow = supportMedicareCardPay ? -1 : rowCount++;
-        payTypeForAfterRow = supportMedicareCardPay ? -1 : rowCount++;
         payTypeForMedicareRow = supportMedicareCardPay ? rowCount++ : -1;
+        payTypeForAfterRow = supportMedicareCardPay ? -1 : rowCount++;
+
         deliverySection = rowCount++;
         deliverySection1 = rowCount++;
 
+
         if (selectPayType == 1) {
             deliveryForToStoreRow = rowCount++;
-            deliveryForToHomeRow = rowCount++;
+            //医保支付的收货付款只支持到店自提
+            deliveryForToHomeRow = supportMedicareCardPay ? -1 : rowCount++;
             deliveryForExpressRow = -1;
-            if (selectDelivery == 2) {
+            if (supportMedicareCardPay || selectDelivery == 2) {
                 selectDelivery = 0;
             }
         } else {
@@ -143,6 +148,7 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
     }
 
     private int rowCount;
+    private int tipRow;
     private int payTypeSection;
     private int payTypeForOnlineRow;
     private int payTypeForAfterRow;
@@ -235,6 +241,19 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 }
                 ActionCell cell = (ActionCell) convertView;
                 cell.setValue("保存支付和配送方式");
+            } else if (viewType == 6) {
+                if (convertView == null) {
+                    convertView = new TipCell(adapterContext);
+                }
+
+                TipCell cell = (TipCell) convertView;
+                if (supportMedicareCardPay) {
+                    if (selectPayType == 1) {
+                        cell.setValue(String.format("医保支付的药品在付款方式选择 货到付款 时，配送方式只支持 %s。", deliveryType[0]));
+                    }
+                } else {
+                    cell.setValue("配送方式选择到店自提和送货上门时，在您的商品准备好后，我们会有专人电话联系您!");
+                }
             }
             return convertView;
         }
@@ -269,13 +288,15 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 return 4;
             } else if (position == saveActionRow) {
                 return 5;
+            } else if (position == tipRow) {
+                return 6;
             }
             return 0;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 6;
+            return 7;
         }
     }
 }

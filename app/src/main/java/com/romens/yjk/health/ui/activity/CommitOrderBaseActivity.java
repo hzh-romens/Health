@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +17,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
@@ -41,15 +46,21 @@ import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.ShopEntity;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.model.CommitOrderEntity;
+import com.romens.yjk.health.model.FilterChildEntity;
+import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
+import com.romens.yjk.health.ui.cells.OrderInfoCell;
 import com.romens.yjk.health.ui.cells.OrderStoreCell;
 import com.romens.yjk.health.ui.cells.TextDetailInfoCell;
+import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -70,15 +81,23 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private final HashMap<String, String> addressInfo = new HashMap<>();
     private final List<ShopEntity> shopEntities = new ArrayList<>();
     private final Map<String, List<ShoppingCartDataEntity>> needCommitGoods = new HashMap<>();
-    private int selectOrderPayType = 0;
+
+    private int goodsCount = 0;
+    private BigDecimal goodsAmount = BigDecimal.ZERO;
+    private BigDecimal couponAmount = BigDecimal.ZERO;
 
     private List<OrderItem> orderItems;
 
     private int selectPayType = 0;
     private int selectDeliveryType = 0;
 
+    private String orderCouponID;
+    private String orderInvoice;
+
     private static final int REQUEST_CODE_ADDRESS = 0;
     private static final int REQUEST_CODE_PAY_DELIVERY = 1;
+    private static final int REQUEST_CODE_INVOICE = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +179,10 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             startActivityForResult(intent, REQUEST_CODE_PAY_DELIVERY);
         } else if (position == couponRow) {
 
+        } else if (position == invoiceRow) {
+            Intent intent = new Intent(CommitOrderBaseActivity.this, OrderInvoiceActivity.class);
+            intent.putExtra(OrderInvoiceActivity.ARGUMENTS_KEY_INVOICE_NAME, TextUtils.isEmpty(orderInvoice) ? "" : orderInvoice);
+            startActivityForResult(intent, REQUEST_CODE_INVOICE);
         }
     }
 
@@ -170,8 +193,12 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         Intent intent = getIntent();
         ArrayList<String> needCommitGoodIds = intent.getStringArrayListExtra(ARGUMENTS_KEY_SELECT_GOODS);
         List<ShoppingCartDataEntity> data = DBInterface.instance().findShoppingCartData(needCommitGoodIds);
+        goodsCount = 0;
+        goodsAmount = BigDecimal.ZERO;
         for (ShoppingCartDataEntity entity :
                 data) {
+            goodsCount += entity.getBuyCount();
+            goodsAmount = goodsAmount.add(entity.getUserPrice());
             String shopID = entity.getShopID();
             if (!needCommitGoods.containsKey(shopID)) {
                 shopEntities.add(new ShopEntity(shopID, entity.getShopName()));
@@ -247,6 +274,134 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         ConnectManager.getInstance().request(this, connect);
     }
 
+    private void tryPostOrder() {
+        if (addressInfo == null || addressInfo.size() <= 0) {
+            ToastCell.toast(CommitOrderBaseActivity.this, "请选择送货地址!");
+            return;
+        }
+//        SpannableStringBuilder message = new SpannableStringBuilder();
+//        //String amountText=
+//        String orderInfo = String.format("共 %d 个商品,合计 %s ,是否确定提交订单?",goodsCount,)
+//        SpannableString phone = new SpannableString();
+//        phone.setSpan(new ForegroundColorSpan(0xff2baf2b), 0, phone.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        phone.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, phone.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        name.append(phone);
+//        new AlertDialog.Builder(CommitOrderBaseActivity.this)
+//                .setTitle("提交订单")
+//                .setMessage()
+    }
+
+    /**
+     * 提交订单
+     */
+    private void postOrder() {
+        needShowProgress("正在提交订单...");
+        ObjectNode orderNode = JacksonMapper.getInstance().createObjectNode();
+        orderNode.put("ADDRESSID", addressInfo.get("ID"));
+        orderNode.put("DELIVERYTYPE", selectDeliveryType);
+        orderNode.put("PAYTYPE", selectPayType);
+        orderNode.put("COUPONGUID", orderCouponID);
+        orderNode.put("BILLNAME", orderInvoice);
+        ArrayNode goodsArrayNode = JacksonMapper.getInstance().createArrayNode();
+
+        Iterator<Map.Entry<String, List<ShoppingCartDataEntity>>> goodsData = needCommitGoods.entrySet().iterator();
+        while (goodsData.hasNext()) {
+            Map.Entry<String, List<ShoppingCartDataEntity>> entry = goodsData.next();
+
+            for (ShoppingCartDataEntity goods :
+                    entry.getValue()) {
+                ObjectNode goodsNode = JacksonMapper.getInstance().createObjectNode();
+                goodsNode.put("GOODSGUID", goods.getGuid());
+                goodsNode.put("SHOPID", goods.getShopID());
+                goodsNode.put("BUYCOUNT", goods.getBuyCount());
+                goodsNode.put("GOODSPRICE", goods.getBuyPrice());
+                goodsArrayNode.add(goodsNode);
+            }
+        }
+        orderNode.set("GOODSLIST", goodsArrayNode);
+
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
+                .put("JSONDATA", orderNode.toString())
+                .build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+
+        Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        needHideProgress();
+                        if (errorMessage == null) {
+
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(CommitOrderBaseActivity.this, connect);
+//            Message message = new Message.MessageBuilder()
+//                    .withProtocol(protocol).build();
+//            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+//                @Override
+//                public void onTokenTimeout(Message msg) {
+//                    Log.e("GetBuyCarCount", "ERROR");
+//                    needHideProgress();
+//                }
+//
+//                @Override
+//                public void onResult(Message msg, Message errorMsg) {
+//                    needHideProgress();
+//                    if (errorMsg == null) {
+//                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+//                            String success = jsonObject.getString("success");
+//
+//                            if (success.equals("yes")) {
+//                                if ("支付宝支付".equals(deliveryName) || "微信支付".equals(deliveryName)) {
+//                                    UIOpenHelper.openPayActivity(CommitOrderActivity.this, deliveryName, sumMoney, jsonObject.getString("msg1"));
+//                                } else {
+//                                    Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
+//                                    i.putExtra("success", "true");
+//                                    i.putExtra("sumMoney", (sumMoney - coupon) + "");
+//                                    i.putExtra("orderNumber", jsonObject.getString("msg1"));
+//                                    i.putExtra("time", jsonObject.getString("msg2"));
+//                                    AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
+//                                    startActivity(i);
+//                                    finish();
+//                                }
+//                            } else {
+//                                Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
+//                                String errorMsgs = jsonObject.getString("errorMsg");
+//                                i.putExtra("success", "false");
+//                                i.putExtra("errormsg", errorMsgs);
+//                                startActivity(i);
+//                                finish();
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        Log.e("CommitOrder", errorMsg.msg);
+//                    }
+//                }
+//            });
+    }
+
+    public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid, String billName) {
+        Gson gson = new Gson();
+        CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
+        commitOrderEntity.setDELIVERYTYPE(deliverytype);
+        commitOrderEntity.setADDRESSID(addressid);
+        commitOrderEntity.setGOODSLIST(data);
+        commitOrderEntity.setBILLNAME(billName);
+        commitOrderEntity.setCOUPONGUID("");
+        String JSON_DATA = gson.toJson(commitOrderEntity);
+        return JSON_DATA;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -269,6 +424,11 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 selectDeliveryType = data.getIntExtra("DeliveryType", 0);
                 updateAdapter();
             }
+        } else if (requestCode == REQUEST_CODE_INVOICE) {
+            if (resultCode == RESULT_OK) {
+                orderInvoice = data.getStringExtra(OrderInvoiceActivity.ARGUMENTS_KEY_INVOICE_NAME);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -282,6 +442,12 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private int orderPayTypeSection1;
     private int orderPayTypeRow;
     private int couponRow;
+    private int invoiceRow;
+
+    private int orderInfoSection;
+    private int orderInfoSection1;
+    private int orderInfoRow;
+    private int orderSubmitRow;
 
     private int goodsSection;
     private int goodsSection1;
@@ -307,6 +473,12 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         orderPayTypeSection1 = rowCount++;
         orderPayTypeRow = rowCount++;
         couponRow = rowCount++;
+        invoiceRow = rowCount++;
+
+        orderInfoSection = rowCount++;
+        orderInfoSection1 = rowCount++;
+        orderInfoRow = rowCount++;
+        orderSubmitRow = rowCount++;
 
         goodsSection = rowCount++;
         goodsSection1 = rowCount++;
@@ -363,6 +535,14 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 OrderGoodsCell cell = new OrderGoodsCell(parent.getContext());
                 cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 return new Holder(cell);
+            } else if (viewType == 7) {
+                OrderInfoCell cell = new OrderInfoCell(parent.getContext());
+                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                return new Holder(cell);
+            } else if (viewType == 8) {
+                ActionCell cell = new ActionCell(parent.getContext());
+                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                return new Holder(cell);
             }
             return null;
         }
@@ -380,6 +560,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     cell.setText("付款信息");
                 } else if (position == goodsSection1) {
                     cell.setText("商品清单");
+                } else if (position == orderInfoSection1) {
+                    cell.setText("订单信息");
                 }
             } else if (viewType == 4) {
                 TextDetailInfoCell cell = (TextDetailInfoCell) holder.itemView;
@@ -435,7 +617,13 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     String payAndDelivery = String.format("%s (%s)", OrderPayTypeActivity.payType[selectPayType], OrderPayTypeActivity.deliveryType[selectDeliveryType]);
                     cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
-                    cell.setTextAndValue("优惠券", "点击选择优惠券", true, false);
+                    cell.setTextAndValue("优惠券", "点击选择优惠券", true, true);
+                } else if (position == invoiceRow) {
+                    if (TextUtils.isEmpty(orderInvoice)) {
+                        cell.setTextAndValue("发票信息", "点击填写发票抬头", true, false);
+                    } else {
+                        cell.setTextAndValue("发票信息", String.format("个人(%s)", orderInvoice), true, false);
+                    }
                 }
             } else if (viewType == 5) {
                 OrderStoreCell cell = (OrderStoreCell) holder.itemView;
@@ -454,22 +642,49 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 BigDecimal userPrice = entity.getUserPrice();
                 int count = entity.getBuyCount();
                 cell.setValue(iconPath, name, desc, userPrice, count, true);
+            } else if (viewType == 7) {
+                OrderInfoCell cell = (OrderInfoCell) holder.itemView;
+                String deliveryType = OrderPayTypeActivity.deliveryType[selectDeliveryType];
+
+                String name = "";
+                String address = "";
+                if (addressInfo.size() > 0) {
+                    name = addressInfo.get("USER");
+                    address = addressInfo.get("ADDRESS");
+                }
+                cell.setValue(deliveryType, name, address, goodsAmount, couponAmount);
+            } else if (viewType == 8) {
+                ActionCell cell = (ActionCell) holder.itemView;
+                cell.setValue("提交订单");
+                cell.setClickable(true);
+                cell.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (adapterDelegate != null) {
+                            adapterDelegate.onItemSelect(position);
+                        }
+                    }
+                });
             }
         }
 
         @Override
         public int getItemViewType(int position) {
-            if (position == addressSection1 || position == orderPayTypeSection1 || position == goodsSection1) {
+            if (position == addressSection1 || position == orderPayTypeSection1 || position == goodsSection1 || position == orderInfoSection1) {
                 return 1;
-            } else if (position == orderPayTypeSection || position == goodsSection) {
+            } else if (position == orderPayTypeSection || position == goodsSection || position == orderInfoSection) {
                 return 2;
             } else if (position == addressLoadingRow) {
                 return 3;
-            } else if (position == addressRow || position == orderPayTypeRow || position == couponRow) {
+            } else if (position == addressRow || position == orderPayTypeRow || position == couponRow || position == invoiceRow) {
                 return 4;
             } else if (position >= goodsBeginRow && position <= goodsEndRow) {
                 int itemIndex = position - goodsBeginRow;
                 return orderItems.get(itemIndex).getItemViewType();
+            } else if (position == orderInfoRow) {
+                return 7;
+            } else if (position == orderSubmitRow) {
+                return 8;
             }
             return 0;
         }
@@ -486,16 +701,6 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
 
         public Holder(View itemView) {
             super(itemView);
-        }
-    }
-
-    public static class OrderPayType {
-        public final int type;
-        public final String name;
-
-        public OrderPayType(int type, String name) {
-            this.type = type;
-            this.name = name;
         }
     }
 

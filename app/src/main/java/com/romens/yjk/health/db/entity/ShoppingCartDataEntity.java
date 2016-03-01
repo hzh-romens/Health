@@ -57,6 +57,10 @@ public class ShoppingCartDataEntity {
         return buyCount;
     }
 
+    public double getBuyPrice(){
+        return goodsPrice;
+    }
+
     public String getGuid() {
         return id;
     }

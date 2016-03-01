@@ -13,6 +13,7 @@ public class PayParamsForYBHEB extends PayParams {
         Bundle bundle = new Bundle();
         bundle.putString("flowno", get("flowno"));
         bundle.putString("orderno", get("orderno"));
+        bundle.putString("certNo", get("certNo"));
         bundle.putString("EndDate", get("EndDate"));
         bundle.putString("MerType", get("MerType"));
         bundle.putString("acctFlag", get("acctFlag"));

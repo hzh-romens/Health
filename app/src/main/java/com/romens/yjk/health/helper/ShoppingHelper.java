@@ -17,12 +17,18 @@ import java.text.DecimalFormat;
  */
 public class ShoppingHelper {
     public static SpannableString formatPrice(BigDecimal price) {
+        return formatPrice(price, true);
+    }
+
+    public static SpannableString formatPrice(BigDecimal price, boolean formatFont) {
         DecimalFormat decimalFormat = new DecimalFormat("￥#,##0.00");
         String priceStr = decimalFormat.format(price);
         SpannableString spannableString = new SpannableString(priceStr);
         int length = priceStr.length();
-        spannableString.setSpan(new ForegroundColorSpan(ResourcesConfig.priceFontColor), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (formatFont) {
+            spannableString.setSpan(new ForegroundColorSpan(ResourcesConfig.priceFontColor), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         return spannableString;
     }
 
