@@ -2,7 +2,6 @@ package com.romens.yjk.health.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -75,11 +74,10 @@ public class CommitResultActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            UIOpenHelper.openHomeActivity(CommitResultActivity.this);
-        }
-        return false;
+    public void onBackPressed() {
+        UIOpenHelper.openHomeActivity(CommitResultActivity.this);
+        return;
     }
 }

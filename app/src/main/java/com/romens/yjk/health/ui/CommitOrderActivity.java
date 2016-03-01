@@ -6,7 +6,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -95,7 +94,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIOpenHelper.openControlAddressActivityForResult(CommitOrderActivity.this,2);
+                UIOpenHelper.openControlAddressActivityForResult(CommitOrderActivity.this, 2);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -428,12 +427,9 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
-            finish();
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed() {
+        super.onBackPressed();
+        return;
     }
 
     private String deliveryName;

@@ -11,12 +11,10 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.TypedValue;
@@ -1758,7 +1756,7 @@ public class LoginActivity extends BaseActivity {
             });
 
             TextView textView = new TextView(context);
-            textView.setText(String.format("使用手机号码快捷登录 %s.未注册用户,赶快加入我们吧,一起开启健康之旅.",getString(R.string.app_name)));
+            textView.setText(String.format("使用手机号码快捷登录 %s.未注册用户,赶快加入我们吧,一起开启健康之旅.", getString(R.string.app_name)));
             textView.setTextColor(0xff757575);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             textView.setGravity(Gravity.LEFT);

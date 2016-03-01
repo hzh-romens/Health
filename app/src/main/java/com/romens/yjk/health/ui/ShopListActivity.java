@@ -1,7 +1,5 @@
 package com.romens.yjk.health.ui;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -10,9 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -28,6 +24,9 @@ import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.ActionBar.ActionBarMenu;
+import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -47,8 +46,7 @@ import java.util.Map;
  * Created by AUSU on 2015/9/23.
  */
 public class ShopListActivity extends BaseActivity implements View.OnClickListener {
-    private ImageView back, other;
-    private EditText searchEditor;
+    private ImageView other;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
     private ShopListAdapter shopListAdapter;
@@ -70,6 +68,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     private static int PRICE_FLAG = 0;
     private static int SALE_FLAG = 5;
     private static boolean SEARCHDEFAULT = true;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,10 +183,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
 
     private void initView() {
+        actionBar = (ActionBar) findViewById(R.id.action_bar);
         switchButton = (RelativeLayout) findViewById(R.id.btn_switch);
-        back = (ImageView) findViewById(R.id.back);
-        other = (ImageView) findViewById(R.id.other);
-        searchEditor = (EditText) findViewById(R.id.et_search);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshLayout);
         radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
@@ -197,22 +194,64 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         priceButton.setOnClickListener(this);
         saleButton.setOnClickListener(this);
         allButton.setOnClickListener(this);
-        back.setOnClickListener(this);
-        other.setOnClickListener(this);
         switchButton.setOnClickListener(this);
-        searchEditor.setOnKeyListener(onKeyListener);
+        actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
+        ActionBarMenu menu = actionBar.createMenu();
+        ActionBarMenuItem searchItem = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
+        searchItem.getSearchField().setHint("输入疾病或者药品");
+        searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
+
+            @Override
+            public boolean canCollapseSearch() {
+                return false;
+            }
+
+            @Override
+            public void onSearchExpand() {
+
+            }
+
+            @Override
+            public void onSearchCollapse() {
+
+            }
+
+            @Override
+            public void onTextChanged(EditText var1) {
+                if (var1.getText().length() <= 0) {
+                    //switchSearchResultLayout(false);
+                }
+            }
+
+            @Override
+            public void onSearchPressed(EditText var1) {
+                SEARCHDEFAULT = false;
+                editTextValue = var1.getText().toString();
+                if (name.equals(editTextValue) || "".equals(editTextValue) || editTextValue == null) {
+                    Toast.makeText(ShopListActivity.this, "请输入你需要搜索的商品", Toast.LENGTH_SHORT).show();
+                }
+                requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
+            }
+        });
+        actionBar.setTitle(name);
+        actionBar.setBackgroundResource(R.color.theme_primary);
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int i) {
+                if (i == -1) {
+                    finish();
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         page = 0;
         switch (v.getId()) {
-            case R.id.back:
-                finish();
-                break;
-            case R.id.other:
-                startActivity(new Intent(this, HistoryActivity.class));
-                break;
+//            case R.id.other:
+//                startActivity(new Intent(this, HistoryActivity.class));
+//                break;
             case R.id.rb_all:
                 keyValue = "default";
                 requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
@@ -282,27 +321,27 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private View.OnKeyListener onKeyListener = new View.OnKeyListener() {
-
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                /*隐藏软键盘*/
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (inputMethodManager.isActive()) {
-                    inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                }
-                SEARCHDEFAULT = false;
-                editTextValue = searchEditor.getText().toString();
-                if (name.equals(editTextValue) || "".equals(editTextValue) || editTextValue == null) {
-                    Toast.makeText(ShopListActivity.this, "请输入你需要搜索的商品", Toast.LENGTH_SHORT).show();
-                }
-                requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
-                return true;
-            }
-            return false;
-        }
-    };
+//    private View.OnKeyListener onKeyListener = new View.OnKeyListener() {
+//
+//        @Override
+//        public boolean onKey(View v, int keyCode, KeyEvent event) {
+//            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+//                /*隐藏软键盘*/
+//                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                if (inputMethodManager.isActive()) {
+//                    inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+//                }
+//                SEARCHDEFAULT = false;
+//                // editTextValue = searchEditor.getText().toString();
+//                if (name.equals(editTextValue) || "".equals(editTextValue) || editTextValue == null) {
+//                    Toast.makeText(ShopListActivity.this, "请输入你需要搜索的商品", Toast.LENGTH_SHORT).show();
+//                }
+//                requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
+//                return true;
+//            }
+//            return false;
+//        }
+//    };
 
     //获取用户商品列表
     private void requestData() {
