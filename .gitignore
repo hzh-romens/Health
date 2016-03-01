@@ -5,6 +5,7 @@ local.properties
 /build
 /captures
 
+.gradle
 .idea/
 *.iml
 gradle.properties
