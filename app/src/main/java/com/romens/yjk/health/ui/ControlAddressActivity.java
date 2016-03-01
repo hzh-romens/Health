@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -420,13 +419,6 @@ public class ControlAddressActivity extends BaseActivity {
         entities = dao.queryBuilder().list();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            backEvent();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     private void chooseItemBackEvent(int position) {
         if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
@@ -464,5 +456,11 @@ public class ControlAddressActivity extends BaseActivity {
 
         }
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        backEvent();
+        return;
     }
 }

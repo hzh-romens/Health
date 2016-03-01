@@ -69,8 +69,6 @@ public class ShopCarFragment extends BaseFragment {
         //获取数据
         shopAdapter = new ShopAdapter(getActivity());
         expandableListView.setAdapter(shopAdapter);
-        // needShowProgress("正在加载...");
-        //getShopCarData();
         //向服务器提交购物车信息并跳转到订单页面
         accountsView.setOnClickListener(new View.OnClickListener() {
             @Override

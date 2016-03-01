@@ -13,18 +13,6 @@
             <option value="$PROJECT_DIR$/MaterialDesign" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/datetimepicker" />
-            <option value="$PROJECT_DIR$/romens.images" />
-            <option value="$PROJECT_DIR$/romens.pay" />
-            <option value="$PROJECT_DIR$/wxapi" />
-          </set>
-        </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/MaterialDesign" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/datetimepicker" />
-            <option value="$PROJECT_DIR$/romens.images" />
             <option value="$PROJECT_DIR$/romens.pay" />
             <option value="$PROJECT_DIR$/wxapi" />
           </set>

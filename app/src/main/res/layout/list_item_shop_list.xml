@@ -1,86 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="96dp"
-    >
+    android:orientation="horizontal">
+
     <com.romens.images.ui.CloudImageView
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-      android:layout_gravity="center_vertical"
         android:id="@+id/iv"
         style="@style/ImageStyle"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_gravity="center_vertical"
         android:scaleType="fitXY"
-        android:src="@drawable/picture_fail"/>
+        android:src="@drawable/picture_fail" />
+
     <LinearLayout
+        android:id="@+id/linear_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="128dp"
-       android:layout_gravity="center_vertical"
-        android:layout_marginRight="80dp"
-        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
         android:layout_marginBottom="4dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginRight="80dp"
 
-        android:id="@+id/linear_item"
+        android:gravity="center_vertical"
         android:orientation="vertical">
+
         <TextView
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/title_text_size"
-            android:id="@+id/name"
-            android:textColor="@color/theme_title"
-            android:typeface="normal"
+            android:layout_marginBottom="4dp"
             android:layout_marginLeft="@dimen/padding_inner"
             android:layout_marginRight="@dimen/padding_inner"
-            android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
-            android:text="同仁堂 人参归睥丸 30g"/>
+            android:text="同仁堂 人参归睥丸 30g"
+            android:textColor="@color/theme_title"
+            android:textSize="@dimen/title_text_size"
+            android:typeface="normal" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:layout_marginLeft="@dimen/padding_inner"
             android:layout_marginRight="@dimen/padding_inner"
-            android:layout_marginBottom="4dp"
-            android:visibility="visible"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="visible">
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/md_red_600"
-                android:textSize="@dimen/text_size_large"
                 android:id="@+id/discountPrice"
-                android:text="¥9.9"/>
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/md_grey_400"
+                android:text="¥9.9"
+                android:textColor="@color/md_red_600"
+                android:textSize="@dimen/text_size_large" />
+
+            <TextView
+                android:id="@+id/realPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_outter"
                 android:text="¥9.9"
+                android:textColor="@color/md_grey_400"
                 android:textSize="@dimen/text_size_small"
                 android:typeface="normal"
-                android:visibility="gone"
-                android:id="@+id/realPrice"
-                />
+                android:visibility="gone" />
         </LinearLayout>
+
         <TextView
+            android:id="@+id/comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_medium"
-            android:textColor="#666666"
-            android:text="999评论"
             android:layout_marginLeft="@dimen/padding_inner"
-            android:id="@+id/comment"
-            android:singleLine="true"
             android:ellipsize="end"
-            android:typeface="normal"/>
+            android:singleLine="true"
+            android:text="999评论"
+            android:textColor="#666666"
+            android:textSize="@dimen/text_size_medium"
+            android:typeface="normal" />
     </LinearLayout>
+
     <ImageView
+        android:id="@+id/shop"
         android:layout_width="48dp"
         android:layout_height="48dp"
-       android:layout_gravity="center_vertical|right|bottom"
-        android:src="@drawable/ic_list_shopcaricon"
-       android:layout_marginRight="@dimen/padding_inner"
+        android:layout_gravity="center_vertical|right|bottom"
         android:layout_marginBottom="@dimen/padding_outter"
-        android:id="@+id/shop"
-        android:scaleType="centerInside"/>
+        android:layout_marginRight="@dimen/padding_inner"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_list_shopcaricon" />
 
 </FrameLayout>

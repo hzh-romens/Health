@@ -1,124 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-    <RelativeLayout
-        style="@style/titleStytle"
-        android:background="@color/theme_primary">
-        <ImageView
-            style="@style/iv_back_style"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padding_outter"
-            android:id="@+id/back"
-            android:layout_alignParentLeft="true"/>
-        <EditText
-            android:layout_centerInParent="true"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="64dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
-            android:layout_marginRight="48dp"
-            android:hint="请输入关键字"
-            android:id="@+id/et_search"
-            android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:inputType="textPhonetic"
-            android:imeOptions="actionSearch"
-            android:drawablePadding="8dp"
-            android:textColorHint="#999999"
-            android:layout_height="match_parent"
-            android:textSize="@dimen/text_size_large"
-            android:background="@drawable/edittext_background_radiu"
-            android:textColor="@color/theme_title"
-            android:drawableLeft="@drawable/ic_search_grey600_24dp"
-            />
-            <ImageView style="@style/iv_back_style"
-                android:layout_marginRight="@dimen/padding_outter"
-                android:layout_centerVertical="true"
-                android:id="@+id/other"
-                android:background="@drawable/ic_ab_other"
-                android:layout_alignParentRight="true"
-                android:visibility="gone"/>
-    </RelativeLayout>
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.romens.android.ui.ActionBar.ActionBar
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:orientation="horizontal"
-        >
-    <RadioGroup
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="3"
-        android:id="@+id/radiogroup"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"
-        >
-        <RadioButton
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="综合"
-            android:id="@+id/rb_all"
-            android:button="@null"
-            android:textColor="@color/tab_text_color_state"
-            android:gravity="center"
-            android:textSize="@dimen/text_size_medium"
-            />
-        <com.romens.yjk.health.ui.components.ReviseRadioButton
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:text="价格"
-            android:button="@null"
-            android:id="@+id/rb_price"
-            android:drawableRight="@drawable/ic_arrow"
-            android:textColor="@color/tab_text_color_state"
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="right|center_vertical"
-            />
-        <com.romens.yjk.health.ui.components.ReviseRadioButton
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:text="销量"
-            android:drawableRight="@drawable/ic_arrow"
-            android:button="@null"
-            android:id="@+id/rb_sale"
-            android:textColor="@color/tab_text_color_state"
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="right|center_vertical"
-            />
-    </RadioGroup>
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_all"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="综合"
+                android:textColor="@color/tab_text_color_state"
+                android:textSize="@dimen/text_size_medium" />
+
+            <com.romens.yjk.health.ui.components.ReviseRadioButton
+                android:id="@+id/rb_price"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableRight="@drawable/ic_arrow"
+                android:gravity="right|center_vertical"
+                android:text="价格"
+                android:textColor="@color/tab_text_color_state"
+                android:textSize="@dimen/text_size_medium" />
+
+            <com.romens.yjk.health.ui.components.ReviseRadioButton
+                android:id="@+id/rb_sale"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableRight="@drawable/ic_arrow"
+                android:gravity="right|center_vertical"
+                android:text="销量"
+                android:textColor="@color/tab_text_color_state"
+                android:textSize="@dimen/text_size_medium" />
+        </RadioGroup>
+
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="right"
             android:id="@+id/btn_switch"
-            android:visibility="gone"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            android:visibility="gone">
+
             <ImageView
                 android:layout_width="18dp"
-                android:layout_centerInParent="true"
                 android:layout_height="18dp"
-                android:background="@drawable/ic_switch"/>
+                android:layout_centerInParent="true"
+                android:background="@drawable/ic_switch" />
         </RelativeLayout>
-        </LinearLayout>
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.75dp"
-        android:background="@color/md_grey_300"/>
+        android:background="@color/md_grey_300" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
         android:id="@+id/refreshLayout"
-        android:layout_height="match_parent">
-    <android.support.v7.widget.RecyclerView
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:id="@+id/recyclerview"
-        />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
