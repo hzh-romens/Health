@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -244,7 +243,7 @@ public class ControlAddressActivity extends BaseActivity {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
-                    onBackPressed();
+                    backEvent();
                 } else if (i == 0) {
                     UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, 0);
                     //startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
@@ -420,17 +419,13 @@ public class ControlAddressActivity extends BaseActivity {
         entities = dao.queryBuilder().list();
     }
 
-    @Override
-    public void onBackPressed(){
-        backEvent();
-    }
 
     private void chooseItemBackEvent(int position) {
         if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
             Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
             AddressEntity entity = addressListEntitis.get(position);
             intent.putExtra("responseCommitEntity", entity);
-            setResult(RESULT_OK, intent);
+            setResult(2, intent);
             finish();
         } else {
             UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position));
@@ -450,16 +445,22 @@ public class ControlAddressActivity extends BaseActivity {
                 if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
                     entity = addressListEntitis.get(0);
                     intent.putExtra("responseCommitEntity", entity);
-                    setResult(RESULT_OK, intent);
+                    setResult(2, intent);
                 } else {
-                    setResult(RESULT_CANCELED, intent);
+                    setResult(3, intent);
                 }
             } else {
                 intent.putExtra("responseCommitEntity", entity);
-                setResult(RESULT_OK, intent);
+                setResult(2, intent);
             }
 
         }
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        backEvent();
+        return;
     }
 }
