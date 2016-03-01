@@ -54,7 +54,7 @@ public class KeyAndViewCell extends LinearLayout {
         keyTextView.setSingleLine(true);
         keyTextView.setGravity(Gravity.CENTER_VERTICAL);
         keyTextView.setTextColor(getResources().getColor(R.color.theme_primary));
-        keyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        keyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         LayoutParams titleParams = LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT);
         keyTextView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(0));
         keyTextView.setLayoutParams(titleParams);
@@ -62,7 +62,7 @@ public class KeyAndViewCell extends LinearLayout {
 
         editText = new MaterialEditText(context);
         editText.setHideUnderline(true);
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         editText.setBaseColor(0xff212121);
         editText.setPrimaryColor(ResourcesConfig.textPrimary);
         editText.setMaxLines(1);
@@ -117,7 +117,7 @@ public class KeyAndViewCell extends LinearLayout {
         rightTextView.setSingleLine(true);
         rightTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
         rightTextView.setTextColor(getResources().getColor(R.color.theme_sub_title));
-        rightTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        rightTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         LayoutParams rightTextViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
         rightTextViewParams.weight = 1;
         rightTextView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(0));

@@ -1,6 +1,9 @@
 package com.romens.yjk.health.ui;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.helper.LabelHelper;
 import com.romens.yjk.health.ui.components.FlowLayout;
 import com.romens.yjk.health.ui.components.FlowLayoutCallback;
 
@@ -37,12 +41,10 @@ import java.util.Map;
  */
 public class FeedBackNewActivity extends BaseActivity implements View.OnClickListener {
 
-    private FlowLayout tagFlowLayout;
-    private FlowLayout selectTagFlowLayout;
     private EditText feedBackInfo;
     private TextView submitBtn;
-    //    private TextView resetBtn;
     private ActionBar actionBar;
+    private TextView chooseTagBtn;
 
     private List<String> selectTagTxtList;
     private List<String> tagList;
@@ -54,16 +56,19 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
         userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_feed_back_new, R.id.feed_back_action);
         actionBarEvent();
-        initData();
-        tagFlowLayout = (FlowLayout) findViewById(R.id.feed_back_flow_layout);
         feedBackInfo = (EditText) findViewById(R.id.feed_back_info);
         submitBtn = (TextView) findViewById(R.id.feed_back_submit);
-//        resetBtn = (TextView) findViewById(R.id.feed_back_reset);
+        chooseTagBtn = (TextView) findViewById(R.id.feed_back_choose_tag);
+        initData();
 
-        selectTagFlowLayout = new FlowLayout(this);
-        flowlayoutEvent(tagFlowLayout, selectTagFlowLayout);
         submitBtn.setOnClickListener(this);
-//        resetBtn.setOnClickListener(this);
+        chooseTagBtn.setOnClickListener(this);
+    }
+
+    private void initData() {
+        tagList = new ArrayList<>();
+        selectTagTxtList = new ArrayList<>();
+        requestGetTags();
     }
 
     @Override
@@ -79,71 +84,95 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
                     requestFeedBack(userGuid, info, getTags());
                 }
                 break;
-//            case R.id.feed_back_reset:
-//                initData();
-//                tagFlowLayout.updateLayout();
-//                selectTagFlowLayout.updateLayout();
-//                feedBackInfo.setText("");
-//                break;
+            case R.id.feed_back_choose_tag:
+                String[] tagArray = tagList.toArray(new String[tagList.size()]);
+                if (tagArray != null && tagArray.length > 0) {
+                    showMulitChooseView(tagArray);
+                } else {
+                    Toast.makeText(FeedBackNewActivity.this, "没有可选的标签", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
+    }
+
+    //请求获取评价的标签
+    private void requestGetTags() {
+        needShowProgress("正在加载...");
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetFeedbackTag", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                needHideProgress();
+                Toast.makeText(FeedBackNewActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (msg != null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    try {
+                        JSONArray array = new JSONArray(responseProtocol.getResponse());
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject object = array.getJSONObject(i);
+                            if (!object.getString("TAGNAME").equals("")) {
+                                tagList.add(object.getString("TAGNAME"));
+                            }
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(FeedBackNewActivity.this, "获取标签失败", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }
+                if (errorMsg != null) {
+                    Log.e("reqGetAllUsers", "ERROR" + errorMsg.msg);
+                }
+            }
+        });
+    }
+
+    public void showMulitChooseView(final String[] tagList) {
+        selectTagTxtList.clear();
+        new AlertDialog.Builder(this).setMultiChoiceItems(tagList, null, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if (isChecked) {
+                    selectTagTxtList.add(tagList[which]);
+                } else {
+                    selectTagTxtList.remove(tagList[which]);
+                }
+            }
+        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (selectTagTxtList.size() > 0) {
+                    CharSequence labels = LabelHelper.createChipForUserInfoLabels(selectTagTxtList);
+                    chooseTagBtn.setText(labels);
+                } else {
+                    chooseTagBtn.setText("点击选择反馈标签");
+                }
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     private String getTags() {
         JSONArray jsonArray = new JSONArray();
         try {
             for (int i = 0; i < selectTagTxtList.size(); i++) {
-                if (!selectTagTxtList.get(i).equals("      ")) {
-                    JSONObject object = new JSONObject();
-                    object.put("TAG", selectTagTxtList.get(i));
-                    jsonArray.put(object);
-                }
+                JSONObject object = new JSONObject();
+                object.put("TAG", selectTagTxtList.get(i));
+                jsonArray.put(object);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonArray.toString();
-    }
-
-    private void flowlayoutEvent(final FlowLayout tagFlowLayout, final FlowLayout selectTaglayout) {
-        tagFlowLayout.setIsAlignLeft(true,AndroidUtilities.dp(16));
-        tagFlowLayout.setHorizontalSpacing(AndroidUtilities.dp(4));
-        tagFlowLayout.setVerticalSpacing(AndroidUtilities.dp(4));
-        tagFlowLayout.setAdapter(new FlowLayoutCallback() {
-            @Override
-            public int getCount() {
-                return tagList.size();
-            }
-
-            @Override
-            public View getView(final int position, ViewGroup container) {
-                final TextView textView = new TextView(FeedBackNewActivity.this);
-                textView.setBackgroundResource(R.drawable.ic_feedback_bg);
-                textView.setText(tagList.get(position));
-                textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(4));
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (selectTagTxtList.contains(textView.getText())) {
-                            textView.setBackgroundResource(R.drawable.ic_feedback_bg);
-                            textView.setTextColor(getResources().getColor(R.color.theme_sub_title));
-                            selectTagTxtList.remove(textView.getText());
-                        } else {
-                            textView.setBackgroundResource(R.drawable.ic_feedback_bg_press);
-                            textView.setTextColor(getResources().getColor(R.color.theme_primary));
-                            selectTagTxtList.add(tagList.get(position));
-                        }
-                    }
-                });
-                return textView;
-            }
-        });
-        tagFlowLayout.updateLayout();
-    }
-
-    private void initData() {
-        selectTagTxtList = new ArrayList<>();
-        tagList = new ArrayList<>();
-        requestGetTags();
     }
 
     private void actionBarEvent() {
@@ -203,44 +232,6 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
                 }
                 needHideProgress();
                 submitBtn.setClickable(true);
-            }
-        });
-    }
-
-    //请求获取评价的标签
-    private void requestGetTags() {
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetFeedbackTag", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Toast.makeText(FeedBackNewActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (msg != null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    try {
-                        JSONArray array = new JSONArray(responseProtocol.getResponse());
-                        for (int i = 0; i < array.length(); i++) {
-                            JSONObject object = array.getJSONObject(i);
-                            if (!object.getString("TAGNAME").equals("")) {
-                                tagList.add(object.getString("TAGNAME"));
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (errorMsg != null) {
-                    Log.e("reqGetAllUsers", "ERROR" + errorMsg.msg);
-                }
-                tagFlowLayout.updateLayout();
             }
         });
     }

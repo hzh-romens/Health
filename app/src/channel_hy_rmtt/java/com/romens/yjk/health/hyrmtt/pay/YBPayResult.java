@@ -12,6 +12,8 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 
+import java.util.Set;
+
 /**
  * @author Zhou Lisi
  * @create 16/2/24
@@ -47,10 +49,23 @@ public class YBPayResult extends BaseActionBarActivityWithAnalytics {
         content.addView(emptyTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 16, 16, 16, 16));
 
         Intent intent = getIntent();
+        Bundle bundle=intent.getExtras();
+        Set<String> keys=bundle.keySet();
+        bundle=intent.getBundleExtra("bundle");
+        keys=bundle.keySet();
         String state = intent.getStringExtra("status");
         StringBuilder log = new StringBuilder();
         log.append("state:" + state);
         log.append("\n");
         emptyTextView.setText(log);
+        //Bundle[{cardNo=11204688X,
+        // certNo=230102198506053415,
+        // payAmount=0.01,
+        // totalAmount=0.01,
+        // status=1,
+        // balance=785.69,
+        // custname=赵宇,
+        // lastPayAmount=0.00,
+        // transferFlowNo=C06714567145472016022910}]
     }
 }
