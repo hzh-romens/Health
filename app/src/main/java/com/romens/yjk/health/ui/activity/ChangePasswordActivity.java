@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -16,14 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -35,6 +31,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.helper.UIOpenHelper;
 
 import java.util.Map;
@@ -254,39 +251,45 @@ public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
-                }))
+//                .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
+//                }))
                 .build();
         FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
                 needHideProgress();
-                Log.i("错误信息---", msg.msg);
                 Toast.makeText(ChangePasswordActivity.this, "请求被拒绝", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
                 needHideProgress();
-                if (errorMsg == null) {
-                    String error = null;
-                    ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
-                    LinkedTreeMap<String, String> result = response.getResponse();
-                    if (result != null && result.size() > 0) {
-                        error = result.containsKey("ERROR") ? result.get("ERROR") : null;
-                    }
-                    if (TextUtils.isEmpty(error)) {
-                        UIOpenHelper.openLoginActivity(ChangePasswordActivity.this);
-                        finish();
-                    } else {
-                        Log.i("-----", "1");
-                        Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
-                    }
-
+                ResponseProtocol<String> response = (ResponseProtocol) msg.protocol;
+                if (msg.msg == null) {
+                    Toast.makeText(ChangePasswordActivity.this, "修改密码成功，请重新登录", Toast.LENGTH_SHORT).show();
+                    UserSession.getInstance().needLoginOut();
+                    UIOpenHelper.openLoginActivity(ChangePasswordActivity.this);
+                    finish();
                 } else {
-                    Log.i("-----", "2");
                     Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
                 }
+//                if (errorMsg == null) {
+//                    String error = null;
+//                    ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
+//                    LinkedTreeMap<String, String> result = response.getResponse();
+//                    if (result != null && result.size() > 0) {
+//                        error = result.containsKey("ERROR") ? result.get("ERROR") : null;
+//                    }
+//                    if (TextUtils.isEmpty(error)) {
+//                        UIOpenHelper.openLoginActivity(ChangePasswordActivity.this);
+//                        finish();
+//                    } else {
+//                        Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                } else {
+//                    Toast.makeText(ChangePasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
     }
