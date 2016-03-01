@@ -575,10 +575,11 @@
             android:screenOrientation="portrait"></activity>
 
         <activity
-            android:name=".ui.activity.medicare.MedicarePayModeActivity"
+            android:name="${CHANNEL_PACKAGE}.ui.activity.MedicarePayActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"></activity>
 
 
         <!--**************** 医保支付 end *************-->

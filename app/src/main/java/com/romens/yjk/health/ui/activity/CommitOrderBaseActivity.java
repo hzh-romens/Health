@@ -1,6 +1,8 @@
 package com.romens.yjk.health.ui.activity;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +21,6 @@ import android.widget.FrameLayout;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.network.FacadeArgs;
@@ -41,13 +42,14 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.ShopEntity;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
+import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.model.CommitOrderEntity;
-import com.romens.yjk.health.model.FilterChildEntity;
+import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
@@ -169,7 +171,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
 
     private void processItemSelect(int position) {
         if (position == addressRow) {
-            UIOpenHelper.openControlAddressActivityForResult(CommitOrderBaseActivity.this, 0);
+            UIOpenHelper.openControlAddressActivityForResult(CommitOrderBaseActivity.this, REQUEST_CODE_ADDRESS);
         } else if (position == orderPayTypeRow) {
             Intent intent = new Intent(CommitOrderBaseActivity.this, OrderPayTypeActivity.class);
             boolean supportMedicareCard = supportMedicareCardPay();
@@ -183,6 +185,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             Intent intent = new Intent(CommitOrderBaseActivity.this, OrderInvoiceActivity.class);
             intent.putExtra(OrderInvoiceActivity.ARGUMENTS_KEY_INVOICE_NAME, TextUtils.isEmpty(orderInvoice) ? "" : orderInvoice);
             startActivityForResult(intent, REQUEST_CODE_INVOICE);
+        } else if (position == orderSubmitRow) {
+            tryPostOrder();
         }
     }
 
@@ -198,7 +202,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         for (ShoppingCartDataEntity entity :
                 data) {
             goodsCount += entity.getBuyCount();
-            goodsAmount = goodsAmount.add(entity.getUserPrice());
+            goodsAmount = goodsAmount.add(entity.getSum());
             String shopID = entity.getShopID();
             if (!needCommitGoods.containsKey(shopID)) {
                 shopEntities.add(new ShopEntity(shopID, entity.getShopName()));
@@ -279,16 +283,22 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             ToastCell.toast(CommitOrderBaseActivity.this, "请选择送货地址!");
             return;
         }
-//        SpannableStringBuilder message = new SpannableStringBuilder();
-//        //String amountText=
-//        String orderInfo = String.format("共 %d 个商品,合计 %s ,是否确定提交订单?",goodsCount,)
-//        SpannableString phone = new SpannableString();
-//        phone.setSpan(new ForegroundColorSpan(0xff2baf2b), 0, phone.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        phone.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, phone.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        name.append(phone);
-//        new AlertDialog.Builder(CommitOrderBaseActivity.this)
-//                .setTitle("提交订单")
-//                .setMessage()
+        SpannableStringBuilder message = new SpannableStringBuilder();
+        message.append(String.format("订单共 %d 个商品,总合计 ", goodsCount));
+        message.append(ShoppingHelper.formatPrice(goodsAmount));
+        message.append(" ,是否确定提交订单?");
+
+        new AlertDialog.Builder(CommitOrderBaseActivity.this)
+                .setTitle("提交订单")
+                .setMessage(message)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        postOrder();
+                    }
+                }).setNegativeButton("取消", null)
+                .create().show();
     }
 
     /**
@@ -307,7 +317,6 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         Iterator<Map.Entry<String, List<ShoppingCartDataEntity>>> goodsData = needCommitGoods.entrySet().iterator();
         while (goodsData.hasNext()) {
             Map.Entry<String, List<ShoppingCartDataEntity>> entry = goodsData.next();
-
             for (ShoppingCartDataEntity goods :
                     entry.getValue()) {
                 ObjectNode goodsNode = JacksonMapper.getInstance().createObjectNode();
@@ -335,71 +344,39 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     public void onResult(Message message, Message errorMessage) {
                         needHideProgress();
                         if (errorMessage == null) {
-
+                            ResponseProtocol<JsonNode> protocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = protocol.getResponse();
+                            handlePostOrderResponse(response);
+                        } else {
+                            ToastCell.toast(CommitOrderBaseActivity.this, "提交订单失败!");
                         }
                     }
                 }).build();
         ConnectManager.getInstance().request(CommitOrderBaseActivity.this, connect);
-//            Message message = new Message.MessageBuilder()
-//                    .withProtocol(protocol).build();
-//            FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-//                @Override
-//                public void onTokenTimeout(Message msg) {
-//                    Log.e("GetBuyCarCount", "ERROR");
-//                    needHideProgress();
-//                }
-//
-//                @Override
-//                public void onResult(Message msg, Message errorMsg) {
-//                    needHideProgress();
-//                    if (errorMsg == null) {
-//                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-//                            String success = jsonObject.getString("success");
-//
-//                            if (success.equals("yes")) {
-//                                if ("支付宝支付".equals(deliveryName) || "微信支付".equals(deliveryName)) {
-//                                    UIOpenHelper.openPayActivity(CommitOrderActivity.this, deliveryName, sumMoney, jsonObject.getString("msg1"));
-//                                } else {
-//                                    Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
-//                                    i.putExtra("success", "true");
-//                                    i.putExtra("sumMoney", (sumMoney - coupon) + "");
-//                                    i.putExtra("orderNumber", jsonObject.getString("msg1"));
-//                                    i.putExtra("time", jsonObject.getString("msg2"));
-//                                    AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
-//                                    startActivity(i);
-//                                    finish();
-//                                }
-//                            } else {
-//                                Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
-//                                String errorMsgs = jsonObject.getString("errorMsg");
-//                                i.putExtra("success", "false");
-//                                i.putExtra("errormsg", errorMsgs);
-//                                startActivity(i);
-//                                finish();
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//                        Log.e("CommitOrder", errorMsg.msg);
-//                    }
-//                }
-//            });
     }
 
-    public String getJsonData(List<FilterChildEntity> data, String deliverytype, String addressid, String billName) {
-        Gson gson = new Gson();
-        CommitOrderEntity commitOrderEntity = new CommitOrderEntity();
-        commitOrderEntity.setDELIVERYTYPE(deliverytype);
-        commitOrderEntity.setADDRESSID(addressid);
-        commitOrderEntity.setGOODSLIST(data);
-        commitOrderEntity.setBILLNAME(billName);
-        commitOrderEntity.setCOUPONGUID("");
-        String JSON_DATA = gson.toJson(commitOrderEntity);
-        return JSON_DATA;
+    private void handlePostOrderResponse(JsonNode response) {
+        //{"success":"yes",
+        // "errorCode":"0000",
+        // "errorMsg":"",
+        // "msg1":"20160302015321726",
+        // "msg2":"2016-03-02 01:53:21",
+        // "data":[]}
+        if (TextUtils.equals("yes", response.get("success").asText())) {
+            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged);
+            Intent intent = new Intent();
+            ComponentName componentName = new ComponentName(getPackageName(), getPackageName() + ".ui.activity.MedicarePayActivity");
+            intent.setComponent(componentName);
+            Bundle arguments = new Bundle();
+            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, "");
+            BigDecimal payAmount = goodsAmount.subtract(couponAmount);
+            arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+            intent.putExtras(arguments);
+            startActivity(intent);
+            finish();
+        } else {
+            ToastCell.toast(CommitOrderBaseActivity.this, "提交订单失败!");
+        }
     }
 
     @Override

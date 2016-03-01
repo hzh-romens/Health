@@ -14,8 +14,12 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.activity.medicare.MedicarePayModeActivity;
+import com.romens.yjk.health.pay.PayPrepareBaseActivity;
+import com.romens.yjk.health.ui.activity.medicare.MedicarePayBaseActivity;
 import com.romens.yjk.health.ui.components.logger.Log;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * @author Zhou Lisi
@@ -54,7 +58,15 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == testYBZFRow) {
-                    Intent intent = new Intent(DevelopModeActivity.this, MedicarePayModeActivity.class);
+                    Intent intent = new Intent();
+                    ComponentName componentName=new ComponentName(getPackageName(),getPackageName()+".ui.activity.MedicarePayActivity");
+                    intent.setComponent(componentName);
+                    Bundle arguments = new Bundle();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String orderNo = format.format(Calendar.getInstance().getTime());
+                    arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+                    arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, 0.01);
+                    intent.putExtras(arguments);
                     startActivity(intent);
                 } else if (position == testShoppingCartRow) {
                     Intent intent = new Intent(DevelopModeActivity.this, ShoppingCartActivity.class);

@@ -9,6 +9,7 @@ import android.os.Bundle;
  */
 public class PayParamsForYBHEB extends PayParams {
 
+    @Override
     public Bundle toBundle() {
         Bundle bundle = new Bundle();
         bundle.putString("flowno", get("flowno"));

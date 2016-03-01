@@ -1,5 +1,7 @@
 package com.romens.yjk.health.pay;
 
+import android.os.Bundle;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,4 +21,6 @@ public abstract class PayParams {
     public String get(String key) {
         return params.get(key);
     }
+
+    public abstract Bundle toBundle();
 }

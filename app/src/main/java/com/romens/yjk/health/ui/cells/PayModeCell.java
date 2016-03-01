@@ -66,6 +66,7 @@ public class PayModeCell extends FrameLayout {
         addView(descTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT, 76, 33, 48, 0));
 
         checkBox = new CheckableView(context);
+        checkBox.setClickable(false);
         addView(checkBox, LayoutHelper.createFrame(24, 24, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 16, 0));
     }
 

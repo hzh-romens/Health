@@ -425,7 +425,7 @@ public class ControlAddressActivity extends BaseActivity {
             Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
             AddressEntity entity = addressListEntitis.get(position);
             intent.putExtra("responseCommitEntity", entity);
-            setResult(2, intent);
+            setResult(RESULT_OK, intent);
             finish();
         } else {
             UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position));
@@ -445,13 +445,13 @@ public class ControlAddressActivity extends BaseActivity {
                 if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
                     entity = addressListEntitis.get(0);
                     intent.putExtra("responseCommitEntity", entity);
-                    setResult(2, intent);
+                    setResult(RESULT_OK, intent);
                 } else {
-                    setResult(3, intent);
+                    setResult(RESULT_CANCELED, intent);
                 }
             } else {
                 intent.putExtra("responseCommitEntity", entity);
-                setResult(2, intent);
+                setResult(RESULT_OK, intent);
             }
 
         }
