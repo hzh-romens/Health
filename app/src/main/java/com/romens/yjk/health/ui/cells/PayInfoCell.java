@@ -7,10 +7,12 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.R;
 
 /**
  * @author Zhou Lisi
@@ -21,6 +23,7 @@ public class PayInfoCell extends FrameLayout {
 
     private TextView textView;
     private TextView valueTextView;
+    private ImageView navView;
     private static Paint paint;
     private boolean needDivider;
 
@@ -55,13 +58,25 @@ public class PayInfoCell extends FrameLayout {
         AndroidUtilities.setMaterialTypeface(valueTextView);
         addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, (Gravity.RIGHT) | Gravity.TOP, 17, 0, 17, 0));
 
+        navView = new ImageView(context);
+        navView.setScaleType(ImageView.ScaleType.CENTER);
+        navView.setColorFilter(0xffe5e5e5);
+        navView.setImageResource(R.drawable.ic_chevron_right_grey600_24dp);
+        navView.setVisibility(GONE);
+        addView(navView, LayoutHelper.createFrame(24, 24, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(48) + (needDivider ? 1 : 0));
 
-        int availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(34);
+        int availableWidth;
+        if (navView.getVisibility() == VISIBLE) {
+            availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(58);
+            navView.measure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(24), MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(24), MeasureSpec.EXACTLY));
+        } else {
+            availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(34);
+        }
         int width = (availableWidth * 2) / 3;
         if (valueTextView.getVisibility() == VISIBLE) {
             valueTextView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
@@ -83,6 +98,7 @@ public class PayInfoCell extends FrameLayout {
     public void setText(CharSequence text, boolean divider) {
         textView.setText(text);
         valueTextView.setVisibility(INVISIBLE);
+        navView.setVisibility(GONE);
         needDivider = divider;
         setWillNotDraw(!divider);
     }
@@ -95,6 +111,22 @@ public class PayInfoCell extends FrameLayout {
         } else {
             valueTextView.setVisibility(INVISIBLE);
         }
+        navView.setVisibility(GONE);
+        needDivider = divider;
+        setWillNotDraw(!divider);
+        requestLayout();
+    }
+
+    public void setTextAndValueAndIcon(CharSequence text, CharSequence value, int iconResId, boolean divider) {
+        textView.setText(text);
+        if (value != null) {
+            valueTextView.setText(value);
+            valueTextView.setVisibility(VISIBLE);
+        } else {
+            valueTextView.setVisibility(INVISIBLE);
+        }
+        navView.setVisibility(VISIBLE);
+        navView.setImageResource(iconResId);
         needDivider = divider;
         setWillNotDraw(!divider);
         requestLayout();

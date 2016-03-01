@@ -1,20 +1,18 @@
 package com.romens.yjk.health.pay;
 
-import com.romens.yjk.health.R;
-
 /**
  * @author Zhou Lisi
  * @create 16/2/26
  * @description 医保支付方式实体
  */
-public class MedicarePayMode {
+public class PayMode {
     public final int id;
     public final int iconResId;
     public final String name;
     public final String desc;
-    public final String mode;
+    public final PayModeEnum mode;
 
-    private MedicarePayMode(int id, int iconResId, String name, String desc, String mode) {
+    private PayMode(int id, int iconResId, String name, String desc, PayModeEnum mode) {
         this.id = id;
         this.iconResId = iconResId;
         this.name = name;
@@ -27,7 +25,7 @@ public class MedicarePayMode {
         private int iconResId;
         private String name;
         private String desc;
-        private String mode;
+        private PayModeEnum mode;
 
         public Builder(int id) {
             this.id = id;
@@ -48,14 +46,21 @@ public class MedicarePayMode {
             return this;
         }
 
-        public Builder withMode(String mode) {
+        public Builder withMode(PayModeEnum mode) {
             this.mode = mode;
             return this;
         }
 
-        public MedicarePayMode build() {
-            MedicarePayMode medicarePayMode = new MedicarePayMode(id, iconResId, name, desc, mode);
-            return medicarePayMode;
+        public PayMode build() {
+            PayMode payMode = new PayMode(id, iconResId, name, desc, mode);
+            return payMode;
         }
+    }
+
+    public String getPayModeDesc() {
+        if (mode == PayModeEnum.YB_HEB) {
+            return "YB_HEB";
+        }
+        return "";
     }
 }

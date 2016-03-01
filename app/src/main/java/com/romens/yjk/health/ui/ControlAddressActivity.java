@@ -244,7 +244,7 @@ public class ControlAddressActivity extends BaseActivity {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
-                    backEvent();
+                    onBackPressed();
                 } else if (i == 0) {
                     UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, 0);
                     //startActivity(new Intent(ControlAddressActivity.this, NewShippingAddressActivity.class));
@@ -421,11 +421,8 @@ public class ControlAddressActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            backEvent();
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed(){
+        backEvent();
     }
 
     private void chooseItemBackEvent(int position) {
@@ -433,7 +430,7 @@ public class ControlAddressActivity extends BaseActivity {
             Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
             AddressEntity entity = addressListEntitis.get(position);
             intent.putExtra("responseCommitEntity", entity);
-            setResult(2, intent);
+            setResult(RESULT_OK, intent);
             finish();
         } else {
             UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position));
@@ -453,13 +450,13 @@ public class ControlAddressActivity extends BaseActivity {
                 if (addressListEntitis.size() > 0 && addressListEntitis.size() != 0) {
                     entity = addressListEntitis.get(0);
                     intent.putExtra("responseCommitEntity", entity);
-                    setResult(2, intent);
+                    setResult(RESULT_OK, intent);
                 } else {
-                    setResult(3, intent);
+                    setResult(RESULT_CANCELED, intent);
                 }
             } else {
                 intent.putExtra("responseCommitEntity", entity);
-                setResult(2, intent);
+                setResult(RESULT_OK, intent);
             }
 
         }

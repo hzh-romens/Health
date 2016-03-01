@@ -128,7 +128,7 @@ public class ShoppingCartGoodsCell extends FrameLayout implements AddSubView.Add
 
         priceView = new TextView(context);
         priceView.setTextColor(ResourcesConfig.priceFontColor);
-        priceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        priceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         priceView.setSingleLine(true);
         priceView.setEllipsize(TextUtils.TruncateAt.END);
         priceView.setGravity((Gravity.LEFT) | Gravity.TOP);

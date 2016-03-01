@@ -37,7 +37,7 @@ public class PayAppManager {
      * @param context
      * @param payMode
      */
-    public static void needDownloadPayApp(Context context, String payMode) {
+    public static void needDownloadPayApp(Context context, PayModeEnum payMode) {
         String downloadURL = String.format("%sPayApp?Mode=%s", FacadeConfig.getUrl(), payMode);
         Uri uri = Uri.parse(downloadURL);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);

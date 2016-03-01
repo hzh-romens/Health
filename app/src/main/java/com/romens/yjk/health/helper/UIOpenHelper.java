@@ -258,10 +258,10 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
-    public static void openControlAddressActivityForResult(Context context) {
+    public static void openControlAddressActivityForResult(Activity context,int requestCode) {
         Intent i = new Intent(context, ControlAddressActivity.class);
         i.putExtra("chose", "chose");
-        ((Activity) context).startActivityForResult(i, 2);
+        context.startActivityForResult(i,requestCode);
     }
 
     public static void openShopCarActivityWithAnimation(Context context) {
