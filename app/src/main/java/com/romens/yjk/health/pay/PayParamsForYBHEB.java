@@ -2,6 +2,9 @@ package com.romens.yjk.health.pay;
 
 import android.os.Bundle;
 
+import com.romens.yjk.health.MyApplication;
+import com.romens.yjk.health.R;
+
 /**
  * @author Zhou Lisi
  * @create 16/2/26
@@ -25,6 +28,10 @@ public class PayParamsForYBHEB extends PayParams {
         bundle.putString("transferFlowNo", get("transferFlowNo"));
         bundle.putString("BusiPeriod", get("BusiPeriod"));
         bundle.putString("hrbbType", get("hrbbType"));
+        String packageName = MyApplication.applicationContext.getPackageName();
+        bundle.putString("packageName", packageName);
+        bundle.putString("activityPath", packageName + ".pay.YBPayResult");
+        bundle.putString("appName", MyApplication.applicationContext.getString(R.string.app_name));
         return bundle;
     }
 

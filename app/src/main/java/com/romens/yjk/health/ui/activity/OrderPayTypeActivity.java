@@ -17,6 +17,7 @@ import com.romens.android.ui.cells.EmptyCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.pay.Pay;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.DoubleTextCheckCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
@@ -33,18 +34,15 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
     private ListView listView;
     private ListAdapter listAdapter;
 
-    private int selectPayType = 0;
+    private int selectPayType = Pay.PAY_TYPE_ONLINE;
     private int selectDelivery = 0;
-
-    public static final String[] payType = new String[]{"在线支付", "货到付款", "医保在线支付"};
-    public static final String[] deliveryType = new String[]{"到店自提", "送货上门", "快递送货"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         supportMedicareCardPay = intent.getBooleanExtra("SupportMedicareCard", false);
-        selectPayType = intent.getIntExtra("PayType", supportMedicareCardPay ? 2 : 0);
+        selectPayType = intent.getIntExtra("PayType", supportMedicareCardPay ? Pay.PAY_TYPE_YB_ONLINE : Pay.PAY_TYPE_ONLINE);
         selectDelivery = intent.getIntExtra("DeliveryType", 0);
 
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
@@ -71,22 +69,19 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == payTypeForOnlineRow) {
-                    selectPayType = 0;
+                    selectPayType = Pay.PAY_TYPE_ONLINE;
                     updateAdapter();
                 } else if (position == payTypeForAfterRow) {
-                    selectPayType = 1;
+                    selectPayType = Pay.PAY_TYPE_OFFLINE;
                     updateAdapter();
                 } else if (position == payTypeForMedicareRow) {
-                    selectPayType = 2;
+                    selectPayType = Pay.PAY_TYPE_YB_ONLINE;
                     updateAdapter();
                 } else if (position == deliveryForToStoreRow) {
-                    selectDelivery = 0;
+                    selectDelivery = Pay.DELIVERY_TYPE_STORE;
                     updateAdapter();
                 } else if (position == deliveryForToHomeRow) {
-                    selectDelivery = 1;
-                    updateAdapter();
-                } else if (position == deliveryForExpressRow) {
-                    selectDelivery = 2;
+                    selectDelivery = Pay.DELIVERY_TYPE_HOME;
                     updateAdapter();
                 } else if (position == saveActionRow) {
                     onSavePayAndDeliveryType();
@@ -108,9 +103,9 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
     private void onSavePayAndDeliveryType() {
         Intent data = new Intent();
         data.putExtra("PayType", selectPayType);
-        data.putExtra("PayTypeName", payType[selectPayType]);
+        data.putExtra("PayTypeName", Pay.getPayType(selectPayType));
         data.putExtra("DeliveryType", selectDelivery);
-        data.putExtra("DeliveryTypeName", deliveryType[selectDelivery]);
+        data.putExtra("DeliveryTypeName", Pay.getDeliveryType(selectDelivery));
         setResult(RESULT_OK, data);
         finish();
     }
@@ -127,18 +122,16 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
         deliverySection1 = rowCount++;
 
 
-        if (selectPayType == 1) {
+        if (selectPayType == Pay.PAY_TYPE_OFFLINE) {
             deliveryForToStoreRow = rowCount++;
             //医保支付的收货付款只支持到店自提
             deliveryForToHomeRow = supportMedicareCardPay ? -1 : rowCount++;
-            deliveryForExpressRow = -1;
-            if (supportMedicareCardPay || selectDelivery == 2) {
-                selectDelivery = 0;
+            if (supportMedicareCardPay) {
+                selectDelivery = Pay.DELIVERY_TYPE_STORE;
             }
         } else {
             deliveryForToStoreRow = rowCount++;
             deliveryForToHomeRow = rowCount++;
-            deliveryForExpressRow = rowCount++;
         }
 
         saveSection = rowCount++;
@@ -158,7 +151,6 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
     private int deliverySection1;
     private int deliveryForToStoreRow;
     private int deliveryForToHomeRow;
-    private int deliveryForExpressRow;
 
     private int saveSection;
     private int saveActionRow;
@@ -211,11 +203,11 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 }
                 TextCheckCell cell = (TextCheckCell) convertView;
                 if (position == payTypeForOnlineRow) {
-                    cell.setValue(payType[0], selectPayType == 0, true);
+                    cell.setValue(Pay.getPayType(Pay.PAY_TYPE_ONLINE), selectPayType == Pay.PAY_TYPE_ONLINE, true);
                 } else if (position == payTypeForAfterRow) {
-                    cell.setValue(payType[1], selectPayType == 1, false);
+                    cell.setValue(Pay.getPayType(Pay.PAY_TYPE_OFFLINE), selectPayType ==Pay.PAY_TYPE_OFFLINE, false);
                 } else if (position == payTypeForMedicareRow) {
-                    cell.setValue(payType[2], selectPayType == 2, false);
+                    cell.setValue(Pay.getPayType(Pay.PAY_TYPE_YB_ONLINE), selectPayType ==Pay.PAY_TYPE_YB_ONLINE, false);
                 }
             } else if (viewType == 3) {
                 if (convertView == null) {
@@ -223,11 +215,9 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 }
                 DoubleTextCheckCell cell = (DoubleTextCheckCell) convertView;
                 if (position == deliveryForToStoreRow) {
-                    cell.setValue(deliveryType[0], "推荐到店自提,有机会得到积分加倍累计", selectDelivery == 0, true);
+                    cell.setValue(Pay.getDeliveryType(Pay.DELIVERY_TYPE_STORE), "推荐到店自提,有机会得到积分加倍累计", selectDelivery == 0, true);
                 } else if (position == deliveryForToHomeRow) {
-                    cell.setValue(deliveryType[1], "优先由最近的门店派送,支持现金、微信或支付宝当面付", selectDelivery == 1, true);
-                } else if (position == deliveryForExpressRow) {
-                    cell.setValue(deliveryType[2], "可能会收取部分配送费用", selectDelivery == 2, false);
+                    cell.setValue(Pay.getDeliveryType(Pay.DELIVERY_TYPE_HOME), "优先由最近的门店派送,支持现金、微信或支付宝当面付", selectDelivery == 1, true);
                 }
             } else if (viewType == 4) {
                 if (convertView == null) {
@@ -248,8 +238,8 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
 
                 TipCell cell = (TipCell) convertView;
                 if (supportMedicareCardPay) {
-                    if (selectPayType == 1) {
-                        cell.setValue(String.format("医保支付的药品在付款方式选择 货到付款 时，配送方式只支持 %s。", deliveryType[0]));
+                    if (selectPayType == Pay.PAY_TYPE_OFFLINE) {
+                        cell.setValue(String.format("医保支付的药品在付款方式选择 货到付款 时，配送方式只支持 %s。", Pay.getDeliveryType(Pay.DELIVERY_TYPE_STORE)));
                     }
                 } else {
                     cell.setValue("配送方式选择到店自提和送货上门时，在您的商品准备好后，我们会有专人电话联系您!");
@@ -269,7 +259,6 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                     position == payTypeForAfterRow ||
                     position == deliveryForToStoreRow ||
                     position == deliveryForToHomeRow ||
-                    position == deliveryForExpressRow ||
                     position == saveActionRow) {
                 return true;
             }
@@ -282,7 +271,7 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 return 1;
             } else if (position == payTypeForOnlineRow || position == payTypeForAfterRow || position == payTypeForMedicareRow) {
                 return 2;
-            } else if (position == deliveryForToStoreRow || position == deliveryForToHomeRow || position == deliveryForExpressRow) {
+            } else if (position == deliveryForToStoreRow || position == deliveryForToHomeRow ) {
                 return 3;
             } else if (position == saveSection) {
                 return 4;

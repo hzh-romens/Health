@@ -51,43 +51,46 @@ public class YBPayResult extends PayActivity {
 
         if (!isFromPayPrepare) {
             Intent intent = getIntent();
-            Bundle bundle = intent.getExtras();
-            Set<String> keys = bundle.keySet();
-            bundle = intent.getBundleExtra("bundle");
-            keys = bundle.keySet();
-            String state = intent.getStringExtra("status");
-            StringBuilder log = new StringBuilder();
-            log.append("state:" + state);
-            log.append("\n");
-            emptyTextView.setText(log);
-            //Bundle[{cardNo=11204688X,
-            // certNo=230102198506053415,
-            // payAmount=0.01,
-            // totalAmount=0.01,
-            // status=1,
-            // balance=785.69,
-            // custname=赵宇,
-            // lastPayAmount=0.00,
-            // transferFlowNo=C06714567145472016022910}]
-        } else {
-            Bundle bundle = payParams.getBundle("PAY");
-            sendPayRequest(bundle);
+
         }
+        onCreateAfter();
     }
 
     @Override
-    protected void tryCheckPayState() {
-
-    }
-
-    @Override
-    protected boolean sendPayRequest(Bundle bundle) {
+    protected void onPayRequest(Bundle payParams) {
+        Bundle bundle = payParams.getBundle("PAY");
         ComponentName componentName = new ComponentName("com.yitong.hrb.people.android",
                 "com.yitong.hrb.people.android.activity.GifViewActivity");
         Intent intent = new Intent();
         intent.putExtra("bundle", bundle);
         intent.setComponent(componentName);
         startActivity(intent);
-        return true;
+    }
+
+    @Override
+    protected void onPayResponse(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        Set<String> keys = bundle.keySet();
+        bundle = intent.getBundleExtra("bundle");
+        keys = bundle.keySet();
+        String state = intent.getStringExtra("status");
+        StringBuilder log = new StringBuilder();
+        log.append("state:" + state);
+        log.append("\n");
+        //emptyTextView.setText(log);
+        //Bundle[{cardNo=11204688X,
+        // certNo=230102198506053415,
+        // payAmount=0.01,
+        // totalAmount=0.01,
+        // status=1,
+        // balance=785.69,
+        // custname=赵宇,
+        // lastPayAmount=0.00,
+        // transferFlowNo=C06714567145472016022910}]
+    }
+
+    @Override
+    protected void onCheckPayState() {
+
     }
 }

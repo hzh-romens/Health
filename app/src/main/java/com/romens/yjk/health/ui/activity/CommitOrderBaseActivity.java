@@ -49,6 +49,7 @@ import com.romens.yjk.health.db.entity.ShopEntity;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.pay.Pay;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
@@ -308,8 +309,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         needShowProgress("正在提交订单...");
         ObjectNode orderNode = JacksonMapper.getInstance().createObjectNode();
         orderNode.put("ADDRESSID", addressInfo.get("ID"));
-        orderNode.put("DELIVERYTYPE", selectDeliveryType);
-        orderNode.put("PAYTYPE", selectPayType);
+        orderNode.put("DELIVERYTYPE", Pay.getDeliveryTypeKey(selectDeliveryType));
+        orderNode.put("PAYTYPE", Pay.getPayTypeKey(selectPayType));
         orderNode.put("COUPONGUID", orderCouponID);
         orderNode.put("BILLNAME", orderInvoice);
         ArrayNode goodsArrayNode = JacksonMapper.getInstance().createArrayNode();
@@ -320,20 +321,16 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             for (ShoppingCartDataEntity goods :
                     entry.getValue()) {
                 ObjectNode goodsNode = JacksonMapper.getInstance().createObjectNode();
-                goodsNode.put("GOODSGUID", goods.getGuid());
-                goodsNode.put("SHOPID", goods.getShopID());
-                goodsNode.put("BUYCOUNT", goods.getBuyCount());
-                goodsNode.put("GOODSPRICE", goods.getBuyPrice());
+                goodsNode.put("GOODSID", goods.getGuid());
                 goodsArrayNode.add(goodsNode);
             }
         }
         orderNode.set("GOODSLIST", goodsArrayNode);
 
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
-                .put("JSONDATA", orderNode.toString())
+                .put("ORDERDATA", orderNode.toString())
                 .build();
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SaveOrderNew", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
         Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
@@ -356,13 +353,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     }
 
     private void handlePostOrderResponse(JsonNode response) {
-        //{"success":"yes",
-        // "errorCode":"0000",
-        // "errorMsg":"",
-        // "msg1":"20160302015321726",
-        // "msg2":"2016-03-02 01:53:21",
-        // "data":[]}
-        if (TextUtils.equals("yes", response.get("success").asText())) {
+        //{"ORDERCODE":"20160302194533358","PAYTYPE":"PAY_ONLINE","PAYMOUNT":143.1,"CREATEDATE":"2016-03-02 19:45:33"}
+        if (!response.has("ERROR")) {
             AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged);
             Intent intent = new Intent();
             ComponentName componentName = new ComponentName(getPackageName(), getPackageName() + ".ui.activity.MedicarePayActivity");
@@ -591,7 +583,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                         cell.setTextAndValue("", "点击选择送货地址", true, false);
                     }
                 } else if (position == orderPayTypeRow) {
-                    String payAndDelivery = String.format("%s (%s)", OrderPayTypeActivity.payType[selectPayType], OrderPayTypeActivity.deliveryType[selectDeliveryType]);
+                    String payAndDelivery = String.format("%s (%s)", Pay.getPayType(selectPayType), Pay.getDeliveryType(selectDeliveryType));
                     cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
                     cell.setTextAndValue("优惠券", "点击选择优惠券", true, true);
@@ -621,7 +613,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 cell.setValue(iconPath, name, desc, userPrice, count, true);
             } else if (viewType == 7) {
                 OrderInfoCell cell = (OrderInfoCell) holder.itemView;
-                String deliveryType = OrderPayTypeActivity.deliveryType[selectDeliveryType];
+                String deliveryType = Pay.getDeliveryType(selectDeliveryType);
 
                 String name = "";
                 String address = "";

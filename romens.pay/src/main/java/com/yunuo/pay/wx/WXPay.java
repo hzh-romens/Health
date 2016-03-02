@@ -2,10 +2,9 @@ package com.yunuo.pay.wx;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.romens.android.io.json.JacksonMapper;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -24,13 +23,13 @@ import java.util.Map;
  */
 public class WXPay implements IWXAPIEventHandler {
     public interface Delegate {
-        void paySuccess(String extData);
+        void onPaySuccess(String extData);
 
-        void payFail(int errorCode, String error);
+        void onPayFail(int errorCode, String error);
 
-        void payCancel(String extData);
+        void onPayCancel(String extData);
 
-        void payProcessing();
+        void onPayProcessing();
     }
 
     private final IWXAPI wxAPI;
@@ -84,11 +83,11 @@ public class WXPay implements IWXAPIEventHandler {
             if (payResp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
                 final int errorCode = payResp.errCode;
                 if (errorCode == BaseResp.ErrCode.ERR_OK) {
-                    delegate.paySuccess(payResp.extData);
+                    delegate.onPaySuccess(payResp.extData);
                 } else if (errorCode == BaseResp.ErrCode.ERR_USER_CANCEL) {
-                    delegate.payCancel(payResp.extData);
+                    delegate.onPayCancel(payResp.extData);
                 } else {
-                    delegate.payFail(errorCode, payResp.errStr);
+                    delegate.onPayFail(errorCode, payResp.errStr);
                 }
             }
         }
@@ -159,11 +158,16 @@ public class WXPay implements IWXAPIEventHandler {
             request.nonceStr = nonceStr;
             request.timeStamp = timeStamp;
             request.sign = sign;
+            String extData = "";
             if (ext != null && ext.size() > 0) {
-                Gson gson = new Gson();
-                String extData = gson.toJson(ext);
-                request.extData = extData;
+                try {
+                    extData = JacksonMapper.getInstance().writeValueAsString(ext);
+
+                } catch (JsonProcessingException e) {
+                    extData = "";
+                }
             }
+            request.extData = extData;
             if (request.checkArgs()) {
                 return request;
             }

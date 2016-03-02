@@ -1,0 +1,111 @@
+package com.romens.yjk.health.ui.activity.dev;
+
+import android.os.Bundle;
+import android.text.TextUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.pay.PayParamsForAlipay;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.components.ToastCell;
+import com.romens.yjk.health.ui.components.logger.Log;
+import com.yunuo.pay.alipay.AlipayPay;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Iterator;
+
+/**
+ * @author Zhou Lisi
+ * @create 16/3/2
+ * @description
+ */
+public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
+
+    private AlipayPay alipayPay;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        alipayPay = new AlipayPay(new AlipayPay.Delegate() {
+            @Override
+            public void onPaySuccess(String extData) {
+                Log.e("ALIPAY",extData);
+            }
+
+            @Override
+            public void onPayFail(String extData) {
+                Log.e("ALIPAY",extData);
+            }
+
+            @Override
+            public void onPayProcessing(String extData) {
+                Log.e("ALIPAY",extData);
+            }
+        });
+
+        FacadeProtocol protocol = new FacadeProtocol("http://115.28.244.190/index.php/", "test", "GetBillPayRequestParams", null);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+
+        Connect connect = new RMConnect.Builder(DevTextAlipay.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> protocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = protocol.getResponse();
+                            PayParamsForAlipay payParams = createPayParams(response);
+                            alipayPay.sendPayRequest(DevTextAlipay.this, payParams.toBundle());
+                            //{"partner":"2088701740074813",
+                            // "seller_id":"2088701740074813",
+                            // "out_trade_no":"RMTT48131456924508",
+                            // "subject":"测试","total_fee":0.01,
+                            // "notify_url":"http://115.28.244.190/index.php/Alipay",
+                            // "service":"mobile.securitypay.pay",
+                            // "payment_type":"1",
+                            // "_input_charset":"utf-8",
+                            // "it_b_pay":"30",
+                            // "sign":"IPJiz3Te4bLSaxDZzJb0DUlM8Xsiq37NOtlQEPT/iErD498AZJJX3zAR8VEZ3rfVKURFG4vcM5Pn/M2mYPolg4KeN6kVCoslBn0jELwd0veAzlxZC7W2zKS6feUvpsP8nmRe3abQdZQtZ5JKGTF0sLlqX+ZnMpt4GnhkgTBFbNQ=",
+                            // "sign_type":"RSA"}
+                        } else {
+                            ToastCell.toast(DevTextAlipay.this, "提交订单失败!");
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(DevTextAlipay.this, connect);
+    }
+
+    private PayParamsForAlipay createPayParams(JsonNode response) {
+        Iterator<String> iterator = response.fieldNames();
+        StringBuilder payInfoBuilder = new StringBuilder();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            String value = response.get(key).asText();
+            if (TextUtils.equals("sign", key)) {
+                try {
+                    value = URLEncoder.encode(value, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    value = "";
+                }
+            }
+            payInfoBuilder.append(String.format("%s=\"%s\"&", key, value));
+        }
+        String payInfo = payInfoBuilder.toString();
+        if (payInfo.endsWith("&")) {
+            payInfo = payInfo.substring(0, payInfo.length() - 1);
+        }
+        PayParamsForAlipay payParams = new PayParamsForAlipay();
+        payParams.put("PAYPARAMS", payInfo);
+        return payParams;
+    }
+}

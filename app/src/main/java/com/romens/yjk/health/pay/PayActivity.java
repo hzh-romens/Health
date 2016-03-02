@@ -20,18 +20,35 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle extras = getIntent().getExtras();
-        isFromPayPrepare = extras.getBoolean(ARGUMENTS_KEY_FROM_PAY_PREPARE, false);
+    }
+
+    protected void onCreateAfter() {
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if(extras!=null&&extras.containsKey(ARGUMENTS_KEY_FROM_PAY_PREPARE)){
+            isFromPayPrepare = extras.getBoolean(ARGUMENTS_KEY_FROM_PAY_PREPARE, false);
+        }else{
+            isFromPayPrepare=false;
+        }
         if (isFromPayPrepare) {
             payParams = extras.getBundle(ARGUMENTS_KEY_PAY_PARAMS);
+            onPayRequest(payParams);
+        } else {
+            onPayResponse(intent);
         }
     }
+
+    protected abstract void onPayRequest(Bundle payParams);
+
+    protected abstract void onPayResponse(Intent intent);
+
+    protected abstract void onCheckPayState();
 
     @Override
     public void onResume() {
         super.onResume();
         if (isFromPayPrepare) {
-            tryCheckPayState();
+            onCheckPayState();
         }
     }
 
@@ -39,9 +56,6 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        onPayResponse(intent);
     }
-
-    protected abstract void tryCheckPayState();
-
-    protected abstract boolean sendPayRequest(Bundle bundle);
 }

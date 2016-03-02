@@ -40,9 +40,6 @@ import java.util.Map;
  * @description
  */
 public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
-    protected int selectedPayModeKey;
-    private final SparseArray<PayMode> medicarePayModes = new SparseArray<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +64,6 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
     @Override
     protected void needFinish() {
         finish();
-    }
-
-    @Override
-    protected BaseAdapter onCreateAdapter() {
-        return new ListAdapter(this);
     }
 
     protected void tryPayRequest() {
@@ -121,154 +113,4 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
     }
 
     protected abstract void onInitPayMode(SparseArray<PayMode> payModes);
-
-    private void updateAdapter() {
-        rowCount = 0;
-        billSection = rowCount++;
-        billNoRow = rowCount++;
-        payAmountRow = rowCount++;
-
-        dividerRow = rowCount++;
-        payModeSection = rowCount++;
-        payModeStartRow = rowCount;
-        rowCount += medicarePayModes.size();
-        payModeEndRow = rowCount - 1;
-        payModeDividerRow = rowCount++;
-        payActionRow = rowCount++;
-
-        listAdapter.notifyDataSetChanged();
-    }
-
-    private int rowCount;
-    private int billSection;
-    private int billNoRow;
-    private int payAmountRow;
-
-    private int dividerRow;
-    private int payModeSection;
-    private int payModeStartRow;
-    private int payModeEndRow;
-    private int payModeDividerRow;
-    private int payActionRow;
-
-    class ListAdapter extends BaseAdapter {
-
-        private Context adapterContext;
-
-        public ListAdapter(Context context) {
-            adapterContext = context;
-        }
-
-        @Override
-        public int getCount() {
-            return rowCount;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled() {
-            return false;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            if (position >= payModeStartRow && position <= payModeEndRow) {
-                return true;
-            } else if (position == payActionRow) {
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            if (position == billNoRow || position == payAmountRow) {
-                return 1;
-            } else if (position == billSection || position == payModeSection) {
-                return 2;
-            } else if (position >= payModeStartRow && position <= payModeEndRow) {
-                return 3;
-            } else if (position == payModeDividerRow) {
-                return 4;
-            } else if (position == payActionRow) {
-                return 5;
-            }
-            return 0;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 6;
-        }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final int viewType = getItemViewType(position);
-            if (viewType == 0) {
-                if (convertView == null) {
-                    convertView = new ShadowSectionCell(adapterContext);
-                }
-            } else if (viewType == 1) {
-                if (convertView == null) {
-                    convertView = new PayInfoCell(adapterContext);
-                }
-                PayInfoCell cell = (PayInfoCell) convertView;
-                cell.setTextSize(16);
-                cell.setValueTextSize(18);
-                cell.setTextColor(0xff212121);
-                if (position == billNoRow) {
-                    cell.setValueTextColor(0xff757575);
-                    cell.setTextAndValue("订单编号", orderNo, true);
-                } else if (position == payAmountRow) {
-                    cell.setValueTextColor(ResourcesConfig.priceFontColor);
-                    cell.setTextAndValue("支付金额", ShoppingHelper.formatPrice(orderPayAmount), false);
-                }
-            } else if (viewType == 2) {
-                if (convertView == null) {
-                    convertView = new H3HeaderCell(adapterContext);
-                }
-                H3HeaderCell cell = (H3HeaderCell) convertView;
-                cell.setTextSize(16);
-                cell.setTextColor(ResourcesConfig.textPrimary);
-                if (position == billSection) {
-                    cell.setText("待支付订单");
-                } else if (position == payModeSection) {
-                    cell.setText("支付方式");
-                }
-            } else if (viewType == 3) {
-                if (convertView == null) {
-                    convertView = new PayModeCell(adapterContext);
-                }
-
-                PayModeCell cell = (PayModeCell) convertView;
-                int key = position - payModeStartRow;
-                PayMode mode = medicarePayModes.get(key);
-                cell.setValue(mode.iconResId, mode.name, mode.desc, key == selectedPayModeKey, position != payModeEndRow);
-            } else if (viewType == 4) {
-                if (convertView == null) {
-                    convertView = new DividerCell(adapterContext);
-                }
-            } else if (viewType == 5) {
-                if (convertView == null) {
-                    convertView = new ActionCell(adapterContext);
-                }
-
-                ActionCell cell = (ActionCell) convertView;
-                if (position == payActionRow) {
-                    cell.setValue("支付");
-                }
-            }
-            return convertView;
-        }
-    }
 }

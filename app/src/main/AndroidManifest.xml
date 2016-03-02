@@ -584,6 +584,17 @@
 
         <!--**************** 医保支付 end *************-->
 
+
+        <!--**************** Dev Begin *******************-->
+
+        <activity
+            android:name=".ui.activity.dev.DevTextAlipay"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+        <!--**************** Dev End *******************-->
+
     </application>
 
 </manifest>

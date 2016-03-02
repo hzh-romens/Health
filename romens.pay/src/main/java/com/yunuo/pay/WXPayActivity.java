@@ -73,22 +73,22 @@ public class WXPayActivity extends Activity implements IWXAPIEventHandler {
     private void initWXApi() {
         wxPay = new WXPay(this, new WXPay.Delegate() {
             @Override
-            public void paySuccess(String extData) {
+            public void onPaySuccess(String extData) {
 
             }
 
             @Override
-            public void payFail(int errorCode, String error) {
+            public void onPayFail(int errorCode, String error) {
 
             }
 
             @Override
-            public void payCancel(String extData) {
+            public void onPayCancel(String extData) {
 
             }
 
             @Override
-            public void payProcessing() {
+            public void onPayProcessing() {
 
             }
         });

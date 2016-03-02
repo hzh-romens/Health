@@ -15,6 +15,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
+import com.romens.yjk.health.ui.activity.dev.DevTextAlipay;
 import com.romens.yjk.health.ui.activity.medicare.MedicarePayBaseActivity;
 import com.romens.yjk.health.ui.components.logger.Log;
 
@@ -71,6 +72,9 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
                 } else if (position == testShoppingCartRow) {
                     Intent intent = new Intent(DevelopModeActivity.this, ShoppingCartActivity.class);
                     startActivity(intent);
+                }else if(position==testAlipayRow){
+                    Intent intent = new Intent(DevelopModeActivity.this, DevTextAlipay.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -108,12 +112,14 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
         rowCount = 0;
         testYBZFRow = rowCount++;
         testShoppingCartRow = rowCount++;
+        testAlipayRow=rowCount++;
         adapter.notifyDataSetChanged();
     }
 
     private int rowCount;
     private int testYBZFRow;
     private int testShoppingCartRow;
+    private int testAlipayRow;
 
     class ListAdapter extends BaseAdapter {
 
@@ -142,6 +148,8 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
                 cell.setText("医保支付测试", true);
             } else if (position == testShoppingCartRow) {
                 cell.setText("购物车测试", true);
+            }else if(position==testAlipayRow){
+                cell.setText("支付宝支付测试", true);
             }
             return convertView;
         }
