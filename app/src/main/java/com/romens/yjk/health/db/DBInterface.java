@@ -278,6 +278,11 @@ public class DBInterface {
         dao.deleteByKeyInTx(entity);
     }
 
+    public void deleteShoppingCartGoods(List<String> entity) {
+        ShoppingCartDataDao dao = openWritableDb().getShoppingCartDataDao();
+        dao.deleteByKeyInTx(entity);
+    }
+
     public long getClientShoppingCartUpdated() {
         ShoppingCartDataDao dao = openReadableDb().getShoppingCartDataDao();
         ShoppingCartDataEntity entity = dao.queryBuilder()

@@ -7,12 +7,13 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.base.BaseActionBarActivity;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
+import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 
 /**
  * Created by siery on 15/12/22.
  */
 public class MedicineGroupActivity extends BaseActionBarActivity {
-    private HomeHealthFragment fragment;
+    private HomeHealthNewFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
             }
         });
         actionBar.setTitle(title);
-        fragment = new HomeHealthFragment();
+        fragment = new HomeHealthNewFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
     }
 }

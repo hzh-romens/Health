@@ -8,6 +8,7 @@ import com.pgyersdk.crash.PgyCrashManager;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
+import com.romens.android.network.request.ConnectManager;
 import com.romens.images.CloudImagesManager;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.helper.MonitorHelper;
@@ -22,6 +23,8 @@ public class MyApplication extends ApplicationLoader {
     @Override
     public void onCreate() {
         super.onCreate();
+        ConnectManager.setEnableLog(BuildConfig.ENABLE_DEVELOP_MODE);
+        FileLog.setEnableLog(BuildConfig.ENABLE_DEVELOP_MODE);
         CloudImagesManager.init(applicationContext);
         MonitorHelper.init(this);
         //初始化环信SDK

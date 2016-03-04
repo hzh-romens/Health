@@ -50,7 +50,7 @@ public class OrderInfoCell extends LinearLayout {
 
         //商品合计
         FrameLayout goodsAmountContainer = new FrameLayout(context);
-        addView(goodsAmountContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 0));
+        addView(goodsAmountContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 32, 16, 0, 16, 0));
 
         TextView goodsAmountCaptionView = new TextView(context);
         goodsAmountCaptionView.setTextColor(0xff8a8a8a);
@@ -78,7 +78,7 @@ public class OrderInfoCell extends LinearLayout {
 
         //优惠
         FrameLayout couponContainer = new FrameLayout(context);
-        addView(couponContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 0));
+        addView(couponContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 32, 16, 0, 16, 0));
 
         TextView couponCaptionView = new TextView(context);
         couponCaptionView.setTextColor(0xff8a8a8a);

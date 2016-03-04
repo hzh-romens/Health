@@ -38,17 +38,17 @@ public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
         alipayPay = new AlipayPay(new AlipayPay.Delegate() {
             @Override
             public void onPaySuccess(String extData) {
-                Log.e("ALIPAY",extData);
+                Log.e("ALIPAY", extData);
             }
 
             @Override
             public void onPayFail(String extData) {
-                Log.e("ALIPAY",extData);
+                Log.e("ALIPAY", extData);
             }
 
             @Override
             public void onPayProcessing(String extData) {
-                Log.e("ALIPAY",extData);
+                Log.e("ALIPAY", extData);
             }
         });
 
@@ -65,7 +65,9 @@ public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
                             ResponseProtocol<JsonNode> protocol = (ResponseProtocol) message.protocol;
                             JsonNode response = protocol.getResponse();
                             PayParamsForAlipay payParams = createPayParams(response);
-                            alipayPay.sendPayRequest(DevTextAlipay.this, payParams.toBundle());
+                            Bundle bundle = payParams.toBundle();
+                            String payInfo = bundle.getString(PayParamsForAlipay.KEY_PAY_PARAMS);
+                            alipayPay.sendPayRequest(DevTextAlipay.this, payInfo);
                             //{"partner":"2088701740074813",
                             // "seller_id":"2088701740074813",
                             // "out_trade_no":"RMTT48131456924508",
@@ -87,25 +89,12 @@ public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
 
     private PayParamsForAlipay createPayParams(JsonNode response) {
         Iterator<String> iterator = response.fieldNames();
-        StringBuilder payInfoBuilder = new StringBuilder();
+        PayParamsForAlipay payParams = new PayParamsForAlipay();
         while (iterator.hasNext()) {
             String key = iterator.next();
             String value = response.get(key).asText();
-            if (TextUtils.equals("sign", key)) {
-                try {
-                    value = URLEncoder.encode(value, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    value = "";
-                }
-            }
-            payInfoBuilder.append(String.format("%s=\"%s\"&", key, value));
+            payParams.put(key, value);
         }
-        String payInfo = payInfoBuilder.toString();
-        if (payInfo.endsWith("&")) {
-            payInfo = payInfo.substring(0, payInfo.length() - 1);
-        }
-        PayParamsForAlipay payParams = new PayParamsForAlipay();
-        payParams.put("PAYPARAMS", payInfo);
         return payParams;
     }
 }

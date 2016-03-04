@@ -33,6 +33,7 @@ import com.romens.yjk.health.ui.activity.ChangePasswordActivity;
 import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
+import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
@@ -88,6 +89,16 @@ public class UIOpenHelper {
         } else {
             openLoginActivity(context, requestCode);
         }
+    }
+
+    /**
+     * 打开商品分类
+     *
+     * @param context
+     */
+    public static void openMedicineGroupActivity(Context context) {
+        Intent intent = new Intent(context, MedicineGroupActivity.class);
+        context.startActivity(intent);
     }
 
     //打开搜索页面
@@ -258,10 +269,10 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
-    public static void openControlAddressActivityForResult(Activity context,int requestCode) {
+    public static void openControlAddressActivityForResult(Activity context, int requestCode) {
         Intent i = new Intent(context, ControlAddressActivity.class);
         i.putExtra("chose", "chose");
-        context.startActivityForResult(i,requestCode);
+        context.startActivityForResult(i, requestCode);
     }
 
     public static void openShopCarActivityWithAnimation(Context context) {

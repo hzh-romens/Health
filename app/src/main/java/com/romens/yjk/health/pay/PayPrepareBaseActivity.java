@@ -33,9 +33,11 @@ import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.PayInfoCell;
 import com.romens.yjk.health.ui.cells.PayModeCell;
+import com.romens.yjk.health.ui.cells.TipCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -46,6 +48,7 @@ import java.util.Map;
 public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAnalytics {
     public static final String ARGUMENTS_KEY_FROM_ORDER_DETAIL = "key_from_order_detail";
     public static final String ARGUMENTS_KEY_ORDER_NO = "key_order_no";
+    public static final String ARGUMENTS_KEY_ORDER_DATE = "key_order_date";
     public static final String ARGUMENTS_KEY_NEED_PAY_AMOUNT = "key_need_pay_amount";
 
     protected ListView listView;
@@ -55,6 +58,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
     protected boolean isFromOrderDetail = false;
     //订单编号
     protected String orderNo;
+    protected String orderDate;
     //订单待支付金额
     protected BigDecimal orderPayAmount;
 
@@ -67,6 +71,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         Bundle bundle = getIntent().getExtras();
         isFromOrderDetail = bundle.getBoolean(ARGUMENTS_KEY_FROM_ORDER_DETAIL, false);
         orderNo = bundle.getString(ARGUMENTS_KEY_ORDER_NO);
+        orderDate = bundle.getString(ARGUMENTS_KEY_ORDER_DATE);
         double amount = bundle.getDouble(ARGUMENTS_KEY_NEED_PAY_AMOUNT, 0);
         orderPayAmount = new BigDecimal(amount);
 
@@ -112,6 +117,15 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         selectedPayModeKey = 0;
     }
 
+    protected void sendPayPrepareRequest() {
+        Map<String, String> args = new HashMap<>();
+        args.put("APPTYPE", "ANDROID");
+        args.put("ORDERCODE", orderNo);
+        String payMode = medicarePayModes.get(selectedPayModeKey).getPayModeKey();
+        args.put("PAYMODE", payMode);
+        doPayPrepareRequest(args);
+    }
+
     @Override
     public void onBackPressed() {
         needFinish();
@@ -126,7 +140,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
 
     protected void doPayPrepareRequest(Map<String, String> args) {
         needShowProgress("正在请求支付,请稍候...");
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBillPayRequestParams", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetPaymentParameter", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
         Connect connect = new RMConnect.Builder(PayPrepareBaseActivity.class)
@@ -155,12 +169,55 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         ConnectManager.getInstance().request(this, connect);
     }
 
-    protected abstract void formatPayParamsResponse(JsonNode jsonNode);
+    protected void formatPayParamsResponse(JsonNode jsonNode) {
+        //{"PAYMODE":"PAY_ALIPAY",
+        // "PAYPARAMS":{
+        // "partner":"2088701740074813",
+        // "seller_id":"2088701740074813",
+        // "out_trade_no":"2048131457006054",
+        // "subject":"测试","total_fee":"0.01",
+        // "notify_url":"http://115.28.244.190/index.php/Alipay",
+        // "service":"mobile.securitypay.pay",
+        // "payment_type":"1","_input_charset":"utf-8","it_b_pay":"30m","sign":"yCu9SAXLndsM+UgIsC3BnTPeHW85shxz8G9BLCrMNfjFk4cKI9kf/y3KPI8ebf7yBGQDenhArXOvdjq6EOxMpAKKOxqqZBmm/g3/0dQNnZJWcrIentUE6LMmWkiOr+Uz6TC9bZDS0aGCFES3VYt0NvQGfnw8rMra4QITX2Q1CMk=","signText":"_input_charset=utf-8&it_b_pay=30m&notify_url=http://115.28.244.190/index.php/Alipay&out_trade_no=2048131457006054&partner=2088701740074813&payment_type=1&seller_id=2088701740074813&service=mobile.securitypay.pay&subject=测试&total_fee=0.01","sign_type":"RSA"}}
+        final String payMode = jsonNode.get("PAYMODE").asText();
+        JsonNode payParamsNode = jsonNode.get("PAYPARAMS");
+        Bundle extBundle = new Bundle();
+        extBundle.putString("ORDER_NO", orderNo);
+        Bundle payParams = Pay.getInstance().createPayParams(PayPrepareBaseActivity.this, payMode, payParamsNode, extBundle);
+        Intent intent = Pay.getInstance().createPayComponentName(PayPrepareBaseActivity.this, payMode);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(PayActivity.ARGUMENTS_KEY_FROM_PAY_PREPARE, true);
+
+        Bundle pay = new Bundle();
+        pay.putString("ORDER_NO", orderNo);
+        pay.putString("ORDER_DATE", orderDate);
+        pay.putDouble("ORDER_PAY_AMOUNT", orderPayAmount.doubleValue());
+        pay.putBundle("PAY", payParams);
+
+        bundle.putBundle(PayActivity.ARGUMENTS_KEY_PAY_PARAMS, pay);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
+    }
+
+    protected boolean hasTip() {
+        return false;
+    }
+
+    protected CharSequence getTip() {
+        return "";
+    }
 
     protected void updateAdapter() {
         rowCount = 0;
+        if (hasTip()) {
+            tipRow = rowCount++;
+        } else {
+            tipRow = -1;
+        }
         billSection = rowCount++;
         billNoRow = rowCount++;
+        orderDateRow = rowCount++;
         payAmountRow = rowCount++;
 
         dividerRow = rowCount++;
@@ -175,8 +232,10 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
     }
 
     protected int rowCount;
+    protected int tipRow;
     protected int billSection;
     protected int billNoRow;
+    protected int orderDateRow;
     protected int payAmountRow;
 
     protected int dividerRow;
@@ -226,7 +285,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
 
         @Override
         public int getItemViewType(int position) {
-            if (position == billNoRow || position == payAmountRow) {
+            if (position == billNoRow || position == orderDateRow || position == payAmountRow) {
                 return 1;
             } else if (position == billSection || position == payModeSection) {
                 return 2;
@@ -236,13 +295,15 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
                 return 4;
             } else if (position == payActionRow) {
                 return 5;
+            } else if (position == tipRow) {
+                return 6;
             }
             return 0;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 6;
+            return 7;
         }
 
 
@@ -258,12 +319,16 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
                     convertView = new PayInfoCell(adapterContext);
                 }
                 PayInfoCell cell = (PayInfoCell) convertView;
+                cell.setSmall(true);
                 cell.setTextSize(16);
                 cell.setValueTextSize(18);
                 cell.setTextColor(0xff212121);
                 if (position == billNoRow) {
                     cell.setValueTextColor(0xff757575);
                     cell.setTextAndValue("订单编号", orderNo, true);
+                } else if (position == orderDateRow) {
+                    cell.setValueTextColor(0xff757575);
+                    cell.setTextAndValue("订单日期", orderDate, true);
                 } else if (position == payAmountRow) {
                     cell.setValueTextColor(ResourcesConfig.priceFontColor);
                     cell.setTextAndValue("支付金额", ShoppingHelper.formatPrice(orderPayAmount), false);
@@ -302,6 +367,13 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
                 if (position == payActionRow) {
                     cell.setValue("支付");
                 }
+            } else if (viewType == 6) {
+                if (convertView == null) {
+                    convertView = new TipCell(adapterContext);
+                }
+                TipCell cell = (TipCell) convertView;
+                CharSequence tipText = getTip();
+                cell.setValue(tipText);
             }
             return convertView;
         }

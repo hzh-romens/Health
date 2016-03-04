@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public abstract class PayParams {
 
-    private final Map<String, String> params = new HashMap<>();
+    protected final Map<String, String> params = new HashMap<>();
 
     public void put(String key, String value) {
         params.put(key, value);
@@ -22,5 +22,12 @@ public abstract class PayParams {
         return params.get(key);
     }
 
-    public abstract Bundle toBundle();
+    public Bundle toBundle() {
+        Bundle bundle = new Bundle();
+        for (Map.Entry<String, String> entry :
+                params.entrySet()) {
+            bundle.putString(entry.getKey(), entry.getValue());
+        }
+        return bundle;
+    }
 }

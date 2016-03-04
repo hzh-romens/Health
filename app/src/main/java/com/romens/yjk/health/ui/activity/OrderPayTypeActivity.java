@@ -103,9 +103,9 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
     private void onSavePayAndDeliveryType() {
         Intent data = new Intent();
         data.putExtra("PayType", selectPayType);
-        data.putExtra("PayTypeName", Pay.getPayType(selectPayType));
+        data.putExtra("PayTypeName", Pay.getInstance().getPayType(selectPayType));
         data.putExtra("DeliveryType", selectDelivery);
-        data.putExtra("DeliveryTypeName", Pay.getDeliveryType(selectDelivery));
+        data.putExtra("DeliveryTypeName", Pay.getInstance().getDeliveryType(selectDelivery));
         setResult(RESULT_OK, data);
         finish();
     }
@@ -116,7 +116,7 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
         payTypeSection = rowCount++;
         payTypeForOnlineRow = supportMedicareCardPay ? -1 : rowCount++;
         payTypeForMedicareRow = supportMedicareCardPay ? rowCount++ : -1;
-        payTypeForAfterRow = supportMedicareCardPay ? -1 : rowCount++;
+        payTypeForAfterRow = rowCount++;
 
         deliverySection = rowCount++;
         deliverySection1 = rowCount++;
@@ -203,11 +203,11 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 }
                 TextCheckCell cell = (TextCheckCell) convertView;
                 if (position == payTypeForOnlineRow) {
-                    cell.setValue(Pay.getPayType(Pay.PAY_TYPE_ONLINE), selectPayType == Pay.PAY_TYPE_ONLINE, true);
+                    cell.setValue(Pay.getInstance().getPayType(Pay.PAY_TYPE_ONLINE), selectPayType == Pay.PAY_TYPE_ONLINE, true);
                 } else if (position == payTypeForAfterRow) {
-                    cell.setValue(Pay.getPayType(Pay.PAY_TYPE_OFFLINE), selectPayType ==Pay.PAY_TYPE_OFFLINE, false);
+                    cell.setValue(Pay.getInstance().getPayType(Pay.PAY_TYPE_OFFLINE), selectPayType == Pay.PAY_TYPE_OFFLINE, false);
                 } else if (position == payTypeForMedicareRow) {
-                    cell.setValue(Pay.getPayType(Pay.PAY_TYPE_YB_ONLINE), selectPayType ==Pay.PAY_TYPE_YB_ONLINE, false);
+                    cell.setValue(Pay.getInstance().getPayType(Pay.PAY_TYPE_YB_ONLINE) + "(支持现金在线支付)", selectPayType == Pay.PAY_TYPE_YB_ONLINE, false);
                 }
             } else if (viewType == 3) {
                 if (convertView == null) {
@@ -215,9 +215,9 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 }
                 DoubleTextCheckCell cell = (DoubleTextCheckCell) convertView;
                 if (position == deliveryForToStoreRow) {
-                    cell.setValue(Pay.getDeliveryType(Pay.DELIVERY_TYPE_STORE), "推荐到店自提,有机会得到积分加倍累计", selectDelivery == 0, true);
+                    cell.setValue(Pay.getInstance().getDeliveryType(Pay.DELIVERY_TYPE_STORE), "推荐到店自提,有机会得到积分加倍累计", selectDelivery == 0, true);
                 } else if (position == deliveryForToHomeRow) {
-                    cell.setValue(Pay.getDeliveryType(Pay.DELIVERY_TYPE_HOME), "优先由最近的门店派送,支持现金、微信或支付宝当面付", selectDelivery == 1, true);
+                    cell.setValue(Pay.getInstance().getDeliveryType(Pay.DELIVERY_TYPE_HOME), "优先由最近的门店派送,支持现金、微信或支付宝当面付", selectDelivery == 1, true);
                 }
             } else if (viewType == 4) {
                 if (convertView == null) {
@@ -239,7 +239,9 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 TipCell cell = (TipCell) convertView;
                 if (supportMedicareCardPay) {
                     if (selectPayType == Pay.PAY_TYPE_OFFLINE) {
-                        cell.setValue(String.format("医保支付的药品在付款方式选择 货到付款 时，配送方式只支持 %s。", Pay.getDeliveryType(Pay.DELIVERY_TYPE_STORE)));
+                        cell.setValue(String.format("医保支付的药品,付款方式选择 货到付款 时，配送方式只支持 %s。", Pay.getInstance().getDeliveryType(Pay.DELIVERY_TYPE_STORE)));
+                    } else {
+                        cell.setValue(String.format("医保支付的药品,支持使用医保卡在线支付或者其他现金在线支付方式", Pay.getInstance().getDeliveryType(Pay.DELIVERY_TYPE_STORE)));
                     }
                 } else {
                     cell.setValue("配送方式选择到店自提和送货上门时，在您的商品准备好后，我们会有专人电话联系您!");
@@ -256,6 +258,7 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
         @Override
         public boolean isEnabled(int position) {
             if (position == payTypeForOnlineRow ||
+                    position == payTypeForMedicareRow ||
                     position == payTypeForAfterRow ||
                     position == deliveryForToStoreRow ||
                     position == deliveryForToHomeRow ||
@@ -271,7 +274,7 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 return 1;
             } else if (position == payTypeForOnlineRow || position == payTypeForAfterRow || position == payTypeForMedicareRow) {
                 return 2;
-            } else if (position == deliveryForToStoreRow || position == deliveryForToHomeRow ) {
+            } else if (position == deliveryForToStoreRow || position == deliveryForToHomeRow) {
                 return 3;
             } else if (position == saveSection) {
                 return 4;

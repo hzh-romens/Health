@@ -77,6 +77,11 @@ public class WXPayActivity extends PayActivity implements IWXAPIEventHandler,WXP
     }
 
     @Override
+    protected void needFinish() {
+        finish();
+    }
+
+    @Override
     public void onReq(BaseReq baseReq) {
 
     }

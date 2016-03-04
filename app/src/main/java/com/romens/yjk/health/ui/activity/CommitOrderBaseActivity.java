@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui.activity;
 
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -73,7 +72,9 @@ import java.util.Map;
  * @description
  */
 public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithAnalytics {
+
     public static final String ARGUMENTS_KEY_SELECT_GOODS = "key_select_goods";
+    public static final String ARGUMENTS_KEY_SUPPORT_MEDICARE = "SupportMedicareCardPay";
 
     private RecyclerView listView;
     private ListAdapter adapter;
@@ -84,6 +85,9 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private final HashMap<String, String> addressInfo = new HashMap<>();
     private final List<ShopEntity> shopEntities = new ArrayList<>();
     private final Map<String, List<ShoppingCartDataEntity>> needCommitGoods = new HashMap<>();
+    private final List<String> needCommitGoodsIds = new ArrayList<>();
+
+    private boolean supportMedicareCardPay = false;
 
     private int goodsCount = 0;
     private BigDecimal goodsAmount = BigDecimal.ZERO;
@@ -91,8 +95,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
 
     private List<OrderItem> orderItems;
 
-    private int selectPayType = 0;
-    private int selectDeliveryType = 0;
+    private int selectPayType = Pay.PAY_TYPE_ONLINE;
+    private int selectDeliveryType = Pay.DELIVERY_TYPE_STORE;
 
     private String orderCouponID;
     private String orderInvoice;
@@ -106,6 +110,9 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent = getIntent();
+        supportMedicareCardPay = intent.getBooleanExtra(ARGUMENTS_KEY_SUPPORT_MEDICARE, false);
+        selectPayType = (supportMedicareCardPay ? Pay.PAY_TYPE_YB_ONLINE : Pay.PAY_TYPE_ONLINE);
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         content.setBackgroundColor(0xffffffff);
         ActionBar actionBar = new ActionBar(this);
@@ -194,6 +201,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private void handleShoppingCartData() {
         shopEntities.clear();
         needCommitGoods.clear();
+        needCommitGoodsIds.clear();
 
         Intent intent = getIntent();
         ArrayList<String> needCommitGoodIds = intent.getStringArrayListExtra(ARGUMENTS_KEY_SELECT_GOODS);
@@ -202,6 +210,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         goodsAmount = BigDecimal.ZERO;
         for (ShoppingCartDataEntity entity :
                 data) {
+            needCommitGoodsIds.add(entity.getGuid());
             goodsCount += entity.getBuyCount();
             goodsAmount = goodsAmount.add(entity.getSum());
             String shopID = entity.getShopID();
@@ -309,8 +318,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         needShowProgress("正在提交订单...");
         ObjectNode orderNode = JacksonMapper.getInstance().createObjectNode();
         orderNode.put("ADDRESSID", addressInfo.get("ID"));
-        orderNode.put("DELIVERYTYPE", Pay.getDeliveryTypeKey(selectDeliveryType));
-        orderNode.put("PAYTYPE", Pay.getPayTypeKey(selectPayType));
+        orderNode.put("DELIVERYTYPE", Pay.getInstance().getDeliveryTypeKey(selectDeliveryType));
+        orderNode.put("PAYTYPE", Pay.getInstance().getPayTypeKey(selectPayType));
         orderNode.put("COUPONGUID", orderCouponID);
         orderNode.put("BILLNAME", orderInvoice);
         ArrayNode goodsArrayNode = JacksonMapper.getInstance().createArrayNode();
@@ -353,18 +362,26 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     }
 
     private void handlePostOrderResponse(JsonNode response) {
-        //{"ORDERCODE":"20160302194533358","PAYTYPE":"PAY_ONLINE","PAYMOUNT":143.1,"CREATEDATE":"2016-03-02 19:45:33"}
+        //{"ORDERCODE":"20160303135028178","PAYTYPE":"PAY_ONLINE","PAYMOUNT":28,"CREATEDATE":"2016-03-03 13:50:28"}
         if (!response.has("ERROR")) {
-            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onShoppingCartChanged);
-            Intent intent = new Intent();
-            ComponentName componentName = new ComponentName(getPackageName(), getPackageName() + ".ui.activity.MedicarePayActivity");
-            intent.setComponent(componentName);
-            Bundle arguments = new Bundle();
-            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, "");
-            BigDecimal payAmount = goodsAmount.subtract(couponAmount);
-            arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
-            intent.putExtras(arguments);
-            startActivity(intent);
+            //提交订单成功，清除购物车内已提交商品
+            DBInterface.instance().deleteShoppingCartGoods(needCommitGoodsIds);
+            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onCommitShoppingCart);
+            //发起支付
+            String orderNo = response.get("ORDERCODE").asText();
+            String orderDate = response.get("CREATEDATE").asText();
+            String payType = response.get("PAYTYPE").asText();
+            BigDecimal payAmount = new BigDecimal(response.get("PAYMOUNT").asDouble(0));
+
+            Intent intent = Pay.getInstance().createPayPrepareComponentName(CommitOrderBaseActivity.this, payType);
+            if (intent != null) {
+                Bundle arguments = new Bundle();
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+                intent.putExtras(arguments);
+                startActivity(intent);
+            }
             finish();
         } else {
             ToastCell.toast(CommitOrderBaseActivity.this, "提交订单失败!");
@@ -389,8 +406,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             }
         } else if (requestCode == REQUEST_CODE_PAY_DELIVERY) {
             if (resultCode == RESULT_OK) {
-                selectPayType = data.getIntExtra("PayType", 0);
-                selectDeliveryType = data.getIntExtra("DeliveryType", 0);
+                selectPayType = data.getIntExtra("PayType", selectPayType);
+                selectDeliveryType = data.getIntExtra("DeliveryType", selectDeliveryType);
                 updateAdapter();
             }
         } else if (requestCode == REQUEST_CODE_INVOICE) {
@@ -583,7 +600,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                         cell.setTextAndValue("", "点击选择送货地址", true, false);
                     }
                 } else if (position == orderPayTypeRow) {
-                    String payAndDelivery = String.format("%s (%s)", Pay.getPayType(selectPayType), Pay.getDeliveryType(selectDeliveryType));
+                    String payAndDelivery = String.format("%s (%s)", Pay.getInstance().getPayType(selectPayType), Pay.getInstance().getDeliveryType(selectDeliveryType));
                     cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
                     cell.setTextAndValue("优惠券", "点击选择优惠券", true, true);
@@ -613,7 +630,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 cell.setValue(iconPath, name, desc, userPrice, count, true);
             } else if (viewType == 7) {
                 OrderInfoCell cell = (OrderInfoCell) holder.itemView;
-                String deliveryType = Pay.getDeliveryType(selectDeliveryType);
+                String deliveryType = Pay.getInstance().getDeliveryType(selectDeliveryType);
 
                 String name = "";
                 String address = "";
@@ -664,7 +681,9 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         }
     }
 
-    protected abstract boolean supportMedicareCardPay();
+    protected boolean supportMedicareCardPay() {
+        return supportMedicareCardPay;
+    }
 
     static class Holder extends RecyclerView.ViewHolder {
 

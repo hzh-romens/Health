@@ -43,6 +43,7 @@ import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.helper.ShoppingHelper;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.CommitOrderBaseActivity;
 import com.romens.yjk.health.ui.cells.ShoppingCartEmptyCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartGoodsCell;
@@ -183,16 +184,33 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
     }
 
     private void tryCommitSelectGoods() {
+
+        if (isSyncingServerShoppingCart) {
+            return;
+        }
         ArrayList<String> selectGoods = listAdapter.getCheckedItems();
         if (selectGoods == null || selectGoods.size() <= 0) {
             ToastCell.toast(getActivity(), "请至少选择一个商品!");
             return;
         }
+        //清除废数据
+        ArrayList<String> needCommitGoods = new ArrayList<>();
+        for (String id : selectGoods) {
+            if (shoppingCartData.containsKey(id)) {
+                needCommitGoods.add(id);
+            }
+        }
+        if (needCommitGoods.size() <= 0) {
+            ToastCell.toast(getActivity(), "请至少选择一个商品!");
+            return;
+        }
+
         String packName = getActivity().getPackageName();
         ComponentName componentName = new ComponentName(packName, packName + ".ui.activity.CommitOrderActivity");
         Intent intent = new Intent();
         intent.setComponent(componentName);
-        intent.putStringArrayListExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SELECT_GOODS, selectGoods);
+        intent.putExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SUPPORT_MEDICARE, true);
+        intent.putStringArrayListExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SELECT_GOODS, needCommitGoods);
         startActivity(intent);
     }
 
@@ -468,7 +486,9 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         if (listAdapter != null) {
             List<String> checkedItems = listAdapter.getCheckedItems();
             for (String key : checkedItems) {
-                amount = amount.add(shoppingCartData.get(key).getSum());
+                if (shoppingCartData.containsKey(key)) {
+                    amount = amount.add(shoppingCartData.get(key).getSum());
+                }
             }
         }
         SpannableStringBuilder amountText = new SpannableStringBuilder();
@@ -484,6 +504,10 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         } else if (i == AppNotificationCenter.loginSuccess) {
             unLogin = UserSession.getInstance().isClientLogin();
             checkShoppingCartState();
+            syncShoppingCartForServer();
+        } else if (i == AppNotificationCenter.onCommitShoppingCart) {
+            listAdapter.onAllSelectedChanged(false);
+            syncShoppingCartForDB();
             syncShoppingCartForServer();
         }
     }
@@ -527,7 +551,24 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-            if (holder.itemView instanceof ShoppingCartStoreCell) {
+            if (holder.itemView instanceof ShoppingCartUnLoginCell) {
+                ShoppingCartUnLoginCell cell = (ShoppingCartUnLoginCell) holder.itemView;
+                cell.setDelegate(new ShoppingCartUnLoginCell.Delegate() {
+                    @Override
+                    public void onNeedLogin() {
+                        UIOpenHelper.openLoginActivity(getActivity());
+                    }
+                });
+            } else if (holder.itemView instanceof ShoppingCartEmptyCell) {
+                ShoppingCartEmptyCell cell = (ShoppingCartEmptyCell) holder.itemView;
+                cell.setDelegate(new ShoppingCartEmptyCell.Delegate() {
+                    @Override
+                    public void onNeedSearchGoods() {
+                        UIOpenHelper.openMedicineGroupActivity(getActivity());
+                    }
+                });
+
+            } else if (holder.itemView instanceof ShoppingCartStoreCell) {
                 ShoppingCartStoreCell cell = (ShoppingCartStoreCell) holder.itemView;
                 ShoppingCartStoreItem item = (ShoppingCartStoreItem) adapterData.get(position);
                 boolean checked = storeSelected.containsKey(item.getKey()) && storeSelected.get(item.getKey());
