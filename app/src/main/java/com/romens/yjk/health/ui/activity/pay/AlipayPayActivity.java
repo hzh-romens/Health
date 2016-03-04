@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.romens.yjk.health.pay.PayActivity;
+import com.romens.yjk.health.pay.PayParamsForAlipay;
 import com.yunuo.pay.alipay.AlipayPay;
 
 /**
@@ -24,7 +25,7 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
     @Override
     protected void onPayRequest(Bundle payParams) {
         Bundle bundle=payParams.getBundle("PAY");
-        String payOrderInfo=bundle.getString("PAYPARAMS");
+        String payOrderInfo=bundle.getString(PayParamsForAlipay.KEY_PAY_PARAMS);
         alipayPay.sendPayRequest(AlipayPayActivity.this, payOrderInfo);
     }
 
@@ -36,6 +37,11 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
     @Override
     protected void onCheckPayState() {
 
+    }
+
+    @Override
+    protected void needFinish() {
+        finish();
     }
 
     @Override

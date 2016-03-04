@@ -26,6 +26,7 @@ public class PayInfoCell extends FrameLayout {
     private ImageView navView;
     private static Paint paint;
     private boolean needDivider;
+    private boolean isSmall = false;
 
     public PayInfoCell(Context context) {
         super(context);
@@ -68,7 +69,7 @@ public class PayInfoCell extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(48) + (needDivider ? 1 : 0));
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(isSmall ? 36 : 48) + (needDivider ? 1 : 0));
 
         int availableWidth;
         if (navView.getVisibility() == VISIBLE) {
@@ -129,6 +130,11 @@ public class PayInfoCell extends FrameLayout {
         navView.setImageResource(iconResId);
         needDivider = divider;
         setWillNotDraw(!divider);
+        requestLayout();
+    }
+
+    public void setSmall(boolean small) {
+        this.isSmall = small;
         requestLayout();
     }
 

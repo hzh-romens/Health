@@ -1,2 +1,0 @@
-configurations.create("default")
-artifacts.add("default", file('romens.images-v0.8.1-c160105.aar'))

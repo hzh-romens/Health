@@ -290,7 +290,6 @@
             android:screenOrientation="portrait"></activity>
 
 
-
         <activity
             android:name=".ui.RemindActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -561,7 +560,7 @@
 
         <!--**************** 医保支付 begin *************-->
         <activity
-            android:name="com.romens.yjk.health.hyrmtt.pay.YBPayResult"
+            android:name="${CHANNEL_PACKAGE}.pay.YBPayResult"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="true"
             android:launchMode="singleTask"></activity>
@@ -582,9 +581,27 @@
             android:name="${CHANNEL_PACKAGE}.ui.activity.MedicarePayActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
 
+
+        <activity
+            android:name=".ui.activity.pay.PayPrepareActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.activity.pay.WXPayActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.activity.pay.AlipayPayActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
 
         <!--**************** 医保支付 end *************-->
 

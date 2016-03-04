@@ -48,11 +48,6 @@ public class YBPayResult extends PayActivity {
         emptyTextView.setLineSpacing(AndroidUtilities.dp(4), 1.0f);
         emptyTextView.setGravity(Gravity.CENTER);
         content.addView(emptyTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 16, 16, 16, 16));
-
-        if (!isFromPayPrepare) {
-            Intent intent = getIntent();
-
-        }
         onCreateAfter();
     }
 
@@ -92,5 +87,10 @@ public class YBPayResult extends PayActivity {
     @Override
     protected void onCheckPayState() {
 
+    }
+
+    @Override
+    protected void needFinish() {
+        finish();
     }
 }

@@ -57,10 +57,18 @@ public class PayMode {
         }
     }
 
-    public String getPayModeDesc() {
+    public String getPayModeKey() {
         if (mode == PayModeEnum.YB_HEB) {
-            return "YB_HEB";
+            return "PAY_YB_HEB";
+        } else if (mode == PayModeEnum.WX) {
+            return "PAY_WX";
+        } else if (mode == PayModeEnum.ALIPAY) {
+            return "PAY_ALIPAY";
         }
         return "";
     }
+
+    public static final String PAY_MODE_WX = "PAY_WX";
+    public static final String PAY_MODE_ALIPAY = "PAY_ALIPAY";
+    public static final String PAY_MODE_YB_HEB = "PAY_YB_HEB";
 }

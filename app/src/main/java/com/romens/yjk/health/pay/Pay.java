@@ -1,6 +1,16 @@
 package com.romens.yjk.health.pay;
 
-import android.util.SparseArray;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.yjk.health.ui.activity.pay.AlipayPayActivity;
+import com.romens.yjk.health.ui.activity.pay.PayPrepareActivity;
+
+import java.util.Iterator;
 
 /**
  * @author Zhou Lisi
@@ -12,55 +22,135 @@ public class Pay {
     public static final int PAY_TYPE_OFFLINE = 1;
     public static final int PAY_TYPE_YB_ONLINE = 2;
 
-    private static final SparseArray<String> payTypeKeys = new SparseArray<>();
-    private static final SparseArray<String> payTypes = new SparseArray<>();
+    private final String[] payTypeKeys = new String[]{"PAY_ONLINE", "PAY_OFFLINE", "YB_PAY_ONLINE"};
+    private final String[] payTypes = new String[]{"在线支付", "货到付款", "医保在线支付"};
 
     public static final int DELIVERY_TYPE_STORE = 0;
     public static final int DELIVERY_TYPE_HOME = 1;
 
-    private static final SparseArray<String> deliveryTypeKeys = new SparseArray<>();
-    private static final SparseArray<String> deliveryTypes = new SparseArray<>();
-
-    static {
-        payTypeKeys.put(PAY_TYPE_ONLINE, "PAY_ONLINE");
-        payTypeKeys.put(PAY_TYPE_OFFLINE, "PAY_OFFLINE");
-        payTypeKeys.put(PAY_TYPE_YB_ONLINE, "YB_PAY_ONLINE");
-
-        payTypes.put(PAY_TYPE_ONLINE, "在线支付");
-        payTypes.put(PAY_TYPE_OFFLINE, "货到付款");
-        payTypes.put(PAY_TYPE_YB_ONLINE, "医保在线支付");
+    private final String[] deliveryTypeKeys = new String[]{"DELIVERY_STORE", "DELIVERY_HOME"};
+    private final String[] deliveryTypes = new String[]{"到店自提", "送货上门"};
 
 
-        deliveryTypeKeys.put(DELIVERY_TYPE_STORE, "DELIVERY_STORE");
-        deliveryTypeKeys.put(DELIVERY_TYPE_HOME, "DELIVERY_HOME");
+    private static volatile Pay instance;
 
-        deliveryTypes.put(DELIVERY_TYPE_STORE, "到店自提");
-        deliveryTypes.put(DELIVERY_TYPE_HOME, "送货上门");
+    private Pay() {
     }
 
-    public static String getPayTypeKey(int id) {
-        return payTypeKeys.get(id);
+    public static Pay getInstance() {
+        Pay localInstance = instance;
+        if (localInstance == null) {
+            synchronized (Pay.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new Pay();
+                }
+            }
+        }
+
+        return localInstance;
     }
 
-    public static String getPayType(int id) {
-        return payTypes.get(id);
+    public String getPayTypeKey(int id) {
+        return payTypeKeys[id];
     }
 
-    public static int getPayTypeId(String key) {
-        int index = payTypeKeys.indexOfValue(key);
-        return payTypeKeys.keyAt(index);
+    public String getPayType(int id) {
+        return payTypes[id];
     }
 
-    public static String getDeliveryTypeKey(int id) {
-        return deliveryTypeKeys.get(id);
+    public int getPayTypeId(String key) {
+        int index = -1;
+        for (int i = 0; i < payTypeKeys.length; i++) {
+            if (TextUtils.equals(key, payTypeKeys[i])) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
-    public static String getDeliveryType(int id) {
-        return deliveryTypes.get(id);
+    public String getDeliveryTypeKey(int id) {
+        return deliveryTypeKeys[id];
     }
 
-    public static int getDeliveryTypeId(String key) {
-        int index = deliveryTypeKeys.indexOfValue(key);
-        return deliveryTypeKeys.keyAt(index);
+    public String getDeliveryType(int id) {
+        return deliveryTypes[id];
+    }
+
+    public int getDeliveryTypeId(String key) {
+        int index = -1;
+        for (int i = 0; i < deliveryTypeKeys.length; i++) {
+            if (TextUtils.equals(key, deliveryTypeKeys[i])) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    public Intent createPayPrepareComponentName(Context context, String payTypeKey) {
+        Intent intent = null;
+        if (!TextUtils.isEmpty(payTypeKey)) {
+            int id = getPayTypeId(payTypeKey);
+
+            if (id == PAY_TYPE_YB_ONLINE) {
+                intent = new Intent();
+                ComponentName componentName = new ComponentName(context.getPackageName(), context.getPackageName() + ".ui.activity.MedicarePayActivity");
+                intent.setComponent(componentName);
+            } else {
+                intent = new Intent(context, PayPrepareActivity.class);
+            }
+        }
+        return intent;
+    }
+
+    public Intent createPayComponentName(Context context, String payMode) {
+        Intent intent = null;
+        if (!TextUtils.isEmpty(payMode)) {
+
+            if (TextUtils.equals(payMode, PayMode.PAY_MODE_WX)) {
+                intent = new Intent();
+                ComponentName componentName = new ComponentName(context.getPackageName(), context.getPackageName() + ".wxapi.WXPayEntryActivity");
+                intent.setComponent(componentName);
+            } else if (TextUtils.equals(payMode, PayMode.PAY_MODE_ALIPAY)) {
+                intent = new Intent(context, AlipayPayActivity.class);
+            } else if (TextUtils.equals(payMode, PayMode.PAY_MODE_YB_HEB)) {
+                intent = new Intent();
+                ComponentName componentName = new ComponentName(context.getPackageName(),
+                        context.getPackageName() + ".pay.YBPayResult");
+                intent.setComponent(componentName);
+            }
+        }
+        return intent;
+    }
+
+    public Bundle createPayParams(Context context, String payMode, JsonNode payParamsNode, Bundle extBundle) {
+        if (!TextUtils.isEmpty(payMode)) {
+            if (TextUtils.equals(payMode, PayMode.PAY_MODE_WX)) {
+                PayParamsForWX payParams = new PayParamsForWX();
+                putPayParams(payParamsNode, payParams);
+                return payParams.toPayBundle(extBundle);
+            } else if (TextUtils.equals(payMode, PayMode.PAY_MODE_ALIPAY)) {
+                PayParamsForAlipay payParams = new PayParamsForAlipay();
+                putPayParams(payParamsNode, payParams);
+                return payParams.toBundle();
+            } else if (TextUtils.equals(payMode, PayMode.PAY_MODE_YB_HEB)) {
+                PayParamsForYBHEB payParams = new PayParamsForYBHEB();
+                putPayParams(payParamsNode, payParams);
+                return payParams.toBundle();
+            }
+        }
+        return null;
+    }
+
+    private void putPayParams(JsonNode payParamsNode, PayParams targetPayParams) {
+        if (targetPayParams != null) {
+            Iterator<String> fieldNames = payParamsNode.fieldNames();
+            while (fieldNames.hasNext()) {
+                String fieldName = fieldNames.next();
+                targetPayParams.put(fieldName, payParamsNode.get(fieldName).asText());
+            }
+        }
     }
 }

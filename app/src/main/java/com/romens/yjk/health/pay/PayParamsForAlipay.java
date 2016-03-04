@@ -2,12 +2,17 @@ package com.romens.yjk.health.pay;
 
 import android.os.Bundle;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * @author Zhou Lisi
  * @create 16/3/2
  * @description
  */
 public class PayParamsForAlipay extends PayParams {
+    public static final String KEY_PAY_PARAMS = "PAY_PARAMS";
+
     @Override
     public Bundle toBundle() {
         //{"partner":"2088701740074813",
@@ -24,7 +29,16 @@ public class PayParamsForAlipay extends PayParams {
         // "sign_type":"RSA"}
 
         Bundle bundle = new Bundle();
-        bundle.putString("PAYPARAMS", get("PAYPARAMS"));
+        String signText = get("signText");
+        String sign = get("sign");
+        try {
+            sign = URLEncoder.encode(sign, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+
+        }
+        String signType = get("sign_type");
+        String payParams = String.format("%s&sign=%s&sign_type=%s", signText, sign, signType);
+        bundle.putString(KEY_PAY_PARAMS, payParams);
         return bundle;
     }
 }

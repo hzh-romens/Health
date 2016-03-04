@@ -31,4 +31,5 @@ public class AppNotificationCenter extends NotificationCenter {
 
     //shopping
     public static final int onShoppingCartChanged = appTotalEvents++;
+    public static final int onCommitShoppingCart = appTotalEvents++;
 }
