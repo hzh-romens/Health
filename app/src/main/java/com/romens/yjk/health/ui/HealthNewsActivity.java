@@ -1,6 +1,8 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
@@ -33,6 +35,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -93,9 +99,9 @@ public class HealthNewsActivity extends BaseActivity {
         recyclerView.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int i) {
-
                 HealthNewsEntity entity = adapter.getItem(i);
-                UIOpenHelper.openWebActivityWithHtml(HealthNewsActivity.this, entity.title, entity.getValue());
+                UIOpenHelper.openWebActivityWithHtml(HealthNewsActivity.this, entity.title, entity.getValue(), entity.iconUrl);
+//                UIOpenHelper.openWebActivityWithHtml(HealthNewsActivity.this, entity.title, entity.getValue(), getByteFromUrlImage(entity.iconUrl));
             }
         });
 
@@ -117,7 +123,6 @@ public class HealthNewsActivity extends BaseActivity {
     private boolean isRefreshing() {
         return refreshLayout.isRefreshing();
     }
-
 
     private void requestData() {
         changeRefreshState(true);

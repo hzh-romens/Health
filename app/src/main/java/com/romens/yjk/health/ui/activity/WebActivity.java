@@ -50,6 +50,8 @@ public abstract class WebActivity extends LightActionBarActivity {
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
+                }else if(id == 0){
+                    menuItemClick();
                 }
             }
         });
@@ -109,4 +111,6 @@ public abstract class WebActivity extends LightActionBarActivity {
     protected ProgressBarDeterminate getWebProgressBar() {
         return this.webProgress;
     }
+
+    protected void menuItemClick(){};
 }

@@ -104,6 +104,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private static final int REQUEST_CODE_ADDRESS = 0;
     private static final int REQUEST_CODE_PAY_DELIVERY = 1;
     private static final int REQUEST_CODE_INVOICE = 2;
+    private static final int REQUEST_CODE_COUPON = 3;
 
 
     @Override
@@ -413,6 +414,11 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         } else if (requestCode == REQUEST_CODE_INVOICE) {
             if (resultCode == RESULT_OK) {
                 orderInvoice = data.getStringExtra(OrderInvoiceActivity.ARGUMENTS_KEY_INVOICE_NAME);
+                adapter.notifyDataSetChanged();
+            }
+        } else if (requestCode == REQUEST_CODE_COUPON) {
+            if (resultCode == RESULT_OK) {
+                orderCouponID = data.getStringExtra("orderCouponID");
                 adapter.notifyDataSetChanged();
             }
         }

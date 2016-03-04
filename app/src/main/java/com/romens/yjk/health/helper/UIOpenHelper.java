@@ -163,13 +163,14 @@ public class UIOpenHelper {
      * @param title   标题
      * @param html    html内容
      */
-    public static void openWebActivityWithHtml(Context context, String title, String html) {
+    public static void openWebActivityWithHtml(Context context, String title, String html,String iconUrl) {
         Intent intent = new Intent(context, ADWebActivity.class);
         Bundle arguments = new Bundle();
         if (!TextUtils.isEmpty(title)) {
             arguments.putString(ADWebActivity.ARGUMENTS_KEY_TITLE, title);
         }
         arguments.putString(ADWebActivity.ARGUMENTS_KEY_HTML, html);
+        arguments.putString(ADWebActivity.ARGUMENTS_KEY_ICON_URL, iconUrl);
         intent.putExtras(arguments);
         context.startActivity(intent);
     }

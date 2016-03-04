@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.fragment;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -56,11 +57,9 @@ public class CuoponFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if ("GetCoupon".equals(requestType)) {
                     Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
-                    String amount = result.get(position).getAmount();
-                    String limitamount = result.get(position).getLimitamount();
-                    intent.putExtra("limitAmount", Double.parseDouble(limitamount));
-                    intent.putExtra("amount", Double.parseDouble(amount));
-                    getActivity().setResult(4, intent);
+                    String couponguID = result.get(position).getCouponguid();
+                    intent.putExtra("orderCouponID", couponguID);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                 } else {
                     Toast.makeText(getActivity(), "该优惠卷无效", Toast.LENGTH_SHORT).show();
