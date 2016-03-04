@@ -129,11 +129,8 @@ public class ADWebActivity extends WebActivity implements AppNotificationCenter.
 
                     @Override
                     public void onClick(DialogInterface dialog, final int which) {
-                        Log.e("tag", "---WXHelper.checkWXApp()->" + WXHelper.checkWXApp());
                         if (WXHelper.checkWXApp()) {
-                            Log.e("tag", "--shareArguments != null-->" + (shareArguments != null));
                             if (shareArguments != null) {
-//                                final String shareURL = shareArguments.getString(ARGUMENTS_KEY_TARGET_URL);
                                 final String shareURL = "http://www.baidu.com";
                                 final String shareTitle = shareArguments.getString(ARGUMENTS_KEY_TITLE);
                                 final String shareDesc = shareArguments.getString(ARGUMENTS_KEY_HTML);
@@ -180,28 +177,10 @@ public class ADWebActivity extends WebActivity implements AppNotificationCenter.
         }
     }
 
-    private IWXAPI iwxapi;
-
     private void shareToWX(int type, String shareURL, String shareTitle, String shareDesc, byte[] shareThumb) {
         boolean isSuccess = false;
         if (type == 0) {
-//            isSuccess = WXManager.getInstance(ADWebActivity.this).shareURLToUser(shareURL, shareTitle, shareDesc, shareThumb);
-            iwxapi = WXAPIFactory.createWXAPI(this, "wxd930ea5d5a258f4f", true);
-            iwxapi.registerApp("wxd930ea5d5a258f4f");
-            WXWebpageObject webPageObject = new WXWebpageObject();
-            webPageObject.webpageUrl = shareURL;
-
-            WXMediaMessage message = new WXMediaMessage(webPageObject);
-            message.title = shareTitle;
-            message.description = shareDesc;
-            if (shareThumb != null) {
-                message.thumbData = shareThumb;
-            }
-            SendMessageToWX.Req req = new SendMessageToWX.Req();
-            req.transaction = WXHelper.buildTransaction("webpage");
-            req.message = message;
-            req.scene = SendMessageToWX.Req.WXSceneTimeline;
-            isSuccess = iwxapi.sendReq(req);
+            isSuccess = WXManager.getInstance(ADWebActivity.this).shareURLToUser(shareURL, shareTitle, shareDesc, shareThumb);
         } else if (type == 1) {
             isSuccess = WXManager.getInstance(ADWebActivity.this).shareURLToTimeline(shareURL, shareTitle, shareDesc, shareThumb);
         } else if (type == 2) {
