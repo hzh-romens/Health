@@ -1,11 +1,10 @@
 package com.romens.yjk.health.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
+import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.fragment.ShopCarFragment;
+import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 
 /**
  * Created by HZH on 2016/2/26.
@@ -14,13 +13,21 @@ public class ShopCarActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shopcar_container);
+        setContentView(R.layout.activity_fragment);
+        ActionBar actionBar = getMyActionBar();
+        actionBar.setTitle("购物车");
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+                if (id == -1) {
+                    finish();
+                }
+            }
+        });
 
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        ShopCarFragment shopCarFragment = new ShopCarFragment();
-        shopCarFragment.setTitleView(true);
-        transaction.add(R.id.container, shopCarFragment, "d");
-        transaction.commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment, new ShoppingCartFragment())
+                .commit();
     }
 }

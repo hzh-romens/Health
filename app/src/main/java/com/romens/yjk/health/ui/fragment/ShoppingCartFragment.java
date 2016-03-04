@@ -88,6 +88,10 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginOut);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onCommitShoppingCart);
         unLogin = !UserSession.getInstance().isClientLogin();
         listAdapter = new ListAdapter();
     }
@@ -181,6 +185,15 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         checkShoppingCartState();
         listView.setAdapter(listAdapter);
         syncShoppingCartForDB();
+    }
+
+    @Override
+    public void onDestroy() {
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginOut);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onCommitShoppingCart);
+        super.onDestroy();
     }
 
     private void tryCommitSelectGoods() {
@@ -501,7 +514,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
     public void didReceivedNotification(int i, Object... objects) {
         if (i == AppNotificationCenter.onShoppingCartChanged) {
             syncShoppingCartForDB();
-        } else if (i == AppNotificationCenter.loginSuccess) {
+        } else if (i == AppNotificationCenter.loginSuccess || i == AppNotificationCenter.loginOut) {
             unLogin = UserSession.getInstance().isClientLogin();
             checkShoppingCartState();
             syncShoppingCartForServer();
