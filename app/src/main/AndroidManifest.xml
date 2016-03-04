@@ -76,6 +76,10 @@
             android:name="InstallChannel"
             android:value="${CHANNEL}" />
 
+        <!-- wx app id-->
+        <meta-data
+            android:name="wx_app_id"
+            android:value="wxd930ea5d5a258f4f" />
 
         <!-- 高德地图 DEBUG KEY-->
         <!--<meta-data-->
@@ -525,7 +529,7 @@
 
         <!--*********** pay begin **********************-->
         <activity
-            android:name="${CHANNEL_PACKAGE}.wxapi.WXPayEntryActivity"
+            android:name=".hyrmtt.wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
@@ -536,7 +540,7 @@
         </activity>
 
         <receiver
-            android:name="${CHANNEL_PACKAGE}.AppRegister"
+            android:name=".hyrmtt.AppRegister"
             android:permission="com.tencent.mm.plugin.permission.SEND">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />

@@ -38,17 +38,17 @@ public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
         alipayPay = new AlipayPay(new AlipayPay.Delegate() {
             @Override
             public void onPaySuccess(String extData) {
-                Log.e("ALIPAY",extData);
+                Log.e("ALIPAY", extData);
             }
 
             @Override
             public void onPayFail(String extData) {
-                Log.e("ALIPAY",extData);
+                Log.e("ALIPAY", extData);
             }
 
             @Override
             public void onPayProcessing(String extData) {
-                Log.e("ALIPAY",extData);
+                Log.e("ALIPAY", extData);
             }
         });
 
@@ -65,7 +65,7 @@ public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
                             ResponseProtocol<JsonNode> protocol = (ResponseProtocol) message.protocol;
                             JsonNode response = protocol.getResponse();
                             PayParamsForAlipay payParams = createPayParams(response);
-                            alipayPay.sendPayRequest(DevTextAlipay.this, payParams.toBundle());
+                            alipayPay.sendPayRequest(DevTextAlipay.this, payParams.toBundle().getString("PAYPARAMS"));
                             //{"partner":"2088701740074813",
                             // "seller_id":"2088701740074813",
                             // "out_trade_no":"RMTT48131456924508",
