@@ -1,4 +1,4 @@
-package com.romens.wx.api;
+package com.romens.yjk.health.wx;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -10,10 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.tencent.mm.sdk.constants.ConstantsAPI;
-import com.tencent.mm.sdk.modelmsg.WXAppLaunchData;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import junit.framework.Assert;
 

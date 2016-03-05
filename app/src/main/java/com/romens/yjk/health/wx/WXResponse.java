@@ -1,4 +1,4 @@
-package com.romens.wx.api;
+package com.romens.yjk.health.wx;
 
 import android.app.Activity;
 import android.content.Intent;

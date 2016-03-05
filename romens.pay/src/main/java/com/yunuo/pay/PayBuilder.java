@@ -1,7 +1,5 @@
 package com.yunuo.pay;
 
-import com.tencent.mm.sdk.modelpay.PayReq;
-
 /**
  * Created by siery on 16/1/28.
  */

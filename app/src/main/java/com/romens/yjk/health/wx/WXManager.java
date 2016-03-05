@@ -1,9 +1,8 @@
-package com.romens.wx.api;
+package com.romens.yjk.health.wx;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
