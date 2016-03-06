@@ -3,7 +3,9 @@ package com.romens.yjk.health.ui.activity.pay;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.yjk.health.pay.PayActivity;
+import com.romens.yjk.health.pay.PayState;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
@@ -18,7 +20,7 @@ import java.util.Set;
  * @create 16/3/2
  * @description
  */
-public class WXPayActivity extends PayActivity implements IWXAPIEventHandler,WXPay.Delegate {
+public class WXPayActivity extends PayActivity implements WXPay.Delegate {
     protected static final int PAY_ERROR_CODE_ARGS_LOSS = 100;
     protected static final int PAY_ERROR_CODE_CONFIG_LOSS = 101;
 
@@ -28,7 +30,12 @@ public class WXPayActivity extends PayActivity implements IWXAPIEventHandler,WXP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initWXApi();
-        onCreateAfter();
+        onCreateCompleted();
+    }
+
+    @Override
+    protected String getPayModeText() {
+        return "微信支付";
     }
 
     private void initWXApi() {
@@ -60,19 +67,17 @@ public class WXPayActivity extends PayActivity implements IWXAPIEventHandler,WXP
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
+    protected void onPayResponse(Intent intent) {
         wxPay.handleIntent(intent);
     }
 
     @Override
-    protected void onPayResponse(Intent intent) {
+    protected void onCheckPayState() {
 
     }
 
     @Override
-    protected void onCheckPayState() {
+    protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
 
     }
 
@@ -82,32 +87,24 @@ public class WXPayActivity extends PayActivity implements IWXAPIEventHandler,WXP
     }
 
     @Override
-    public void onReq(BaseReq baseReq) {
-
-    }
-
-    @Override
-    public void onResp(BaseResp baseResp) {
-
-    }
-
-    @Override
     public void onPaySuccess(String extData) {
-
+        changePayState(PayState.PROCESSING);
+        Map<String,String> args=new HashMap<>();
+        postPayResponseToServerAndCheckPayResult(args);
     }
 
     @Override
     public void onPayFail(int errorCode, String error) {
-
+        changePayState(PayState.FAIL);
     }
 
     @Override
     public void onPayCancel(String extData) {
-
+        changePayState(PayState.FAIL);
     }
 
     @Override
     public void onPayProcessing() {
-
+        changePayState(PayState.PROCESSING);
     }
 }

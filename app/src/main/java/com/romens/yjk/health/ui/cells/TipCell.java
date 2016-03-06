@@ -12,7 +12,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 /**
  * @author Zhou Lisi
  * @create 16/3/1
- * @description
+ * @description 提示Cell
  */
 public class TipCell extends LinearLayout {
     private TextView textView;

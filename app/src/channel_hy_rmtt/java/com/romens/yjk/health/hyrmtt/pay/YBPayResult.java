@@ -6,14 +6,19 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.pay.PayActivity;
+import com.romens.yjk.health.pay.PayState;
 import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.yunuo.pay.wx.WXPay;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,7 +26,7 @@ import java.util.Set;
  * @create 16/2/24
  * @description
  */
-public class YBPayResult extends PayActivity {
+public class YBPayResult extends PayActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +53,12 @@ public class YBPayResult extends PayActivity {
         emptyTextView.setLineSpacing(AndroidUtilities.dp(4), 1.0f);
         emptyTextView.setGravity(Gravity.CENTER);
         content.addView(emptyTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 16, 16, 16, 16));
-        onCreateAfter();
+        onCreateCompleted();
+    }
+
+    @Override
+    protected String getPayModeText() {
+        return "医保支付(哈尔滨银行)";
     }
 
     @Override
@@ -72,20 +82,19 @@ public class YBPayResult extends PayActivity {
         StringBuilder log = new StringBuilder();
         log.append("state:" + state);
         log.append("\n");
-        //emptyTextView.setText(log);
-        //Bundle[{cardNo=11204688X,
-        // certNo=230102198506053415,
-        // payAmount=0.01,
-        // totalAmount=0.01,
-        // status=1,
-        // balance=785.69,
-        // custname=赵宇,
-        // lastPayAmount=0.00,
-        // transferFlowNo=C06714567145472016022910}]
+
+        changePayState(PayState.PROCESSING);
+        Map<String,String> args=new HashMap<>();
+        postPayResponseToServerAndCheckPayResult(args);
     }
 
     @Override
     protected void onCheckPayState() {
+
+    }
+
+    @Override
+    protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
 
     }
 

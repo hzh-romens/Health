@@ -180,4 +180,6 @@ dependencies {
     compile 'romens:com.romens.images:1.1.0@aar'
     compile 'com.facebook.fresco:fresco:0.8.1+'
     compile 'romens:com.romens.extend.scanner:1.3.6@aar'
+    compile 'de.greenrobot:eventbus:3.0.0-beta1'
+    compile 'de.greenrobot:eventbus-annotation-processor:3.0.0-beta1'
 }

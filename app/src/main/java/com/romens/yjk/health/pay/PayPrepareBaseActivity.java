@@ -3,6 +3,7 @@ package com.romens.yjk.health.pay;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,9 +190,9 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         bundle.putBoolean(PayActivity.ARGUMENTS_KEY_FROM_PAY_PREPARE, true);
 
         Bundle pay = new Bundle();
-        pay.putString("ORDER_NO", orderNo);
-        pay.putString("ORDER_DATE", orderDate);
-        pay.putDouble("ORDER_PAY_AMOUNT", orderPayAmount.doubleValue());
+        pay.putString(PayActivity.ARGUMENT_KEY_ORDER_NO, orderNo);
+        pay.putString(PayActivity.ARGUMENT_KEY_ORDER_TIME, orderDate);
+        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_AMOUNT, orderPayAmount.doubleValue());
         pay.putBundle("PAY", payParams);
 
         bundle.putBundle(PayActivity.ARGUMENTS_KEY_PAY_PARAMS, pay);
