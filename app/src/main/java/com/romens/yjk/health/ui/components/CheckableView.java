@@ -99,6 +99,10 @@ public class CheckableView extends FrameLayout implements Checkable {
         textView.setText(text);
     }
 
+    public void setTextSize(int size) {
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+    }
+
     @Override
     public boolean isChecked() {
         return checked;

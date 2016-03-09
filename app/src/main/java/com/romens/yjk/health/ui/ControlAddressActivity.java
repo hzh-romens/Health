@@ -45,6 +45,7 @@ import com.romens.yjk.health.ui.utils.UIHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,8 @@ public class ControlAddressActivity extends BaseActivity {
     private String userGuid = "3333";
 
     private String isFromCommitOrderActivity;
+    public static final int ADDRESS_EDIT_TYPE = 0;
+    public static final int ADDRESS_CHECK_TYPE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +109,6 @@ public class ControlAddressActivity extends BaseActivity {
 
         Intent intent = getIntent();
         isFromCommitOrderActivity = intent.getStringExtra("chose");
-
     }
 
     private void showProgressLayout() {
@@ -148,6 +150,9 @@ public class ControlAddressActivity extends BaseActivity {
         progressBar.setVisibility(View.GONE);
         noHaveAddressLayout.setVisibility(View.GONE);
         havaAddressLayout.setVisibility(View.VISIBLE);
+        if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
+            adapter.setIsShowArrow(false);
+        }
 
 //        adapter.setOnViewClickListener(new ControlAddressAdapter.OnViewClickListener() {
 //            @Override
@@ -170,6 +175,15 @@ public class ControlAddressActivity extends BaseActivity {
             @Override
             public void itemClickListener(int position) {
                 chooseItemBackEvent(position);
+            }
+
+            @Override
+            public void itemClickToEditListener(int position, int type) {
+                if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
+                    chooseItemBackEvent(position);
+                } else {
+                    UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position), type);
+                }
             }
         });
     }
@@ -427,8 +441,8 @@ public class ControlAddressActivity extends BaseActivity {
             intent.putExtra("responseCommitEntity", entity);
             setResult(RESULT_OK, intent);
             finish();
-        } else {
-            UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position));
+//        } else {
+//            UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position));
         }
     }
 

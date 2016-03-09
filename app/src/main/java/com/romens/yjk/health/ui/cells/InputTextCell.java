@@ -5,9 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
@@ -155,6 +157,11 @@ public class InputTextCell extends LinearLayout {
     public void changeValue(String value) {
         valueTextView.setText(value);
         valueTextView.setVisibility(VISIBLE);
+    }
+
+    public void setEditable(boolean value) {
+        valueTextView.setEnabled(false);
+        valueTextView.setFocusable(false);
     }
 
     @Override

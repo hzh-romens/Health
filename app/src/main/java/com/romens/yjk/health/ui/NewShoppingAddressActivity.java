@@ -55,8 +55,8 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
     private final String[] locationValues = new String[3];
 
     private String userGuid;
-
     private AddressEntity toCommitEntity;
+    private int responseType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +66,15 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
         userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_shopping_address, R.id.action_bar);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        ActionBar actionBar = getMyActionBar();
-        actionBarEven(actionBar);
-
-        initView();
 
         Intent intent = getIntent();
         toCommitEntity = (AddressEntity) intent.getSerializableExtra("responseUpDataEntity");
+        responseType = intent.getIntExtra("responseType", -1);
+
+        ActionBar actionBar = getMyActionBar();
+        actionBarEven(actionBar);
+        initView();
+
         if (toCommitEntity != null) {
             actionBar.setTitle("修改收货地址");
             locationValues[0] = toCommitEntity.getPROVINCE();
@@ -87,6 +89,15 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
             locationValues[2] = toCommitEntity.getREGION();
             initViewData(toCommitEntity);
         }
+        if (responseType == ControlAddressActivity.ADDRESS_CHECK_TYPE) {
+            actionBar.setTitle("收货地址");
+            editUserView.setEditable(false);
+            editAddressDetailView.setEditable(false);
+            editAddressIdView.setProvinceEnable(false);
+            editAddressIdView.setCityEnable(false);
+            editAddressIdView.setCountyEnable(false);
+            editPhoneView.setEditable(false);
+        }
     }
 
     @Override
@@ -97,8 +108,10 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
     }
 
     private void actionBarEven(ActionBar actionBar) {
-        ActionBarMenu menu = actionBar.createMenu();
-        menu.addItem(0, R.drawable.checkbig);
+        if (responseType != ControlAddressActivity.ADDRESS_CHECK_TYPE) {
+            ActionBarMenu menu = actionBar.createMenu();
+            menu.addItem(0, R.drawable.checkbig);
+        }
 
         actionBar.setTitle("新增收货地址");
         actionBar.setBackgroundResource(R.color.theme_primary);
@@ -112,13 +125,6 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
                     String receiver = editUserView.getValue();
                     String contectPhone = editPhoneView.getValue();
                     String AddressDetail = editAddressDetailView.getValue();
-//                    String districtGuid = "";
-//                    if (isExecutInitList) {
-//                        districtGuid = districtList.get(districtView.getCurrentItem()).getGuid();
-//                        if (districtGuid == null && districtGuid.equals("")) {
-//                            districtGuid = cityList.get(cityView.getCurrentItem()).getGuid();
-//                        }
-//                    }
                     if (receiver == null || receiver.equals("")) {
                         Toast.makeText(NewShoppingAddressActivity.this, "请输入联系人", Toast.LENGTH_SHORT).show();
                     } else if (contectPhone == null || contectPhone.equals("")) {

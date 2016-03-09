@@ -10,16 +10,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="16dp">
 
         <TextView
             android:id="@+id/control_address_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:paddingTop="5dp"
             android:text="name"
-            android:textColor="@color/theme_title"
+            android:textColor="@color/text_color"
             android:textSize="@dimen/title_text_size"
             android:textStyle="normal"/>
 
@@ -29,51 +29,81 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="tel"
-            android:textColor="@color/theme_title"
+            android:text="13333333"
+            android:textColor="#2baf2b"
             android:textSize="@dimen/title_text_size"
             android:textStyle="normal"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/control_address_address"
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:id="@+id/control_address_address_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:paddingBottom="10dp"
-        android:text="adress"
-        android:textColor="@color/theme_sub_title"
-        android:textSize="@dimen/title_text_size"
-        android:textStyle="normal"/>
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/control_address_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="city"
+            android:textColor="#8a8a8a"
+            android:textSize="@dimen/title_sub_size"
+            android:textStyle="normal"/>
+
+        <TextView
+            android:id="@+id/control_address_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/control_address_city"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="adress"
+            android:textColor="#8a8a8a"
+            android:textSize="@dimen/title_sub_size"
+            android:textStyle="normal"/>
+
+        <ImageView
+            android:id="@+id/control_address_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="16dp"
+            android:src="@drawable/ic_chevron_right_grey600_24dp"/>
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/control_address_defult_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:paddingRight="16dp">
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
 
-        <ImageView
-            android:id="@+id/controladdress_deafult_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:src="@drawable/ic_check_unchoice"/>
-
-        <TextView
+        <com.romens.yjk.health.ui.components.CheckableView
             android:id="@+id/control_address_isdefault"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/controladdress_deafult_img"
-            android:background="@color/white"
-            android:drawablePadding="10dp"
-            android:text="设为默认地址"
-            android:textColor="@color/theme_sub_title"
-            android:textSize="@dimen/abc_text_size_caption_material"/>
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/control_address_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:paddingLeft="24dp"
+            android:paddingRight="16dp"
+            android:text="编辑"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/title_sub_size"/>
 
     </RelativeLayout>
 
