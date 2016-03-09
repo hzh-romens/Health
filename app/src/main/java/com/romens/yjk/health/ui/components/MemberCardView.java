@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.components;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.View;
@@ -29,10 +30,16 @@ public class MemberCardView extends FrameLayout {
         image.setBackgroundResource(R.drawable.ic_card_bgc);
         final ImageView bgcImage = new ImageView(context);
         bgcImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        bgcImage.setImageResource(R.drawable.ic_card_face);
+        bgcImage.setBackgroundResource(R.drawable.ic_card_face);
         cardView = new CardView(context);
         cardView.setCardElevation(4);
-        cardView.setRadius(10f);
+        cardView.setRadius(10.0f);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            cardView.setUseCompatPadding(false);
+        } else {
+            cardView.setPreventCornerOverlap(false);
+            cardView.setRadius(10.0f);
+        }
         numberView = new TextView(context);
         numberView.setText("测试12345");
         numberView.setTextSize(18);
@@ -47,11 +54,11 @@ public class MemberCardView extends FrameLayout {
             public void onClick(View v) {
                 if (flag == 1) {
                     flag = 2;
-                    bgcImage.setImageResource(R.drawable.ic_card_opposite);
+                    bgcImage.setBackgroundResource(R.drawable.ic_card_opposite);
                     numberView.setVisibility(GONE);
                 } else if (flag == 2) {
                     flag = 1;
-                    bgcImage.setImageResource(R.drawable.ic_card_face);
+                    bgcImage.setBackgroundResource(R.drawable.ic_card_face);
                     numberView.setVisibility(VISIBLE);
                 }
             }

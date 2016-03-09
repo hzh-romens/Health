@@ -2,41 +2,22 @@ package com.romens.yjk.health.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.BottomSheet;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.hyrmtt.wxapi.WXHelper;
-import com.romens.yjk.health.hyrmtt.wxapi.WXManager;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.web.ADWebJsInterface;
 import com.romens.yjk.health.web.JsBaseInterface;
-import com.tencent.mm.sdk.modelbase.BaseReq;
-import com.tencent.mm.sdk.modelbase.BaseResp;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Arrays;
+import com.romens.yjk.health.wx.WXHelper;
+import com.romens.yjk.health.wx.WXManager;
 
 /**
  * Created by siery on 15/9/9.

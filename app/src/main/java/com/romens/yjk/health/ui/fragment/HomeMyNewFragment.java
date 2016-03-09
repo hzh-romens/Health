@@ -34,9 +34,7 @@ import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.ControlAddressActivity;
-import com.romens.yjk.health.ui.FeedBackActivity;
 import com.romens.yjk.health.ui.FeedBackNewActivity;
-import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HelpNewActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
@@ -168,7 +166,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     public void didReceivedNotification(int i, Object... objects) {
         if (i == AppNotificationCenter.loginSuccess) {
             updateData();
-        }else if (i == AppNotificationCenter.loginOut) {
+        } else if (i == AppNotificationCenter.loginOut) {
             updateData();
         }
     }
@@ -278,8 +276,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                             } /*else if (position == 1) {//我的订单
                                 startActivity(new Intent(getActivity(), MyOrderActivity.class));
                             }*/ else if (position == 1) {//会员管理
-                                Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
-//                                UIOpenHelper.openMemberActivity(getActivity());
+                                // Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
+                                UIOpenHelper.openMemberActivity(getActivity());
                             } else if (position == 2) {//我的收藏
                                 UIOpenHelper.openFavoritesActivity(getActivity());
                             } else if (position == 3) {//历史浏览

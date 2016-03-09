@@ -3,9 +3,14 @@ package com.romens.yjk.health.ui.activity.pay;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.yjk.health.pay.PayActivity;
 import com.romens.yjk.health.pay.PayParamsForAlipay;
+import com.romens.yjk.health.pay.PayState;
 import com.yunuo.pay.alipay.AlipayPay;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Zhou Lisi
@@ -19,7 +24,12 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         alipayPay = new AlipayPay(this);
-        onCreateAfter();
+        onCreateCompleted();
+    }
+
+    @Override
+    protected String getPayModeText() {
+        return "支付宝支付";
     }
 
     @Override
@@ -31,11 +41,16 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
 
     @Override
     protected void onPayResponse(Intent intent) {
-
+        //支付宝不重写这个方法，支付宝同步返回机制
     }
 
     @Override
     protected void onCheckPayState() {
+
+    }
+
+    @Override
+    protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
 
     }
 
@@ -46,16 +61,18 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
 
     @Override
     public void onPaySuccess(String extData) {
-
+        changePayState(PayState.PROCESSING);
+        Map<String,String> args=new HashMap<>();
+        postPayResponseToServerAndCheckPayResult(args);
     }
 
     @Override
     public void onPayFail(String extData) {
-
+        changePayState(PayState.FAIL);
     }
 
     @Override
     public void onPayProcessing(String extData) {
-
+        changePayState(PayState.PROCESSING);
     }
 }

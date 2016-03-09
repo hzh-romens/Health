@@ -50,6 +50,7 @@ import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.pay.Pay;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
+import com.romens.yjk.health.ui.CuoponActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
@@ -104,6 +105,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private static final int REQUEST_CODE_ADDRESS = 0;
     private static final int REQUEST_CODE_PAY_DELIVERY = 1;
     private static final int REQUEST_CODE_INVOICE = 2;
+    private static final int REQUEST_CODE_COUPON = 3;
 
 
     @Override
@@ -188,7 +190,10 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             intent.putExtra("DeliveryType", selectDeliveryType);
             startActivityForResult(intent, REQUEST_CODE_PAY_DELIVERY);
         } else if (position == couponRow) {
-
+            Intent intent = new Intent(CommitOrderBaseActivity.this, CuoponActivity.class);
+            intent.putExtra("position", cuoponPosition);
+            intent.putExtra("sumMoney", goodsAmount + "");
+            startActivityForResult(intent, REQUEST_CODE_COUPON);
         } else if (position == invoiceRow) {
             Intent intent = new Intent(CommitOrderBaseActivity.this, OrderInvoiceActivity.class);
             intent.putExtra(OrderInvoiceActivity.ARGUMENTS_KEY_INVOICE_NAME, TextUtils.isEmpty(orderInvoice) ? "" : orderInvoice);
@@ -388,6 +393,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         }
     }
 
+    private static int cuoponPosition = -1;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -413,6 +420,12 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         } else if (requestCode == REQUEST_CODE_INVOICE) {
             if (resultCode == RESULT_OK) {
                 orderInvoice = data.getStringExtra(OrderInvoiceActivity.ARGUMENTS_KEY_INVOICE_NAME);
+                adapter.notifyDataSetChanged();
+            }
+        } else if (requestCode == REQUEST_CODE_COUPON) {
+            if (resultCode == RESULT_OK) {
+                orderCouponID = data.getStringExtra("orderCouponID");
+                cuoponPosition = data.getIntExtra("position", 0);
                 adapter.notifyDataSetChanged();
             }
         }
