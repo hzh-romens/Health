@@ -147,10 +147,9 @@ public class CuoponCardCell extends FrameLayout {
             dra.setCornerRadius(10.f);
             dra.setStroke(4, mContext.getResources().getColor(R.color.theme_primary));
             cardView.setBackground(dra);
-            //cardView.setCardElevation(4);
+            cardView.setCardElevation(4);
         } else {
             cardView.setBackground(null);
-            //  cardView.setRadius(10.0f);
             cardView.setCardElevation(4);
         }
     }

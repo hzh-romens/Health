@@ -55,39 +55,56 @@ public class CuoponFragment extends Fragment {
         cuoponAdapter = new CuoponAdapter(getActivity());
         getData(false);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CuoponEntity entity = result.get(position);
-                choiceArray = cuoponAdapter.getChoiceArray();
-                if (choiceArray.get(position)) {
-                    choiceArray.append(position, false);
-                } else {
-                    choiceArray.append(position, true);
-                }
-                cuoponAdapter.bindChoiceData(choiceArray);
-                //if ("GetCoupon".equals(requestType)) {
-                if (sumMoney >= Double.parseDouble(entity.getLimitamount())) {
-                    Toast.makeText(getActivity(), "未达到优惠卷使用金额", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
-                    String couponguID = result.get(position).getCouponguid();
-                    intent.putExtra("orderCouponID", couponguID);
-                    intent.putExtra("position", position);
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                    getActivity().finish();
-                }
-                //  } else {
-                //    Toast.makeText(getActivity(), "该优惠卷无效", Toast.LENGTH_SHORT).show();
-                //}
-            }
-        });
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                CuoponEntity entity = result.get(position);
+                                                choiceArray = cuoponAdapter.getChoiceArray();
+                                                cuoponAdapter.setChoiceItem(position, !choiceArray.get(position));
+                                                if (choiceArray.get(position)) {
+                                                    choiceArray.append(position, false);
+                                                } else {
+                                                    choiceArray.append(position, true);
+                                                }
+
+                                                cuoponAdapter.bindChoiceData(choiceArray);
+                                                if ("GetCoupon".equals(requestType)) {
+                                                    if (sumMoney <= Double.parseDouble(entity.getLimitamount())) {
+                                                        Toast.makeText(getActivity(), "未达到优惠卷使用金额", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
+                                                        String couponguID = result.get(position).getCouponguid();
+                                                        if (position == choicePosition) {
+                                                            intent.putExtra("position", -1);
+                                                            intent.putExtra("orderCouponID", "");
+                                                            intent.putExtra("amount", "");
+                                                            intent.putExtra("limitAmount", "");
+                                                        } else {
+                                                            intent.putExtra("position", position);
+                                                            intent.putExtra("orderCouponID", couponguID);
+                                                            intent.putExtra("amount", result.get(position).getAmount());
+                                                            intent.putExtra("limitAmount", result.get(position).getLimitamount());
+                                                        }
+                                                        getActivity().setResult(Activity.RESULT_OK, intent);
+                                                        getActivity().finish();
+                                                    }
+                                                } else {
+                                                    Toast.makeText(getActivity(), "该优惠卷无效", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+
+        );
         UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getData(true);
-            }
-        });
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+
+                                           {
+                                               @Override
+                                               public void onRefresh() {
+                                                   getData(true);
+                                               }
+                                           }
+
+        );
         return view;
     }
 
@@ -147,9 +164,9 @@ public class CuoponFragment extends Fragment {
                         choiceArray.append(choicePosition, true);
                     }
                     cuoponAdapter.bindChoiceData(choiceArray);
-                    // if ("GetCoupon".equals(requestType)) {
-                    cuoponAdapter.setChoice(choicePosition, requestType);
-                    //}
+                    if ("GetCoupon".equals(requestType)) {
+                        cuoponAdapter.setChoice(choicePosition, requestType);
+                    }
                     listView.setAdapter(cuoponAdapter);
                 } else {
                     Log.e("GetCoupon", errorMsg.msg);

@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,22 +77,30 @@ public class CuoponAdapter extends BaseAdapter {
         CuoponEntity entity = mResult.get(position);
         cell.setValue(entity.getIsused(), entity.getName(), entity.getEnddate(), entity.getLimitamount(), entity.getShuoming(), entity.getAmount(), entity.getStartdate());
         cell.setStatus("1");
-        //  if ("GetCoupon".equals(mType)) {
-        if (mChoiceID >= 0 && mChoiceID == position) {
-            Log.i("选择的是否对------", mChoiceArray.get(position) + "");
-            if (mChoiceArray.get(position)) {
-                cell.setShapeColor(true);
-                mChoiceArray.append(position, true);
-            } else {
-                cell.setShapeColor(false);
-                mChoiceArray.append(position, false);
+        if ("GetCoupon".equals(mType)) {
+            if (mChoiceID >= 0 && mChoiceID == position) {
+                if (mChoiceArray.get(position)) {
+                    cell.setShapeColor(true);
+                    mChoiceArray.append(position, true);
+                } else {
+                    cell.setShapeColor(false);
+                    mChoiceArray.append(position, false);
+                }
             }
-            //    }
         }
         return convertView;
     }
 
     public SparseBooleanArray getChoiceArray() {
         return mChoiceArray;
+    }
+
+
+    private int mPosition;
+    private boolean mValue;
+
+    public void setChoiceItem(int position, boolean value) {
+        this.mPosition = position;
+        this.mValue = value;
     }
 }
