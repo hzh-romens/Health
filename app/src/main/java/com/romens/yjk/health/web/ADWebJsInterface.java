@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.helper.UIOpenHelper;
 
@@ -42,8 +44,11 @@ public class ADWebJsInterface extends JsBaseInterface {
 
     @JavascriptInterface
     public String getToken() {
+        ObjectNode objectNode = JacksonMapper.getInstance().createObjectNode();
         String token = FacadeToken.getInstance().getAuthToken();
-        return token;
+        objectNode.put("TOKEN", token);
+        String result = objectNode.toString();
+        return result;
     }
 
     @Override

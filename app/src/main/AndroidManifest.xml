@@ -171,7 +171,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.activity.DevelopModeActivity"
+            android:name=".ui.activity.dev.DevelopModeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />

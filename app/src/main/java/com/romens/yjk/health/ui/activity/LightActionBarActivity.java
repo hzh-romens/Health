@@ -13,7 +13,7 @@ public class LightActionBarActivity extends BaseActionBarActivity {
 
     @Override
     protected void onSetupActionBar(ActionBar actionBar) {
-        actionBar.setBackgroundColor(0xffeeeeee);
+        actionBar.setBackgroundColor(0xfff0f0f0);
         actionBar.setItemsBackground(R.drawable.bar_selector);
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_grey600_24dp);
         needActionBarDivider(actionBar, true);

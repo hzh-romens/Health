@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.pay.PayState;
 
@@ -31,7 +32,7 @@ public class PayStateCell extends FrameLayout {
 
         stateImgView = new ImageView(context);
         stateImgView.setScaleType(ImageView.ScaleType.CENTER);
-        addView(stateImgView, LayoutHelper.createFrame(48, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL, 16, 0, 16, 0));
+        addView(stateImgView, LayoutHelper.createFrame(24, 24, Gravity.LEFT | Gravity.CENTER_VERTICAL, 16, 0, 16, 0));
 
         stateTextView = new TextView(context);
         stateTextView.setTextColor(0xff212121);
@@ -43,19 +44,25 @@ public class PayStateCell extends FrameLayout {
 
     public void setValue(PayState state, boolean divider) {
         int stateColor;
+        int stateIconResId;
         String stateText;
         if (state == PayState.SUCCESS) {
-            stateColor=ResourcesConfig.primaryColor;
+            stateColor = ResourcesConfig.primaryColor;
+            stateIconResId = R.drawable.ic_check_circle_grey600_24dp;
             stateText = "支付成功";
         } else if (state == PayState.PROCESSING) {
-            stateColor=ResourcesConfig.primaryColor;
+            stateColor = ResourcesConfig.primaryColor;
+            stateIconResId = R.drawable.ic_info_grey600_24dp;
             stateText = "支付处理中...";
         } else {
-            stateColor=ResourcesConfig.primaryColor;
+            stateColor = ResourcesConfig.primaryColor;
+            stateIconResId = R.drawable.ic_info_grey600_24dp;
             stateText = "支付失败";
         }
+
         stateImgView.setColorFilter(stateColor);
-        stateTextView.setTextColor(stateColor);
+        stateImgView.setImageResource(stateIconResId);
+        stateTextView.setTextColor(0xff212121);
         stateTextView.setText(stateText);
         needDivider = divider;
         setWillNotDraw(!divider);

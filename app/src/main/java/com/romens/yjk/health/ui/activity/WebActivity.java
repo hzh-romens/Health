@@ -35,7 +35,7 @@ public abstract class WebActivity extends LightActionBarActivity {
 
         actionLayout.addView(actionBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         webProgress = new ProgressBarDeterminate(this);
-        webProgress.setBackgroundColor(ResourcesConfig.accentColor);
+        webProgress.setBackgroundColor(ResourcesConfig.primaryColor);
         webProgress.setMinimumHeight(AndroidUtilities.dp(2));
         webProgress.setMax(AndroidUtilities.dp(2));
         webProgress.setMax(100);
@@ -50,7 +50,7 @@ public abstract class WebActivity extends LightActionBarActivity {
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
-                }else if(id == 0){
+                } else if (id == 0) {
                     menuItemClick();
                 }
             }
@@ -68,6 +68,8 @@ public abstract class WebActivity extends LightActionBarActivity {
         settings.setSupportZoom(true);
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setAppCacheEnabled(false);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
 
@@ -102,6 +104,15 @@ public abstract class WebActivity extends LightActionBarActivity {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        WebView webView = getWebView();
+        if (webView != null) {
+            webView.clearCache(true);
+        }
+        super.onDestroy();
+    }
+
     protected abstract void onWebPageCompleted();
 
     protected WebView getWebView() {
@@ -112,5 +123,8 @@ public abstract class WebActivity extends LightActionBarActivity {
         return this.webProgress;
     }
 
-    protected void menuItemClick(){};
+    protected void menuItemClick() {
+    }
+
+    ;
 }

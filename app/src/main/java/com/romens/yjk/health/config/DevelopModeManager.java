@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.romens.yjk.health.BuildConfig;
-import com.romens.yjk.health.ui.activity.DevelopModeActivity;
+import com.romens.yjk.health.ui.activity.dev.DevelopModeActivity;
 
 /**
  * @author Zhou Lisi

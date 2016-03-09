@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.android.AndroidUtilities;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -20,7 +21,8 @@ import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.cells.DividerCell;
+import com.romens.android.ui.cells.EmptyCell;
+import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -30,7 +32,6 @@ import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.PayInfoCell;
 import com.romens.yjk.health.ui.cells.PayStateCell;
-import com.romens.yjk.health.ui.components.ToastCell;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -68,7 +69,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         ActionBar actionBar = new ActionBar(this);
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         setContentView(content, actionBar);
-
+        actionBar.setTitle("交易详情");
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -104,11 +105,12 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
             isFromPayPrepare = false;
         }
         if (isFromPayPrepare) {
-            orderNo=extras.getString(ARGUMENT_KEY_ORDER_NO);
-            orderDate=extras.getString(ARGUMENT_KEY_ORDER_TIME);
-            double amount=extras.getDouble(ARGUMENT_KEY_ORDER_AMOUNT,0);
-            orderAmount=new BigDecimal(amount);
             payParams = extras.getBundle(ARGUMENTS_KEY_PAY_PARAMS);
+            orderNo = payParams.getString(ARGUMENT_KEY_ORDER_NO);
+            orderDate = payParams.getString(ARGUMENT_KEY_ORDER_TIME);
+            double amount = payParams.getDouble(ARGUMENT_KEY_ORDER_AMOUNT, 0);
+            orderAmount = new BigDecimal(amount);
+
             onPayRequest(payParams);
         } else {
             onPayResponse(intent);
@@ -126,12 +128,12 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         updateAdapter();
     }
 
-    protected void postPayResponseToServerAndCheckPayResult(Map<String,String> args){
+    protected void postPayResponseToServerAndCheckPayResult(Map<String, String> args) {
         needShowProgress("正在查询支付结果,请稍候...");
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetPaymentParameter", args);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SubmitOrderPayResult", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
-        Connect connect = new RMConnect.Builder(PayPrepareBaseActivity.class)
+        Connect connect = new RMConnect.Builder(PayActivity.class)
                 .withProtocol(protocol)
                 .withParser(new JSONNodeParser())
                 .withDelegate(new Connect.AckDelegate() {
@@ -145,19 +147,19 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                             if (response.has("ERROR")) {
                                 error = response.get("ERROR").asText();
                             } else {
-                                onPostPayResponseToServerCallback(response,null);
+                                onPostPayResponseToServerCallback(response, null);
                                 return;
                             }
                         } else {
                             error = "请求支付失败,请稍后重试!";
                         }
-                        onPostPayResponseToServerCallback(null,error);
+                        onPostPayResponseToServerCallback(null, error);
                     }
                 }).build();
         ConnectManager.getInstance().request(this, connect);
     }
 
-    protected abstract void onPostPayResponseToServerCallback(JsonNode response,String error);
+    protected abstract void onPostPayResponseToServerCallback(JsonNode response, String error);
 
     @Override
     public void onBackPressed() {
@@ -189,11 +191,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         orderTimeRow = rowCount++;
         orderAmountRow = rowCount++;
         orderPayModeRow = rowCount++;
-        if (payState == PayState.PROCESSING) {
-            checkOrderRow = -1;
-        } else {
-            checkOrderRow = rowCount++;
-        }
+        checkOrderRow = rowCount++;
         listAdapter.notifyDataSetChanged();
     }
 
@@ -204,6 +202,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     private int orderTimeRow;
     private int orderAmountRow;
     private int orderPayModeRow;
+    private int checkOrderSectionRow;
     private int checkOrderRow;
 
 
@@ -250,13 +249,15 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                 return 2;
             } else if (position == checkOrderRow) {
                 return 3;
+            } else if (position == checkOrderSectionRow) {
+                return 4;
             }
             return 0;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -264,7 +265,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
             final int viewType = getItemViewType(position);
             if (viewType == 2) {
                 if (convertView == null) {
-                    convertView = new DividerCell(adapterContext);
+                    convertView = new ShadowSectionCell(adapterContext);
                 }
             } else if (viewType == 1) {
                 if (convertView == null) {
@@ -278,12 +279,17 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                 }
                 ActionCell cell = (ActionCell) convertView;
                 cell.setValue("查看订单详情");
+            } else if (viewType == 4) {
+                if (convertView == null) {
+                    convertView = new EmptyCell(adapterContext);
+                }
+                EmptyCell cell = (EmptyCell) convertView;
+                cell.setHeight(AndroidUtilities.dp(32));
             } else if (viewType == 0) {
                 if (convertView == null) {
                     convertView = new PayInfoCell(adapterContext);
                 }
                 PayInfoCell cell = (PayInfoCell) convertView;
-                cell.setSmall(true);
                 cell.setTextSize(16);
                 cell.setValueTextSize(18);
                 cell.setTextColor(0xff212121);
@@ -299,7 +305,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                 } else if (position == orderPayModeRow) {
                     cell.setValueTextColor(0xff757575);
                     String payModeText = getPayModeText();
-                    cell.setTextAndValue("支付方式", payModeText, false);
+                    cell.setTextAndValue("支付方式", payModeText, true);
                 }
             }
             return convertView;

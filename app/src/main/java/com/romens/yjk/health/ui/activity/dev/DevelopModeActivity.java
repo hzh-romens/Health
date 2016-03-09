@@ -1,4 +1,4 @@
-package com.romens.yjk.health.ui.activity;
+package com.romens.yjk.health.ui.activity.dev;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -13,10 +13,11 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.TextSettingsCell;
+import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
-import com.romens.yjk.health.ui.activity.dev.DevTextAlipay;
-import com.romens.yjk.health.ui.activity.medicare.MedicarePayBaseActivity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.text.SimpleDateFormat;
@@ -60,7 +61,7 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == testYBZFRow) {
                     Intent intent = new Intent();
-                    ComponentName componentName=new ComponentName(getPackageName(),getPackageName()+".ui.activity.MedicarePayActivity");
+                    ComponentName componentName = new ComponentName(getPackageName(), getPackageName() + ".ui.activity.MedicarePayActivity");
                     intent.setComponent(componentName);
                     Bundle arguments = new Bundle();
                     SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -72,13 +73,36 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
                 } else if (position == testShoppingCartRow) {
                     Intent intent = new Intent(DevelopModeActivity.this, ShoppingCartActivity.class);
                     startActivity(intent);
-                }else if(position==testAlipayRow){
+                } else if (position == testAlipayRow) {
                     Intent intent = new Intent(DevelopModeActivity.this, DevTextAlipay.class);
                     startActivity(intent);
+                } else if (position == testYBZF_CXYERow) {
+                    onTestYBZF_CXYERow();
                 }
             }
         });
         updateAdapter();
+    }
+
+    private void onTestYBZF_CXYERow() {
+        ComponentName componentName = new ComponentName("com.yitong.hrb.people.android",
+                "com.yitong.hrb.people.android.activity.GifViewActivity");
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString("cardNo", "11204688X");
+        bundle.putString("O2TRSN", "C067");
+        bundle.putString("certNo", "230102198506053415");
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+        String date = format.format(Calendar.getInstance().getTime());
+        bundle.putString("transferFlowNo","C067"+date);
+        bundle.putString("hrbbType","1");
+        String packageName = MyApplication.applicationContext.getPackageName();
+        bundle.putString("packageName", packageName);
+        bundle.putString("activityPath", packageName + ".pay.YBPayResult");
+        bundle.putString("appName", MyApplication.applicationContext.getString(R.string.app_name));
+        intent.putExtra("queryResult", bundle);
+        intent.setComponent(componentName);
+        startActivityForResult(intent, 0);
     }
 
     private void onTestYBZFRow() {
@@ -111,13 +135,15 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
     private void updateAdapter() {
         rowCount = 0;
         testYBZFRow = rowCount++;
+        testYBZF_CXYERow = rowCount++;
         testShoppingCartRow = rowCount++;
-        testAlipayRow=rowCount++;
+        testAlipayRow = rowCount++;
         adapter.notifyDataSetChanged();
     }
 
     private int rowCount;
     private int testYBZFRow;
+    private int testYBZF_CXYERow;
     private int testShoppingCartRow;
     private int testAlipayRow;
 
@@ -148,8 +174,10 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
                 cell.setText("医保支付测试", true);
             } else if (position == testShoppingCartRow) {
                 cell.setText("购物车测试", true);
-            }else if(position==testAlipayRow){
+            } else if (position == testAlipayRow) {
                 cell.setText("支付宝支付测试", true);
+            } else if (position == testYBZF_CXYERow) {
+                cell.setText("医保查询余额测试", true);
             }
             return convertView;
         }
