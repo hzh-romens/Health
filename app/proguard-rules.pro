@@ -267,6 +267,15 @@ public static final int *;
     public protected *;
 }
 
+#EventBus
+-dontwarn de.greenrobot.event.**
+-keep class de.greenrobot.event.**{*;}
+#EventBus App Event
+-dontwarn com.romens.yjk.health.event.**
+-keep class com.romens.yjk.health.event.**{
+    public protected *;
+}
+
 #pay
 #wx
 -dontwarn com.tencent.**
@@ -280,5 +289,15 @@ public static final int *;
 
 -dontwarn com.romens.yjk.health.njxszk.wxapi.**
 -keep class com.romens.yjk.health.njxszk.wxapi.**{
+    public protected *;
+}
+
+-dontwarn com.romens.yjk.health.hyrmtt.wxapi.**
+-keep class com.romens.yjk.health.hyrmtt.wxapi.**{
+    public protected *;
+}
+
+-dontwarn com.romens.yjk.health.hyrmtt.pay.**
+-keep class com.romens.yjk.health.hyrmtt.pay.**{
     public protected *;
 }
