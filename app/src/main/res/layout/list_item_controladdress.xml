@@ -40,6 +40,7 @@
         android:id="@+id/control_address_address_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/list_selector"
         android:paddingBottom="8dp"
         android:paddingTop="8dp">
 
@@ -79,25 +80,26 @@
             android:src="@drawable/ic_chevron_right_grey600_24dp"/>
     </RelativeLayout>
 
-
     <RelativeLayout
         android:id="@+id/control_address_defult_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
+        android:layout_height="wrap_content">
 
         <com.romens.yjk.health.ui.components.CheckableView
             android:id="@+id/control_address_isdefault"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:paddingBottom="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"/>
 
         <TextView
             android:id="@+id/control_address_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:background="@drawable/list_selector"
             android:gravity="center"
             android:paddingLeft="24dp"
             android:paddingRight="16dp"
