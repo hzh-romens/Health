@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.CardView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -35,6 +36,8 @@ public class CuoponCardCell extends FrameLayout {
         this.mContext = context;
         setWillNotDraw(false);
         cardView = new CardView(context);
+        cardView.setRadius(10.0f);
+        cardView.setCardElevation(4);
         image = new ImageView(context);
         cardView.addView(image, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 8, Gravity.TOP));
 
@@ -136,5 +139,18 @@ public class CuoponCardCell extends FrameLayout {
         priceView.setTextColor(0xff666666);
         addressView.setTextColor(0xff666666);
         conditionView.setTextColor(0xff666666);
+    }
+
+    public void setShapeColor(boolean choice) {
+        if (choice) {
+            GradientDrawable dra = new GradientDrawable();
+            dra.setCornerRadius(10.f);
+            dra.setStroke(4, mContext.getResources().getColor(R.color.theme_primary));
+            cardView.setBackground(dra);
+            cardView.setCardElevation(4);
+        } else {
+            cardView.setBackground(null);
+            cardView.setCardElevation(4);
+        }
     }
 }

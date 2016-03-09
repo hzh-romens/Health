@@ -35,6 +35,7 @@ import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
+import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.yunuo.pay.PayActivity;
@@ -79,7 +80,7 @@ public class UIOpenHelper {
 //    }
 
     public static void openShoppingCartActivity(Context context) {
-        Intent intent = new Intent(context, ShopCarActivity.class);
+        Intent intent = new Intent(context, ShoppingCartActivity.class);
         context.startActivity(intent);
     }
 

@@ -26,11 +26,15 @@ public class CuoponActivity extends BaseActivity {
     private ViewPager viewPager;
     private CuoponFragmentPagerAdapter fragmentPagerAdapter;
     private TabLayout tabLayout;
+    private int choicePosition;
+    private String sumMoney;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cuopon, R.id.action_bar);
+        choicePosition = getIntent().getIntExtra("position", 0);
+        sumMoney = getIntent().getStringExtra("sumMoney");
         actionBar = (ActionBar) findViewById(R.id.action_bar);
         actionBar.setTitle("我的优惠券");
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
@@ -43,6 +47,7 @@ public class CuoponActivity extends BaseActivity {
                 }
             }
         });
+
     }
 
     private void initView() {
@@ -63,10 +68,11 @@ public class CuoponActivity extends BaseActivity {
         fragmentsList = new ArrayList<Fragment>();
         CuoponFragment fragment = new CuoponFragment();
         fragment.setFlag(1);
+        fragment.setChoice(choicePosition, Double.parseDouble(sumMoney));
         fragmentsList.add(fragment);
-        CuoponFragment fragment2 = new CuoponFragment();
-        fragment2.setFlag(2);
-        fragmentsList.add(fragment2);
+        CuoponFragment historyFragment = new CuoponFragment();
+        historyFragment.setFlag(2);
+        fragmentsList.add(historyFragment);
 
     }
 

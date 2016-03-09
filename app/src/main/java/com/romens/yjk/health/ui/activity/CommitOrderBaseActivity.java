@@ -191,6 +191,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             startActivityForResult(intent, REQUEST_CODE_PAY_DELIVERY);
         } else if (position == couponRow) {
             Intent intent = new Intent(CommitOrderBaseActivity.this, CuoponActivity.class);
+            intent.putExtra("position", cuoponPosition);
+            intent.putExtra("sumMoney", goodsAmount + "");
             startActivityForResult(intent, REQUEST_CODE_COUPON);
         } else if (position == invoiceRow) {
             Intent intent = new Intent(CommitOrderBaseActivity.this, OrderInvoiceActivity.class);
@@ -391,6 +393,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         }
     }
 
+    private static int cuoponPosition = -1;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -421,6 +425,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         } else if (requestCode == REQUEST_CODE_COUPON) {
             if (resultCode == RESULT_OK) {
                 orderCouponID = data.getStringExtra("orderCouponID");
+                cuoponPosition = data.getIntExtra("position", 0);
                 adapter.notifyDataSetChanged();
             }
         }
