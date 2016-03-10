@@ -34,6 +34,8 @@ import com.romens.yjk.health.ui.cells.PayInfoCell;
 import com.romens.yjk.health.ui.cells.PayStateCell;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,9 +59,11 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     private ListAdapter listAdapter;
     private PayState payState;
 
-    private String orderNo;
-    private String orderDate;
-    private BigDecimal orderAmount;
+    protected String orderNo;
+    protected String orderDate;
+    protected BigDecimal orderAmount;
+
+    private final List<PayResultInfo> payResultInfo = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         ActionBar actionBar = new ActionBar(this);
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         setContentView(content, actionBar);
-        actionBar.setTitle("交易详情");
+        actionBar.setTitle("支付结果");
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -121,8 +125,6 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
 
     protected abstract void onPayResponse(Intent intent);
 
-    protected abstract void onCheckPayState();
-
     protected void changePayState(PayState state) {
         payState = state;
         updateAdapter();
@@ -172,9 +174,6 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     @Override
     public void onResume() {
         super.onResume();
-        if (isFromPayPrepare) {
-            onCheckPayState();
-        }
     }
 
     @Override
@@ -192,6 +191,15 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         orderAmountRow = rowCount++;
         orderPayModeRow = rowCount++;
         checkOrderRow = rowCount++;
+        if (payResultInfo.size() > 0) {
+            payResultSection = rowCount++;
+            payResultBeginRow = rowCount++;
+            rowCount += payResultInfo.size() - 1;
+        } else {
+            payResultSection = -1;
+            payResultBeginRow = -1;
+        }
+
         listAdapter.notifyDataSetChanged();
     }
 
@@ -204,6 +212,9 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     private int orderPayModeRow;
     private int checkOrderSectionRow;
     private int checkOrderRow;
+
+    private int payResultSection;
+    private int payResultBeginRow;
 
 
     class ListAdapter extends BaseAdapter {
@@ -249,7 +260,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                 return 2;
             } else if (position == checkOrderRow) {
                 return 3;
-            } else if (position == checkOrderSectionRow) {
+            } else if (position == checkOrderSectionRow || position == payResultSection) {
                 return 4;
             }
             return 0;
@@ -306,9 +317,23 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                     cell.setValueTextColor(0xff757575);
                     String payModeText = getPayModeText();
                     cell.setTextAndValue("支付方式", payModeText, true);
+                } else if (payResultBeginRow != -1 && position > payResultBeginRow) {
+                    cell.setValueTextColor(0xff757575);
+                    PayResultInfo item = payResultInfo.get(position - payResultBeginRow);
+                    cell.setTextAndValue(item.caption, item.value, true);
                 }
             }
             return convertView;
+        }
+    }
+
+    protected static class PayResultInfo {
+        public final CharSequence caption;
+        public final CharSequence value;
+
+        public PayResultInfo(CharSequence caption, CharSequence value) {
+            this.caption = caption;
+            this.value = value;
         }
     }
 }

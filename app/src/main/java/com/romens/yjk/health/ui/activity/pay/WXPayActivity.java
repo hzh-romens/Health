@@ -71,10 +71,6 @@ public class WXPayActivity extends PayActivity implements WXPay.Delegate {
         wxPay.handleIntent(intent);
     }
 
-    @Override
-    protected void onCheckPayState() {
-
-    }
 
     @Override
     protected void onPostPayResponseToServerCallback(JsonNode response, String error) {

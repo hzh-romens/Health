@@ -25,7 +25,6 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.hyrmtt.ui.activity.CommitOrderActivity;
 import com.romens.yjk.health.model.CuoponEntity;
 import com.romens.yjk.health.ui.adapter.CuoponAdapter;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -71,7 +70,7 @@ public class CuoponFragment extends Fragment {
                                                     if (sumMoney <= Double.parseDouble(entity.getLimitamount())) {
                                                         Toast.makeText(getActivity(), "未达到优惠卷使用金额", Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        Intent intent = new Intent(getActivity(), CommitOrderActivity.class);
+                                                        Intent intent = new Intent();
                                                         String couponguID = result.get(position).getCouponguid();
                                                         if (position == choicePosition) {
                                                             intent.putExtra("position", -1);

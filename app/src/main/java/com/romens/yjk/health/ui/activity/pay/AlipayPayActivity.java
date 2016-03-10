@@ -45,10 +45,6 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
         //支付宝不重写这个方法，支付宝同步返回机制
     }
 
-    @Override
-    protected void onCheckPayState() {
-
-    }
 
     @Override
     protected void onPostPayResponseToServerCallback(JsonNode response, String error) {

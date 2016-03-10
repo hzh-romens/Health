@@ -125,7 +125,6 @@ public class ControlAddressActivity extends BaseActivity {
 
         adapter = new ControlAddressAdapter(this, addressListEntitis);
         listView.setAdapter(adapter);
-        listView.setBackgroundColor(R.drawable.list_selector);
         listView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
 
         addAddress.setOnClickListener(new View.OnClickListener() {

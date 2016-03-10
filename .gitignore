@@ -7,6 +7,6 @@ local.properties
 
 .gradle
 .idea/
-*.iml
 gradle.properties
 /keystore
+YJKHealthForAndroid.iml
