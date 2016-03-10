@@ -101,6 +101,12 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
         bundle.putString("activityPath", packageName + ".pay.YBPayResult");
         bundle.putString("appName", MyApplication.applicationContext.getString(R.string.app_name));
         intent.putExtra("queryResult", bundle);
+
+        Bundle extBundle=new Bundle();
+        extBundle.putString("userId","aaa");
+        intent.putExtra("extBundle", extBundle);
+
+
         intent.setComponent(componentName);
         startActivityForResult(intent, 0);
     }

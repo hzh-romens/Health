@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.romens.android.log.FileLog;
 import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
@@ -58,6 +59,8 @@ public class IntroActivityNew extends Activity {
                 }
             }, 2000);
         }
+
+        FileLog.d("IntroActivity start");
     }
 
     private void openHomeActivity() {

@@ -23,8 +23,12 @@ public class MyApplication extends ApplicationLoader {
     @Override
     public void onCreate() {
         super.onCreate();
+        //初始化网路库
         ConnectManager.setEnableLog(BuildConfig.ENABLE_DEVELOP_MODE);
+        //初始化日志
         FileLog.setEnableLog(BuildConfig.ENABLE_DEVELOP_MODE);
+        FileLog.setEnableSystemLog(BuildConfig.ENABLE_DEVELOP_MODE);
+        //初始化图片库
         CloudImagesManager.init(applicationContext);
         MonitorHelper.init(this);
         //初始化环信SDK

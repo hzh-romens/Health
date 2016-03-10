@@ -267,14 +267,14 @@ public static final int *;
     public protected *;
 }
 
-#EventBus
--dontwarn de.greenrobot.event.**
--keep class de.greenrobot.event.**{*;}
-#EventBus App Event
--dontwarn com.romens.yjk.health.event.**
--keep class com.romens.yjk.health.event.**{
-    public protected *;
-}
+##EventBus
+#-dontwarn de.greenrobot.event.**
+#-keep class de.greenrobot.event.**{*;}
+##EventBus App Event
+#-dontwarn com.romens.yjk.health.event.**
+#-keep class com.romens.yjk.health.event.**{
+#    public protected *;
+#}
 
 #pay
 #wx

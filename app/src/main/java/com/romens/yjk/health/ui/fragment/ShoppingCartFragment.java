@@ -189,10 +189,10 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
 
     @Override
     public void onDestroy() {
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginOut);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onCommitShoppingCart);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginOut);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onCommitShoppingCart);
         super.onDestroy();
     }
 
@@ -231,6 +231,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
      * 检测当前购物车状态，未登录和空购物车不显示底部结算标签
      */
     private void checkShoppingCartState() {
+        refreshLayout.setEnabled(!unLogin);
         if (unLogin) {
             bottomBar.setVisibility(View.INVISIBLE);
         } else if (emptyShoppingCart) {
@@ -515,7 +516,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         if (i == AppNotificationCenter.onShoppingCartChanged) {
             syncShoppingCartForDB();
         } else if (i == AppNotificationCenter.loginSuccess || i == AppNotificationCenter.loginOut) {
-            unLogin = UserSession.getInstance().isClientLogin();
+            unLogin = !UserSession.getInstance().isClientLogin();
             checkShoppingCartState();
             syncShoppingCartForServer();
         } else if (i == AppNotificationCenter.onCommitShoppingCart) {
