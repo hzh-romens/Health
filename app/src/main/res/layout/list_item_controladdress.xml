@@ -1,106 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/control_address_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/no_border_bg_white"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/control_address_address_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/list_selector"
-        android:paddingBottom="8dp"
-        android:paddingTop="16dp">
+        android:clickable="true">
 
-        <TextView
-            android:id="@+id/control_address_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
-            android:text="name"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/title_text_size"
-            android:textStyle="normal"/>
-
-        <TextView
-            android:id="@+id/control_address_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/control_address_name"
-            android:layout_marginLeft="16dp"
+            android:layout_marginRight="48dp"
             android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="city"
-            android:textColor="#8a8a8a"
-            android:textSize="@dimen/title_sub_size"
-            android:textStyle="normal"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/control_address_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/control_address_city"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="adress"
-            android:textColor="#8a8a8a"
-            android:textSize="@dimen/title_sub_size"
-            android:textStyle="normal"/>
+            <TextView
+                android:id="@+id/control_address_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="name"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/control_address_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/control_address_name"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="city"
+                android:textColor="#8a8a8a"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/control_address_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/control_address_city"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="adress"
+                android:textColor="#8a8a8a"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="normal" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/control_address_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/control_address_name"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:paddingRight="16dp"
-            android:src="@drawable/ic_chevron_right_grey600_24dp"/>
-    </RelativeLayout>
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_chevron_right_grey600_24dp" />
+    </FrameLayout>
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/control_address_defult_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="48dp">
 
         <com.romens.yjk.health.ui.components.CheckableView
             android:id="@+id/control_address_isdefault"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingBottom="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp"/>
+            android:layout_height="40dp"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
 
         <TextView
             android:id="@+id/control_address_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="64dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/list_selector"
             android:gravity="center"
-            android:paddingBottom="16dp"
-            android:paddingLeft="24dp"
+            android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="8dp"
             android:text="编辑"
             android:textColor="@color/theme_primary"
-            android:textSize="@dimen/title_sub_size"/>
+            android:textSize="@dimen/text_size_large" />
 
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/line_color"/>
-
-
+    </FrameLayout>
 </LinearLayout>

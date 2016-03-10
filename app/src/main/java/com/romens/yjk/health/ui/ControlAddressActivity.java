@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,12 +39,12 @@ import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.CitysEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.adapter.ControlAddressAdapter;
+import com.romens.yjk.health.ui.components.LineItemDecoration;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +79,8 @@ public class ControlAddressActivity extends BaseActivity {
         setContentView(R.layout.activity_shipping_address, R.id.action_bar);
         havaAddressLayout = (LinearLayout) findViewById(R.id.control_address_hava_address);
         listView = (RecyclerView) findViewById(R.id.control_address_recycler);
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        listView.addItemDecoration(new LineItemDecoration(this));
         addAddress = (Button) findViewById(R.id.control_address_add_address);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -125,8 +126,6 @@ public class ControlAddressActivity extends BaseActivity {
 
         adapter = new ControlAddressAdapter(this, addressListEntitis);
         listView.setAdapter(adapter);
-        listView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
-
         addAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

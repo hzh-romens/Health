@@ -1,8 +1,6 @@
 package com.romens.yjk.health.ui.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -10,22 +8,13 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.romens.android.AndroidUtilities;
-import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
@@ -86,48 +75,34 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return position % 2;
-    }
-
-    @Override
     public ControlAddressHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        if (viewType == 0) {
-            view = LayoutInflater.from(context).inflate(R.layout.list_item_controladdress, null);
-        } else if (viewType == 1) {
-            view = new ShadowSectionCell(context);
-        }
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        view.setLayoutParams(lp);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_controladdress, parent, false);
         return new ControlAddressHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ControlAddressHolder holder, final int position) {
-        int type = getItemViewType(position);
-        if (type == 0) {
-            final int index = position / 2;
-            AddressEntity entity = data.get(index);
-            String receiver = entity.getRECEIVER();
-            String tel = entity.getCONTACTPHONE();
-            String result = receiver + "    " + tel;
-            SpannableString user = new SpannableString(result);
-            user.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, receiver.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            user.setSpan(new ForegroundColorSpan(Color.parseColor("#2baf2b")), result.length() - tel.length(), result.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            holder.nameView.setText(user);
+        final int index = position / 2;
+        AddressEntity entity = data.get(index);
+        String receiver = entity.getRECEIVER();
+        String tel = entity.getCONTACTPHONE();
+        String result = receiver + "    " + tel;
+        SpannableString user = new SpannableString(result);
+        user.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, receiver.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        user.setSpan(new ForegroundColorSpan(Color.parseColor("#2baf2b")), result.length() - tel.length(), result.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        holder.nameView.setText(user);
 //            holder.telView.setText(entity.getCONTACTPHONE());
-            holder.addressView.setText(entity.getADDRESS());
-            holder.cityView.setText(entity.getPROVINCENAME() + "-" + entity.getCITYNAME() + "-" + entity.getREGIONNAME());
-            holder.outsideLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (onItemLongClickListener != null) {
-                        onItemLongClickListener.itemLongClickListener(index);
-                    }
-                    return false;
+        holder.addressView.setText(entity.getADDRESS());
+        holder.cityView.setText(entity.getPROVINCENAME() + "-" + entity.getCITYNAME() + "-" + entity.getREGIONNAME());
+        holder.outsideLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (onItemLongClickListener != null) {
+                    onItemLongClickListener.itemLongClickListener(index);
                 }
-            });
+                return false;
+            }
+        });
 //            holder.outsideLayout.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
@@ -137,60 +112,59 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
 //                }
 //            });
 
-            holder.isDefault.setChecked(false);
-            holder.isDefault.setTextSize(14);
-            holder.isDefault.shouldText(true);
-            holder.isDefault.setText("默认地址");
-            holder.arrowImg.setColorFilter(0xffe5e5e5);
-            if (!isShowArrow) {
-                holder.arrowImg.setVisibility(View.GONE);
-            }
-
-            if (entity.getISDEFAULT() != null && entity.getISDEFAULT().equals("1")) {
-//                currDefaultAddressIndex = index;
-                holder.isDefault.setChecked(true);
-            }
-            holder.isDefault.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemLongClickListener != null) {
-                        onItemLongClickListener.isDefaultClickLListener(index);
-                    }
-                }
-            });
-
-            holder.addressLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemLongClickListener != null) {
-                        onItemLongClickListener.itemClickToEditListener(index, ControlAddressActivity.ADDRESS_CHECK_TYPE);
-                    }
-                }
-            });
-
-            holder.toEditBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemLongClickListener != null) {
-                        onItemLongClickListener.itemClickToEditListener(index, ControlAddressActivity.ADDRESS_EDIT_TYPE);
-                    }
-                }
-            });
-
-            holder.isDefault.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemLongClickListener != null) {
-                        onItemLongClickListener.isDefaultClickLListener(index);
-                    }
-                }
-            });
+        holder.isDefault.setChecked(false);
+        holder.isDefault.setTextSize(16);
+        holder.isDefault.shouldText(true);
+        holder.isDefault.setText("默认地址");
+        holder.arrowImg.setColorFilter(0xffe5e5e5);
+        if (!isShowArrow) {
+            holder.arrowImg.setVisibility(View.GONE);
         }
+
+        if (entity.getISDEFAULT() != null && entity.getISDEFAULT().equals("1")) {
+//                currDefaultAddressIndex = index;
+            holder.isDefault.setChecked(true);
+        }
+        holder.isDefault.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemLongClickListener != null) {
+                    onItemLongClickListener.isDefaultClickLListener(index);
+                }
+            }
+        });
+
+        holder.addressLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemLongClickListener != null) {
+                    onItemLongClickListener.itemClickToEditListener(index, ControlAddressActivity.ADDRESS_CHECK_TYPE);
+                }
+            }
+        });
+
+        holder.toEditBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemLongClickListener != null) {
+                    onItemLongClickListener.itemClickToEditListener(index, ControlAddressActivity.ADDRESS_EDIT_TYPE);
+                }
+            }
+        });
+
+        holder.isDefault.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemLongClickListener != null) {
+                    onItemLongClickListener.isDefaultClickLListener(index);
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return data.size() == 0 ? 0 : data.size() * 2 - 1;
+        return data.size() == 0 ? 0 : data.size();
     }
 
     class ControlAddressHolder extends RecyclerView.ViewHolder {
@@ -200,10 +174,10 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
         public TextView addressView;
         public CheckableView isDefault;
         public LinearLayout outsideLayout;
-        public RelativeLayout defaultLayout;
+        public View defaultLayout;
         public TextView toEditBtn;
         public TextView cityView;
-        public RelativeLayout addressLayout;
+        public View addressLayout;
         public ImageView arrowImg;
 
         public ControlAddressHolder(View itemView) {
@@ -214,9 +188,9 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             isDefault = (CheckableView) itemView.findViewById(R.id.control_address_isdefault);
             cityView = (TextView) itemView.findViewById(R.id.control_address_city);
             outsideLayout = (LinearLayout) itemView.findViewById(R.id.control_address_layout);
-            defaultLayout = (RelativeLayout) itemView.findViewById(R.id.control_address_defult_layout);
+            defaultLayout = itemView.findViewById(R.id.control_address_defult_layout);
             toEditBtn = (TextView) itemView.findViewById(R.id.control_address_edit);
-            addressLayout = (RelativeLayout) itemView.findViewById(R.id.control_address_address_layout);
+            addressLayout = itemView.findViewById(R.id.control_address_address_layout);
             arrowImg = (ImageView) itemView.findViewById(R.id.control_address_arrow);
         }
     }

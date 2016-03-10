@@ -82,7 +82,7 @@ public class CheckableView extends FrameLayout implements Checkable {
         if (should) {
             LayoutParams layoutParams = (LayoutParams) checkView.getLayoutParams();
             layoutParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
-            layoutParams.leftMargin = AndroidUtilities.dp(16);
+            layoutParams.leftMargin = AndroidUtilities.dp(8);
             checkView.setLayoutParams(layoutParams);
             textView.setVisibility(VISIBLE);
         } else {
