@@ -164,7 +164,7 @@ public class UIOpenHelper {
      * @param title   标题
      * @param html    html内容
      */
-    public static void openWebActivityWithHtml(Context context, String title, String html,String iconUrl) {
+    public static void openWebActivityWithHtml(Context context, String title, String html, String iconUrl) {
         Intent intent = new Intent(context, ADWebActivity.class);
         Bundle arguments = new Bundle();
         if (!TextUtils.isEmpty(title)) {
@@ -194,9 +194,10 @@ public class UIOpenHelper {
         context.startActivityForResult(intent, requestCode);
     }
 
-    public static void openAddShippingAddress(Activity context, AddressEntity entity) {
+    public static void openAddShippingAddress(Activity context, AddressEntity entity, int type) {
         Intent intent = new Intent(context, NewShoppingAddressActivity.class);
         intent.putExtra("responseUpDataEntity", entity);
+        intent.putExtra("responseType", type);
         context.startActivity(intent);
     }
 
