@@ -87,6 +87,7 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
     private void needSelectMedicareCardPay() {
         Intent intent = new Intent(MedicarePayActivity.this, MedicareCardListActivity.class);
         intent.putExtra(MedicareCardListActivity.ARGUMENTS_KEY_ONLY_SELECT, true);
+        intent.putExtra(MedicareCardListActivity.ARGUMENTS_KEY_PAY_AMOUNT, orderPayAmount.doubleValue());
         startActivityForResult(intent, 0);
     }
 
@@ -94,7 +95,7 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String medicareCardNo = data.getStringExtra("MEDICARENO");
+                String medicareCardNo = data.getStringExtra("MEDICARE_CARDNO");
                 sendMedicarePayPrepareRequest(medicareCardNo);
             }
         }

@@ -30,29 +30,6 @@ public class YBPayResult extends PayActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
-        ActionBar actionBar = new ActionBar(this);
-        content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        setContentView(content, actionBar);
-
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-            @Override
-            public void onItemClick(int id) {
-                if (id == -1) {
-                    finish();
-                }
-            }
-        });
-
-        actionBar.setTitle("订单支付");
-        actionBar.setBackButtonImage(R.drawable.ic_close_white_24dp);
-
-        TextView emptyTextView = new TextView(this);
-        emptyTextView.setTextColor(0xff808080);
-        emptyTextView.setTextSize(20);
-        emptyTextView.setLineSpacing(AndroidUtilities.dp(4), 1.0f);
-        emptyTextView.setGravity(Gravity.CENTER);
-        content.addView(emptyTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 16, 16, 16, 16));
         onCreateCompleted();
     }
 
@@ -101,7 +78,7 @@ public class YBPayResult extends PayActivity {
 
     @Override
     protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
-
+        updateAdapter();
     }
 
     @Override

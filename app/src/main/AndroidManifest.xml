@@ -566,6 +566,12 @@
             android:launchMode="singleTask"></activity>
 
         <activity
+            android:name="${CHANNEL_PACKAGE}.pay.BalanceInfoActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="true"
+            android:launchMode="singleTask"></activity>
+
+        <activity
             android:name=".ui.activity.medicare.MedicareCardListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"

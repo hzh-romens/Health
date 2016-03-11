@@ -24,7 +24,6 @@
     <!--<color name="text_primary">#0f9d58</color>-->
 
 
-
     <color name="theme_title">#ff333333</color>
     <color name="theme_sub_title">#ff666666</color>
     <color name="line_color">#99cccccc</color>
@@ -47,7 +46,9 @@
     <color name="font_emergency">#ffb0120a</color>
     <color name="progress_bgc">#cccccc</color>
 
-
+    <color name="medicare_card">@color/md_blue_300</color>
+    <color name="medicare_card_dark">#ff549cdd</color>
+    <color name="medicare_card_avatar">#ff549cdd</color>
 
 
 </resources>
