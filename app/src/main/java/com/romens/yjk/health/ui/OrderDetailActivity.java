@@ -2,10 +2,9 @@ package com.romens.yjk.health.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,14 +13,17 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
-import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
@@ -35,11 +37,8 @@ import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.ui.adapter.OrderExpandableDetailAdapter;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
+import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +49,7 @@ import java.util.Map;
  * 订单详情
  */
 public class OrderDetailActivity extends BaseActivity {
+    public static final String ARGUMENT_KEY_ORDER_NO = "KEY_ORDER_NO";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
@@ -59,6 +59,10 @@ public class OrderDetailActivity extends BaseActivity {
     private OrderExpandableDetailAdapter subExpandableadapter;
 
     private String userGuid;
+
+    private String orderId;
+
+    private String currOrderNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,12 +114,15 @@ public class OrderDetailActivity extends BaseActivity {
         return actionBar;
     }
 
-    private String orderId;
 
     public void initData() {
         setRow();
         Intent intent = getIntent();
-        orderId = intent.getStringExtra("orderId");
+        if (intent.hasExtra(ARGUMENT_KEY_ORDER_NO)) {
+            currOrderNo = intent.getStringExtra(ARGUMENT_KEY_ORDER_NO);
+        } else {
+            orderId = intent.getStringExtra("orderId");
+        }
         requestOrderDetailList(userGuid, orderId);
     }
 
@@ -276,72 +283,93 @@ public class OrderDetailActivity extends BaseActivity {
     private void requestOrderDetailList(String userGuid, String orderId) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
-        args.put("ORDERID", orderId);
+        if (!TextUtils.isEmpty(currOrderNo)) {
+            args.put("ORDERNO", currOrderNo);
+        } else {
+            args.put("ORDERID", orderId);
+        }
+
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrderDetail", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
+        Connect connect = new RMConnect.Builder(OrderDetailActivity.class)
                 .withProtocol(protocol)
-                .build();
-        FacadeClient.request(OrderDetailActivity.this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Toast.makeText(OrderDetailActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
-            }
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol<JsonNode>) message.protocol;
+                            setOrderData(responseProtocol.getResponse());
+                        } else {
+                            ToastCell.toast(OrderDetailActivity.this, "查询订单失败!");
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(this, connect);
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (msg != null) {
-//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
-
-                    setOrderData(responseEntity.getResponse());
-                }
-                if (errorMsg != null) {
-                    Log.e("reqGetAllUsers", "ERROR");
-                }
-            }
-        });
+//        Message message = new Message.MessageBuilder()
+//                .withProtocol(protocol)
+//                .build();
+//        FacadeClient.request(OrderDetailActivity.this, message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message msg) {
+//                Toast.makeText(OrderDetailActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//                if (msg != null) {
+////                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
+//                    ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
+//
+//                    setOrderData(responseEntity.getResponse());
+//                }
+//                if (errorMsg != null) {
+//                    Log.e("reqGetAllUsers", "ERROR");
+//                }
+//            }
+//        });
     }
 
-    public void setOrderData(String jsonData) {
-        if (jsonData == null) {
+    @Override
+    public void onDestroy() {
+        ConnectManager.getInstance().destroyInitiator(OrderDetailActivity.class);
+        super.onDestroy();
+    }
+
+    public void setOrderData(JsonNode response) {
+        if (response == null) {
             return;
         }
         goodsListEntities = new ArrayList<>();
         orderListEntity = new OrderListEntity();
-        try {
-            JSONObject object = new JSONObject(jsonData);
-            orderListEntity.setOrderId(object.getString("ORDER_ID"));
-            orderListEntity.setOrderNo(object.getString("ORDERNO"));
-            orderListEntity.setCreateTime(object.getString("CREATETIME"));
-            orderListEntity.setOrderPrice(object.getString("ORDERPRICE"));
-            orderListEntity.setReceiver(object.getString("RECEIVER"));
-            orderListEntity.setAddress(object.getString("ADDRESS"));
-            orderListEntity.setDeliverType(object.getString("DELIVERYTYPE"));
-            orderListEntity.setOrderStatus(object.getString("orderStatus"));
-            orderListEntity.setOrderStatusStr(object.getString("ORDERSTATUSSTR"));
-            orderListEntity.setTelephone(object.getString("TELEPHONE"));
-            JSONArray array = object.getJSONArray("GOODSLIST");
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject subObjcet = array.getJSONObject(i);
-                GoodsListEntity goodsEntity = new GoodsListEntity();
-                goodsEntity.setGoodsGuid(subObjcet.getString("GOODSGUID"));
-                goodsEntity.setBuyCount(subObjcet.getString("BUYCOUNT"));
-                goodsEntity.setGoodsPrice(subObjcet.getString("GOODSPRICE"));
-                goodsEntity.setName(subObjcet.getString("NAME"));
-                goodsEntity.setCode(subObjcet.getString("CODE"));
-                goodsEntity.setGoodsUrl(subObjcet.getString("GOODURL"));
-                //GOODSBIGURL
-                goodsEntity.setDetailDescitption(subObjcet.getString("DETAILDESCRIPTION"));
-                goodsEntity.setSpec(subObjcet.getString("SPEC"));
-                goodsEntity.setGoodsSortGuid(subObjcet.getString("GOODSSORTGUID"));
-                goodsEntity.setShopId(subObjcet.getString("SHOPID"));
-                goodsEntity.setShopName(subObjcet.getString("SHOPNAME"));
-                goodsListEntities.add(goodsEntity);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        orderListEntity.setOrderId(response.get("ORDER_ID").asText());
+        orderListEntity.setOrderNo(response.get("ORDERNO").asText());
+        orderListEntity.setCreateTime(response.get("CREATETIME").asText());
+        orderListEntity.setOrderPrice(response.get("ORDERPRICE").asText());
+        orderListEntity.setReceiver(response.get("RECEIVER").asText());
+        orderListEntity.setAddress(response.get("ADDRESS").asText());
+        orderListEntity.setDeliverType(response.get("DELIVERYTYPE").asText());
+        orderListEntity.setOrderStatus(response.get("orderStatus").asText());
+        orderListEntity.setOrderStatusStr(response.get("ORDERSTATUSSTR").asText());
+        orderListEntity.setTelephone(response.get("TELEPHONE").asText());
+        JsonNode array = response.get("GOODSLIST");
+        for (int i = 0; i < array.size(); i++) {
+            JsonNode subObjcet = array.get(i);
+            GoodsListEntity goodsEntity = new GoodsListEntity();
+            goodsEntity.setGoodsGuid(subObjcet.get("GOODSGUID").asText());
+            goodsEntity.setBuyCount(subObjcet.get("BUYCOUNT").asText());
+            goodsEntity.setGoodsPrice(subObjcet.get("GOODSPRICE").asText());
+            goodsEntity.setName(subObjcet.get("NAME").asText());
+            goodsEntity.setCode(subObjcet.get("CODE").asText());
+            goodsEntity.setGoodsUrl(subObjcet.get("GOODURL").asText());
+            //GOODSBIGURL
+            goodsEntity.setDetailDescitption(subObjcet.get("DETAILDESCRIPTION").asText());
+            goodsEntity.setSpec(subObjcet.get("SPEC").asText());
+            goodsEntity.setGoodsSortGuid(subObjcet.get("GOODSSORTGUID").asText());
+            goodsEntity.setShopId(subObjcet.get("SHOPID").asText());
+            goodsEntity.setShopName(subObjcet.get("SHOPNAME").asText());
+            goodsListEntities.add(goodsEntity);
         }
         subExpandableadapter.setOrderEntities(goodsListEntities);
         adapter.setOrderListEntity(orderListEntity);

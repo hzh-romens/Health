@@ -47,15 +47,6 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
 
 
     @Override
-    protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
-        if(TextUtils.isEmpty(error)){
-            changePayState(PayState.SUCCESS);
-        }else{
-            changePayState(PayState.PROCESSING);
-        }
-    }
-
-    @Override
     protected void needFinish() {
         finish();
     }

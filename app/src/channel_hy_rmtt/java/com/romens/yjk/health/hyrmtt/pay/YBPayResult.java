@@ -57,7 +57,7 @@ public class YBPayResult extends PayActivity {
             String status = bundle.getString("status");
             if (TextUtils.equals("1", status)) {
                 Map<String, String> args = new HashMap<>();
-                args.put("ORDERNO", orderNo);
+                args.put("ORDERCODE", orderNo);
                 ObjectNode payResult = JacksonMapper.getInstance().createObjectNode();
                 payResult.put("transferFlowNo", bundle.getString("transferFlowNo"));
                 payResult.put("lastPayAmount", bundle.getString("lastPayAmount"));
@@ -74,11 +74,6 @@ public class YBPayResult extends PayActivity {
         } else {
             changePayState(PayState.FAIL);
         }
-    }
-
-    @Override
-    protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
-        updateAdapter();
     }
 
     @Override

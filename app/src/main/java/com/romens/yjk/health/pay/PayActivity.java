@@ -3,8 +3,10 @@ package com.romens.yjk.health.pay;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -28,6 +30,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.PayInfoCell;
@@ -93,9 +96,24 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         listView.setSelector(R.drawable.list_selector);
         listAdapter = new ListAdapter(this);
         listView.setAdapter(listAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == checkOrderRow) {
+                    openOrderDetail();
+                }
+            }
+        });
     }
 
     protected abstract String getPayModeText();
+
+    protected void openOrderDetail() {
+        if (!TextUtils.isEmpty(orderNo)) {
+            UIOpenHelper.openOrderDetailForOrderNoActivity(PayActivity.this, orderNo);
+            finish();
+        }
+    }
 
     /**
      * 响应继承的PayActivity Create完成事件
@@ -161,7 +179,16 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         ConnectManager.getInstance().request(this, connect);
     }
 
-    protected abstract void onPostPayResponseToServerCallback(JsonNode response, String error);
+    protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
+        if (TextUtils.isEmpty(error)) {
+            String payResult = response.get("PAYRESULT").asText();
+            if (TextUtils.equals("1", payResult)) {
+                changePayState(PayState.SUCCESS);
+                return;
+            }
+        }
+        changePayState(PayState.FAIL);
+    }
 
     @Override
     public void onBackPressed() {

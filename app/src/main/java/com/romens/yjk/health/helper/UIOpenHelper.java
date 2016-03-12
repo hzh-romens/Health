@@ -26,6 +26,7 @@ import com.romens.yjk.health.ui.LocationActivity;
 import com.romens.yjk.health.ui.MemberActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
+import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.ShopCarActivity;
 import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
@@ -289,6 +290,12 @@ public class UIOpenHelper {
         Intent intent = new Intent(context, MyOrderActivity.class);
         context.startActivity(intent);
         ((Activity) context).finish();
+    }
+
+    public static void openOrderDetailForOrderNoActivity(Context context,String orderNo){
+        Intent intent = new Intent(context, OrderDetailActivity.class);
+        intent.putExtra(OrderDetailActivity.ARGUMENT_KEY_ORDER_NO,orderNo);
+        context.startActivity(intent);
     }
 
     public static void openHomeActivity(Context context) {

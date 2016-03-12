@@ -73,11 +73,6 @@ public class WXPayActivity extends PayActivity implements WXPay.Delegate {
 
 
     @Override
-    protected void onPostPayResponseToServerCallback(JsonNode response, String error) {
-
-    }
-
-    @Override
     protected void needFinish() {
         finish();
     }
