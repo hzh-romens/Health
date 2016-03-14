@@ -358,7 +358,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                 arrayNode.add(itemNode);
             }
             Map<String, String> args = new HashMap<>();
-            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+            args.put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid());
             args.put("JSONDATA", arrayNode.toString());
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelCartItem", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());

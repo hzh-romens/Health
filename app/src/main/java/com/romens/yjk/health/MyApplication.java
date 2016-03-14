@@ -31,9 +31,9 @@ public class MyApplication extends ApplicationLoader {
         //初始化图片库
         CloudImagesManager.init(applicationContext);
         MonitorHelper.init(this);
-        //初始化环信SDK
-        IMHXSDKHelper.getInstance().onInit(MyApplication.applicationContext);
-        UserConfig.loadConfig();
+//        //初始化环信SDK
+//        IMHXSDKHelper.getInstance().onInit(MyApplication.applicationContext);
+        UserConfig.getInstance().loadConfig();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MyApplication extends ApplicationLoader {
             FileLog.e("romens", e);
         }
 
-        UserConfig.loadConfig();
+        UserConfig.getInstance().loadConfig();
 //        if (UserConfig.isClientLogined()) {
 //            FacadeToken.getInstance().init();
 //        }

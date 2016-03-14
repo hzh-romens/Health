@@ -113,7 +113,7 @@ public class ShopListAdapter extends RecyclerView.Adapter {
     public void requestToBuy(String PRICE, String GUID) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("GOODSGUID", GUID);
-        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+        args.put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid());
         args.put("BUYCOUNT", "1");
         args.put("PRICE", PRICE);
 

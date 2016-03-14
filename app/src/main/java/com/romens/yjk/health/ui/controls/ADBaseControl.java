@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.helper.FormatHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
@@ -14,6 +15,8 @@ import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -119,7 +122,15 @@ public abstract class ADBaseControl {
 
     public static String getPrimaryIdValue(String id) {
         if (TextUtils.equals("操作人员", id)) {
-            return UserConfig.getClientUserId();
+            return UserConfig.getInstance().getClientUserId();
+        } else if (TextUtils.equals("TOKEN", id)) {
+            String token = FacadeToken.getInstance().getAuthToken();
+            try {
+                token = URLEncoder.encode(token, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+
+            }
+            return token;
         }
         return id;
     }

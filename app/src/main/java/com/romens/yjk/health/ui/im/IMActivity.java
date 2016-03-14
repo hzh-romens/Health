@@ -73,7 +73,7 @@ public class IMActivity extends WebActivity {
         config.clear();
         loadCallCenterConfigProgress(true);
         HashMap<String, String> args = new HashMap<>();
-        args.put("ORGGUID", UserConfig.getOrgCode());
+        args.put("ORGGUID", UserConfig.getInstance().getOrgCode());
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetCustomerURL", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 

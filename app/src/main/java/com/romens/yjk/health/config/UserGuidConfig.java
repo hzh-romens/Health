@@ -7,7 +7,7 @@ public class UserGuidConfig {
     public static String USER_GUID = "";
 
     static {
-        USER_GUID = UserConfig.getClientUserEntity().getGuid();
+        USER_GUID = UserConfig.getInstance().getClientUserEntity().getGuid();
     }
 
     public final static int RESPONSE_MEMBER_TO_REMIND = 1003;

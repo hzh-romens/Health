@@ -225,8 +225,8 @@ public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
 //            Pair<String, String> token = currUser.handleToken();
 //            userId = token == null ? null : token.first;
 //            userPassCode = token == null ? null : token.second;
-            userId = UserConfig.getClientUserEntity().getPhone();
-            userPassCode = UserConfig.getPassCode();
+            userId = UserConfig.getInstance().getClientUserEntity().getPhone();
+            userPassCode = UserConfig.getInstance().getPassCode();
 
         }
 
@@ -243,9 +243,9 @@ public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("NEWPWD", UserConfig.formatCode(newPassword))
                 .put("PHONE", userId)
-                .put("USERNAME", UserConfig.getClientUserId())
+                .put("USERNAME", UserConfig.getInstance().getClientUserId())
                 .put("OLDPWD", oldPassword)
-                .put("ORGGUID", UserConfig.getOrgCode())
+                .put("ORGGUID", UserConfig.getInstance().getOrgCode())
                 .build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "handle", "Changepwd", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());

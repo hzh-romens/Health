@@ -248,7 +248,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         updateAdapter();
         addressInfo.clear();
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("DEFAULTFLAG", "1").build();
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).put("DEFAULTFLAG", "1").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAddressList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 

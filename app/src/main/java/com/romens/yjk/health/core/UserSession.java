@@ -36,7 +36,7 @@ public class UserSession {
     }
 
     public void onChanged() {
-        clientUser = UserConfig.getClientUserEntity();
+        clientUser = UserConfig.getInstance().getClientUserEntity();
     }
 
     public boolean isClientLogin(){
@@ -48,6 +48,7 @@ public class UserSession {
         UserConfig.clearUser();
         UserConfig.clearConfig();
         FacadeToken.getInstance().expired();
+        UserConfig.getInstance().deleteAllAppAccounts();
         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.loginOut);
     }
 }

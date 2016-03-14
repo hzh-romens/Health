@@ -76,7 +76,7 @@ public class MedicineFavoriteService extends IntentService {
     private void addMedicineFavorite(final String medicineID) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("MERCHANDISEID", medicineID);
-        args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+        args.put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid());
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "AddMyFavour", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -128,7 +128,7 @@ public class MedicineFavoriteService extends IntentService {
             }
 
             Map<String, String> args = new FacadeArgs.MapBuilder().build();
-            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+            args.put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid());
             args.put("JSONDATA", array.toString());
 
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelFavouriate", args);
@@ -191,7 +191,7 @@ public class MedicineFavoriteService extends IntentService {
     private void syncFavoritesData(Context context) {
         long lastTime = DBInterface.instance().getFavoritesDataLastTime();
         Map<String, Object> args = new HashMap<>();
-        args.put("USERGUID", UserConfig.getClientUserId());
+        args.put("USERGUID", UserConfig.getInstance().getClientUserId());
         args.put("LASTTIME", lastTime);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "MyFavouriteBy", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());

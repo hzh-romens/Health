@@ -262,7 +262,7 @@ public class ShopCarFragment extends BaseFragment {
     //删除商品
     private void DeleteData(String deletedata, final int reduceCount) {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", deletedata).build();
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).put("JSONDATA", deletedata).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "DelCartItem", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -309,7 +309,7 @@ public class ShopCarFragment extends BaseFragment {
         refreshLayout.setRefreshing(true);
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         if (UserConfig.isClientLogined()) {
-            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+            args.put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid());
         }
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserBuyCarList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
@@ -438,7 +438,7 @@ public class ShopCarFragment extends BaseFragment {
     private void CommitData(String data, final HashMap<String, List<ShopCarEntity>> filterChildData, final ArrayList<ParentEntity> filterParentData) {
         if (UserConfig.isClientLogined()) {
             Map<String, String> args = new FacadeArgs.MapBuilder()
-                    .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", data).build();
+                    .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).put("JSONDATA", data).build();
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveCart", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
             Message message = new Message.MessageBuilder()

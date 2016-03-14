@@ -31,7 +31,7 @@ public class HelpNewActivity extends WebActivity {
             }
         });
         WebView webView = getWebView();
-        webView.loadUrl(String.format(FacadeConfig.HOST + "/help/help.html?org=%s", UserConfig.getOrgCode()));
+        webView.loadUrl(String.format(FacadeConfig.HOST + "/help/help.html?org=%s", UserConfig.getInstance().getOrgCode()));
     }
 
     @Override

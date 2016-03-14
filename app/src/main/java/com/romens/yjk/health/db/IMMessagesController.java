@@ -53,7 +53,7 @@ public class IMMessagesController {
     public void onLoadLocalData(Context context) {
         cleanUp();
         String appKey = "romens";
-        String userName = UserConfig.getClientUserId();
+        String userName = UserConfig.getInstance().getClientUserId();
         IMMessagesStorage.getInstance().setupDb(context, appKey, userName);
     }
 

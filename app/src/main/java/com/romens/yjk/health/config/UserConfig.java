@@ -1,5 +1,7 @@
 package com.romens.yjk.health.config;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -9,6 +11,7 @@ import android.util.Base64;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.romens.android.log.FileLog;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
@@ -27,27 +30,43 @@ public class UserConfig {
     private final static String PREFERENCE_KEY_USER = "user";
     private final static Object sync = new Object();
 
-    private static AppChannel appChannel;
-    private static Data config;
+    private static volatile AppChannel appChannel;
+    private static volatile Data config;
+    private Account currentAccount;
 
-    static {
+    private static volatile UserConfig Instance = null;
+
+    public static UserConfig getInstance() {
+        UserConfig localInstance = Instance;
+        if (localInstance == null) {
+            synchronized (UserConfig.class) {
+                localInstance = Instance;
+                if (localInstance == null) {
+                    Instance = localInstance = new UserConfig();
+                }
+            }
+        }
+        return localInstance;
+    }
+
+    private UserConfig() {
         appChannel = loadAppChannel();
     }
 
-    public static String getOrgCode() {
-        return config == null ? null : config.orgCode;
+    public String getOrgCode() {
+        return appChannel == null ? null : appChannel.orgCode;
     }
 
-    public static String getOrgName() {
-        return config == null ? null : config.orgName;
+    public String getOrgName() {
+        return appChannel == null ? null : appChannel.orgName;
     }
 
-    public static String getPassCode() {
+    public String getPassCode() {
         return config == null ? null : config.token;
     }
 
 
-    public static String createToken() {
+    public String createToken() {
         // final String token = config.token;
         //  String md5Token = TextUtils.isEmpty(token) ? "" : MD5Helper.createMD5(token + "0");
         //  md5Token = String.format("%s|@%s|@%s", config.orgCode, config.userName, md5Token);
@@ -65,7 +84,7 @@ public class UserConfig {
 
     }
 
-    public static boolean isClientActivated() {
+    public boolean isClientActivated() {
         synchronized (sync) {
             SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
             if (config == null) {
@@ -104,20 +123,20 @@ public class UserConfig {
         }
     }
 
-    public static String getClientUserId() {
+    public String getClientUserId() {
         synchronized (sync) {
             return config != null ? config.userName : null;
         }
     }
 
 
-    public static String getClientUserPhone() {
+    public String getClientUserPhone() {
         synchronized (sync) {
             return config != null ? config.phoneNumber : null;
         }
     }
 
-    public static Data getClientUser() {
+    public Data getClientUser() {
         synchronized (sync) {
             return config;
         }
@@ -147,7 +166,7 @@ public class UserConfig {
         }
     }
 
-    public static void clearUserToken() {
+    public void clearUserToken() {
         config.clearToken();
         saveConfig(config);
 //        if (isCommit) {
@@ -156,7 +175,7 @@ public class UserConfig {
         FacadeToken.getInstance().expired();
     }
 
-    public static boolean saveConfig(Data data) {
+    public boolean saveConfig(Data data) {
         synchronized (sync) {
             SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
@@ -180,7 +199,7 @@ public class UserConfig {
         }
     }
 
-    public static void loadConfig() {
+    public void loadConfig() {
         synchronized (sync) {
             SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
             String user = preferences.getString(PREFERENCE_KEY_USER, "");
@@ -208,7 +227,7 @@ public class UserConfig {
         }
     }
 
-    public static UserEntity getClientUserEntity() {
+    public UserEntity getClientUserEntity() {
         UserEntity userEntity = null;
         if (isClientLogined()) {
             //   userEntity = new UserEntity(0, "", config.userName, "", config.phoneNumber, "", "", 0);
@@ -293,6 +312,61 @@ public class UserConfig {
                 orgCode = temp[0];
                 orgName = temp[1];
             }
+        }
+    }
+
+
+    public void checkAppAccount() {
+        final String packageName = MyApplication.applicationContext.getPackageName();
+        AccountManager am = AccountManager.get(MyApplication.applicationContext);
+        Account[] accounts = am.getAccountsByType(packageName);
+        boolean recreateAccount = false;
+        if (isClientActivated()) {
+            if (accounts.length == 1) {
+                Account acc = accounts[0];
+                if (!acc.name.equals("" + getClientUserId())) {
+                    recreateAccount = true;
+                } else {
+                    currentAccount = acc;
+                }
+            } else {
+                recreateAccount = true;
+            }
+        } else {
+            if (accounts.length > 0) {
+                recreateAccount = true;
+            }
+        }
+        if (recreateAccount) {
+            try {
+                for (int a = 0; a < accounts.length; a++) {
+                    am.removeAccount(accounts[a], null, null);
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+            loadConfig();
+            if (UserConfig.getInstance().isClientActivated()) {
+                try {
+                    currentAccount = new Account("" + getClientUserId(), packageName);
+                    am.addAccountExplicitly(currentAccount, config.token, null);
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
+        }
+    }
+
+    public void deleteAllAppAccounts() {
+        try {
+            final String packageName = MyApplication.applicationContext.getPackageName();
+            AccountManager am = AccountManager.get(MyApplication.applicationContext);
+            Account[] accounts = am.getAccountsByType(packageName);
+            for (int a = 0; a < accounts.length; a++) {
+                am.removeAccount(accounts[a], null, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

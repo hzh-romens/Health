@@ -622,6 +622,18 @@
 
         <!--**************** Dev End *******************-->
 
+
+        <!--**************** Account Manager BEGIN ************-->
+        <service android:name=".AuthenticatorService" android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/auth"/>
+        </service>
+        <!--**************** Account Manager END ************-->
+
+
     </application>
 
 </manifest>

@@ -134,6 +134,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
     @Override
     public void onDestroy() {
+        MonitorHelper.unregisterUpdate();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
         super.onDestroy();
     }
@@ -145,7 +146,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
 
     private void updateData() {
         if (UserConfig.isClientLogined()) {
-            UserEntity clientUserEntity = UserConfig.getClientUserEntity();
+            UserEntity clientUserEntity = UserConfig.getInstance().getClientUserEntity();
             userEntity = new UserEntity(0, clientUserEntity.getGuid(), clientUserEntity.getName(), clientUserEntity.getAvatar(), clientUserEntity.getPhone(), clientUserEntity.getEmail(), clientUserEntity.getDepartmentId(), 0);
         } else {
             userEntity = null;

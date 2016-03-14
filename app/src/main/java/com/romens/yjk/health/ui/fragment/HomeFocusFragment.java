@@ -13,13 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.amap.api.location.AMapLocation;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -28,12 +32,10 @@ import com.romens.yjk.health.config.HomeConfig;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.entity.DiscoveryCollection;
 import com.romens.yjk.health.db.entity.HistoryEntity;
-import com.romens.yjk.health.helper.MedicareHelper;
 import com.romens.yjk.health.model.ADFunctionEntity;
 import com.romens.yjk.health.model.ADImageEntity;
 import com.romens.yjk.health.model.ADImageListEntity;
@@ -43,7 +45,6 @@ import com.romens.yjk.health.model.ADProductListEntity;
 import com.romens.yjk.health.model.HealthNewsEntity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.adapter.FocusAdapter;
-import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.controls.ADBaseControl;
 import com.romens.yjk.health.ui.controls.ADFunctionControl;
 import com.romens.yjk.health.ui.controls.ADGroupControl;
@@ -53,10 +54,7 @@ import com.romens.yjk.health.ui.controls.ADPagerControl;
 import com.romens.yjk.health.ui.controls.ADProductsControl;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -144,6 +142,7 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     @Override
     public void onDestroy() {
+        ConnectManager.getInstance().destroyInitiator(HomeFocusFragment.class);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onLastLocationChanged);
         super.onDestroy();
     }
@@ -157,30 +156,40 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
         }
 
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", UserConfig.getClientUserId());
+        args.put("USERGUID", UserConfig.getInstance().getClientUserId());
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetHomeConfig", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .build();
-        FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                changeRefresh(false);
-                loadConfigFromCache();
-            }
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                changeRefresh(false);
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    handleResponseData(responseProtocol.getResponse(), false);
-                } else {
-                    loadConfigFromCache();
-                }
-            }
-        });
+        Connect connect=new RMConnect.Builder(HomeFocusFragment.class)
+                .withProtocol(protocol)
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        changeRefresh(false);
+                        if (errorMessage == null) {
+                            ResponseProtocol<String> responseProtocol = (ResponseProtocol) message.protocol;
+                            handleResponseData(responseProtocol.getResponse(), false);
+                        } else {
+                            loadConfigFromCache();
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(getActivity(),connect);
+//        Message message = new Message.MessageBuilder()
+//                .withProtocol(protocol)
+//                .build();
+//        FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message msg) {
+//                changeRefresh(false);
+//                loadConfigFromCache();
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//
+//            }
+//        });
     }
 
     private void loadConfigFromCache() {
@@ -256,18 +265,18 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
 
     private LinkedList<ADBaseControl> asyncHandleConfigJson(String json) {
         final LinkedList<ADBaseControl> controls = new LinkedList<>();
-        JSONArray jsonArray = null;
+        JsonNode jsonArray = null;
         try {
-            jsonArray = new JSONArray(json);
-            final int dataSize = jsonArray.length();
+            jsonArray = JacksonMapper.getInstance().readTree(json);
+            final int dataSize = jsonArray.size();
             List<ADPagerEntity> adPagerEntities = null;
             List<ADFunctionEntity> adFunctionEntities = null;
             List<HealthNewsEntity> adHealthNewsEntities = null;
             List<ADBaseControl> otherControls = new ArrayList<>();
-            JSONObject itemJsonTemp;
+            JsonNode itemJsonTemp;
             for (int i = 0; i < dataSize; i++) {
-                itemJsonTemp = jsonArray.getJSONObject(i);
-                int type = itemJsonTemp.getInt("TYPE");
+                itemJsonTemp = jsonArray.get(i);
+                int type = itemJsonTemp.get("TYPE").asInt();
                 if (type == 0) {
                     adPagerEntities = createADPagerEntitiesFromJsonObject(itemJsonTemp);
                 } else if (type == 1) {
@@ -333,9 +342,8 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
             if (historyControl != null) {
                 controls.add(historyControl);
             }
+        } catch (IOException e) {
 
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return controls;
     }
@@ -368,206 +376,163 @@ public class HomeFocusFragment extends BaseFragment implements AppNotificationCe
         return entity;
     }
 
-    private List<ADPagerEntity> createADPagerEntitiesFromJsonObject(JSONObject jsonObject) {
+    private List<ADPagerEntity> createADPagerEntitiesFromJsonObject(JsonNode jsonObject) throws IOException {
         List<ADPagerEntity> entities = new ArrayList<>();
         ADPagerEntity entityTemp;
-        try {
-            //JSONArray jsonArray = jsonObject.getJSONArray("VALUE");
-            JSONArray jsonArray = new JSONArray(jsonObject.getString("VALUE"));
-            for (int i = 0; i < jsonArray.length(); i++) {
-                entityTemp = createADPagerEntityFromJsonObject(jsonArray.getJSONObject(i));
-                if (entityTemp != null) {
-                    entities.add(entityTemp);
-                }
+        JsonNode jsonArray =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        for (int i = 0; i < jsonArray.size(); i++) {
+            entityTemp = createADPagerEntityFromJsonObject(jsonArray.get(i));
+            if (entityTemp != null) {
+                entities.add(entityTemp);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return entities;
     }
 
-    private ADPagerEntity createADPagerEntityFromJsonObject(JSONObject jsonObject) {
-        try {
-            ADPagerEntity entity = new ADPagerEntity(jsonObject.getString("ID"), "", jsonObject.getString("ICONURL"));
-            entity.setType(jsonObject.getInt("TYPE"));
-            entity.setAction(jsonObject.getString("ACTION"));
-            return entity;
-        } catch (JSONException e) {
-            return null;
-        }
+    private ADPagerEntity createADPagerEntityFromJsonObject(JsonNode jsonObject) {
+        ADPagerEntity entity = new ADPagerEntity(jsonObject.get("ID").asText(), "", jsonObject.get("ICONURL").asText());
+        entity.setType(jsonObject.get("TYPE").asInt());
+        entity.setAction(jsonObject.get("ACTION").asText());
+        return entity;
     }
 
-    private List<ADFunctionEntity> createADFunctionEntitiesFromJsonObject(JSONObject jsonObject) {
+    private List<ADFunctionEntity> createADFunctionEntitiesFromJsonObject(JsonNode jsonObject) throws IOException {
         List<ADFunctionEntity> entities = new ArrayList<>();
         ADFunctionEntity entityTemp;
-        try {
-            //JSONArray jsonArray = jsonObject.getJSONArray("VALUE");
-            JSONArray jsonArray = new JSONArray(jsonObject.getString("VALUE"));
-            for (int i = 0; i < jsonArray.length(); i++) {
-                entityTemp = createADFunctionEntityFromJsonObject(jsonArray.getJSONObject(i));
-                if (entityTemp != null) {
-                    entities.add(entityTemp);
-                }
+        JsonNode jsonArray = JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        for (int i = 0; i < jsonArray.size(); i++) {
+            entityTemp = createADFunctionEntityFromJsonObject(jsonArray.get(i));
+            if (entityTemp != null) {
+                entities.add(entityTemp);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return entities;
     }
 
-    private ADFunctionEntity createADFunctionEntityFromJsonObject(JSONObject jsonObject) {
+    private ADFunctionEntity createADFunctionEntityFromJsonObject(JsonNode jsonObject) {
         ADFunctionEntity entity = null;
         String id;
         String name = null;
         int resId = -1;
         String className = null;
-        try {
-            id = jsonObject.getString("ID");
-            if (TextUtils.equals("ZXYS", id)) {
-                name = DiscoveryCollection.PharmicCounseling.name;
-                resId = DiscoveryCollection.PharmicCounseling.iconRes;
-                className = DiscoveryCollection.PharmicCounseling.value;
-            } else if (TextUtils.equals("YPFL", id)) {
-                name = DiscoveryCollection.NearbyPharmacy.name;
-                resId = DiscoveryCollection.NearbyPharmacy.iconRes;
-                className = DiscoveryCollection.NearbyPharmacy.value;
-            } else if (TextUtils.equals("YYTX", id)) {
-                name = DiscoveryCollection.MedicationReminders.name;
-                resId = DiscoveryCollection.MedicationReminders.iconRes;
-                className = DiscoveryCollection.MedicationReminders.value;
-            } else if (TextUtils.equals("JKZX", id)) {
-                name = DiscoveryCollection.InformationNews.name;
-                resId = DiscoveryCollection.InformationNews.iconRes;
-                className = DiscoveryCollection.InformationNews.value;
-            } else if (TextUtils.equals("YBZQ", id)) {
-                name = "医保专区";
-                resId = R.drawable.attach_ybzq_states;
-                className = MedicineGroupActivity.class.getName();
-            }
-            if ((!TextUtils.isEmpty(name)) && resId != -1) {
-                entity = new ADFunctionEntity(id, name, resId);
-                entity.setActionValue(className);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        id = jsonObject.get("ID").asText();
+        if (TextUtils.equals("ZXYS", id)) {
+            name = DiscoveryCollection.PharmicCounseling.name;
+            resId = DiscoveryCollection.PharmicCounseling.iconRes;
+            className = DiscoveryCollection.PharmicCounseling.value;
+        } else if (TextUtils.equals("YPFL", id)) {
+            name = DiscoveryCollection.NearbyPharmacy.name;
+            resId = DiscoveryCollection.NearbyPharmacy.iconRes;
+            className = DiscoveryCollection.NearbyPharmacy.value;
+        } else if (TextUtils.equals("YYTX", id)) {
+            name = DiscoveryCollection.MedicationReminders.name;
+            resId = DiscoveryCollection.MedicationReminders.iconRes;
+            className = DiscoveryCollection.MedicationReminders.value;
+        } else if (TextUtils.equals("JKZX", id)) {
+            name = DiscoveryCollection.InformationNews.name;
+            resId = DiscoveryCollection.InformationNews.iconRes;
+            className = DiscoveryCollection.InformationNews.value;
+        } else if (TextUtils.equals("YBZQ", id)) {
+            name = "医保专区";
+            resId = R.drawable.attach_ybzq_states;
+            className = MedicineGroupActivity.class.getName();
+        }
+        if ((!TextUtils.isEmpty(name)) && resId != -1) {
+            entity = new ADFunctionEntity(id, name, resId);
+            entity.setActionValue(className);
         }
         return entity;
     }
 
-    private List<HealthNewsEntity> createADHealthNewsEntitiesFromJsonObject(JSONObject jsonObject) {
+    private List<HealthNewsEntity> createADHealthNewsEntitiesFromJsonObject(JsonNode jsonObject) throws IOException {
         List<HealthNewsEntity> entities = new ArrayList<>();
         HealthNewsEntity entityTemp;
-        try {
-            //JSONArray jsonArray = jsonObject.getJSONArray("VALUE");
-            JSONArray jsonArray = new JSONArray(jsonObject.getString("VALUE"));
-            for (int i = 0; i < jsonArray.length(); i++) {
-                entityTemp = createADHealthNewsEntityFromJsonObject(jsonArray.getJSONObject(i));
-                if (entityTemp != null) {
-                    entities.add(entityTemp);
-                }
+        JsonNode jsonArray =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        for (int i = 0; i < jsonArray.size(); i++) {
+            entityTemp = createADHealthNewsEntityFromJsonObject(jsonArray.get(i));
+            if (entityTemp != null) {
+                entities.add(entityTemp);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return entities;
     }
 
-    private HealthNewsEntity createADHealthNewsEntityFromJsonObject(JSONObject jsonObject) {
-        try {
-            HealthNewsEntity entity = new HealthNewsEntity(jsonObject.getString("ID"),jsonObject.getString("ICONURL"),jsonObject.getString("TEXT")
-                    ,  jsonObject.getString("VALUE"));
-            return entity;
-        } catch (JSONException e) {
-            return null;
-        }
+    private HealthNewsEntity createADHealthNewsEntityFromJsonObject(JsonNode jsonObject) {
+        HealthNewsEntity entity = new HealthNewsEntity(jsonObject.get("ID").asText(),jsonObject.get("ICONURL").asText(),jsonObject.get("TEXT").asText()
+                ,  jsonObject.get("VALUE").asText());
+        return entity;
     }
 
-    private ADProductsControl createADProductListEntityFromJsonObject(JSONObject jsonObject) {
-        try {
-            JSONObject valueJsonObject = new JSONObject(jsonObject.getString("VALUE"));
-            if (valueJsonObject == null) {
-                return null;
-            }
-            int sortIndex = jsonObject.getInt("SORTINDEX");
-            String action = "0";
-            if (valueJsonObject.has("ACTION")) {
-                action = valueJsonObject.getString("ACTION");
-            }
-            ADProductListEntity entity = new ADProductListEntity(valueJsonObject.getString("ID"), valueJsonObject.getString("NAME")
-                    , valueJsonObject.getString("DESC")
-                    , valueJsonObject.getString("ADURL"),
-                    action);
-            entity.setLayoutStyle(valueJsonObject.getString("STYLE"));
-            JSONArray jsonArray = new JSONArray(valueJsonObject.getString("DATA"));
-            int size = jsonArray.length();
-            ADProductEntity entityTemp;
-            for (int i = 0; i < size; i++) {
-                entityTemp = createADProductEntityFromJsonObject(jsonArray.getJSONObject(i));
-                if (entityTemp != null) {
-                    entity.addProductEntity(i, entityTemp);
-                }
-            }
-            ADProductsControl control = new ADProductsControl();
-            control.bindModel(entity);
-            control.setSortIndex(sortIndex);
-            return control;
-        } catch (JSONException e) {
+    private ADProductsControl createADProductListEntityFromJsonObject(JsonNode jsonObject) throws IOException {
+        JsonNode valueJsonObject =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        if (valueJsonObject == null) {
             return null;
         }
-    }
-
-    private ADProductEntity createADProductEntityFromJsonObject(JSONObject jsonObject) {
-        try {
-            //jsonObject.getString("OLDPRICE")
-            ADProductEntity entity = new ADProductEntity(jsonObject.getString("ID")
-                    , jsonObject.getString("ICONURL"), jsonObject.getString("NAME"), "", jsonObject.getString("PRICE"));
-            entity.setTag(jsonObject.getString("TAG"));
-            return entity;
-        } catch (JSONException e) {
-            return null;
+        int sortIndex = jsonObject.get("SORTINDEX").asInt();
+        String action = "0";
+        if (valueJsonObject.has("ACTION")) {
+            action = valueJsonObject.get("ACTION").asText();
         }
+        ADProductListEntity entity = new ADProductListEntity(valueJsonObject.get("ID").asText(), valueJsonObject.get("NAME").asText()
+                , valueJsonObject.get("DESC").asText()
+                , valueJsonObject.get("ADURL").asText(),
+                action);
+        entity.setLayoutStyle(valueJsonObject.get("STYLE").asText());
+        JsonNode jsonArray = valueJsonObject.get("DATA");
+        int size = jsonArray.size();
+        ADProductEntity entityTemp;
+        for (int i = 0; i < size; i++) {
+            entityTemp = createADProductEntityFromJsonObject(jsonArray.get(i));
+            if (entityTemp != null) {
+                entity.addProductEntity(i, entityTemp);
+            }
+        }
+        ADProductsControl control = new ADProductsControl();
+        control.bindModel(entity);
+        control.setSortIndex(sortIndex);
+        return control;
     }
 
-    private ADImagesControl createADImagesControlFromJsonObject(JSONObject jsonObject) {
+    private ADProductEntity createADProductEntityFromJsonObject(JsonNode jsonObject) {
+        ADProductEntity entity = new ADProductEntity(jsonObject.get("ID").asText()
+                , jsonObject.get("ICONURL").asText(), jsonObject.get("NAME").asText(), "", jsonObject.get("PRICE").asText());
+        entity.setTag(jsonObject.get("TAG").asText());
+        return entity;
+    }
+
+    private ADImagesControl createADImagesControlFromJsonObject(JsonNode jsonObject) throws IOException {
         ADImagesControl control = null;
-        try {
-            ADImageListEntity imageListEntity = new ADImageListEntity();
-            JSONObject valueJsonObject = new JSONObject(jsonObject.getString("VALUE"));
-            int sortIndex = jsonObject.getInt("SORTINDEX");
+        ADImageListEntity imageListEntity = new ADImageListEntity();
+        JsonNode valueJsonObject =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        int sortIndex = jsonObject.get("SORTINDEX").asInt();
 
-            ADImageEntity entityTemp;
-            Iterator<String> keys = valueJsonObject.keys();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                entityTemp = createADImageEntityFromJsonObject(valueJsonObject.getJSONObject(key));
-                if (entityTemp != null) {
-                    imageListEntity.addEntity(key, entityTemp);
-                }
+        ADImageEntity entityTemp;
+        Iterator<String> keys = valueJsonObject.fieldNames();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            entityTemp = createADImageEntityFromJsonObject(valueJsonObject.get(key));
+            if (entityTemp != null) {
+                imageListEntity.addEntity(key, entityTemp);
             }
-            if (imageListEntity.size() > 0) {
-                control = new ADImagesControl().bindModel(imageListEntity);
-                control.setSortIndex(sortIndex);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        }
+        if (imageListEntity.size() > 0) {
+            control = new ADImagesControl().bindModel(imageListEntity);
+            control.setSortIndex(sortIndex);
         }
         return control;
     }
 
-    private ADImageEntity createADImageEntityFromJsonObject(JSONObject jsonObject) {
-        try {
-            ADImageEntity entity = new ADImageEntity(jsonObject.getString("ID"), jsonObject.getString("ICONURL"), jsonObject.getString("VALUE"));
-            entity.setType(jsonObject.getInt("TYPE"));
-            entity.setAction(jsonObject.getString("ACTION"));
-            if (jsonObject.has("NAME")) {
-                entity.setName(jsonObject.getString("NAME"));
-            } else {
-                entity.setName("");
-            }
-            return entity;
-        } catch (JSONException e) {
-            return null;
+    private ADImageEntity createADImageEntityFromJsonObject(JsonNode jsonObject) {
+        ADImageEntity entity = new ADImageEntity(jsonObject.get("ID").asText(), jsonObject.get("ICONURL").asText(), jsonObject.get("VALUE").asText());
+        entity.setType(jsonObject.get("TYPE").asInt());
+        entity.setAction(jsonObject.get("ACTION").asText());
+        if (jsonObject.has("NAME")) {
+            entity.setName(jsonObject.get("NAME").asText());
+        } else {
+            entity.setName("");
         }
+        return entity;
     }
 
     @Override

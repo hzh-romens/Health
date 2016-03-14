@@ -126,7 +126,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     //获取默认的收货地址信息
     public void getAdressData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("DEFAULTFLAG", "1").build();
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).put("DEFAULTFLAG", "1").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAddressList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -299,7 +299,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private void commitOrder(List<FilterChildEntity> data, final int count) {
         String jsonData = getJsonData(data, deliveryType, addressId, mBillName);
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).put("JSONDATA", jsonData).build();
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).put("JSONDATA", jsonData).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "saveOrder", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -385,7 +385,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     public void getSendData() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetTransport", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()

@@ -59,7 +59,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        UserConfig.getInstance().checkAppAccount();
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
 
@@ -344,6 +344,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
     @Override
     public void onDestroy() {
         stopLocation();
+        MonitorHelper.unregisterUpdate();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
         super.onDestroy();

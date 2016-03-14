@@ -94,6 +94,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 
     @Override
     public void onDestroy() {
+        MonitorHelper.unregisterUpdate();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginOut);
         super.onDestroy();

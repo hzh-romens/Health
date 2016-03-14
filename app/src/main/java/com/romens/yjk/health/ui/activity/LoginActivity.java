@@ -30,8 +30,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.easemob.EMCallBack;
-import com.easemob.chat.EMChatManager;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -41,9 +40,13 @@ import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -55,9 +58,9 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UserSession;
-import com.romens.yjk.health.im.IMHXSDKHelper;
 import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.components.SlideView;
+import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.components.TypefaceSpan;
 
 import org.json.JSONException;
@@ -85,7 +88,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UserConfig.loadConfig();
+        UserConfig.getInstance().loadConfig();
         ActionBarLayout.LinearLayoutContainer contentView = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
         contentView.addView(actionBar);
@@ -150,12 +153,12 @@ public class LoginActivity extends BaseActivity {
             }
         }
 
-        if (UserConfig.isClientActivated()) {
+        if (UserConfig.getInstance().isClientActivated()) {
             //登出后,不初始化会报异常
             Bundle params = new Bundle();
-            params.putString(OrganizationCodeView.PARAM_ORGAN_CODE, UserConfig.getOrgCode());
-            params.putString(OrganizationCodeView.PARAM_ORGAN_NAME, UserConfig.getOrgName());
-            params.putString(PhoneView.PARAM_PHONE, UserConfig.getClientUserPhone());
+            params.putString(OrganizationCodeView.PARAM_ORGAN_CODE, UserConfig.getInstance().getOrgCode());
+            params.putString(OrganizationCodeView.PARAM_ORGAN_NAME, UserConfig.getInstance().getOrgName());
+            params.putString(PhoneView.PARAM_PHONE, UserConfig.getInstance().getClientUserPhone());
             setPage(0, true, params, false);
         }
     }
@@ -330,6 +333,7 @@ public class LoginActivity extends BaseActivity {
     protected void onLoginCallback(boolean isSuccess) {
         if (isSuccess) {
             UserSession.getInstance().onChanged();
+            UserConfig.getInstance().checkAppAccount();
             AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.loginSuccess);
             Intent data = new Intent();
             setResult(RESULT_OK, data);
@@ -686,7 +690,7 @@ public class LoginActivity extends BaseActivity {
             Map<String, String> args = new HashMap<>();
             String orgCode = params.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
             args.put("ORGGUID", orgCode);
-            String userName = params.getString(PhoneView.PARAM_HX_ID);
+            String userName = params.getString(PhoneView.PARAM_PHONE);
             args.put("USERNAME", userName);
             args.put("PHONENUMBER", requestPhone);
             args.put("FLAG", requestFlag);
@@ -799,7 +803,7 @@ public class LoginActivity extends BaseActivity {
             if (nextPressed) {
                 return;
             }
-            final String userName = currentParams.getString(PhoneView.PARAM_HX_ID);
+            final String userName = currentParams.getString(PhoneView.PARAM_PHONE);
             if (TextUtils.isEmpty(userName)) {
                 Toast.makeText(LoginActivity.this, "请求的账号解析异常", Toast.LENGTH_SHORT).show();
                 return;
@@ -814,52 +818,82 @@ public class LoginActivity extends BaseActivity {
             final String passCode = UserConfig.formatCode(code);
             nextPressed = true;
             waitingForSms = false;
-            EMChatManager.getInstance().login(userName, passCode, new EMCallBack() {
 
-                @Override
-                public void onSuccess() {
-                    nextPressed = false;
-                    // 登陆成功，保存用户名密码
-                    IMHXSDKHelper.getInstance().setHXId(userName);
-                    IMHXSDKHelper.getInstance().setPassword(passCode);
+            Map<String, String> args = new HashMap<>();
+            args.put("PHONE", userName);
+            args.put("PWD", passCode);
+            args.put("ORGGUID", UserConfig.getInstance().getOrgCode());
 
-                    UserConfig.clearUser();
-                    UserConfig.Data userConfigData = new UserConfig.Data();
-                    String orgCode = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
-                    String orgName = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_NAME);
-                    userConfigData.setOrg(orgCode, orgName);
-                    String phoneNumber = currentParams.getString(PhoneView.PARAM_PHONE);
-                    userConfigData.setPhoneNumber(phoneNumber);
-                    userConfigData.setLogin(userName, passCode);
-                    UserConfig.saveConfig(userConfigData);
-                    UserConfig.loadConfig();
-                    FacadeToken.getInstance().init();
-                    AndroidUtilities.runOnUIThread(new Runnable() {
-                        public void run() {
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "UserLogin", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+
+            Connect connect = new RMConnect.Builder(LoginActivity.class)
+                    .withProtocol(protocol)
+                    .withParser(new JSONNodeParser())
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            nextPressed = false;
                             needHideProgress();
-                            needFinishActivity();
-                            onLoginCallback(true);
+                            if (errorMessage == null) {
+                                ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                JsonNode response = responseProtocol.getResponse();
+                                if (!response.has("ERROR")) {
+                                    processLoginResponse(userName, passCode, currentParams);
+                                    return;
+                                }
+                            }
+                            ToastCell.toast(getContext(), "登录失败!");
                         }
-                    });
-                    //登录成功重新刷新一下购物车图标的数量
-                    requestShopCarCountData();
-                }
+                    }).build();
+            ConnectManager.getInstance().request(getContext(), connect);
 
-                @Override
-                public void onProgress(int progress, String status) {
-                }
-
-                @Override
-                public void onError(final int code, final String message) {
-                    nextPressed = false;
-                    AndroidUtilities.runOnUIThread(new Runnable() {
-                        public void run() {
-                            needHideProgress();
-                            Toast.makeText(getContext(), "密码错误", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
+//            EMChatManager.getInstance().login(userName, passCode, new EMCallBack() {
+//
+//                @Override
+//                public void onSuccess() {
+//                    nextPressed = false;
+//                    // 登陆成功，保存用户名密码
+//                    IMHXSDKHelper.getInstance().setHXId(userName);
+//                    IMHXSDKHelper.getInstance().setPassword(passCode);
+//
+//                    UserConfig.clearUser();
+//                    UserConfig.Data userConfigData = new UserConfig.Data();
+//                    String orgCode = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
+//                    String orgName = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_NAME);
+//                    userConfigData.setOrg(orgCode, orgName);
+//                    String phoneNumber = currentParams.getString(PhoneView.PARAM_PHONE);
+//                    userConfigData.setPhoneNumber(phoneNumber);
+//                    userConfigData.setLogin(userName, passCode);
+//                    UserConfig.saveConfig(userConfigData);
+//                    UserConfig.loadConfig();
+//                    FacadeToken.getInstance().init();
+//                    AndroidUtilities.runOnUIThread(new Runnable() {
+//                        public void run() {
+//                            needHideProgress();
+//                            needFinishActivity();
+//                            onLoginCallback(true);
+//                        }
+//                    });
+//                    //登录成功重新刷新一下购物车图标的数量
+//                    requestShopCarCountData();
+//                }
+//
+//                @Override
+//                public void onProgress(int progress, String status) {
+//                }
+//
+//                @Override
+//                public void onError(final int code, final String message) {
+//                    nextPressed = false;
+//                    AndroidUtilities.runOnUIThread(new Runnable() {
+//                        public void run() {
+//                            needHideProgress();
+//                            Toast.makeText(getContext(), "密码错误", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }
+//            });
         }
 
         @Override
@@ -1108,56 +1142,87 @@ public class LoginActivity extends BaseActivity {
             }
             nextPressed = true;
             needShowProgress("正在验证用户信息...");
-            final String userName = currentParams.getString(PhoneView.PARAM_HX_ID);
+            final String userName = currentParams.getString(PhoneView.PARAM_PHONE);
             final String password = UserConfig.formatCode(oldPassword);
-            EMChatManager.getInstance().login(userName, password, new EMCallBack() {
 
-                @Override
-                public void onSuccess() {
-                    nextPressed = false;
-                    // 登陆成功，保存用户名密码
-                    IMHXSDKHelper.getInstance().setHXId(userName);
-                    IMHXSDKHelper.getInstance().setPassword(password);
+            Map<String, String> args = new HashMap<>();
+            args.put("PHONE", userName);
+            args.put("PWD", password);
+            args.put("ORGGUID", UserConfig.getInstance().getOrgCode());
 
-                    UserConfig.clearUser();
-                    UserConfig.Data userConfigData = new UserConfig.Data();
-                    String orgCode = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
-                    String orgName = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_NAME);
-                    userConfigData.setOrg(orgCode, orgName);
-                    String phoneNumber = currentParams.getString(PhoneView.PARAM_PHONE);
-                    String userGuid = currentParams.getString("UserGuid");
-                    userConfigData.setPhoneNumber(phoneNumber);
-                    userConfigData.setLogin(userName, password);
-                    userConfigData.setUserGuid(userGuid);
-                    UserConfig.saveConfig(userConfigData);
-                    UserConfig.loadConfig();
-                    FacadeToken.getInstance().init();
-                    AndroidUtilities.runOnUIThread(new Runnable() {
-                        public void run() {
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "UserLogin", args);
+            protocol.withToken(FacadeToken.getInstance().getAuthToken());
+
+            Connect connect = new RMConnect.Builder(LoginActivity.class)
+                    .withProtocol(protocol)
+                    .withParser(new JSONNodeParser())
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            nextPressed = false;
                             needHideProgress();
-                            needFinishActivity();
-                            onLoginCallback(true);
-                        }
-                    });
-                    //登录成功重新刷新一下购物车图标的数量
-                    requestShopCarCountData();
-                }
+                            if (errorMessage == null) {
+                                ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                JsonNode response = responseProtocol.getResponse();
+                                if (!response.has("ERROR")) {
+                                    processLoginResponse(userName, password, currentParams);
+                                    return;
+                                }
 
-                @Override
-                public void onProgress(int progress, String status) {
-                }
-
-                @Override
-                public void onError(final int code, final String message) {
-                    nextPressed = false;
-                    AndroidUtilities.runOnUIThread(new Runnable() {
-                        public void run() {
-                            needHideProgress();
-                            Toast.makeText(getContext(), "密码错误", Toast.LENGTH_SHORT).show();
+                            }
+                            ToastCell.toast(getContext(), "登录失败!");
                         }
-                    });
-                }
-            });
+                    }).build();
+            ConnectManager.getInstance().request(getContext(), connect);
+
+//            EMChatManager.getInstance().login(userName, password, new EMCallBack() {
+//
+//                @Override
+//                public void onSuccess() {
+//                    nextPressed = false;
+//                    // 登陆成功，保存用户名密码
+//                    IMHXSDKHelper.getInstance().setHXId(userName);
+//                    IMHXSDKHelper.getInstance().setPassword(password);
+//
+//                    UserConfig.clearUser();
+//                    UserConfig.Data userConfigData = new UserConfig.Data();
+//                    String orgCode = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
+//                    String orgName = currentParams.getString(OrganizationCodeView.PARAM_ORGAN_NAME);
+//                    userConfigData.setOrg(orgCode, orgName);
+//                    String phoneNumber = currentParams.getString(PhoneView.PARAM_PHONE);
+//                    String userGuid = currentParams.getString("UserGuid");
+//                    userConfigData.setPhoneNumber(phoneNumber);
+//                    userConfigData.setLogin(userName, password);
+//                    userConfigData.setUserGuid(userGuid);
+//                    UserConfig.saveConfig(userConfigData);
+//                    UserConfig.loadConfig();
+//                    FacadeToken.getInstance().init();
+//                    AndroidUtilities.runOnUIThread(new Runnable() {
+//                        public void run() {
+//                            needHideProgress();
+//                            needFinishActivity();
+//                            onLoginCallback(true);
+//                        }
+//                    });
+//                    //登录成功重新刷新一下购物车图标的数量
+//                    requestShopCarCountData();
+//                }
+//
+//                @Override
+//                public void onProgress(int progress, String status) {
+//                }
+//
+//                @Override
+//                public void onError(final int code, final String message) {
+//                    nextPressed = false;
+//                    AndroidUtilities.runOnUIThread(new Runnable() {
+//                        public void run() {
+//                            needHideProgress();
+//                            Toast.makeText(getContext(), "密码错误", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }
+//            });
         }
 
         @Override
@@ -1202,6 +1267,31 @@ public class LoginActivity extends BaseActivity {
                 codeField.setText(code);
             }
         }
+    }
+
+    protected void processLoginResponse(String userName, String password, Bundle params) {
+        UserConfig.clearUser();
+        UserConfig.Data userConfigData = new UserConfig.Data();
+        String orgCode = params.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
+        String orgName = params.getString(OrganizationCodeView.PARAM_ORGAN_NAME);
+        userConfigData.setOrg(orgCode, orgName);
+        String phoneNumber = params.getString(PhoneView.PARAM_PHONE);
+        String userGuid = params.getString("UserGuid");
+        userConfigData.setPhoneNumber(phoneNumber);
+        userConfigData.setLogin(userName, password);
+        userConfigData.setUserGuid(userGuid);
+        UserConfig.getInstance().saveConfig(userConfigData);
+        UserConfig.getInstance().loadConfig();
+        FacadeToken.getInstance().init();
+        AndroidUtilities.runOnUIThread(new Runnable() {
+            public void run() {
+                needHideProgress();
+                needFinishActivity();
+                onLoginCallback(true);
+            }
+        });
+        //登录成功重新刷新一下购物车图标的数量
+        requestShopCarCountData();
     }
 
     public class LoginActivityRegisterView extends SlideView {
@@ -1827,7 +1917,6 @@ public class LoginActivity extends BaseActivity {
         }
 
         public static final String PARAM_PHONE = "PhoneNumber";
-        public static final String PARAM_HX_ID = "HXId";
 
         @Override
         public void onNextPressed() {
@@ -1886,7 +1975,6 @@ public class LoginActivity extends BaseActivity {
                             if (!TextUtils.equals("0", isValidity)) {
                                 boolean value = TextUtils.equals("2", isValidity);
                                 params.putBoolean("IsValidityUser", value);
-                                params.putString(PARAM_HX_ID, result.get("NAME"));
                                 params.putString("UserGuid", result.get("USERGUID"));
                                 setPage(value ? 1 : 2, true, params, false);
                             } else {
@@ -1897,7 +1985,7 @@ public class LoginActivity extends BaseActivity {
                         if (errorMsg.code != 0) {
                             //   ResponseProtocol<String> error = (ResponseProtocol) msg.protocol;
                             // Log.i("错误信息是否为空----",(error.getResponse()==null)+"");
-                            needShowAlert(getString(R.string.app_name), errorMsg.msg);
+                            ToastCell.toast(LoginActivity.this, errorMsg.msg);
                             // Log.i("登录错误日志----",errorMsg.msg);
                         }
                     }
@@ -1946,7 +2034,7 @@ public class LoginActivity extends BaseActivity {
         if (UserConfig.isClientLogined()) {
 
             Map<String, String> args = new FacadeArgs.MapBuilder()
-                    .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+                    .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).build();
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
             Message message = new Message.MessageBuilder()

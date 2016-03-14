@@ -13,7 +13,7 @@ import com.romens.yjk.health.im.ui.IMChatActivity;
  */
 public class IMHelper {
     public static void openChatActivity(Context context, String chatId, int chatType) {
-        if (!TextUtils.equals(chatId, UserConfig.getClientUserId())) {
+        if (!TextUtils.equals(chatId, UserConfig.getInstance().getClientUserId())) {
             Bundle arguments = new Bundle();
             arguments.putInt(IMChatActivity.ARGUMENT_CHAT_TYPE, chatType);
             arguments.putString(IMChatActivity.ARGUMENT_CHAT_ID, chatId);

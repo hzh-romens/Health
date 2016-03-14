@@ -78,7 +78,7 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
     private void loadShoppingCartCount() {
         if (UserConfig.isClientLogined()) {
             Map<String, Object> args = new HashMap<>();
-            args.put("USERGUID", UserConfig.getClientUserId());
+            args.put("USERGUID", UserConfig.getInstance().getClientUserId());
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetBuyCarCount", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
@@ -150,7 +150,7 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
             needShowProgress("正在加入购物车...");
             Map<String, Object> args = new HashMap<>();
             args.put("GOODSGUID", guid);
-            args.put("USERGUID", UserConfig.getClientUserEntity().getGuid());
+            args.put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid());
             args.put("BUYCOUNT", "1");
             args.put("PRICE", price);
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);

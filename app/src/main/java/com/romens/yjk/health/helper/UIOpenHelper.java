@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AddressEntity;
@@ -43,6 +44,8 @@ import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.yunuo.pay.PayActivity;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -129,7 +132,7 @@ public class UIOpenHelper {
         //"http://115.28.244.190/index.php/MedicineDetail?flag=0&id={0}&user={1}";
         targetUrl = targetUrl.replace("{0}", medicineId);
         if (UserConfig.isClientLogined()) {
-            targetUrl = targetUrl.replace("{0}", UserConfig.getClientUserId());
+            targetUrl = targetUrl.replace("{1}", UserConfig.getInstance().getClientUserId());
         } else {
             targetUrl = targetUrl.replace("{1}", "");
         }

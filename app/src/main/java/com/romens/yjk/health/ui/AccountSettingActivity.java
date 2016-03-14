@@ -119,7 +119,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
     private void initData() {
         changeLoadingUserInfo(true);
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -155,7 +155,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
         Gson gson = new Gson();
         final String jsonData = gson.toJson(entity);
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid())
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid())
                 .put("JSONDATA", jsonData)
                 .build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SaveUserInfo", args);
