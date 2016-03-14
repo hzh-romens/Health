@@ -12,6 +12,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AddressEntity;
+import com.romens.yjk.health.pay.Pay;
 import com.romens.yjk.health.service.MedicineFavoriteService;
 import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.AddNewRemindActivity;
@@ -292,9 +293,9 @@ public class UIOpenHelper {
         ((Activity) context).finish();
     }
 
-    public static void openOrderDetailForOrderNoActivity(Context context,String orderNo){
+    public static void openOrderDetailForOrderNoActivity(Context context, String orderNo) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
-        intent.putExtra(OrderDetailActivity.ARGUMENT_KEY_ORDER_NO,orderNo);
+        intent.putExtra(OrderDetailActivity.ARGUMENT_KEY_ORDER_NO, orderNo);
         context.startActivity(intent);
     }
 
@@ -332,5 +333,20 @@ public class UIOpenHelper {
         arguments.putString(HomeHealthNewFragment.ARGUMENTS_KEY_NAME, name);
         intent.putExtras(arguments);
         context.startActivity(intent);
+    }
+
+
+    public static boolean openPayPrepareActivity(Context context, String payType, Bundle arguments) {
+        Intent intent = Pay.getInstance().createPayPrepareComponentName(context, payType);
+        if (intent != null) {
+//            Bundle arguments = new Bundle();
+//            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+//            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+//            arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+            intent.putExtras(arguments);
+            context.startActivity(intent);
+            return true;
+        }
+        return false;
     }
 }

@@ -8,8 +8,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 160311
-        versionName "1.8.5"
+        versionCode 160314
+        versionName "1.8.6"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
                                 CHANNEL_PACKAGE  : applicationId,
@@ -85,7 +85,7 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            buildConfigField "boolean","ENABLE_DEVELOP_MODE","true"
+            buildConfigField "boolean","ENABLE_DEVELOP_MODE","false"
             //manifestPlaceholders = [LOCATION_SDK_KEY: "f22aabde9a3424ab5ac5e23bafaf5bad"]
             //manifestPlaceholders = [LOCATION_SDK_KEY: "13b71e6b441c27dae8977c502091eaac"]
             minifyEnabled true
