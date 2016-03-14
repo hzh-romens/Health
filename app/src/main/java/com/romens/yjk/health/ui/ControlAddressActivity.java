@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -153,13 +154,6 @@ public class ControlAddressActivity extends BaseActivity {
             adapter.setIsShowArrow(false);
         }
 
-//        adapter.setOnViewClickListener(new ControlAddressAdapter.OnViewClickListener() {
-//            @Override
-//            public void onClick(int position) {
-//                chooseItemBackEvent(position);
-//            }
-//        });
-
         adapter.setOnItemLongClickLinstener(new ControlAddressAdapter.onItemLongClickListener() {
             @Override
             public void itemLongClickListener(int position) {
@@ -178,6 +172,11 @@ public class ControlAddressActivity extends BaseActivity {
 
             @Override
             public void itemClickToEditListener(int position, int type) {
+                UIOpenHelper.openAddShippingAddress(ControlAddressActivity.this, addressListEntitis.get(position), type);
+            }
+
+            @Override
+            public void itemClickToCheckListner(int position, int type) {
                 if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
                     chooseItemBackEvent(position);
                 } else {
@@ -226,13 +225,14 @@ public class ControlAddressActivity extends BaseActivity {
         if (count < 0) {
             return;
         }
-        addressListEntitis = new ArrayList<>();
+        addressListEntitis.clear();
         for (LinkedTreeMap<String, String> item : response) {
             AddressEntity entity = AddressEntity.mapToEntity(item);
             addressListEntitis.add(entity);
         }
-        refreshLayout();
+        Log.e("tag", "--->" + new Gson().toJson(addressListEntitis));
         adapter.setData(addressListEntitis);
+        refreshLayout();
     }
 
     private void refreshLayout() {

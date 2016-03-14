@@ -22,6 +22,15 @@ public class OrderListEntity {
     private String deliverType;
     private String orderStatus;
     private String orderStatusStr;
+    private String payType;
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
 
     public String getOrderId() {
         return orderId;

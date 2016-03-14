@@ -193,6 +193,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             Intent intent = new Intent(CommitOrderBaseActivity.this, CuoponActivity.class);
             intent.putExtra("position", cuoponPosition);
             intent.putExtra("sumMoney", goodsAmount + "");
+            intent.putExtra("canClick", true);
             startActivityForResult(intent, REQUEST_CODE_COUPON);
         } else if (position == invoiceRow) {
             Intent intent = new Intent(CommitOrderBaseActivity.this, OrderInvoiceActivity.class);

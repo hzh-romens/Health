@@ -6,6 +6,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -63,7 +64,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     private double sumMoney;
     private String addressId; //送货地址id
     private String deliveryType;//送货方式
-    private String mBillName = ""; //发票抬头名称
+    private String mBillName; //发票抬头名称
     private boolean needBill;
 
 
@@ -100,17 +101,8 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+                // UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
                 finish();
-            }
-        });
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-
-                Intent intent = new Intent(CommitOrderActivity.this, CuoponActivity.class);
-                startActivityForResult(intent, 1);
-                return true;
             }
         });
 
@@ -120,6 +112,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         getAdressData();
         getIntentData();
         getSendData();
+        getCuopon();
     }
 
 
@@ -177,8 +170,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         adapter = new CommitOrderAdapter(this, parentData.size() + 1);
         expandableListView.setAdapter(adapter);
         adapter.SetData(parentData, childData, parentTypes);
-        double lastMoney = sumMoney - coupon;
-        adapter.setSumMoney(lastMoney);
         //获取派送方式
         adapter.setFragmentManger(getSupportFragmentManager());
         runOnUiThread(new Runnable() {
@@ -232,7 +223,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
         String moneys = "¥" + UIUtils.getDouvleValue(sumMoney + "");
         sumMoneys.setText(getColorText(counts, moneys));
 
-
         //订单提交，并跳转到下一个页面
         accounts.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,15 +230,13 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needShowProgress("正在提交..");
                 if (deliveryType != null && !("".equals(deliveryType))) {
                     if (needBill) {
-                        if ("".equals(mBillName) || (mBillName == null)) {
+                        if ("".equals(mBillName) || mBillName != null || (mBillName == null)) {
                             needHideProgress();
                             DialogUtils dialogUtils = new DialogUtils();
                             dialogUtils.show_infor("请输入发票内容", CommitOrderActivity.this, "提示");
                         } else {
                             commitOrder(filteData, sumCount);
                         }
-                    } else {
-                        commitOrder(filteData, sumCount);
                     }
 
                 } else {
@@ -256,6 +244,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                     DialogUtils dialogUtils = new DialogUtils();
                     dialogUtils.show_infor("请选择派送方式", CommitOrderActivity.this, "提示");
                 }
+
             }
         });
     }
@@ -274,9 +263,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     }
 
 
-    private double coupon;
-    private double limitAmount;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -287,10 +273,6 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             addressId = addressEntity.getADDRESSID();
         } else if (resultCode == 3) {
             showBuilder();
-        } else if (resultCode == 4) {
-            coupon = data.getDoubleExtra("amount", 0);
-            limitAmount = data.getDoubleExtra("limitAmount", 0);
-            adapter.setCoupon(coupon + "", limitAmount + "");
         }
     }
 
@@ -316,32 +298,24 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
                 needHideProgress();
                 if (errorMsg == null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    Log.i("responseProtocol", responseProtocol.toString());
                     try {
                         JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                         String success = jsonObject.getString("success");
-
+                        Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
                         if (success.equals("yes")) {
-                            if ("支付宝支付".equals(deliveryName) || "微信支付".equals(deliveryName)) {
-                                UIOpenHelper.openPayActivity(CommitOrderActivity.this, deliveryName, sumMoney, jsonObject.getString("msg1"));
-                            } else {
-                                Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
-                                i.putExtra("success", "true");
-                                i.putExtra("sumMoney", (sumMoney - coupon) + "");
-                                i.putExtra("orderNumber", jsonObject.getString("msg1"));
-                                i.putExtra("time", jsonObject.getString("msg2"));
-                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
-                                startActivity(i);
-                                finish();
-                            }
+                            i.putExtra("success", "true");
+                            i.putExtra("sumMoney", sumMoney + "");
+                            i.putExtra("orderNumber", jsonObject.getString("msg1"));
+                            i.putExtra("time", jsonObject.getString("msg2"));
+                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.shoppingCartCountChanged, -count);
                         } else {
-                            Intent i = new Intent(CommitOrderActivity.this, CommitResultActivity.class);
                             String errorMsgs = jsonObject.getString("errorMsg");
                             i.putExtra("success", "false");
                             i.putExtra("errormsg", errorMsgs);
-                            startActivity(i);
-                            finish();
                         }
-
+                        startActivity(i);
+                        finish();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -427,12 +401,13 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        return;
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // UIOpenHelper.openShopCarActivityWithAnimation(CommitOrderActivity.this);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
-
-    private String deliveryName;
 
     @Override
     public void onListItemSelected(CharSequence charSequence, int number, int requestCode) {
@@ -441,11 +416,34 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
             for (int i = 0; i < result.size(); i++) {
                 if (charSequence.toString().equals(result.get(i).getNAME())) {
                     deliveryType = result.get(i).getGUID();
-                    deliveryName = result.get(i).getNAME();
                 }
             }
         }
     }
 
+    public void getCuopon() {
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetCoupon", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol)
+                .build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Log.e("GetCoupon", "ERROR");
+            }
 
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
+                if (errorMsg == null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                } else {
+                    Log.e("GetCoupon", errorMsg.msg);
+                }
+            }
+        });
+    }
 }

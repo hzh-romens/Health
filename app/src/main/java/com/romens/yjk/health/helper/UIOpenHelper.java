@@ -19,6 +19,7 @@ import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.AddNewRemindActivity;
 import com.romens.yjk.health.ui.AddRemindTimesActivity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
+import com.romens.yjk.health.ui.CuoponActivity;
 import com.romens.yjk.health.ui.EditActivity;
 import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
 import com.romens.yjk.health.ui.FamilyMemberActivity;
@@ -227,6 +228,16 @@ public class UIOpenHelper {
     public static void openAccountSettingActivity(Context context) {
         context.startActivity(new Intent(context, AccountSettingActivity.class));
     }
+
+    //打开优惠卷界面
+    public static void openCuoponActivityWithBundle(Context context, boolean canClick) {
+        Intent intent = new Intent(context, CuoponActivity.class);
+        intent.putExtra("canClick", canClick);
+        intent.putExtra("position", -1);
+        intent.putExtra("sumMoney", "0");
+        context.startActivity(intent);
+    }
+
 
     //帐号管理打开编辑姓名页面
     public static void openEditActivityForEditName(Activity context) {
