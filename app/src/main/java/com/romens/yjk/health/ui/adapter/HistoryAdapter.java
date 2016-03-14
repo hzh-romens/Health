@@ -121,6 +121,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         parentHolder.title_layout.setClickable(true);
 
         parentHolder.name.setText(typeList.get(groupPosition));
+        parentHolder.name.setTextSize(18);
 
         return convertView;
     }
@@ -152,7 +153,8 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         Drawable defaultDrawables = childHolder.iv.getDrawable();
         ImageManager.loadForView(adapterContext, childHolder.iv, entity.getImgUrl(), defaultDrawables, defaultDrawables);
         childHolder.name.setText(entity.getMedicinalName());
-        childHolder.realPrice.setTextColor(adapterContext.getResources().getColor(R.color.md_red_400));
+        childHolder.realPrice.setTextColor(adapterContext.getResources().getColor(R.color.md_red_500));
+        childHolder.discountPrice.setTextColor(adapterContext.getResources().getColor(R.color.md_red_500));
         String currentPrice = entity.getCurrentPrice();
         String discountPrice = entity.getDiscountPrice();
         childHolder.realPrice.setText("¥" + UIUtils.getDouvleValue(currentPrice));
