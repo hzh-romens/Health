@@ -218,10 +218,10 @@ public class OrderDetailActivity extends BaseActivity {
             if (type == 0) {
                 KeyAndValueCell cell = new KeyAndValueCell(context);
                 if (position == dataRow) {
-                    cell.setKeyAndValue(orderListEntity.getCreateTime() + "  下单", orderListEntity.getOrderStatusStr(), true);
+                    cell.setKeyAndValue(orderListEntity.getCreateTime() + "  下单", orderListEntity.getOrderStatusStr());
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_statu_color));
                 } else if (position == totalPriceRow) {
-                    cell.setKeyAndValue("总计", "￥" + orderListEntity.getOrderPrice(), false);
+                    cell.setKeyAndValue("总计", "￥" + orderListEntity.getOrderPrice());
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == payWayRow) {
 //                    String result = "";
@@ -231,13 +231,13 @@ public class OrderDetailActivity extends BaseActivity {
 //                        result = "到店自取";
 //                    }
 //                    cell.setKeyAndValue("支付方式", result, true);
-                    cell.setKeyAndValue("支付方式", orderListEntity.getDeliverType(), true);
+                    cell.setKeyAndValue("支付方式", orderListEntity.getDeliverType());
                 } else if (position == consigneeNameRow) {
-                    cell.setKeyAndValue("收获人姓名", orderListEntity.getReceiver(), false);
+                    cell.setKeyAndValue("收获人姓名", orderListEntity.getReceiver());
                 } else if (position == consigneePhoneRow) {
-                    cell.setKeyAndValue("联系方式", orderListEntity.getTelephone(), false);
+                    cell.setKeyAndValue("联系方式", orderListEntity.getTelephone());
                 } else if (position == consignessAddressRow) {
-                    cell.setKeyAndValue("地址", orderListEntity.getAddress(), true);
+                    cell.setKeyAndValue("地址", orderListEntity.getAddress());
                 }
                 return cell;
             } else if (type == 1) {

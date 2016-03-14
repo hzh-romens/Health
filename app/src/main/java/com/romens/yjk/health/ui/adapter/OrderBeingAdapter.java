@@ -61,7 +61,6 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view, ViewGroup parent) {
         if (view == null) {
-            //需处理优化
             view = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
         }
         TextView titleTextView = (TextView) view.findViewById(R.id.order_title);

@@ -40,7 +40,7 @@ public class KeyAndValueCell extends FrameLayout {
                 Gravity.RIGHT, 68, 8, 16, 8));
     }
 
-    public void setKeyAndValue(String keyText, String valueText, boolean needDiver) {
+    public void setKeyAndValue(String keyText, String valueText) {
         leftTextView.setText(keyText);
         rightTextView.setText(valueText);
     }
