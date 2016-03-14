@@ -33,9 +33,10 @@ public class MonitorHelper {
         PgyCrashManager.reportCaughtException(context, e);
     }
 
-    public static void unregisterUpdate(){
+    public static void unregisterUpdate() {
         PgyUpdateManager.unregister();
     }
+
     public static void checkUpdate(final Activity context) {
         checkUpdate(context, false);
     }

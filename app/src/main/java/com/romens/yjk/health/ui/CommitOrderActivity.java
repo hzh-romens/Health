@@ -423,7 +423,7 @@ public class CommitOrderActivity extends BaseActivity implements IListDialogList
 
     public void getCuopon() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("USERGUID", UserConfig.getClientUserEntity().getGuid()).build();
+                .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetCoupon", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
