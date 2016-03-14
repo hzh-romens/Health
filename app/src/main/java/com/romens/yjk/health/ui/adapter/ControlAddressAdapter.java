@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.ui.ControlAddressActivity;
@@ -50,6 +52,8 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
         void itemClickListener(int position);
 
         void itemClickToEditListener(int position, int type);
+
+        void itemClickToCheckListner(int position, int type);
     }
 
     public void setData(List<AddressEntity> data) {
@@ -82,8 +86,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
 
     @Override
     public void onBindViewHolder(final ControlAddressHolder holder, final int position) {
-        final int index = position / 2;
-        AddressEntity entity = data.get(index);
+        AddressEntity entity = data.get(position);
         String receiver = entity.getRECEIVER();
         String tel = entity.getCONTACTPHONE();
         String result = receiver + "    " + tel;
@@ -98,19 +101,19 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             @Override
             public boolean onLongClick(View v) {
                 if (onItemLongClickListener != null) {
-                    onItemLongClickListener.itemLongClickListener(index);
+                    onItemLongClickListener.itemLongClickListener(position);
                 }
                 return false;
             }
         });
-//            holder.outsideLayout.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (onItemLongClickListener != null) {
-//                        onItemLongClickListener.itemClickListener(position / 2);
-//                    }
-//                }
-//            });
+        holder.outsideLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemLongClickListener != null) {
+                    onItemLongClickListener.itemClickListener(position);
+                }
+            }
+        });
 
         holder.isDefault.setChecked(false);
         holder.isDefault.setTextSize(16);
@@ -129,7 +132,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             @Override
             public void onClick(View v) {
                 if (onItemLongClickListener != null) {
-                    onItemLongClickListener.isDefaultClickLListener(index);
+                    onItemLongClickListener.isDefaultClickLListener(position);
                 }
             }
         });
@@ -138,7 +141,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             @Override
             public void onClick(View v) {
                 if (onItemLongClickListener != null) {
-                    onItemLongClickListener.itemClickToEditListener(index, ControlAddressActivity.ADDRESS_CHECK_TYPE);
+                    onItemLongClickListener.itemClickToCheckListner(position, ControlAddressActivity.ADDRESS_CHECK_TYPE);
                 }
             }
         });
@@ -147,7 +150,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             @Override
             public void onClick(View v) {
                 if (onItemLongClickListener != null) {
-                    onItemLongClickListener.itemClickToEditListener(index, ControlAddressActivity.ADDRESS_EDIT_TYPE);
+                    onItemLongClickListener.itemClickToEditListener(position, ControlAddressActivity.ADDRESS_EDIT_TYPE);
                 }
             }
         });
@@ -156,7 +159,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
             @Override
             public void onClick(View v) {
                 if (onItemLongClickListener != null) {
-                    onItemLongClickListener.isDefaultClickLListener(index);
+                    onItemLongClickListener.isDefaultClickLListener(position);
                 }
             }
         });
