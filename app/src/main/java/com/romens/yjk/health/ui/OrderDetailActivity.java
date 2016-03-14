@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,6 +16,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.Message;
@@ -33,13 +35,17 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
+import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.adapter.OrderExpandableDetailAdapter;
+import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -138,8 +144,10 @@ public class OrderDetailActivity extends BaseActivity {
     private int consigneeNameRow;
     private int consigneePhoneRow;
     private int consignessAddressRow;
+    private int toPayRow;
 
     private void setRow() {
+        rowCount = 0;
         orderNumRow = rowCount++;
         dataRow = rowCount++;
         lineRow = rowCount++;
@@ -151,6 +159,11 @@ public class OrderDetailActivity extends BaseActivity {
         consigneeNameRow = rowCount++;
         consigneePhoneRow = rowCount++;
         consignessAddressRow = rowCount++;
+        if (orderListEntity != null && orderListEntity.getOrderStatusStr().equals("未付款")) {
+            toPayRow = rowCount++;
+        } else {
+            toPayRow = -1;
+        }
     }
 
     class OrderDetailAdapter extends BaseAdapter {
@@ -193,12 +206,14 @@ public class OrderDetailActivity extends BaseActivity {
                 return 0;
             } else if (position == expandableRow) {
                 return 3;
+            } else if (position == toPayRow) {
+                return 4;
             }
             return 1;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             int type = getItemViewType(position);
             if (type == 0) {
                 KeyAndValueCell cell = new KeyAndValueCell(context);
@@ -222,7 +237,7 @@ public class OrderDetailActivity extends BaseActivity {
                 } else if (position == consigneePhoneRow) {
                     cell.setKeyAndValue("联系方式", orderListEntity.getTelephone(), false);
                 } else if (position == consignessAddressRow) {
-                    cell.setKeyAndValue("地址", orderListEntity.getAddress(), false);
+                    cell.setKeyAndValue("地址", orderListEntity.getAddress(), true);
                 }
                 return cell;
             } else if (type == 1) {
@@ -257,8 +272,36 @@ public class OrderDetailActivity extends BaseActivity {
                     }
                 });
                 return linearLayout;
+            } else if (type == 4) {
+                ActionCell cell = new ActionCell(context);
+                cell.setValue("去支付");
+                cell.setClickable(true);
+                cell.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        toPay(orderListEntity);
+                    }
+                });
+                return cell;
             }
             return null;
+        }
+    }
+
+    private void toPay(OrderListEntity entity) {
+        //发起支付
+        String orderNo = entity.getOrderNo();
+        String orderDate = entity.getCreateTime();
+        String payType = entity.getPayType();
+        BigDecimal payAmount = new BigDecimal(Double.parseDouble(entity.getOrderPrice()));
+
+        Bundle arguments = new Bundle();
+        arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+        arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+        boolean isOpen = UIOpenHelper.openPayPrepareActivity(OrderDetailActivity.this, payType, arguments);
+        if (isOpen) {
+            finish();
         }
     }
 
@@ -353,6 +396,7 @@ public class OrderDetailActivity extends BaseActivity {
         orderListEntity.setOrderStatus(response.get("orderStatus").asText());
         orderListEntity.setOrderStatusStr(response.get("ORDERSTATUSSTR").asText());
         orderListEntity.setTelephone(response.get("TELEPHONE").asText());
+        orderListEntity.setPayType(response.get("PAYTYPE").asText());
         JsonNode array = response.get("GOODSLIST");
         for (int i = 0; i < array.size(); i++) {
             JsonNode subObjcet = array.get(i);
@@ -371,6 +415,7 @@ public class OrderDetailActivity extends BaseActivity {
             goodsEntity.setShopName(subObjcet.get("SHOPNAME").asText());
             goodsListEntities.add(goodsEntity);
         }
+        setRow();
         subExpandableadapter.setOrderEntities(goodsListEntities);
         adapter.setOrderListEntity(orderListEntity);
         listView.setAdapter(adapter);
