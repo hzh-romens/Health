@@ -34,6 +34,7 @@ public class ADWebActivity extends WebActivity implements AppNotificationCenter.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
         bundle = getIntent().getExtras();
         ActionBar actionBar = getMyActionBar();
         ActionBarMenu menu = actionBar.createMenu();
@@ -47,14 +48,6 @@ public class ADWebActivity extends WebActivity implements AppNotificationCenter.
         }
 
         WebView webView = getWebView();
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-
         adWebJsInterface = new ADWebJsInterface(this)
                 .withWebView(webView);
         webView.addJavascriptInterface(adWebJsInterface, adWebJsInterface.toString());
@@ -87,6 +80,12 @@ public class ADWebActivity extends WebActivity implements AppNotificationCenter.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    @Override
+    public void onDestroy() {
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
+        super.onDestroy();
     }
 
     @Override

@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/line_color"
+    android:background="#fff0f0f0"
     android:orientation="vertical">
 
     <com.romens.android.ui.ActionBar.ActionBar

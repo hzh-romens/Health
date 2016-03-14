@@ -6,6 +6,7 @@ import android.webkit.WebViewClient;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.ui.activity.WebActivity;
@@ -30,15 +31,7 @@ public class HelpNewActivity extends WebActivity {
             }
         });
         WebView webView = getWebView();
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-
-        webView.loadUrl(String.format("http://115.28.244.190/help/help.html?org=%s", UserConfig.getOrgCode()));
+        webView.loadUrl(String.format(FacadeConfig.HOST + "/help/help.html?org=%s", UserConfig.getOrgCode()));
     }
 
     @Override

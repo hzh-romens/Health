@@ -1,6 +1,8 @@
 package com.romens.yjk.health.ui.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
 import com.gc.materialdesign.views.ProgressBarDeterminate;
@@ -71,6 +74,19 @@ public abstract class WebActivity extends LightActionBarActivity {
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setAppCacheEnabled(false);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("mailto:") || url.startsWith("geo:") || url.startsWith("tel:")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                } else {
+                    view.loadUrl(url);
+                }
+                return true;
+            }
+        });
 
 
         // 如果不设置这个，JS代码中的按钮会显示，但是按下去却不弹出对话框

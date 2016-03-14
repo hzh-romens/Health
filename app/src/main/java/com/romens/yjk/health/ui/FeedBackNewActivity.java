@@ -1,9 +1,9 @@
 package com.romens.yjk.health.ui;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,23 +138,25 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
 
     public void showMulitChooseView(final String[] tagList) {
         selectTagTxtList.clear();
-        new AlertDialog.Builder(this).setMultiChoiceItems(tagList, null, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                if (isChecked) {
-                    selectTagTxtList.add(tagList[which]);
-                } else {
-                    selectTagTxtList.remove(tagList[which]);
-                }
-            }
-        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this)
+                .setTitle("意见标签").
+                setMultiChoiceItems(tagList, null, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        if (isChecked) {
+                            selectTagTxtList.add(tagList[which]);
+                        } else {
+                            selectTagTxtList.remove(tagList[which]);
+                        }
+                    }
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (selectTagTxtList.size() > 0) {
                     CharSequence labels = LabelHelper.createChipForUserInfoLabels(selectTagTxtList);
                     chooseTagBtn.setText(labels);
                 } else {
-                    chooseTagBtn.setText("点击选择反馈标签");
+                    chooseTagBtn.setText("点击选择意见标签");
                 }
                 dialog.dismiss();
             }
