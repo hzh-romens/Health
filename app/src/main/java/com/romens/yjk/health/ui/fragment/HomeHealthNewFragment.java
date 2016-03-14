@@ -46,7 +46,7 @@ import java.util.Map;
  * Created by anlc on 2016/1/11.
  */
 public class HomeHealthNewFragment extends BaseFragment {
-
+    public static final String ARGUMENTS_KEY_FLAG = "key_flag";
     private ListView leftMenuListView;
     private RecyclerView contentListView;
 
@@ -59,6 +59,17 @@ public class HomeHealthNewFragment extends BaseFragment {
     private int currSelectPosition = -1;
     public static final String ARGUMENTS_KEY_ID = "key_id";
     public static final String ARGUMENTS_KEY_NAME = "key_name";
+
+    private int flag = 0;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            flag = arguments.getInt(ARGUMENTS_KEY_FLAG, 0);
+        }
+    }
 
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,6 +138,7 @@ public class HomeHealthNewFragment extends BaseFragment {
         if (childNode != null) {
             Intent intent = new Intent(getActivity(), ShopListActivity.class);
             Bundle arguments = new Bundle();
+            arguments.putInt(ShopListActivity.ARGUMENTS_KEY_FLAG, flag);
             arguments.putString(ARGUMENTS_KEY_ID, childNode.getId());
             arguments.putString(ARGUMENTS_KEY_NAME, childNode.getName());
             intent.putExtras(arguments);
@@ -172,13 +184,12 @@ public class HomeHealthNewFragment extends BaseFragment {
                 childNodes.get(entity.getPID()).add(entity);
             }
         }
-//        adapter.bindData(groupNodes, childNodes);
-//        adapter.notifyDataSetChanged();
         onDrugGroupSelected(0);
     }
 
     private void requestData() {
         Map<String, String> args = new HashMap<>();
+        args.put("FLAG", "" + flag);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetMedicineKind", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
@@ -196,25 +207,6 @@ public class HomeHealthNewFragment extends BaseFragment {
                     }
                 }).build();
         ConnectManager.getInstance().request(getActivity(), connect);
-//        Message message = new Message.MessageBuilder()
-//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-//                }))
-//                .withProtocol(protocol)
-//                .build();
-//        FacadeClient.request(getActivity(), message, new FacadeClient.FacadeCallback() {
-//            @Override
-//            public void onTokenTimeout(Message msg) {
-//                bindData(null);
-//            }
-//
-//            @Override
-//            public void onResult(Message msg, Message errorMsg) {
-//                if (errorMsg == null) {
-//                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-//                    bindData(responseProtocol.getResponse());
-//                }
-//            }
-//        });
     }
 
     private void bindData(List<LinkedTreeMap<String, String>> nodes) {

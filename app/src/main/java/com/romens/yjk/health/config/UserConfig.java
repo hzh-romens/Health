@@ -9,18 +9,17 @@ import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.log.FileLog;
 import com.romens.yjk.health.MyApplication;
-import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.Base64Helper;
 import com.romens.yjk.health.helper.MD5Helper;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by zhoulisi on 15/6/25.
@@ -31,7 +30,7 @@ public class UserConfig {
     private final static Object sync = new Object();
 
     private static volatile AppChannel appChannel;
-    private static volatile Data config;
+    private static volatile UserData config;
     private Account currentAccount;
 
     private static volatile UserConfig Instance = null;
@@ -50,19 +49,20 @@ public class UserConfig {
     }
 
     private UserConfig() {
-        appChannel = loadAppChannel();
+        appChannel = new AppChannel();
+        loadConfig();
     }
 
     public String getOrgCode() {
-        return appChannel == null ? null : appChannel.orgCode;
+        return appChannel == null ? "" : appChannel.orgCode;
     }
 
     public String getOrgName() {
-        return appChannel == null ? null : appChannel.orgName;
+        return appChannel == null ? "" : appChannel.orgName;
     }
 
     public String getPassCode() {
-        return config == null ? null : config.token;
+        return config == null ? "" : config.token;
     }
 
 
@@ -86,11 +86,7 @@ public class UserConfig {
 
     public boolean isClientActivated() {
         synchronized (sync) {
-            SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
             if (config == null) {
-                return false;
-            }
-            if (TextUtils.isEmpty(config.orgCode)) {
                 return false;
             }
             if (TextUtils.isEmpty(config.phoneNumber)) {
@@ -106,11 +102,7 @@ public class UserConfig {
 
     public static boolean isClientLogined() {
         synchronized (sync) {
-            SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
             if (config == null) {
-                return false;
-            }
-            if (TextUtils.isEmpty(config.orgCode)) {
                 return false;
             }
             if (TextUtils.isEmpty(config.userName)) {
@@ -136,7 +128,7 @@ public class UserConfig {
         }
     }
 
-    public Data getClientUser() {
+    public UserData getClientUser() {
         synchronized (sync) {
             return config;
         }
@@ -175,22 +167,22 @@ public class UserConfig {
         FacadeToken.getInstance().expired();
     }
 
-    public boolean saveConfig(Data data) {
+    public boolean saveConfig(UserData userData) {
         synchronized (sync) {
             SharedPreferences preferences = MyApplication.applicationContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            if (data == null) {
+            if (userData == null) {
                 editor.remove(PREFERENCE_KEY_USER);
             } else {
-                Map<String, String> userValues = new HashMap<>();
-                userValues.put("OrgCode", data.orgCode);
-                userValues.put("OrgName", data.orgName);
-                userValues.put("PhoneNumber", data.phoneNumber);
-                userValues.put("UserName", data.userName);
-                userValues.put("Token", data.token);
+                ObjectNode userValues = JacksonMapper.getInstance().createObjectNode();
+//                userValues.put("OrgCode", userData.orgCode);
+//                userValues.put("OrgName", userData.orgName);
+                userValues.put("PhoneNumber", userData.phoneNumber);
+                userValues.put("UserName", userData.userName);
+                userValues.put("Token", userData.token);
                 //TODO 增加UserGuid
-                userValues.put("UserGuid", data.userGuid);
-                String json = new Gson().toJson(userValues);
+                userValues.put("UserGuid", userData.userGuid);
+                String json = userValues.toString();
                 byte[] jsonBytes = json.getBytes(Charset.forName("utf-8"));
                 String userString = Base64.encodeToString(jsonBytes, Base64.DEFAULT);
                 editor.putString(PREFERENCE_KEY_USER, userString);
@@ -208,21 +200,26 @@ public class UserConfig {
             } else {
                 byte[] bytes = Base64.decode(user, Base64.DEFAULT);
                 String json = new String(bytes, Charset.forName("utf-8"));
-                Gson gson = new Gson();
-                Map<String, String> userValues = gson.fromJson(json, new TypeToken<Map<String, String>>() {
-                }.getType());
-                Data data = new Data();
-                String orgCode = userValues.get("OrgCode");
-                String orgName = userValues.get("OrgName");
-                String phoneNumber = userValues.get("PhoneNumber");
-                String userName = userValues.get("UserName");
-                String token = userValues.get("Token");
-                String userGuid = userValues.get("UserGuid");
-                data.setOrg(orgCode, orgName);
-                data.setPhoneNumber(phoneNumber);
-                data.setLogin(userName, token);
-                data.setUserGuid(userGuid);
-                config = data;
+                try {
+                    JsonNode userValues = JacksonMapper.getInstance().readTree(json);
+
+                    //                    String orgCode = userValues.get("OrgCode").asText();
+//                    String orgName = userValues.get("OrgName").asText();
+                    String phoneNumber = userValues.get("PhoneNumber").asText();
+                    String userName = userValues.get("UserName").asText();
+                    String token = userValues.get("Token").asText();
+                    String userGuid = userValues.get("UserGuid").asText();
+
+                    UserData userData = new UserData.Builder()
+                            .withLogin(userName, token)
+                            .withPhone(phoneNumber)
+                            .withUserGuid(userGuid)
+                            .build();
+                    config = userData;
+                } catch (IOException e) {
+                    FileLog.e(e);
+                    config = null;
+                }
             }
         }
     }
@@ -230,45 +227,9 @@ public class UserConfig {
     public UserEntity getClientUserEntity() {
         UserEntity userEntity = null;
         if (isClientLogined()) {
-            //   userEntity = new UserEntity(0, "", config.userName, "", config.phoneNumber, "", "", 0);
             userEntity = new UserEntity(0, config.userGuid, config.userName, "", config.phoneNumber, "", "", 0);
         }
         return userEntity;
-    }
-
-    public static class Data {
-        protected String orgCode;
-        protected String orgName;
-
-        protected String phoneNumber;
-        //手机号码
-        protected String userName;
-        //登录密码
-        protected String token;
-        protected String userGuid;
-
-        public void setLogin(String name, String token) {
-            this.userName = name == null ? "" : name;
-            this.token = token == null ? "" : token;
-        }
-
-
-        public void setOrg(String code, String name) {
-            this.orgCode = code == null ? "" : code;
-            this.orgName = name == null ? "" : name;
-        }
-
-        public void setUserGuid(String userGuid) {
-            this.userGuid = userGuid == null ? "" : userGuid;
-        }
-
-        public void setPhoneNumber(String phone) {
-            this.phoneNumber = phone == null ? "" : phone;
-        }
-
-        public void clearToken() {
-            this.token = "";
-        }
     }
 
     public static String formatCode(String code) {
@@ -279,13 +240,6 @@ public class UserConfig {
         md5Code = String.format("%s0", md5Code);
         md5Code = MD5Helper.createMD5(md5Code);
         return md5Code;
-    }
-
-    public static AppChannel loadAppChannel() {
-        if (appChannel == null) {
-            appChannel = new AppChannel();
-        }
-        return appChannel;
     }
 
     public static class AppChannel {

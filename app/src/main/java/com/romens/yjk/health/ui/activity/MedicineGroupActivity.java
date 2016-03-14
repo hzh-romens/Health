@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.base.BaseActionBarActivity;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 
 /**
@@ -34,6 +33,9 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
         });
         actionBar.setTitle(title);
         fragment = new HomeHealthNewFragment();
+        Bundle arguments = new Bundle();
+        arguments.putInt(HomeHealthNewFragment.ARGUMENTS_KEY_FLAG, 1);
+        fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
     }
 }

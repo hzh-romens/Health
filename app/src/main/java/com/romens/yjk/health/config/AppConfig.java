@@ -7,23 +7,22 @@ import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import com.easemob.chat.EMChat;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.core.AppHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UniqueCode;
 import com.romens.yjk.health.helper.AESHelper;
 import com.romens.yjk.health.helper.Base64Helper;
-import com.romens.yjk.health.im.IMHXSDKHelper;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -93,50 +92,40 @@ public class AppConfig {
             long lastTime = sharedPreferences.getLong("LastTime", 0);
             Map<String, Object> args = new HashMap<>();
             args.put("LASTTIME", lastTime);
-            UserConfig.AppChannel appChannel = UserConfig.loadAppChannel();
-            args.put("ORGCODE", appChannel.orgCode);
+            args.put("ORGCODE", UserConfig.getInstance().getOrgCode());
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "getAppConfig", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
-            Message message = new Message.MessageBuilder()
+            Connect connect = new RMConnect.Builder(AppConfig.class)
                     .withProtocol(protocol)
-                    .build();
-            FacadeClient.request(MyApplication.applicationContext, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-                    loadCache();
-                    isLoading = false;
-                }
-
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    isLoading = false;
-                    if (errorMsg == null) {
-                        ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                        try {
-                            JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
-                            long newLastTime = jsonObject.getLong("LASTTIME");
-                            JSONArray dataJsonArray = jsonObject.getJSONArray("DATA");
-                            Map<String, String> params = new HashMap<String, String>();
-                            String keyTemp;
-                            if (dataJsonArray != null && dataJsonArray.length() > 0) {
-                                JSONObject dataJsonObject = dataJsonArray.getJSONObject(0);
-                                if (dataJsonObject.length() > 0) {
-                                    Iterator<String> keys = dataJsonObject.keys();
-                                    while (keys.hasNext()) {
-                                        keyTemp = keys.next();
-                                        params.put(keyTemp, dataJsonObject.getString(keyTemp));
+                    .withParser(new JSONNodeParser())
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            isLoading = false;
+                            if (errorMessage == null) {
+                                ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                JsonNode jsonObject = responseProtocol.getResponse();
+                                long newLastTime = jsonObject.get("LASTTIME").asLong();
+                                JsonNode dataJsonArray = jsonObject.get("DATA");
+                                Map<String, String> params = new HashMap<String, String>();
+                                String keyTemp;
+                                if (dataJsonArray != null && dataJsonArray.size() > 0) {
+                                    JsonNode dataJsonObject = dataJsonArray.get(0);
+                                    if (dataJsonObject.size() > 0) {
+                                        Iterator<String> keys = dataJsonObject.fieldNames();
+                                        while (keys.hasNext()) {
+                                            keyTemp = keys.next();
+                                            params.put(keyTemp, dataJsonObject.get(keyTemp).asText());
+                                        }
                                     }
                                 }
+                                saveConfig(newLastTime, params);
+                                return;
                             }
-                            saveConfig(newLastTime, params);
-                            return;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            loadCache();
                         }
-                    }
-                    loadCache();
-                }
-            });
+                    }).build();
+            ConnectManager.getInstance().request(MyApplication.applicationContext, connect);
         }
     }
 

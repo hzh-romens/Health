@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -46,6 +47,7 @@ import java.util.Map;
  * Created by AUSU on 2015/9/23.
  */
 public class ShopListActivity extends BaseActivity implements View.OnClickListener {
+    public static final String ARGUMENTS_KEY_FLAG = "key_flag";
     private ImageView other;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
@@ -69,6 +71,8 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     private static int SALE_FLAG = 5;
     private static boolean SEARCHDEFAULT = true;
     private ActionBar actionBar;
+
+    private int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,14 +137,17 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initIntentValue() {
-        if (getIntent().getStringExtra("guid") != null) {
-            guid = getIntent().getStringExtra("guid");
+        Intent intent = getIntent();
+        flag = intent.getIntExtra(ARGUMENTS_KEY_FLAG, 0);
+
+        if (intent.getStringExtra("guid") != null) {
+            guid = intent.getStringExtra("guid");
         }
-        if (getIntent().getStringExtra("key_id") != null) {
-            guid = getIntent().getStringExtra("key_id");
+        if (intent.getStringExtra("key_id") != null) {
+            guid = intent.getStringExtra("key_id");
         }
-        if (getIntent().getStringExtra("key_name") != null) {
-            name = getIntent().getStringExtra("key_name");
+        if (intent.getStringExtra("key_name") != null) {
+            name = intent.getStringExtra("key_name");
             editTextValue = name;
         }
 
@@ -198,7 +205,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
         ActionBarMenu menu = actionBar.createMenu();
         ActionBarMenuItem searchItem = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
-        searchItem.getSearchField().setHint("输入疾病或者药品");
+        searchItem.getSearchField().setHint("请输入药品名称...");
         searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
 
             @Override
@@ -214,13 +221,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onSearchCollapse() {
 
-            }
-
-            @Override
-            public void onTextChanged(EditText var1) {
-                if (var1.getText().length() <= 0) {
-                    //switchSearchResultLayout(false);
-                }
             }
 
             @Override
@@ -350,6 +350,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         args.put("PAGE", page);
         args.put("COUNT", COUNT);
         args.put("SORTFIELD", "default");
+        args.put("FLAG",""+flag);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -409,6 +410,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         } else {
             args.put("SORTFIELD", "default");
         }
+        args.put("FLAG",""+flag);
         FacadeProtocol protocol;
         if (key != null && !("".equals(key)) && SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);

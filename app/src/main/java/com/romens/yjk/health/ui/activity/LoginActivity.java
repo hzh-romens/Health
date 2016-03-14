@@ -31,8 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.PhoneFormat.PhoneFormat;
@@ -41,7 +39,6 @@ import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
-import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.network.request.Connect;
@@ -56,6 +53,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.config.UserData;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.ui.BaseActivity;
@@ -171,6 +169,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void onDestroy() {
+        ConnectManager.getInstance().destroyInitiator(LoginActivity.class);
         super.onDestroy();
         for (SlideView v : views) {
             if (v != null) {
@@ -426,44 +425,39 @@ public class LoginActivity extends BaseActivity {
             Map<String, String> args = new HashMap<>();
             args.put("ORGGUID", organizationCode);
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "unloadhandle", "CheckOrgCode", args);
-            Message message = new Message.MessageBuilder()
+
+            Connect connecet = new RMConnect.Builder(LoginActivity.class)
                     .withProtocol(protocol)
-                    .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
-                    }))
-                    .build();
-            FacadeClient.request(LoginActivity.this, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-
-                }
-
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    nextPressed = false;
-                    if (errorMsg == null) {
-                        ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
-                        LinkedTreeMap<String, String> result = response.getResponse();
-                        if (result != null && result.size() > 0) {
-                            String isValidity = result.get("ISVALIDITY");
-                            if (TextUtils.equals("1", isValidity)) {
-                                String orgName = result.get("COMNAME");
-                                String appKey = result.get("appkey");
-                                //UserConfig.setHXAppId(appKey);
-                                params.putString(PARAM_ORGAN_NAME, orgName);
-                                setPage(1, true, params, false);
+                    .withParser(new JSONNodeParser())
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            nextPressed = false;
+                            if (errorMessage == null) {
+                                ResponseProtocol<JsonNode> response = (ResponseProtocol) message.protocol;
+                                JsonNode result = response.getResponse();
+                                if (result != null && result.size() > 0) {
+                                    String isValidity = result.get("ISVALIDITY").asText();
+                                    if (TextUtils.equals("1", isValidity)) {
+                                        String orgName = result.get("COMNAME").asText();
+                                        String appKey = result.get("appkey").asText();
+                                        //UserConfig.setHXAppId(appKey);
+                                        params.putString(PARAM_ORGAN_NAME, orgName);
+                                        setPage(1, true, params, false);
+                                    } else {
+                                        String resultMessage = result.get("MESSAGE").asText();
+                                        needShowAlert(getString(R.string.app_name), resultMessage);
+                                    }
+                                }
                             } else {
-                                String message = result.get("MESSAGE");
-                                needShowAlert(getString(R.string.app_name), message);
+                                if (errorMessage.code != 0) {
+                                    needShowAlert(getString(R.string.app_name), errorMessage.msg);
+                                }
                             }
+                            needHideProgress();
                         }
-                    } else {
-                        if (errorMsg.code != 0) {
-                            needShowAlert(getString(R.string.app_name), errorMsg.msg);
-                        }
-                    }
-                    needHideProgress();
-                }
-            });
+                    }).build();
+            ConnectManager.getInstance().request(LoginActivity.this, connecet);
         }
 
         @Override
@@ -696,48 +690,43 @@ public class LoginActivity extends BaseActivity {
             args.put("FLAG", requestFlag);
 
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "sendsms", args);
-            Message message = new Message.MessageBuilder()
-                    .withProtocol(protocol)
-                    .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
-                    }))
-                    .build();
-            FacadeClient.request(LoginActivity.this, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-                    waitingForSms = false;
-                }
 
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    waitingForSms = false;
-                    needHideProgress();
-                    String error;
-                    if (errorMsg == null) {
-                        ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
-                        LinkedTreeMap<String, String> result = response.getResponse();
-                        if (result != null && result.size() > 0) {
-                            String smsResult = result.get("SMSRESULT");
-                            if (TextUtils.equals("1", smsResult)) {
-                                destroyTimer();
-                                initTimeText(1, 0);
-                                createTimer();
-                                problemText.setVisibility(View.GONE);
-                                return;
+            Connect connect = new RMConnect.Builder(LoginActivity.class)
+                    .withProtocol(protocol)
+                    .withParser(new JSONNodeParser())
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            waitingForSms = false;
+                            needHideProgress();
+                            String error;
+                            if (errorMessage == null) {
+                                ResponseProtocol<JsonNode> response = (ResponseProtocol) message.protocol;
+                                JsonNode result = response.getResponse();
+                                if (result != null && result.size() > 0) {
+                                    String smsResult = result.get("SMSRESULT").asText();
+                                    if (TextUtils.equals("1", smsResult)) {
+                                        destroyTimer();
+                                        initTimeText(1, 0);
+                                        createTimer();
+                                        problemText.setVisibility(View.GONE);
+                                        return;
+                                    } else {
+                                        error = smsResult;
+                                    }
+                                } else {
+                                    error = "未知";
+                                }
                             } else {
-                                error = smsResult;
+                                error = "内部错误";
                             }
-                        } else {
-                            error = "未知";
+                            Toast.makeText(getContext(), String.format("请求发送随机密码发生未知问题,请稍候再试\n[%s]", error), Toast.LENGTH_SHORT).show();
+                            clearTimeText();
+                            destroyTimer();
+                            problemText.setVisibility(View.VISIBLE);
                         }
-                    } else {
-                        error = "内部错误";
-                    }
-                    Toast.makeText(getContext(), String.format("请求发送随机密码发生未知问题,请稍候再试\n[%s]", error), Toast.LENGTH_SHORT).show();
-                    clearTimeText();
-                    destroyTimer();
-                    problemText.setVisibility(View.VISIBLE);
-                }
-            });
+                    }).build();
+            ConnectManager.getInstance().request(LoginActivity.this, connect);
         }
 
         private void createTimer() {
@@ -1270,17 +1259,15 @@ public class LoginActivity extends BaseActivity {
     }
 
     protected void processLoginResponse(String userName, String password, Bundle params) {
-        UserConfig.clearUser();
-        UserConfig.Data userConfigData = new UserConfig.Data();
-        String orgCode = params.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
-        String orgName = params.getString(OrganizationCodeView.PARAM_ORGAN_NAME);
-        userConfigData.setOrg(orgCode, orgName);
         String phoneNumber = params.getString(PhoneView.PARAM_PHONE);
         String userGuid = params.getString("UserGuid");
-        userConfigData.setPhoneNumber(phoneNumber);
-        userConfigData.setLogin(userName, password);
-        userConfigData.setUserGuid(userGuid);
-        UserConfig.getInstance().saveConfig(userConfigData);
+        UserConfig.clearUser();
+        UserData userData = new UserData.Builder()
+                .withLogin(userName, password)
+                .withPhone(phoneNumber)
+                .withUserGuid(userGuid)
+                .build();
+        UserConfig.getInstance().saveConfig(userData);
         UserConfig.getInstance().loadConfig();
         FacadeToken.getInstance().init();
         AndroidUtilities.runOnUIThread(new Runnable() {
@@ -1940,57 +1927,51 @@ public class LoginActivity extends BaseActivity {
             }
 
             final Bundle params = new Bundle();
-            UserConfig.AppChannel appChannel = UserConfig.loadAppChannel();
-            params.putString(OrganizationCodeView.PARAM_ORGAN_CODE, appChannel.orgCode);
-            params.putString(OrganizationCodeView.PARAM_ORGAN_NAME, appChannel.orgName);
+            params.putString(OrganizationCodeView.PARAM_ORGAN_CODE, UserConfig.getInstance().getOrgCode());
+            params.putString(OrganizationCodeView.PARAM_ORGAN_NAME, UserConfig.getInstance().getOrgName());
             params.putString(PARAM_PHONE, phone);
             nextPressed = true;
             needShowProgress("验证手机号码...");
             Map<String, String> args = new HashMap<>();
 
             args.put("PHONENUMBER", phone);
-            args.put("ORGGUID", appChannel.orgCode);
+            args.put("ORGGUID", UserConfig.getInstance().getOrgCode());
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "CheckPhoneNumber", args);
-            Message message = new Message.MessageBuilder()
+
+            Connect connect = new RMConnect.Builder(LoginActivity.class)
                     .withProtocol(protocol)
-                    .withParser(new JsonParser(new TypeToken<LinkedTreeMap<String, String>>() {
-                    }))
-                    .build();
-            FacadeClient.request(LoginActivity.this, message, new FacadeClient.FacadeCallback() {
-                @Override
-                public void onTokenTimeout(Message msg) {
-
-                }
-
-                @Override
-                public void onResult(Message msg, Message errorMsg) {
-                    nextPressed = false;
-                    needHideProgress();
-                    //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
-                    if (errorMsg == null) {
-                        ResponseProtocol<LinkedTreeMap<String, String>> response = (ResponseProtocol) msg.protocol;
-                        LinkedTreeMap<String, String> result = response.getResponse();
-                        if (result != null && result.size() > 0) {
-                            String isValidity = result.get("ISVALIDITY");
-                            if (!TextUtils.equals("0", isValidity)) {
-                                boolean value = TextUtils.equals("2", isValidity);
-                                params.putBoolean("IsValidityUser", value);
-                                params.putString("UserGuid", result.get("USERGUID"));
-                                setPage(value ? 1 : 2, true, params, false);
+                    .withDelegate(new Connect.AckDelegate() {
+                        @Override
+                        public void onResult(Message message, Message errorMessage) {
+                            nextPressed = false;
+                            needHideProgress();
+                            //  Log.i("msg",((ResponseProtocol) msg.protocol).getResponse()+"");
+                            if (errorMessage == null) {
+                                ResponseProtocol<JsonNode> response = (ResponseProtocol) message.protocol;
+                                JsonNode result = response.getResponse();
+                                if (result != null && result.size() > 0) {
+                                    String isValidity = result.get("ISVALIDITY").asText();
+                                    if (!TextUtils.equals("0", isValidity)) {
+                                        boolean value = TextUtils.equals("2", isValidity);
+                                        params.putBoolean("IsValidityUser", value);
+                                        params.putString("UserGuid", result.get("USERGUID").asText());
+                                        setPage(value ? 1 : 2, true, params, false);
+                                    } else {
+                                        needShowAlert(getString(R.string.app_name), "手机号码异常");
+                                    }
+                                }
                             } else {
-                                needShowAlert(getString(R.string.app_name), "手机号码异常");
+                                if (errorMessage.code != 0) {
+                                    //   ResponseProtocol<String> error = (ResponseProtocol) msg.protocol;
+                                    // Log.i("错误信息是否为空----",(error.getResponse()==null)+"");
+                                    ToastCell.toast(LoginActivity.this, errorMessage.msg);
+                                    // Log.i("登录错误日志----",errorMsg.msg);
+                                }
                             }
                         }
-                    } else {
-                        if (errorMsg.code != 0) {
-                            //   ResponseProtocol<String> error = (ResponseProtocol) msg.protocol;
-                            // Log.i("错误信息是否为空----",(error.getResponse()==null)+"");
-                            ToastCell.toast(LoginActivity.this, errorMsg.msg);
-                            // Log.i("登录错误日志----",errorMsg.msg);
-                        }
-                    }
-                }
-            });
+                    }).withParser(new JSONNodeParser())
+                    .build();
+            ConnectManager.getInstance().request(LoginActivity.this, connect);
         }
 
         @Override
