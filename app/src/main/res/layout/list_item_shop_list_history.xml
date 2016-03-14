@@ -1,101 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:id="@+id/childitem"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/childitem"
-    >
+    android:orientation="horizontal">
+
     <ImageView
-        android:layout_width="96dp"
-        android:layout_height="112dp"
-      android:layout_gravity="center_vertical"
         android:id="@+id/iv"
         style="@style/ImageStyle"
+        android:layout_width="96dp"
+        android:layout_height="112dp"
+        android:layout_gravity="center_vertical"
         android:scaleType="fitXY"
-        android:src="@drawable/picture_fail"/>
+        android:src="@drawable/picture_fail" />
+
     <LinearLayout
+        android:id="@+id/linear_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="128dp"
-     android:layout_gravity="center_vertical"
-
         android:gravity="center_vertical"
-        android:id="@+id/linear_item"
         android:orientation="vertical">
+
         <TextView
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_large"
-            android:id="@+id/name"
-            android:textColor="@color/titlecolor"
-            android:typeface="normal"
             android:layout_margin="@dimen/padding_inner"
-            android:singleLine="true"
             android:ellipsize="end"
-            android:text="同仁堂 人参归睥丸 30g"/>
+            android:singleLine="true"
+            android:text="同仁堂 人参归睥丸 30g"
+            android:textColor="@color/titlecolor"
+            android:textSize="@dimen/text_size_large"
+            android:typeface="normal" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_inner"
             android:layout_marginLeft="@dimen/padding_inner"
             android:layout_marginRight="@dimen/padding_inner"
-            android:layout_marginBottom="@dimen/padding_inner"
             android:orientation="horizontal">
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#fa5939"
-                android:textSize="@dimen/text_size_large"
                 android:id="@+id/discountPrice"
-                android:text="¥9.9"/>
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#999999"
-                android:layout_marginLeft="@dimen/padding_outter"
-                android:text="¥9.9"
-                android:textSize="@dimen/text_size_medium"
-                android:typeface="normal"
+                android:textSize="@dimen/text_size_large" />
+
+            <TextView
                 android:id="@+id/realPrice"
-                />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_outter"
+                android:textColor="#666666"
+                android:textSize="@dimen/text_size_medium"
+                android:typeface="normal" />
         </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/padding_inner"
-        android:layout_marginRight="@dimen/padding_inner"
-        android:layout_marginBottom="@dimen/padding_inner"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_medium"
-            android:textColor="#666666"
-            android:text="100"
-            android:id="@+id/saleCount"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:typeface="normal"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_medium"
-            android:textColor="#666666"
-            android:text="999评论"
+            android:layout_marginBottom="@dimen/padding_inner"
             android:layout_marginLeft="@dimen/padding_inner"
-            android:id="@+id/comment"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:typeface="normal"/>
+            android:layout_marginRight="@dimen/padding_inner"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/saleCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="100"
+                android:textColor="#666666"
+                android:textSize="@dimen/text_size_medium"
+                android:typeface="normal" />
+
+            <TextView
+                android:id="@+id/comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_inner"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="999评论"
+                android:textColor="#666666"
+                android:textSize="@dimen/text_size_medium"
+                android:typeface="normal" />
         </LinearLayout>
     </LinearLayout>
+
     <ImageView
+        android:id="@+id/shop"
         android:layout_width="48dp"
         android:layout_height="48dp"
-       android:layout_gravity="center_vertical|right|bottom"
-        android:src="@drawable/succees"
-       android:layout_marginRight="@dimen/padding_inner"
+        android:layout_gravity="center_vertical|right|bottom"
         android:layout_marginBottom="@dimen/padding_outter"
-        android:id="@+id/shop"
-        android:scaleType="centerInside"/>
+        android:layout_marginRight="@dimen/padding_inner"
+        android:scaleType="centerInside"
+        android:src="@drawable/succees" />
 
 </FrameLayout>

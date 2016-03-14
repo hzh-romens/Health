@@ -26,6 +26,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.model.CuoponEntity;
+import com.romens.yjk.health.ui.CuoponActivity;
 import com.romens.yjk.health.ui.adapter.CuoponAdapter;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -36,14 +37,15 @@ import java.util.Map;
  * Created by HZH on 2016/1/15.
  */
 public class CuoponFragment extends Fragment {
-    private ListView listView;
+    private SparseBooleanArray choiceArray = new SparseBooleanArray();
     private SwipeRefreshLayout refreshLayout;
     private CuoponAdapter cuoponAdapter;
-    private int mFlag;
-    private String requestType;
     private int choicePosition = -1;
+    private String requestType;
+    private ListView listView;
     private double sumMoney;
-    private SparseBooleanArray choiceArray = new SparseBooleanArray();
+    private int mPage;
+
 
     @Nullable
     @Override
@@ -56,38 +58,40 @@ public class CuoponFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                CuoponEntity entity = result.get(position);
-                                                choiceArray = cuoponAdapter.getChoiceArray();
-                                                cuoponAdapter.setChoiceItem(position, !choiceArray.get(position));
-                                                if (choiceArray.get(position)) {
-                                                    choiceArray.append(position, false);
-                                                } else {
-                                                    choiceArray.append(position, true);
-                                                }
-
-                                                cuoponAdapter.bindChoiceData(choiceArray);
-                                                if ("GetCoupon".equals(requestType)) {
-                                                    if (sumMoney <= Double.parseDouble(entity.getLimitamount())) {
-                                                        Toast.makeText(getActivity(), "未达到优惠卷使用金额", Toast.LENGTH_SHORT).show();
+                                                if (mCanclick) {
+                                                    CuoponEntity entity = result.get(position);
+                                                    choiceArray = cuoponAdapter.getChoiceArray();
+                                                    cuoponAdapter.setChoiceItem(position, !choiceArray.get(position));
+                                                    if (choiceArray.get(position)) {
+                                                        choiceArray.append(position, false);
                                                     } else {
-                                                        Intent intent = new Intent();
-                                                        String couponguID = result.get(position).getCouponguid();
-                                                        if (position == choicePosition) {
-                                                            intent.putExtra("position", -1);
-                                                            intent.putExtra("orderCouponID", "");
-                                                            intent.putExtra("amount", "");
-                                                            intent.putExtra("limitAmount", "");
-                                                        } else {
-                                                            intent.putExtra("position", position);
-                                                            intent.putExtra("orderCouponID", couponguID);
-                                                            intent.putExtra("amount", result.get(position).getAmount());
-                                                            intent.putExtra("limitAmount", result.get(position).getLimitamount());
-                                                        }
-                                                        getActivity().setResult(Activity.RESULT_OK, intent);
-                                                        getActivity().finish();
+                                                        choiceArray.append(position, true);
                                                     }
-                                                } else {
-                                                    Toast.makeText(getActivity(), "该优惠卷无效", Toast.LENGTH_SHORT).show();
+
+                                                    cuoponAdapter.bindChoiceData(choiceArray);
+                                                    if ("GetCoupon".equals(requestType)) {
+                                                        if (sumMoney <= Double.parseDouble(entity.getLimitamount())) {
+                                                            Toast.makeText(getActivity(), "未达到优惠卷使用金额", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            Intent intent = new Intent();
+                                                            String couponguID = result.get(position).getCouponguid();
+                                                            if (position == choicePosition) {
+                                                                intent.putExtra("position", -1);
+                                                                intent.putExtra("orderCouponID", "");
+                                                                intent.putExtra("amount", "");
+                                                                intent.putExtra("limitAmount", "");
+                                                            } else {
+                                                                intent.putExtra("position", position);
+                                                                intent.putExtra("orderCouponID", couponguID);
+                                                                intent.putExtra("amount", result.get(position).getAmount());
+                                                                intent.putExtra("limitAmount", result.get(position).getLimitamount());
+                                                            }
+                                                            getActivity().setResult(Activity.RESULT_OK, intent);
+                                                            getActivity().finish();
+                                                        }
+                                                    } else {
+                                                        Toast.makeText(getActivity(), "该优惠卷无效", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
                                             }
                                         }
@@ -112,7 +116,7 @@ public class CuoponFragment extends Fragment {
             refreshLayout.setRefreshing(isRefresh);
         }
 
-        if (mFlag == 1) {
+        if (mPage == CuoponActivity.NOW) {
             requestType = "GetCoupon";
             getCuopon();
         } else {
@@ -122,10 +126,15 @@ public class CuoponFragment extends Fragment {
     }
 
     private List<CuoponEntity> result;
+    private boolean mCanclick;
 
 
-    public void setFlag(int flag) {
-        this.mFlag = flag;
+    public void setPage(int page) {
+        this.mPage = page;
+    }
+
+    public void setCanClick(boolean canClick) {
+        this.mCanclick = canClick;
     }
 
     public void setChoice(int position, double sumMoney) {

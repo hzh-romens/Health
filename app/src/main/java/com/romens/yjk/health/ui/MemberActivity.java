@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.adapter.CardListAdapter;
 import com.romens.yjk.health.ui.adapter.MemberAdapter;
 
@@ -77,6 +79,18 @@ public class MemberActivity extends BaseActivity {
         getMemberData();
         memberAdapter.bindData(types);
         listview.setAdapter(memberAdapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //优惠卷
+                if (position == 5) {
+                    UIOpenHelper.openCuoponActivityWithBundle(MemberActivity.this, false);
+                } else if (position == 8) {
+                    //跳转到个人资料
+                    UIOpenHelper.openAccountSettingActivity(MemberActivity.this);
+                }
+            }
+        });
     }
 
     public void getMemberData() {

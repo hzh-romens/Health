@@ -26,8 +26,15 @@ public class CuoponActivity extends BaseActivity {
     private ViewPager viewPager;
     private CuoponFragmentPagerAdapter fragmentPagerAdapter;
     private TabLayout tabLayout;
-    private int choicePosition;
+
+    private List<Fragment> fragmentsList;
+    private List<String> titles;
+
     private String sumMoney;
+    private boolean canClick;
+    private int choicePosition;
+    public static final int NOW = 1;
+    public static final int HISTORY = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +42,11 @@ public class CuoponActivity extends BaseActivity {
         setContentView(R.layout.activity_cuopon, R.id.action_bar);
         choicePosition = getIntent().getIntExtra("position", 0);
         sumMoney = getIntent().getStringExtra("sumMoney");
+        canClick = getIntent().getBooleanExtra("canClick", true);
+
         actionBar = (ActionBar) findViewById(R.id.action_bar);
         actionBar.setTitle("我的优惠券");
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        initView();
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
@@ -47,6 +55,8 @@ public class CuoponActivity extends BaseActivity {
                 }
             }
         });
+
+        initView();
 
     }
 
@@ -61,17 +71,15 @@ public class CuoponActivity extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private List<Fragment> fragmentsList;
-    private List<String> titles;
 
     private void initFragments() {
         fragmentsList = new ArrayList<Fragment>();
         CuoponFragment fragment = new CuoponFragment();
-        fragment.setFlag(1);
+        fragment.setPage(NOW);
         fragment.setChoice(choicePosition, Double.parseDouble(sumMoney));
         fragmentsList.add(fragment);
         CuoponFragment historyFragment = new CuoponFragment();
-        historyFragment.setFlag(2);
+        historyFragment.setPage(HISTORY);
         fragmentsList.add(historyFragment);
 
     }
