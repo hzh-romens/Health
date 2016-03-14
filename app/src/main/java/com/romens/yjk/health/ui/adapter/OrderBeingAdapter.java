@@ -1,9 +1,12 @@
 package com.romens.yjk.health.ui.adapter;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
@@ -28,6 +32,8 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
+import com.romens.yjk.health.pay.Pay;
+import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
@@ -37,6 +43,7 @@ import com.romens.yjk.health.ui.fragment.OrderFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +57,7 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
         super(adapterContext, orderEntities);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view, ViewGroup parent) {
         if (view == null) {
@@ -59,7 +67,6 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
         TextView moneyTextView = (TextView) view.findViewById(R.id.order_money);
         TextView dateTextView = (TextView) view.findViewById(R.id.order_date);
         BackupImageView medicineImg = (BackupImageView) view.findViewById(R.id.order_img);
-//        TextView countTextView = (TextView) view.findViewById(R.key.order_count);
         RelativeLayout btnLayout = (RelativeLayout) view.findViewById(R.id.order_btn_layout);
         btnLayout.setVisibility(View.GONE);
         if (childPosition == getChildrenCount(groupPosition) - 1) {
@@ -71,6 +78,20 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
         TextView cancelBtn = (TextView) view.findViewById(R.id.order_all_buy_cancel);
         cancelBtn.setText("取消订单");
         evaluateBtn.setText("确认收货");
+        evaluateBtn.setId(R.id.order_all_evaluate_btn);
+
+        if (typeEntitiesList.get(groupPosition).get(0).getOrderStatuster().equals("未付款")) {
+            evaluateBtn.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+            layoutParams.rightMargin = AndroidUtilities.dp(8);
+            cancelBtn.setLayoutParams(layoutParams);
+        } else {
+            evaluateBtn.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
+            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            cancelBtn.setLayoutParams(layoutParams);
+        }
         cancelBtn.setVisibility(View.VISIBLE);
 
         final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
@@ -80,13 +101,11 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
             medicineImg.setImageResource(R.drawable.no_img_upload);
         }
         titleTextView.setText(entity.getGoodsName());
-//        countTextView.setText("x" + entity.getMerCount());
         moneyTextView.setText("￥" + entity.getOrderPrice());
         dateTextView.setText(entity.getCreateDate());
         evaluateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(adapterContext, "click-->确认订单", Toast.LENGTH_SHORT).show();
                 needShowProgress("正在处理...");
                 requestConfirmReceive(userGuid, entity.getOrderId(), groupPosition, childPosition);
             }
@@ -114,6 +133,26 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
         });
         return view;
     }
+
+//    public void toPay(AllOrderEntity entity){
+//        //发起支付
+//        String orderNo = response.get("ORDERCODE").asText();
+//        String orderNo = entity.getOrderNo()
+//        String orderDate = response.get("CREATEDATE").asText();
+//        String orderDate = entity.getCreateDate();
+//        String payType = response.get("PAYTYPE").asText();
+//        BigDecimal payAmount = new BigDecimal(response.get("PAYMOUNT").asDouble(0));
+//
+//        Intent intent = Pay.getInstance().createPayPrepareComponentName(adapterContext, payType);
+//        if (intent != null) {
+//            Bundle arguments = new Bundle();
+//            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+//            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+//            arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+//            intent.putExtras(arguments);
+//            startActivity(intent);
+//        }
+//    }
 
     private void requestCancelOrderList(final String userGuid, String orderId) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
