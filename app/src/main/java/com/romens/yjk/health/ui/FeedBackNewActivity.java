@@ -2,13 +2,10 @@ package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,15 +21,12 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.helper.LabelHelper;
-import com.romens.yjk.health.ui.components.FlowLayout;
-import com.romens.yjk.health.ui.components.FlowLayoutCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +43,7 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
     private List<String> selectTagTxtList;
     private List<String> tagList;
     private String userGuid = "3333";
+    private boolean[] selectFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +119,7 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
                                 tagList.add(object.getString("TAGNAME"));
                             }
                         }
+                        selectFlag = new boolean[tagList.size()];
                     } catch (JSONException e) {
                         Toast.makeText(FeedBackNewActivity.this, "获取标签失败", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -138,15 +134,22 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
 
     public void showMulitChooseView(final String[] tagList) {
         selectTagTxtList.clear();
+        for (int i = 0; i < selectFlag.length; i++) {
+            if (selectFlag[i]) {
+                selectTagTxtList.add(tagList[i]);
+            }
+        }
         new AlertDialog.Builder(this)
                 .setTitle("意见标签").
-                setMultiChoiceItems(tagList, null, new DialogInterface.OnMultiChoiceClickListener() {
+                setMultiChoiceItems(tagList, selectFlag, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         if (isChecked) {
                             selectTagTxtList.add(tagList[which]);
+                            selectFlag[which] = true;
                         } else {
                             selectTagTxtList.remove(tagList[which]);
+                            selectFlag[which] = false;
                         }
                     }
                 }).setPositiveButton("确定", new DialogInterface.OnClickListener() {

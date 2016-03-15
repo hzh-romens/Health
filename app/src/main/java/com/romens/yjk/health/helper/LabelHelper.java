@@ -49,7 +49,6 @@ public class LabelHelper {
     }
 
     public static SpannableStringBuilder createChipForUserInfoLabels(List<String> labels) {
-        Log.e("tag", "-SpannableStringBuilder->" + labels.size());
         SpannableStringBuilder ssb = new SpannableStringBuilder("");
         if (labels == null || labels.size() <= 0) {
             ssb.append("");
