@@ -229,19 +229,20 @@ public class UserLabelsActivity extends BaseActivity {
     }
 
     public void showSingleChooseView(String[] data, final UserAttributeEntity entity) {
-        new AlertDialog.Builder(this).setSingleChoiceItems(data, Integer.parseInt(entity.values.get(0)), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                entity.clear();
-                if (which == 0) {
-                    entity.addValue("0", "无");
-                } else {
-                    entity.addValue("1", "有");
-                }
-                adapter.notifyDataSetChanged();
-                dialog.dismiss();
-            }
-        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this).setTitle(entity.name)
+                .setSingleChoiceItems(data, Integer.parseInt(entity.values.get(0)), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        entity.clear();
+                        if (which == 0) {
+                            entity.addValue("0", "无");
+                        } else {
+                            entity.addValue("1", "有");
+                        }
+                        adapter.notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -256,16 +257,17 @@ public class UserLabelsActivity extends BaseActivity {
                 selectFlag[i] = true;
             }
         }
-        new AlertDialog.Builder(this).setMultiChoiceItems(data, selectFlag, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                if (isChecked) {
-                    entity.addValue(which + "", data[which]);
-                } else {
-                    entity.remove(which + "", data[which]);
-                }
-            }
-        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this).setTitle(entity.name)
+                .setMultiChoiceItems(data, selectFlag, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        if (isChecked) {
+                            entity.addValue(which + "", data[which]);
+                        } else {
+                            entity.remove(which + "", data[which]);
+                        }
+                    }
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 adapter.notifyDataSetChanged();
