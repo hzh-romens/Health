@@ -684,7 +684,7 @@ public class LoginActivity extends BaseActivity {
             Map<String, String> args = new HashMap<>();
             String orgCode = params.getString(OrganizationCodeView.PARAM_ORGAN_CODE);
             args.put("ORGGUID", orgCode);
-            String userName = params.getString(PhoneView.PARAM_PHONE);
+            String userName = params.getString(PhoneView.PARAM_USER_NAME);
             args.put("USERNAME", userName);
             args.put("PHONENUMBER", requestPhone);
             args.put("FLAG", requestFlag);
@@ -792,7 +792,7 @@ public class LoginActivity extends BaseActivity {
             if (nextPressed) {
                 return;
             }
-            final String userName = currentParams.getString(PhoneView.PARAM_PHONE);
+            final String userName = currentParams.getString(PhoneView.PARAM_USER_NAME);
             if (TextUtils.isEmpty(userName)) {
                 Toast.makeText(LoginActivity.this, "请求的账号解析异常", Toast.LENGTH_SHORT).show();
                 return;
@@ -809,11 +809,11 @@ public class LoginActivity extends BaseActivity {
             waitingForSms = false;
 
             Map<String, String> args = new HashMap<>();
-            args.put("PHONE", userName);
+            args.put("USERNAME", userName);
             args.put("PWD", passCode);
             args.put("ORGGUID", UserConfig.getInstance().getOrgCode());
 
-            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "UserLogin", args);
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "UserLoginHealth", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
             Connect connect = new RMConnect.Builder(LoginActivity.class)
@@ -1131,15 +1131,15 @@ public class LoginActivity extends BaseActivity {
             }
             nextPressed = true;
             needShowProgress("正在验证用户信息...");
-            final String userName = currentParams.getString(PhoneView.PARAM_PHONE);
+            final String userName = currentParams.getString(PhoneView.PARAM_USER_NAME);
             final String password = UserConfig.formatCode(oldPassword);
 
             Map<String, String> args = new HashMap<>();
-            args.put("PHONE", userName);
+            args.put("USERNAME", userName);
             args.put("PWD", password);
             args.put("ORGGUID", UserConfig.getInstance().getOrgCode());
 
-            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "UserLogin", args);
+            FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "UserLoginHealth", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
             Connect connect = new RMConnect.Builder(LoginActivity.class)
@@ -1904,6 +1904,7 @@ public class LoginActivity extends BaseActivity {
         }
 
         public static final String PARAM_PHONE = "PhoneNumber";
+        public static final String PARAM_USER_NAME ="UserName";
 
         @Override
         public void onNextPressed() {
@@ -1954,6 +1955,7 @@ public class LoginActivity extends BaseActivity {
                                     if (!TextUtils.equals("0", isValidity)) {
                                         boolean value = TextUtils.equals("2", isValidity);
                                         params.putBoolean("IsValidityUser", value);
+                                        params.putString(PARAM_USER_NAME, result.get("NAME").asText());
                                         params.putString("UserGuid", result.get("USERGUID").asText());
                                         setPage(value ? 1 : 2, true, params, false);
                                     } else {

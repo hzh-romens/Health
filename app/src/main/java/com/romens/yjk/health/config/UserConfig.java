@@ -278,7 +278,7 @@ public class UserConfig {
         if (isClientActivated()) {
             if (accounts.length == 1) {
                 Account acc = accounts[0];
-                if (!acc.name.equals("" + getClientUserId())) {
+                if (!acc.name.equals(getClientUserPhone())) {
                     recreateAccount = true;
                 } else {
                     currentAccount = acc;
@@ -302,7 +302,7 @@ public class UserConfig {
             loadConfig();
             if (UserConfig.getInstance().isClientActivated()) {
                 try {
-                    currentAccount = new Account("" + getClientUserId(), packageName);
+                    currentAccount = new Account(getClientUserPhone(), packageName);
                     am.addAccountExplicitly(currentAccount, config.token, null);
                 } catch (Exception e) {
                     FileLog.e(e);
