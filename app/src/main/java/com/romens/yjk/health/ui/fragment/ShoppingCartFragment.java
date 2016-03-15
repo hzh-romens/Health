@@ -674,7 +674,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
 
                 ShoppingCartDataEntity entity = shoppingCartData.get(item.getKey());
                 String iconPath = entity.getIcon();
-                CharSequence name = createShoppingCartGoodsName(entity.getName(), entity.getGoodsType() == GoodsFlag.MEDICARE);
+                CharSequence name = ShoppingHelper.createShoppingCartGoodsName(entity.getName(), entity.getGoodsType() == GoodsFlag.MEDICARE);
                 String desc = String.format("规格:%s", entity.getSpec());
                 BigDecimal userPrice = entity.getUserPrice();
                 BigDecimal marketPrice = entity.getMarketPrice();
@@ -723,18 +723,6 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         private int getDataIndex(int position) {
             int index = showTip ? (position - 1) : position;
             return index;
-        }
-
-        private CharSequence createShoppingCartGoodsName(String name, boolean isMedicareGoods) {
-            SpannableStringBuilder ssb = new SpannableStringBuilder("");
-            if (isMedicareGoods) {
-                LabelHelper.XImageSpan span = LabelHelper.createImageSpanForUserInfoLabel("医保", R.layout.layout_goods_label, R.id.label_text_view);
-                ssb.append("<<");
-                ssb.setSpan(span, ssb.length() - 2, ssb.length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb.append(" ");
-            }
-            ssb.append(name);
-            return ssb;
         }
 
         public void onAllSelectedChanged(boolean checked) {
