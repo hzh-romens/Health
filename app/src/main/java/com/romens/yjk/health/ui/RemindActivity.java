@@ -2,8 +2,10 @@ package com.romens.yjk.health.ui;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -19,13 +21,16 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
+import com.romens.android.ui.ActionBar.BottomSheet;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.TextInfoCell;
+import com.romens.android.ui.cells.TextInfoPrivacyCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.pay.MedicareCard;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
@@ -48,6 +53,8 @@ public class RemindActivity extends BaseActivity {
     private RemindAdapter adapter;
 
     private ImageAndTextCell imgAndTxtCell;
+
+    private Dialog editDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +111,14 @@ public class RemindActivity extends BaseActivity {
         initData();
     }
 
+    @Override
+    public void onPause() {
+        if (editDialog != null && editDialog.isShowing()) {
+            editDialog.dismiss();
+        }
+        super.onPause();
+    }
+
     private void initData() {
         RemindDao remindDao = DBInterface.instance().openReadableDb().getRemindDao();
         data = remindDao.readDb(remindDao);
@@ -151,22 +166,26 @@ public class RemindActivity extends BaseActivity {
 
         @Override
         public ADHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if (viewType == 0) {
-                RemindItemCell cell = new RemindItemCell(context);
+            if (viewType == 1) {
+                TextInfoCell cell = new TextInfoCell(context);
+                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 return new ADHolder(cell);
             } else {
-                TextInfoCell cell = new TextInfoCell(context);
+                RemindItemCell cell = new RemindItemCell(context);
+                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 return new ADHolder(cell);
             }
         }
 
         @Override
         public void onBindViewHolder(ADHolder viewHolder, final int position) {
-            if (getItemViewType(position) == 0) {
+            int itemType = getItemViewType(position);
+            if (itemType == 1) {
+                TextInfoCell cell = (TextInfoCell) viewHolder.itemView;
+                cell.setText("小提示:长按可以删除提醒哦");
+            } else {
                 final RemindEntity entity = data.get(position);
                 final RemindItemCell cell = (RemindItemCell) viewHolder.itemView;
-                LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
-                cell.setLayoutParams(layoutParams);
                 cell.setData(R.drawable.remind_drug, entity.getDrug(), true);
                 if (entity.getIsRemind() == 0) {
                     cell.setCheck(false);
@@ -199,58 +218,71 @@ public class RemindActivity extends BaseActivity {
                 cell.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        removeDialogView(entity);
+                        onDeleteRemind(entity);
                         return false;
                     }
                 });
-            } else {
-                TextInfoCell cell = (TextInfoCell) viewHolder.itemView;
-//                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(40)));
-                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-                cell.setText("长按可以删除提醒哦");
             }
 
         }
 
         @Override
         public int getItemViewType(int position) {
-            return position + 1 > data.size() ? 1 : 0;
+            return position >= data.size() ? 1 : 0;
         }
 
-        public void removeDialogView(final RemindEntity entity) {
-            final AlertDialog dialog = new AlertDialog.Builder(context).create();
-            TextView textView = new TextView(context);
-
-            textView.setBackgroundResource(R.drawable.bg_white);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            textView.setSingleLine(true);
-            textView.setGravity(Gravity.CENTER);
-            textView.setText("删除");
-            textView.setTextColor(getResources().getColor(R.color.theme_primary));
-            textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(8), AndroidUtilities.dp(32), AndroidUtilities.dp(8));
-            LinearLayout.LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
-            infoViewParams.weight = 1;
-            infoViewParams.gravity = Gravity.CENTER;
-            textView.setLayoutParams(infoViewParams);
-
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    deleteDb(entity);
-                    cancelRemind(entity);
-                    initData();
-                }
-            });
-
-            dialog.show();
-            dialog.setContentView(textView);
-        }
+//        public void removeDialogView(final RemindEntity entity) {
+//            final AlertDialog dialog = new AlertDialog.Builder(context).create();
+//            TextView textView = new TextView(context);
+//
+//            textView.setBackgroundResource(R.drawable.bg_white);
+//            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+//            textView.setSingleLine(true);
+//            textView.setGravity(Gravity.CENTER);
+//            textView.setText("删除");
+//            textView.setTextColor(getResources().getColor(R.color.theme_primary));
+//            textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(8), AndroidUtilities.dp(32), AndroidUtilities.dp(8));
+//            LinearLayout.LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+//            infoViewParams.weight = 1;
+//            infoViewParams.gravity = Gravity.CENTER;
+//            textView.setLayoutParams(infoViewParams);
+//
+//            textView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    dialog.dismiss();
+//                    deleteDb(entity);
+//                    cancelRemind(entity);
+//                    initData();
+//                }
+//            });
+//
+//            dialog.show();
+//            dialog.setContentView(textView);
+//        }
 
         @Override
         public int getItemCount() {
-            return data.size() > 0 ? data.size() + 1 : 0;
+            int size = data.size();
+            return size > 0 ? (size + 1) : 0;
         }
+    }
+
+    public void onDeleteRemind(final RemindEntity entity) {
+        editDialog = new BottomSheet.Builder(this)
+                .setTitle("用药提醒")
+                .setItems(new CharSequence[]{"删除提醒"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, final int which) {
+                        if (which == 0) {
+                            dialog.dismiss();
+                            deleteDb(entity);
+                            cancelRemind(entity);
+                            initData();
+                        }
+                    }
+                }).create();
+        editDialog.show();
     }
 
     private void deleteDb(RemindEntity entity) {
