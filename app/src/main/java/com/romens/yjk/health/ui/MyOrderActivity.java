@@ -67,10 +67,17 @@ public class MyOrderActivity extends BaseActivity {
 
     private List<Fragment> initFragment() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new OrderFragment(ORDER_TYPE_ALL));
-        fragments.add(new OrderFragment(ORDER_TYPE_BEING));
-        fragments.add(new OrderFragment(ORDER_TYPE_COMPLETE));
-        fragments.add(new OrderFragment(ORDER_TYPE_EVALUATE));
+//        fragments.add(new OrderFragment(ORDER_TYPE_ALL));
+//        fragments.add(new OrderFragment(ORDER_TYPE_BEING));
+//        fragments.add(new OrderFragment(ORDER_TYPE_COMPLETE));
+//        fragments.add(new OrderFragment(ORDER_TYPE_EVALUATE));
+        for (int i = 1; i < 5; i++) {
+            OrderFragment orderFragment = new OrderFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("fragmentType", i);
+            orderFragment.setArguments(bundle);
+            fragments.add(orderFragment);
+        }
         return fragments;
     }
 

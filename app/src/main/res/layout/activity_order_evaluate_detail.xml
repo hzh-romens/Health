@@ -87,13 +87,4 @@
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
-    <TextView
-        android:id="@+id/order_evaluate_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/order_evaluate_bottom_layout"
-        android:layout_below="@id/order_evaluate_opinion_text"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_gray"/>
-
 </RelativeLayout>

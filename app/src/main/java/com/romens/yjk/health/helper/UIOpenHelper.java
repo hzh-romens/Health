@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AddressEntity;
@@ -45,6 +45,8 @@ import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.yunuo.pay.PayActivity;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -112,50 +114,13 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
-    /**
-     * 打开药品详情页
-     *
-     * @param context
-     * @param guid
-     */
     public static void openMedicineActivity(Context context, String guid) {
-        openMedicineActivity(context, guid, GoodsFlag.NORMAL);
+        openMedicineActivity(context, guid, true);
     }
 
-    /**
-     * 打开药品详情页
-     *
-     * @param context
-     * @param guid
-     * @param goodsFlag {@link GoodsFlag}
-     */
-    public static void openMedicineActivity(Context context, String guid, int goodsFlag) {
-        openMedicineActivity(context, guid, goodsFlag, true);
-    }
-
-    /**
-     * 打开药品详情页
-     *
-     * @param context
-     * @param guid
-     * @param checkNearStore
-     */
     public static void openMedicineActivity(Context context, String guid, boolean checkNearStore) {
-        openMedicineActivity(context, guid, GoodsFlag.NORMAL, checkNearStore);
-    }
-
-    /**
-     * 打开药品详情页
-     *
-     * @param context
-     * @param guid
-     * @param goodsFlag      {@link GoodsFlag}
-     * @param checkNearStore
-     */
-    public static void openMedicineActivity(Context context, String guid, int goodsFlag, boolean checkNearStore) {
         Intent intent = new Intent(context, GoodsDetailActivity.class);
         Bundle arguments = new Bundle();
-        arguments.putInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, goodsFlag);
         arguments.putString(GoodsDetailActivity.ARGUMENTS_KEY_ID, guid);
         arguments.putBoolean(GoodsDetailActivity.ARGUMENTS_KEY_CHECK_NEAR_STORE, checkNearStore);
         intent.putExtras(arguments);

@@ -2,13 +2,10 @@ package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +21,6 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.helper.LabelHelper;
-import com.romens.yjk.health.ui.components.FlowLayout;
-import com.romens.yjk.health.ui.components.FlowLayoutCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -137,10 +132,15 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
     }
 
     public void showMulitChooseView(final String[] tagList) {
-        selectTagTxtList.clear();
+        boolean[] selectFlag = new boolean[tagList.length];
+        for (int i = 0; i < tagList.length; i++) {
+            if (selectTagTxtList.contains(tagList[i])) {
+                selectFlag[i] = true;
+            }
+        }
         new AlertDialog.Builder(this)
                 .setTitle("意见标签").
-                setMultiChoiceItems(tagList, null, new DialogInterface.OnMultiChoiceClickListener() {
+                setMultiChoiceItems(tagList, selectFlag, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         if (isChecked) {

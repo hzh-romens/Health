@@ -1,10 +1,10 @@
 package com.romens.yjk.health.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +53,6 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
     private AccountAdapter adapter;
 
     private PersonalEntity entity;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

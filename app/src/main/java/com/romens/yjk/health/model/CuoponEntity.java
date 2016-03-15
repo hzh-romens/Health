@@ -1,11 +1,6 @@
 package com.romens.yjk.health.model;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Created by HZH on 2016/2/4.
@@ -111,40 +106,19 @@ public class CuoponEntity {
         this.shuoming = shuoming;
     }
 
-    public static List<CuoponEntity> toEntity(String json) {
-        List<CuoponEntity> result = new ArrayList<CuoponEntity>();
+    public static CuoponEntity toEntity(JsonNode jsonNode) {
         CuoponEntity entity = new CuoponEntity();
-        try {
-            JSONArray array = new JSONArray(json);
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonObject = array.getJSONObject(i);
-                entity.setCouponguid(jsonObject.getString("COUPONGUID"));
-
-                entity.setGuid(jsonObject.getString("GUID"));
-
-                entity.setOrgguid(jsonObject.getString("ORGGUID"));
-
-                entity.setGettime(jsonObject.getString("GETTIME"));
-
-                entity.setAmount(jsonObject.getString("AMOUNT"));
-
-                entity.setEnddate(jsonObject.getString("ENDDATE"));
-
-                entity.setIsused(jsonObject.getString("ISUSED"));
-
-                entity.setLimitamount(jsonObject.getString("LIMITAMOUNT"));
-
-                entity.setName(jsonObject.getString("NAME"));
-
-                entity.setShuoming(jsonObject.getString("SHUOMING"));
-
-                entity.setStartdate(jsonObject.getString("STARTDATE"));
-
-                result.add(entity);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return result;
+        entity.setCouponguid(jsonNode.get("COUPONGUID").asText());
+        entity.setGuid(jsonNode.get("GUID").asText());
+        entity.setOrgguid(jsonNode.get("ORGGUID").asText());
+        entity.setGettime(jsonNode.get("GETTIME").asText());
+        entity.setAmount(jsonNode.get("AMOUNT").asText());
+        entity.setEnddate(jsonNode.get("ENDDATE").asText());
+        entity.setIsused(jsonNode.get("ISUSED").asText());
+        entity.setLimitamount(jsonNode.get("LIMITAMOUNT").asText());
+        entity.setName(jsonNode.get("NAME").asText());
+        entity.setShuoming(jsonNode.get("SHUOMING").asText());
+        entity.setStartdate(jsonNode.get("STARTDATE").asText());
+        return entity;
     }
 }

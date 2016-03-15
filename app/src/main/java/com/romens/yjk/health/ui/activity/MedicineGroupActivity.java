@@ -1,13 +1,11 @@
 package com.romens.yjk.health.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.base.BaseActionBarActivity;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 
 /**
@@ -19,7 +17,10 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
+        String title = getIntent().getStringExtra("title");
+        if (TextUtils.isEmpty(title)) {
+            title = getString(R.string.app_name);
+        }
         setContentView(R.layout.activity_fragment, R.id.action_bar);
         ActionBar actionBar = getMyActionBar();
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -30,20 +31,10 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
                 }
             }
         });
-
-        if (intent.hasExtra("title")) {
-            actionBar.setTitle(intent.getStringExtra("title"));
-        } else {
-            actionBar.setTitle(getString(R.string.app_name));
-        }
-
-        int goodsFlag = GoodsFlag.NORMAL;
-        if (intent.hasExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG)) {
-            goodsFlag = intent.getIntExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.NORMAL);
-        }
+        actionBar.setTitle(title);
         fragment = new HomeHealthNewFragment();
         Bundle arguments = new Bundle();
-        arguments.putInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, goodsFlag);
+        arguments.putInt(HomeHealthNewFragment.ARGUMENTS_KEY_FLAG, 1);
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
     }
