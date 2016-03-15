@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
-import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AddressEntity;
@@ -30,7 +28,6 @@ import com.romens.yjk.health.ui.MemberActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
-import com.romens.yjk.health.ui.ShopCarActivity;
 import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
 import com.romens.yjk.health.ui.activity.ChangePasswordActivity;
@@ -45,8 +42,6 @@ import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.yunuo.pay.PayActivity;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -294,12 +289,6 @@ public class UIOpenHelper {
         context.startActivityForResult(i, requestCode);
     }
 
-    public static void openShopCarActivityWithAnimation(Context context) {
-        Intent i = new Intent(context, ShopCarActivity.class);
-        context.startActivity(i);
-        ((Activity) context).finish();
-        ((Activity) context).overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    }
 
     public static void openMyOrderActivity(Context context) {
         Intent intent = new Intent(context, MyOrderActivity.class);

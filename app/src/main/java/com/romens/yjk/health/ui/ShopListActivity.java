@@ -17,14 +17,15 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.ActionBarMenuItem;
@@ -48,31 +49,31 @@ import java.util.Map;
  */
 public class ShopListActivity extends BaseActivity implements View.OnClickListener {
     public static final String ARGUMENTS_KEY_FLAG = "key_flag";
-    private ImageView other;
-    private RecyclerView recyclerView;
+    private ShopListNoPictureAdapter shopListNoPictureAdapter;
+    private ReviseRadioButton priceButton, saleButton;
+    private LinearLayoutManager linearLayoutManager;
+    private static boolean SEARCHDEFAULT = true;
     private SwipeRefreshLayout refreshLayout;
     private ShopListAdapter shopListAdapter;
     private RelativeLayout switchButton;
-    private boolean Expand = false;
-    private String choice;
-    private String guid, name;
-    private LinearLayoutManager linearLayoutManager;
-    private int lastVisibleItem;
-    private RadioGroup radioGroup;
-    private RadioButton allButton;
-    private ReviseRadioButton priceButton, saleButton;
-    private String editTextValue = "";
-    private String keyValue = "";
-    private ShopListNoPictureAdapter shopListNoPictureAdapter;
-    private int page = 0;
-    private final int COUNT = 10;
     private static int ADAPTERFLAG = 1;
+    private RecyclerView recyclerView;
+    private String editTextValue = "";
     private static int PRICE_FLAG = 0;
     private static int SALE_FLAG = 5;
-    private static boolean SEARCHDEFAULT = true;
+    private boolean Expand = false;
+    private RadioButton allButton;
+    private RadioGroup radioGroup;
+    private String keyValue = "";
+    private final int COUNT = 10;
     private ActionBar actionBar;
-
+    private int lastVisibleItem;
+    private String guid, name;
+    private ImageView other;
+    private String choice;
+    private int page = 0;
     private int flag = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,28 +322,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-//    private View.OnKeyListener onKeyListener = new View.OnKeyListener() {
-//
-//        @Override
-//        public boolean onKey(View v, int keyCode, KeyEvent event) {
-//            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-//                /*隐藏软键盘*/
-//                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                if (inputMethodManager.isActive()) {
-//                    inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-//                }
-//                SEARCHDEFAULT = false;
-//                // editTextValue = searchEditor.getText().toString();
-//                if (name.equals(editTextValue) || "".equals(editTextValue) || editTextValue == null) {
-//                    Toast.makeText(ShopListActivity.this, "请输入你需要搜索的商品", Toast.LENGTH_SHORT).show();
-//                }
-//                requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
-//                return true;
-//            }
-//            return false;
-//        }
-//    };
-
     //获取用户商品列表
     private void requestData() {
         Map<String, Object> args = new HashMap<>();
@@ -350,49 +329,41 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         args.put("PAGE", page);
         args.put("COUNT", COUNT);
         args.put("SORTFIELD", "default");
-        args.put("FLAG",""+flag);
+        args.put("FLAG", "" + flag);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
+        Connect connect = new RMConnect.Builder(ShopListActivity.class)
                 .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                refreshLayout.setRefreshing(false);
-                Toast.makeText(ShopListActivity.this, "数据获取异常", Toast.LENGTH_SHORT).show();
-            }
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = responseProtocol.getResponse();
+                            List<GoodListEntity> result = new ArrayList<GoodListEntity>();
+                            for (int i = 0; i < response.size(); i++) {
+                                JsonNode jsonNode = response.get(i);
+                                GoodListEntity entity = GoodListEntity.toEntity(jsonNode);
+                                result.add(entity);
+                            }
+                            if (page == 0) {
+                                bindData(result);
+                            } else {
+                                if (ADAPTERFLAG == 1) {
+                                    shopListAdapter.addData(result);
+                                } else if (ADAPTERFLAG == 2) {
+                                    shopListNoPictureAdapter.addData(result);
+                                }
+                            }
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-
-                if (errorMsg == null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
-                    List<GoodListEntity> result = new ArrayList<GoodListEntity>();
-                    for (LinkedTreeMap<String, String> item : response) {
-                        GoodListEntity entity = GoodListEntity.toEntity(item);
-                        result.add(entity);
-                    }
-                    if (page == 0) {
-                        bindData(result);
-                    } else {
-                        if (ADAPTERFLAG == 1) {
-                            shopListAdapter.addData(result);
-                        } else if (ADAPTERFLAG == 2) {
-                            shopListNoPictureAdapter.addData(result);
+                        } else {
+                            refreshLayout.setRefreshing(false);
+                            Toast.makeText(ShopListActivity.this, "数据为空", Toast.LENGTH_SHORT).show();
                         }
                     }
-
-                } else {
-                    refreshLayout.setRefreshing(false);
-                    Toast.makeText(ShopListActivity.this, "数据为空", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
+                }).build();
+        ConnectManager.getInstance().request(this, connect);
     }
 
     //获取用户商品列表
@@ -410,7 +381,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         } else {
             args.put("SORTFIELD", "default");
         }
-        args.put("FLAG",""+flag);
+        args.put("FLAG", "" + flag);
         FacadeProtocol protocol;
         if (key != null && !("".equals(key)) && SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
@@ -421,47 +392,41 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         }
 
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
-                .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                refreshLayout.setRefreshing(false);
-                Toast.makeText(ShopListActivity.this, "数据获取异常", Toast.LENGTH_SHORT).show();
-            }
+        Connect connect = new RMConnect.Builder(ShopListActivity.class).withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (errorMessage == null) {
+                            refreshLayout.setRefreshing(false);
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = responseProtocol.getResponse();
+                            List<GoodListEntity> result = new ArrayList<GoodListEntity>();
+                            for (int i = 0; i < response.size(); i++) {
+                                JsonNode jsonNode = response.get(i);
+                                GoodListEntity entity = GoodListEntity.toEntity(jsonNode);
+                                result.add(entity);
+                            }
+                            if (page == 0) {
+                                bindData(result);
+                            } else {
+                                if (ADAPTERFLAG == 1) {
+                                    shopListAdapter.addData(result);
+                                } else if (ADAPTERFLAG == 2) {
+                                    shopListNoPictureAdapter.addData(result);
+                                }
+                            }
 
-                if (errorMsg == null) {
-                    refreshLayout.setRefreshing(false);
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    List<LinkedTreeMap<String, String>> response = responseProtocol.getResponse();
-                    List<GoodListEntity> result = new ArrayList<GoodListEntity>();
-                    for (LinkedTreeMap<String, String> item : response) {
-                        GoodListEntity entity = GoodListEntity.toEntity(item);
-                        result.add(entity);
-                    }
-                    if (page == 0) {
-                        bindData(result);
-                    } else {
-                        if (ADAPTERFLAG == 1) {
-                            shopListAdapter.addData(result);
-                        } else if (ADAPTERFLAG == 2) {
-                            shopListNoPictureAdapter.addData(result);
+                        } else {
+                            refreshLayout.setRefreshing(false);
+                            shopListAdapter.BindData(null);
+                            Toast.makeText(ShopListActivity.this, "数据为空", Toast.LENGTH_SHORT).show();
                         }
+
+
                     }
-
-                } else {
-                    refreshLayout.setRefreshing(false);
-                    shopListAdapter.BindData(null);
-                    Toast.makeText(ShopListActivity.this, "数据为空", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
+                }).build();
+        ConnectManager.getInstance().request(this, connect);
     }
 }
