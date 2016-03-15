@@ -70,48 +70,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/order_evaluate_speed"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_margin="16dp"
         android:background="@drawable/bg_gray"
         android:focusable="true"
+        android:hint="请在这里输入您的评价..."
         android:gravity="top|left"
-        android:lines="5"
-        android:padding="20dp"
+        android:minLines="5"
+        android:maxLines="10"
+        android:padding="16dp"
         android:textColor="@color/theme_sub_title"
         android:textSize="@dimen/body_size"/>
 
-    <LinearLayout
-        android:id="@+id/order_evaluate_bottom_layout"
+    <Button
+        android:id="@+id/order_evaluate_submit_btn"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="20dp"
-        android:background="@color/line_color"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/order_evaluate_submit_btn"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/evaluate_submit_selecor"
-            android:gravity="center"
-            android:text="发表评论"
-            android:textColor="@color/white"
-            android:textSize="@dimen/title_sub_size"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/order_evaluate_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/order_evaluate_bottom_layout"
-        android:layout_below="@id/order_evaluate_edit_opinion"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_gray"/>
+        android:background="@drawable/evaluate_submit_selecor"
+        android:gravity="center"
+        android:text="发表评论"
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_sub_size"/>
 
 </RelativeLayout>
