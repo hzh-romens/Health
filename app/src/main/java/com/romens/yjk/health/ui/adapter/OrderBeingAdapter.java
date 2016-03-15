@@ -84,12 +84,13 @@ public class OrderBeingAdapter extends BaseExpandableAdapter {
             evaluateBtn.setVisibility(View.GONE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-            layoutParams.rightMargin = AndroidUtilities.dp(8);
+            layoutParams.rightMargin = AndroidUtilities.dp(16);
             cancelBtn.setLayoutParams(layoutParams);
         } else {
             evaluateBtn.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            layoutParams.rightMargin = AndroidUtilities.dp(8);
             cancelBtn.setLayoutParams(layoutParams);
         }
         cancelBtn.setVisibility(View.VISIBLE);

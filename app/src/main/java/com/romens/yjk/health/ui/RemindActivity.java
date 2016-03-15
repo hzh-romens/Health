@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -17,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
@@ -152,52 +151,70 @@ public class RemindActivity extends BaseActivity {
 
         @Override
         public ADHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RemindItemCell cell = new RemindItemCell(context);
-            return new ADHolder(cell);
+            if (viewType == 0) {
+                RemindItemCell cell = new RemindItemCell(context);
+                return new ADHolder(cell);
+            } else {
+                TextInfoCell cell = new TextInfoCell(context);
+                return new ADHolder(cell);
+            }
         }
 
         @Override
         public void onBindViewHolder(ADHolder viewHolder, final int position) {
-            final RemindEntity entity = data.get(position);
-            final RemindItemCell cell = (RemindItemCell) viewHolder.itemView;
-            LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
-            cell.setLayoutParams(layoutParams);
-            cell.setData(R.drawable.remind_drug, entity.getDrug(), true);
-            if (entity.getIsRemind() == 0) {
-                cell.setCheck(false);
-            } else {
-                cell.setCheck(true);
-            }
-            cell.setOnSwitchClickLinstener(new RemindItemCell.onSwitchClickLinstener() {
-                @Override
-                public void onSwitchClick() {
-                    if (entity.getIsRemind() == 0) {
-                        cell.setCheck(true);
-                        entity.setIsRemind(1);
-                        setRemind(entity);
-                    } else {
-                        cell.setCheck(false);
-                        entity.setIsRemind(0);
-                        cancelRemind(entity);
+            if (getItemViewType(position) == 0) {
+                final RemindEntity entity = data.get(position);
+                final RemindItemCell cell = (RemindItemCell) viewHolder.itemView;
+                LinearLayout.LayoutParams layoutParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+                cell.setLayoutParams(layoutParams);
+                cell.setData(R.drawable.remind_drug, entity.getDrug(), true);
+                if (entity.getIsRemind() == 0) {
+                    cell.setCheck(false);
+                } else {
+                    cell.setCheck(true);
+                }
+                cell.setOnSwitchClickLinstener(new RemindItemCell.onSwitchClickLinstener() {
+                    @Override
+                    public void onSwitchClick() {
+                        if (entity.getIsRemind() == 0) {
+                            cell.setCheck(true);
+                            entity.setIsRemind(1);
+                            setRemind(entity);
+                        } else {
+                            cell.setCheck(false);
+                            entity.setIsRemind(0);
+                            cancelRemind(entity);
+                        }
+                        DBInterface.instance().openWritableDb().getRemindDao().insertOrReplace(entity);
                     }
-                    DBInterface.instance().openWritableDb().getRemindDao().insertOrReplace(entity);
-                }
-            });
-            cell.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(RemindActivity.this, RemindDetailActivityNew.class);
-                    intent.putExtra("detailEntity", entity);
-                    startActivity(intent);
-                }
-            });
-            cell.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    removeDialogView(entity);
-                    return false;
-                }
-            });
+                });
+                cell.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RemindActivity.this, RemindDetailActivityNew.class);
+                        intent.putExtra("detailEntity", entity);
+                        startActivity(intent);
+                    }
+                });
+                cell.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        removeDialogView(entity);
+                        return false;
+                    }
+                });
+            } else {
+                TextInfoCell cell = (TextInfoCell) viewHolder.itemView;
+//                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, AndroidUtilities.dp(40)));
+                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                cell.setText("长按可以删除提醒哦");
+            }
+
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position + 1 > data.size() ? 1 : 0;
         }
 
         public void removeDialogView(final RemindEntity entity) {
@@ -232,7 +249,7 @@ public class RemindActivity extends BaseActivity {
 
         @Override
         public int getItemCount() {
-            return data.size();
+            return data.size() > 0 ? data.size() + 1 : 0;
         }
     }
 
