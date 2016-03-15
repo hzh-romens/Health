@@ -1,11 +1,10 @@
 package com.romens.yjk.health.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,8 +23,6 @@ import com.romens.yjk.health.helper.LabelHelper;
 import com.romens.yjk.health.model.PersonalEntity;
 import com.romens.yjk.health.ui.AccountSettingActivity;
 import com.romens.yjk.health.ui.cells.TextDetailSelectCell;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,7 +213,7 @@ public class UserLabelsActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         if (position < 3) {
-                            showSigleChooseView(data.get(0), entity);
+                            showSingleChooseView(data.get(0), entity);
                         } else if (position == 3) {
                             showMulitChooseView(data.get(1), entity);
                         } else if (position == 4) {
@@ -231,8 +228,8 @@ public class UserLabelsActivity extends BaseActivity {
         }
     }
 
-    public void showSigleChooseView(String[] data, final UserAttributeEntity entity) {
-        new AlertDialog.Builder(this).setSingleChoiceItems(data, 0, new DialogInterface.OnClickListener() {
+    public void showSingleChooseView(String[] data, final UserAttributeEntity entity) {
+        new AlertDialog.Builder(this).setSingleChoiceItems(data, Integer.parseInt(entity.values.get(0)), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entity.clear();
@@ -253,8 +250,13 @@ public class UserLabelsActivity extends BaseActivity {
     }
 
     public void showMulitChooseView(final String[] data, final UserAttributeEntity entity) {
-        entity.clear();
-        new AlertDialog.Builder(this).setMultiChoiceItems(data, null, new DialogInterface.OnMultiChoiceClickListener() {
+        boolean[] selectFlag = new boolean[data.length];
+        for (int i = 0; i < data.length; i++) {
+            if (entity.valuesDesc.contains(data[i])) {
+                selectFlag[i] = true;
+            }
+        }
+        new AlertDialog.Builder(this).setMultiChoiceItems(data, selectFlag, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (isChecked) {

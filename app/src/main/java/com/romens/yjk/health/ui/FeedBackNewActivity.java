@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,6 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
     private List<String> selectTagTxtList;
     private List<String> tagList;
     private String userGuid = "3333";
-    private boolean[] selectFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +119,6 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
                                 tagList.add(object.getString("TAGNAME"));
                             }
                         }
-                        selectFlag = new boolean[tagList.size()];
                     } catch (JSONException e) {
                         Toast.makeText(FeedBackNewActivity.this, "获取标签失败", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -133,10 +132,10 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
     }
 
     public void showMulitChooseView(final String[] tagList) {
-        selectTagTxtList.clear();
-        for (int i = 0; i < selectFlag.length; i++) {
-            if (selectFlag[i]) {
-                selectTagTxtList.add(tagList[i]);
+        boolean[] selectFlag = new boolean[tagList.length];
+        for (int i = 0; i < tagList.length; i++) {
+            if (selectTagTxtList.contains(tagList[i])) {
+                selectFlag[i] = true;
             }
         }
         new AlertDialog.Builder(this)
@@ -146,10 +145,8 @@ public class FeedBackNewActivity extends BaseActivity implements View.OnClickLis
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         if (isChecked) {
                             selectTagTxtList.add(tagList[which]);
-                            selectFlag[which] = true;
                         } else {
                             selectTagTxtList.remove(tagList[which]);
-                            selectFlag[which] = false;
                         }
                     }
                 }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
