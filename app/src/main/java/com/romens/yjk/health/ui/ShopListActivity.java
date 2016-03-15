@@ -29,12 +29,15 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.ui.adapter.ShopListAdapter;
 import com.romens.yjk.health.ui.adapter.ShopListNoPictureAdapter;
 import com.romens.yjk.health.ui.components.ReviseRadioButton;
+import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import java.util.ArrayList;
@@ -47,7 +50,6 @@ import java.util.Map;
  * Created by AUSU on 2015/9/23.
  */
 public class ShopListActivity extends BaseActivity implements View.OnClickListener {
-    public static final String ARGUMENTS_KEY_FLAG = "key_flag";
     private ImageView other;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
@@ -72,12 +74,13 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
     private static boolean SEARCHDEFAULT = true;
     private ActionBar actionBar;
 
-    private int flag = 0;
+    private int goodsFlag = GoodsFlag.NORMAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shop_list);
+        ShoppingServiceFragment.instance(getSupportFragmentManager());
+        setContentView(R.layout.activity_shop_list, R.id.action_bar);
         initIntentValue();
         initView();
 
@@ -115,7 +118,19 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         UIHelper.setupSwipeRefreshLayoutProgress(refreshLayout);
         UIHelper.updateSwipeRefreshProgressBarTop(this, refreshLayout);
         shopListNoPictureAdapter = new ShopListNoPictureAdapter(this);
-        shopListAdapter = new ShopListAdapter(this);
+        //2016-03-15 周立思 新增适配器监听事件
+        shopListAdapter = new ShopListAdapter(this, new ShopListAdapter.Delegate() {
+            @Override
+            public void onItemClick(String goodsID) {
+                UIOpenHelper.openMedicineActivity(ShopListActivity.this, goodsID, goodsFlag);
+            }
+
+            @Override
+            public void onItemAddShoppingCart(String goodsID, double price) {
+                ShoppingServiceFragment.instance(getSupportFragmentManager())
+                        .tryAddToShoppingCart(goodsID, price, goodsFlag);
+            }
+        });
         recyclerView.setAdapter(shopListAdapter);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -138,7 +153,9 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
     private void initIntentValue() {
         Intent intent = getIntent();
-        flag = intent.getIntExtra(ARGUMENTS_KEY_FLAG, 0);
+        if (intent.hasExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG)) {
+            goodsFlag = intent.getIntExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.NORMAL);
+        }
 
         if (intent.getStringExtra("guid") != null) {
             guid = intent.getStringExtra("guid");
@@ -233,8 +250,11 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                 requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
             }
         });
-        actionBar.setTitle(name);
-        actionBar.setBackgroundResource(R.color.theme_primary);
+        if (goodsFlag == GoodsFlag.MEDICARE) {
+            actionBar.setTitle(name + "(医保)");
+        } else {
+            actionBar.setTitle(name);
+        }
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
@@ -350,7 +370,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         args.put("PAGE", page);
         args.put("COUNT", COUNT);
         args.put("SORTFIELD", "default");
-        args.put("FLAG",""+flag);
+        args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Message message = new Message.MessageBuilder()
@@ -410,7 +430,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         } else {
             args.put("SORTFIELD", "default");
         }
-        args.put("FLAG",""+flag);
+        args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol;
         if (key != null && !("".equals(key)) && SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);

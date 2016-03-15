@@ -273,9 +273,9 @@ public class DBInterface {
         dao.insertOrReplace(entity);
     }
 
-    public void deleteShoppingCartGoods(String... entity) {
+    public void deleteShoppingCartGoods(String... keys) {
         ShoppingCartDataDao dao = openWritableDb().getShoppingCartDataDao();
-        dao.deleteByKeyInTx(entity);
+        dao.deleteByKeyInTx(keys);
     }
 
     public void deleteShoppingCartGoods(List<String> entity) {

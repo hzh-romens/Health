@@ -27,6 +27,7 @@ import com.romens.android.network.request.ConnectManager;
 import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.db.DBInterface;
@@ -46,7 +47,6 @@ import java.util.Map;
  * Created by anlc on 2016/1/11.
  */
 public class HomeHealthNewFragment extends BaseFragment {
-    public static final String ARGUMENTS_KEY_FLAG = "key_flag";
     private ListView leftMenuListView;
     private RecyclerView contentListView;
 
@@ -60,14 +60,14 @@ public class HomeHealthNewFragment extends BaseFragment {
     public static final String ARGUMENTS_KEY_ID = "key_id";
     public static final String ARGUMENTS_KEY_NAME = "key_name";
 
-    private int flag = 0;
+    private int goodsFlag= GoodsFlag.NORMAL;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            flag = arguments.getInt(ARGUMENTS_KEY_FLAG, 0);
+            goodsFlag = arguments.getInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG,GoodsFlag.NORMAL);
         }
     }
 
@@ -138,7 +138,7 @@ public class HomeHealthNewFragment extends BaseFragment {
         if (childNode != null) {
             Intent intent = new Intent(getActivity(), ShopListActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putInt(ShopListActivity.ARGUMENTS_KEY_FLAG, flag);
+            arguments.putInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, goodsFlag);
             arguments.putString(ARGUMENTS_KEY_ID, childNode.getId());
             arguments.putString(ARGUMENTS_KEY_NAME, childNode.getName());
             intent.putExtras(arguments);
@@ -189,7 +189,7 @@ public class HomeHealthNewFragment extends BaseFragment {
 
     private void requestData() {
         Map<String, String> args = new HashMap<>();
-        args.put("FLAG", "" + flag);
+        args.put("FLAG",GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetMedicineKind", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 

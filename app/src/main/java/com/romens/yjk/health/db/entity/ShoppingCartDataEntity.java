@@ -1,6 +1,7 @@
 package com.romens.yjk.health.db.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.yjk.health.common.GoodsFlag;
 
 import java.math.BigDecimal;
 
@@ -29,7 +30,13 @@ public class ShoppingCartDataEntity {
     private Long created;
     private Long updated;
 
-    public ShoppingCartDataEntity() {
+    /**
+     * 2016-03-15 新增字段 购物车商品类型
+     * 现阶段只支持 0 非医保入口 1 医保入口
+     */
+    private int goodsType = GoodsFlag.NORMAL;
+
+    private ShoppingCartDataEntity() {
 
     }
 
@@ -57,7 +64,7 @@ public class ShoppingCartDataEntity {
         return buyCount;
     }
 
-    public double getBuyPrice(){
+    public double getBuyPrice() {
         return goodsPrice;
     }
 
@@ -85,6 +92,10 @@ public class ShoppingCartDataEntity {
         return new BigDecimal(buyCount * goodsPrice);
     }
 
+    public int getGoodsType() {
+        return goodsType;
+    }
+
     public ShoppingCartDataEntity(JsonNode jsonNode) {
         id = jsonNode.get("GUID").asText();
         spec = jsonNode.get("SPEC").asText();
@@ -105,6 +116,12 @@ public class ShoppingCartDataEntity {
         created = jsonNode.get("CREATETIME").asLong(0);
         updated = jsonNode.get("updated").asLong(0);
 
+        //2016-03-15 新增字段 购物车商品类型
+        if (jsonNode.has("GOODSTYPE")) {
+            goodsType = jsonNode.get("GOODSTYPE").asInt();
+        } else {
+            goodsType = GoodsFlag.NORMAL;
+        }
 
         //{"memberId":"5673a3bcd20bf1450419132",
         // "GUID":"56d179027a5fc",

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
@@ -64,6 +65,7 @@ public abstract class ADBaseControl {
                 Intent intent = new Intent();
                 intent.setComponent(component);
                 intent.putExtra("title", "医保专区");
+                intent.putExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.MEDICARE);
                 context.startActivity(intent);
             } else if (TextUtils.equals("OPENCLASS", action)) {
                 String id = arguments.getString("ID");
