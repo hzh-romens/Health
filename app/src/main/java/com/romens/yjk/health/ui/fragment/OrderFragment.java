@@ -62,15 +62,12 @@ public class OrderFragment extends BaseFragment {
     private ImageAndTextCell attachView;
     private int fragmentType;
 
-    public OrderFragment(int fragmentType) {
-        this.fragmentType = fragmentType;
-        userGuid = UserGuidConfig.USER_GUID;
-        fragmentTypeBase = fragmentType + "";
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.fragmentType = getArguments().getInt("fragmentType");
+        userGuid = UserGuidConfig.USER_GUID;
+        fragmentTypeBase = fragmentType + "";
         mOrderEntities = new ArrayList<>();
         switch (fragmentType) {
             case MyOrderActivity.ORDER_TYPE_ALL:
@@ -108,6 +105,7 @@ public class OrderFragment extends BaseFragment {
         expandableListView = new ExpandableListView(context);
         swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         expandableListView.setAdapter(adapter);
+        expandableListView.setVerticalScrollBarEnabled(false);
         expandableListView.setGroupIndicator(null);
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
