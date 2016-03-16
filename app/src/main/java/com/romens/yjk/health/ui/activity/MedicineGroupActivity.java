@@ -2,12 +2,13 @@ package com.romens.yjk.health.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.base.BaseActionBarActivity;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.common.GoodsFlag;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 
 /**
@@ -22,11 +23,15 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
         Intent intent = getIntent();
         setContentView(R.layout.activity_fragment, R.id.action_bar);
         ActionBar actionBar = getMyActionBar();
+        final ActionBarMenu menu = actionBar.createMenu();
+        menu.addItem(0, R.drawable.ic_menu_search);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
                     finish();
+                } else if (id == 0) {
+                    UIOpenHelper.openSearchActivity(MedicineGroupActivity.this);
                 }
             }
         });
