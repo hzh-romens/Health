@@ -98,7 +98,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private List<OrderItem> orderItems;
 
     private int selectPayType = Pay.PAY_TYPE_ONLINE;
-    private int selectDeliveryType = 0;
+    private int selectDeliveryType = -1;
 
     private String orderCouponID;
     private String orderInvoice;
@@ -673,7 +673,11 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                         payAndDelivery = "加载中..";
                     } else {
                         Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
-                        payAndDelivery = String.format("%s (%s)", Pay.getInstance().getPayType(selectPayType), deliveryMode.name);
+                        if (deliveryMode == null) {
+                            payAndDelivery = Pay.getInstance().getPayType(selectPayType);
+                        } else {
+                            payAndDelivery = String.format("%s (%s)", Pay.getInstance().getPayType(selectPayType), deliveryMode.name);
+                        }
                     }
                     cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
@@ -712,7 +716,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     name = addressInfo.get("USER");
                     address = addressInfo.get("ADDRESS");
                 }
-                String delivery=deliveryMode==null?"":deliveryMode.name;
+                String delivery = deliveryMode == null ? "" : deliveryMode.name;
                 cell.setValue(delivery, name, address, goodsAmount, couponAmount);
             } else if (viewType == 8) {
                 ActionCell cell = (ActionCell) holder.itemView;
