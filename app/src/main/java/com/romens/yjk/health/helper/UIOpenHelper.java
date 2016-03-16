@@ -251,7 +251,7 @@ public class UIOpenHelper {
     public static void openUserLabelsActivity(Activity context, Serializable entity) {
         Intent intent = new Intent(context, UserLabelsActivity.class);
         intent.putExtra("personEntity", entity);
-        context.startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING2_TO_EDITACTIVITY);
+        context.startActivityForResult(intent, UserGuidConfig.REQUEST_ACCOUNTSETTING_TO_USERLABELS);
     }
 
     /**

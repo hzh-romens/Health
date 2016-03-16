@@ -203,7 +203,10 @@ public class UserLabelsActivity extends BaseActivity {
                 cell.setMultilineDetail(true);
 
                 final UserAttributeEntity entity = getItem(position);
-                if (entity.valuesDesc.get(0).equals("")) {
+                if (entity.valuesDesc.size() > 1 && entity.valuesDesc.get(0).equals("")) {
+                    entity.valuesDesc.remove(0);
+                }
+                if (entity.valuesDesc.size() > 0 && entity.valuesDesc.get(0).equals("")) {
                     cell.setTextAndValue(entity.name, "", true);
                 } else {
                     CharSequence labels = LabelHelper.createChipForUserInfoLabels(entity.valuesDesc);
@@ -251,7 +254,7 @@ public class UserLabelsActivity extends BaseActivity {
     }
 
     public void showMulitChooseView(final String[] data, final UserAttributeEntity entity) {
-        boolean[] selectFlag = new boolean[data.length];
+        final boolean[] selectFlag = new boolean[data.length];
         for (int i = 0; i < data.length; i++) {
             if (entity.valuesDesc.contains(data[i])) {
                 selectFlag[i] = true;
