@@ -22,10 +22,10 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +37,31 @@ public class ShopListAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private final List<GoodListEntity> mResult = new ArrayList<GoodListEntity>();
 
-    public ShopListAdapter(Context context) {
+    /**
+     * 监听事件
+     */
+    public interface Delegate {
+        /**
+         * 行点击事件
+         *
+         * @param goodsID
+         */
+        void onItemClick(String goodsID);
+
+        /**
+         * 添加购物车按钮事件
+         *
+         * @param goodsID
+         * @param price
+         */
+        void onItemAddShoppingCart(String goodsID, double price);
+    }
+
+    private Delegate delegate;
+
+    public ShopListAdapter(Context context, Delegate delegate) {
         this.mContext = context;
+        this.delegate = delegate;
     }
 
     public void BindData(List<GoodListEntity> result) {
@@ -95,7 +118,12 @@ public class ShopListAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 if (UserConfig.isClientLogined()) {
-                    requestToBuy(mResult.get(position).getPRICE(), mResult.get(position).getMERCHANDISEID());
+                    if (delegate != null) {
+                        String goodsID = mResult.get(position).getMERCHANDISEID();
+                        BigDecimal price = new BigDecimal(mResult.get(position).getPRICE());
+                        delegate.onItemAddShoppingCart(goodsID, price.doubleValue());
+                    }
+                    //requestToBuy(, );
                 } else {
                     Toast.makeText(mContext, "请您先登录", Toast.LENGTH_SHORT).show();
                     mContext.startActivity(new Intent(mContext, LoginActivity.class));
@@ -105,7 +133,10 @@ public class ShopListAdapter extends RecyclerView.Adapter {
         itemHolder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIOpenHelper.openMedicineActivity(mContext, goodListEntity.getMERCHANDISEID());
+                if (delegate != null) {
+                    delegate.onItemClick(goodListEntity.getMERCHANDISEID());
+                }
+                //UIOpenHelper.openMedicineActivity(mContext, goodListEntity.getMERCHANDISEID());
             }
         });
     }

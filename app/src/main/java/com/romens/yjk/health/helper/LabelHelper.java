@@ -56,7 +56,7 @@ public class LabelHelper {
         }
         XImageSpan span;
         for (String label : labels) {
-            span = createImageSpanForUserInfoLabel(label);
+            span = createImageSpanForUserInfoLabel(label,R.layout.user_info_create_bubble,R.id.bubble_text_view);
             ssb.append("<<");
             ssb.setSpan(span, ssb.length() - 2, ssb.length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
             ssb.append(" ");
@@ -66,16 +66,16 @@ public class LabelHelper {
 
     public static SpannableStringBuilder createChipForUserInfoLabel(String label) {
         SpannableStringBuilder ssb = new SpannableStringBuilder("");
-        XImageSpan span = createImageSpanForUserInfoLabel(label);
+        XImageSpan span = createImageSpanForUserInfoLabel(label,R.layout.user_info_create_bubble,R.id.bubble_text_view);
         ssb.append("<<");
         ssb.setSpan(span, ssb.length() - 2, ssb.length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
         return ssb;
     }
 
-    public static XImageSpan createImageSpanForUserInfoLabel(String label) {
+    public static XImageSpan createImageSpanForUserInfoLabel(String label,int layoutResId,int textResId) {
         LayoutInflater lf = (LayoutInflater) ApplicationLoader.applicationContext.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View textView = lf.inflate(R.layout.user_info_create_bubble, null);
-        TextView text = (TextView) textView.findViewById(R.id.bubble_text_view);
+        View textView = lf.inflate(layoutResId, null);
+        TextView text = (TextView) textView.findViewById(textResId);
         text.setText(label);
 
         int spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);

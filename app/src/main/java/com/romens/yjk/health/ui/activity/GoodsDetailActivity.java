@@ -21,14 +21,19 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gc.materialdesign.views.ProgressBarDeterminate;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -42,6 +47,7 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingSelectCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
@@ -113,6 +119,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private ActionBarMenuItem refreshMenuItem;
     private ActionBarMenuItem shoppingCartMenuItem;
 
+    private int goodsFlag = GoodsFlag.NORMAL;
+
 
     @Override
     public void onDestroy() {
@@ -131,6 +139,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onRemoveMedicineFavorite);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
         Bundle arguments = getIntent().getExtras();
+        //商品标识
+        goodsFlag = arguments.getInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.NORMAL);
+
         goodsId = arguments.getString(ARGUMENTS_KEY_ID, "");
         checkNearStore = arguments.getBoolean(ARGUMENTS_KEY_CHECK_NEAR_STORE, true);
         final ActionBar actionBar = new ActionBar(this);
@@ -479,36 +490,43 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 .put("GUID", goodsId).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder().withProtocol(protocol).build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message message) {
-                showProgress(false);
-            }
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                showProgress(false);
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String response = responseProtocol.getResponse();
-                    try {
-                        JSONArray jsonArray = new JSONArray(response);
-                        if (jsonArray.length() > 0) {
-                            currMedicineGoodsItem = new MedicineGoodsItem(jsonArray.getJSONObject(0));
-                            updateGoodsFavorites();
-                            initMedicineServiceModes();
-                            AddToHistory(currMedicineGoodsItem);
+        Connect connect = new RMConnect.Builder(GoodsDetailActivity.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        showProgress(false);
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = responseProtocol.getResponse();
+                            if (response != null && response.size() > 0) {
+                                currMedicineGoodsItem = new MedicineGoodsItem(response.get(0));
+                                updateGoodsFavorites();
+                                initMedicineServiceModes();
+                                AddToHistory(currMedicineGoodsItem);
+                            }
+                            loadMedicineSaleStores();
+                            loadCommentData();
                         }
-                        loadMedicineSaleStores();
-                        loadCommentData();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        updateDate();
                     }
-                }
-                updateDate();
-            }
-        });
+                }).build();
+        ConnectManager.getInstance().request(GoodsDetailActivity.this, connect);
+
+//        Message message = new Message.MessageBuilder().withProtocol(protocol).build();
+//        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message message) {
+//                showProgress(false);
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//
+//            }
+//        });
     }
 
     private void updateGoodsFavorites() {
@@ -660,6 +678,19 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         bottomDividerRow = -1;
     }
 
+    /**
+     * 添加商品到购物车
+     *
+     * @param goodsItem
+     */
+    private void addGoodsToShoppingCart(MedicineGoodsItem goodsItem) {
+        if (goodsFlag == GoodsFlag.MEDICARE) {
+            ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCartForMedicare(goodsItem);
+        } else {
+            ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCart(goodsItem);
+        }
+    }
+
     class GoodsDetailAdapter extends BaseFragmentAdapter {
         private int overScrollHeight;
         private Context adapterContext;
@@ -802,7 +833,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCart(currMedicineGoodsItem);
+                            addGoodsToShoppingCart(currMedicineGoodsItem);
                         }
                     });
                 } else {
@@ -813,7 +844,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ShoppingServiceFragment.instance(getSupportFragmentManager()).tryAddToShoppingCart(currMedicineGoodsItem);
+                            addGoodsToShoppingCart(currMedicineGoodsItem);
                         }
                     });
                 }

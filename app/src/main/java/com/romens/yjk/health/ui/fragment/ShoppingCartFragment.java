@@ -1,7 +1,9 @@
 package com.romens.yjk.health.ui.fragment;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -34,6 +36,7 @@ import com.romens.android.network.request.ConnectManager;
 import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
@@ -42,6 +45,7 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
+import com.romens.yjk.health.helper.LabelHelper;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.CommitOrderBaseActivity;
@@ -49,6 +53,7 @@ import com.romens.yjk.health.ui.cells.ShoppingCartEmptyCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartGoodsCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartStoreCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartUnLoginCell;
+import com.romens.yjk.health.ui.cells.TipCell;
 import com.romens.yjk.health.ui.components.CheckableView;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -84,6 +89,9 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
 
     private final Map<String, ShoppingCartDataEntity> shoppingCartData = new HashMap<>();
     private final Object changeSync = new Object();
+
+    private boolean showTip = false;
+    private String tipText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,7 +132,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         allCheckView.setChecked(false);
         allCheckView.shouldText(true);
         allCheckView.setText("全选");
-        bottomBar.addView(allCheckView, LayoutHelper.createFrame(96, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL));
+        bottomBar.addView(allCheckView, LayoutHelper.createFrame(96, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL, 8, 0, 0, 0));
 
         amountDescView = new TextView(context);
         amountDescView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
@@ -207,7 +215,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
             return;
         }
         //清除废数据
-        ArrayList<String> needCommitGoods = new ArrayList<>();
+        final ArrayList<String> needCommitGoods = new ArrayList<>();
         for (String id : selectGoods) {
             if (shoppingCartData.containsKey(id)) {
                 needCommitGoods.add(id);
@@ -218,11 +226,43 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
             return;
         }
 
+        //检测购物车内商品是否是普通商品和医保商品混合
+        boolean needMedicareAlert = false;
+        boolean hasMedicareGoods = false;
+        ShoppingCartDataEntity entityTemp;
+        for (String goodsId : needCommitGoods) {
+            entityTemp = shoppingCartData.get(goodsId);
+            if (entityTemp.getGoodsType() == GoodsFlag.MEDICARE) {
+                hasMedicareGoods = true;
+            } else {
+                needMedicareAlert = hasMedicareGoods;
+            }
+            if (needMedicareAlert) {
+                break;
+            }
+        }
+        if (needMedicareAlert) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("提示")
+                    .setMessage("准备提交的商品中，含有非医保支付商品。结算将不能使用医保支付，是否确定去结算？")
+                    .setPositiveButton("修改商品", null)
+                    .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            commitSelectGoods(needCommitGoods, false);
+                        }
+                    }).create().show();
+        } else {
+            commitSelectGoods(needCommitGoods, hasMedicareGoods);
+        }
+    }
+
+    private void commitSelectGoods(ArrayList<String> needCommitGoods, boolean supportMedicare) {
         String packName = getActivity().getPackageName();
         ComponentName componentName = new ComponentName(packName, packName + ".ui.activity.CommitOrderActivity");
         Intent intent = new Intent();
         intent.setComponent(componentName);
-        intent.putExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SUPPORT_MEDICARE, true);
+        intent.putExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SUPPORT_MEDICARE, supportMedicare);
         intent.putStringArrayListExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SELECT_GOODS, needCommitGoods);
         startActivity(intent);
     }
@@ -243,6 +283,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
 
     private void syncShoppingCartForDB() {
         shoppingCartData.clear();
+        boolean isContainMedicareGoods = false;
         List<ShoppingCartItem> adapterData = new ArrayList<>();
         if (!unLogin) {
             Map<String, ShoppingCartStoreItem> storeItems = new HashMap<>();
@@ -261,6 +302,9 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                         shoppingCartTemp.put(shopID, new ArrayList<ShoppingCartDataEntity>());
                     }
                     shoppingCartTemp.get(shopID).add(temp);
+                    if (temp.getGoodsType() == GoodsFlag.MEDICARE) {
+                        isContainMedicareGoods = true;
+                    }
                 }
             }
             //处理购物车商品数据，转化为ListView 行对象
@@ -282,6 +326,13 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         emptyShoppingCart = adapterData.size() <= 0;
         checkShoppingCartState();
         updateAdapter();
+        if (isContainMedicareGoods) {
+            needShowTip("注意: 购物车内含有医保商品.结算时选择的商品必须全部为医保商品才可以进行医保支付.或者使用其他的支付方式.");
+        } else {
+            if (showTip) {
+                needHideTip();
+            }
+        }
     }
 
     private void updateAdapter() {
@@ -511,6 +562,17 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         amountDescView.setText(amountText);
     }
 
+    private void needShowTip(String text) {
+        showTip = true;
+        tipText = text;
+        listAdapter.notifyDataSetChanged();
+    }
+
+    private void needHideTip() {
+        showTip = false;
+        listAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void didReceivedNotification(int i, Object... objects) {
         if (i == AppNotificationCenter.onShoppingCartChanged) {
@@ -559,13 +621,18 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                 ShoppingCartEmptyCell cell = new ShoppingCartEmptyCell(parent.getContext());
                 cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 return new Holder(cell);
+            } else if (viewType == 4) {
+                TipCell cell = new TipCell(parent.getContext());
+                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                return new Holder(cell);
             }
             return null;
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-            if (holder.itemView instanceof ShoppingCartUnLoginCell) {
+            final int itemType = getItemViewType(position);
+            if (itemType == 2) {
                 ShoppingCartUnLoginCell cell = (ShoppingCartUnLoginCell) holder.itemView;
                 cell.setDelegate(new ShoppingCartUnLoginCell.Delegate() {
                     @Override
@@ -573,7 +640,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                         UIOpenHelper.openLoginActivity(getActivity());
                     }
                 });
-            } else if (holder.itemView instanceof ShoppingCartEmptyCell) {
+            } else if (itemType == 3) {
                 ShoppingCartEmptyCell cell = (ShoppingCartEmptyCell) holder.itemView;
                 cell.setDelegate(new ShoppingCartEmptyCell.Delegate() {
                     @Override
@@ -582,26 +649,32 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                     }
                 });
 
-            } else if (holder.itemView instanceof ShoppingCartStoreCell) {
+            } else if (itemType == 4) {
+                TipCell cell = (TipCell) holder.itemView;
+                cell.setValue(tipText);
+            } else if (itemType == 0) {
+                int index = getDataIndex(position);
                 ShoppingCartStoreCell cell = (ShoppingCartStoreCell) holder.itemView;
-                ShoppingCartStoreItem item = (ShoppingCartStoreItem) adapterData.get(position);
+                ShoppingCartStoreItem item = (ShoppingCartStoreItem) adapterData.get(index);
                 boolean checked = storeSelected.containsKey(item.getKey()) && storeSelected.get(item.getKey());
                 cell.setValue(checked, item.shopName, true);
                 cell.setDelegate(new ShoppingCartStoreCell.Delegate() {
                     @Override
                     public void onCheckableClick(boolean isChecked) {
-                        ShoppingCartStoreItem select = (ShoppingCartStoreItem) adapterData.get(position);
+                        int index = getDataIndex(position);
+                        ShoppingCartStoreItem select = (ShoppingCartStoreItem) adapterData.get(index);
                         onStoreSelectedChanged(select, isChecked);
                     }
                 });
-            } else if (holder.itemView instanceof ShoppingCartGoodsCell) {
+            } else if (itemType == 1) {
+                int index = getDataIndex(position);
                 ShoppingCartGoodsCell cell = (ShoppingCartGoodsCell) holder.itemView;
-                ShoppingCartGoodsItem item = (ShoppingCartGoodsItem) adapterData.get(position);
+                ShoppingCartGoodsItem item = (ShoppingCartGoodsItem) adapterData.get(index);
                 boolean checked = goodsSelected.containsKey(item.getKey()) && goodsSelected.get(item.getKey());
 
                 ShoppingCartDataEntity entity = shoppingCartData.get(item.getKey());
                 String iconPath = entity.getIcon();
-                String name = entity.getName();
+                CharSequence name = ShoppingHelper.createShoppingCartGoodsName(entity.getName(), entity.getGoodsType() == GoodsFlag.MEDICARE);
                 String desc = String.format("规格:%s", entity.getSpec());
                 BigDecimal userPrice = entity.getUserPrice();
                 BigDecimal marketPrice = entity.getMarketPrice();
@@ -610,7 +683,8 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                 cell.setDelegate(new ShoppingCartGoodsCell.Delegate() {
                     @Override
                     public void onCheckableClick(boolean isChecked) {
-                        ShoppingCartGoodsItem select = (ShoppingCartGoodsItem) adapterData.get(position);
+                        int index = getDataIndex(position);
+                        ShoppingCartGoodsItem select = (ShoppingCartGoodsItem) adapterData.get(index);
                         onGoodsSelectedChanged(select, isChecked);
                     }
 
@@ -619,7 +693,8 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                         AndroidUtilities.runOnUIThread(new Runnable() {
                             @Override
                             public void run() {
-                                ShoppingCartGoodsItem select = (ShoppingCartGoodsItem) adapterData.get(position);
+                                int index = getDataIndex(position);
+                                ShoppingCartGoodsItem select = (ShoppingCartGoodsItem) adapterData.get(index);
                                 changeShoppingCartCount(select.getKey(), number);
                             }
                         });
@@ -637,11 +712,17 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
 
                     @Override
                     public void onDelete() {
-                        ShoppingCartItem select = adapterData.get(position);
+                        int index = getDataIndex(position);
+                        ShoppingCartItem select = adapterData.get(index);
                         deleteShoppingCartGoods(select.getKey());
                     }
                 });
             }
+        }
+
+        private int getDataIndex(int position) {
+            int index = showTip ? (position - 1) : position;
+            return index;
         }
 
         public void onAllSelectedChanged(boolean checked) {
@@ -719,7 +800,11 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
             if (unLogin || emptyShoppingCart) {
                 return 1;
             }
-            return adapterData == null ? 0 : adapterData.size();
+            int dataCount = adapterData == null ? 0 : adapterData.size();
+            if (dataCount > 0 && showTip) {
+                dataCount++;
+            }
+            return dataCount;
         }
 
         @Override
@@ -728,8 +813,11 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
                 return 2;
             } else if (emptyShoppingCart) {
                 return 3;
+            } else if (showTip && position == 0) {
+                return 4;
             } else {
-                return adapterData.get(position).getItemViewType();
+                int index = getDataIndex(position);
+                return adapterData.get(index).getItemViewType();
             }
         }
     }

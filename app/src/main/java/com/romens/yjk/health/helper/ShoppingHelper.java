@@ -7,6 +7,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 
+import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 
 import java.math.BigDecimal;
@@ -73,5 +74,17 @@ public class ShoppingHelper {
         spannable.append("会员价格 ");
         spannable.append(formatPrice(price));
         return spannable;
+    }
+
+    public static CharSequence createShoppingCartGoodsName(String name, boolean isMedicareGoods) {
+        SpannableStringBuilder ssb = new SpannableStringBuilder("");
+        if (isMedicareGoods) {
+            LabelHelper.XImageSpan span = LabelHelper.createImageSpanForUserInfoLabel("医保", R.layout.layout_goods_label, R.id.label_text_view);
+            ssb.append("<<");
+            ssb.setSpan(span, ssb.length() - 2, ssb.length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ssb.append(" ");
+        }
+        ssb.append(name);
+        return ssb;
     }
 }

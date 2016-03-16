@@ -1,5 +1,7 @@
 package com.romens.yjk.health.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,32 +49,32 @@ public class MedicineGoodsItem {
     public final String shopAddress;
     public final int storeCount;
 
-    public MedicineGoodsItem(JSONObject jsonObject) throws JSONException {
-        guid = jsonObject.getString("GUID");
-        name = jsonObject.getString("NAME");
-        userPrice = new BigDecimal(jsonObject.getDouble("USERPRICE"));
-        marketPrice = new BigDecimal(jsonObject.getDouble("MARKETPRICE"));
-        shortDescription = jsonObject.getString("SHORTDESCRIPTION");
-        detailDescription= jsonObject.getString("DETAILDESCRIPTION");
-        spec = jsonObject.getString("SPEC");
-        pzwh = jsonObject.getString("PZWH");
-        smallImageUrl = jsonObject.getString("URL");
-        cd = jsonObject.getString("CD");
-        manufacturerId = jsonObject.getString("manufacturerId");
-        assessCount = jsonObject.getInt("ASSESSCOUNT");
-        totalSaledCount = jsonObject.getInt("TOTLESALEDCOUNT");
+    public MedicineGoodsItem(JsonNode jsonObject){
+        guid = jsonObject.get("GUID").asText();
+        name = jsonObject.get("NAME").asText();
+        userPrice = new BigDecimal(jsonObject.get("USERPRICE").asDouble(0));
+        marketPrice = new BigDecimal(jsonObject.get("MARKETPRICE").asDouble(0));
+        shortDescription = jsonObject.get("SHORTDESCRIPTION").asText();
+        detailDescription= jsonObject.get("DETAILDESCRIPTION").asText();
+        spec = jsonObject.get("SPEC").asText();
+        pzwh = jsonObject.get("PZWH").asText();
+        smallImageUrl = jsonObject.get("URL").asText();
+        cd = jsonObject.get("CD").asText();
+        manufacturerId = jsonObject.get("manufacturerId").asText();
+        assessCount = jsonObject.get("ASSESSCOUNT").asInt();
+        totalSaledCount = jsonObject.get("TOTLESALEDCOUNT").asInt();
 
-        JSONArray largeImagesJson = jsonObject.getJSONArray("GOODSPICS");
+        JsonNode largeImagesJson = jsonObject.get("GOODSPICS");
         if (largeImagesJson != null) {
-            for (int i = 0; i < largeImagesJson.length(); i++) {
-                largeImages.add(largeImagesJson.getJSONObject(i).getString("URL"));
+            for (int i = 0; i < largeImagesJson.size(); i++) {
+                largeImages.add(largeImagesJson.get(i).get("URL").asText());
             }
         }
 
-        shopId = jsonObject.getString("SHOPID");
-        shopIcon= jsonObject.getString("BRANCHIMAGEPATH");
-        shopName = jsonObject.getString("SHOPNAME");
-        shopAddress = jsonObject.getString("SHOPADDRESS");
-        storeCount = jsonObject.getInt("STORECOUNT");
+        shopId = jsonObject.get("SHOPID").asText();
+        shopIcon= jsonObject.get("BRANCHIMAGEPATH").asText();
+        shopName = jsonObject.get("SHOPNAME").asText();
+        shopAddress = jsonObject.get("SHOPADDRESS").asText();
+        storeCount = jsonObject.get("STORECOUNT").asInt(0);
     }
 }

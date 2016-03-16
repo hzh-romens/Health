@@ -1,6 +1,6 @@
 package com.romens.yjk.health.model;
 
-import com.google.gson.internal.LinkedTreeMap;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Created by AUSU on 2015/9/28.
@@ -15,14 +15,23 @@ public class GoodListEntity {
     private String PICSMALL;                        //药品小图
     private String PRICE;                           //商品价格
     private String MEMBERPRICE;                    //会员价格
-    private String ASSESSCOUNT;    //评论数
+    private String ISRX;                            //是否是处方药
+    private String ISCARE;                          //是否是医保产品
 
-    public String getASSESSCOUNT() {
-        return ASSESSCOUNT;
+    public String getISRX() {
+        return ISRX;
     }
 
-    public void setASSESSCOUNT(String ASSESSCOUNT) {
-        this.ASSESSCOUNT = ASSESSCOUNT;
+    public void setISRX(String ISRX) {
+        this.ISRX = ISRX;
+    }
+
+    public String getISCARE() {
+        return ISCARE;
+    }
+
+    public void setISCARE(String ISCARE) {
+        this.ISCARE = ISCARE;
     }
 
     public void setMERCHANDISEID(String MERCHANDISEID) {
@@ -96,18 +105,20 @@ public class GoodListEntity {
     public String getMEMBERPRICE() {
         return MEMBERPRICE;
     }
-   public static GoodListEntity toEntity(LinkedTreeMap<String, String> goodListMap){
-       GoodListEntity entity=new GoodListEntity();
-       entity.setASSESSCOUNT(goodListMap.get("ASSESSCOUNT"));
-       entity.setMEDICINENAME(goodListMap.get("MEDICINENAME"));
-       entity.setMEDICINESPEC(goodListMap.get("MEDICINESPEC"));
-       entity.setMERCHANDISEID(goodListMap.get("MERCHANDISEID"));
-       entity.setPICBIG(goodListMap.get("PICBIG"));
-       entity.setMEMBERPRICE(goodListMap.get("MEMBERPRICE"));
-       entity.setPICSMALL(goodListMap.get("PICSMALL"));
-       entity.setPRICE(goodListMap.get("PRICE"));
-       entity.setSHOPID(goodListMap.get("SHOPID"));
-       entity.setSHOPNAME(goodListMap.get("SHOPNAME"));
-       return entity;
-   }
+
+    public static GoodListEntity toEntity(JsonNode jsonNode) {
+        GoodListEntity entity = new GoodListEntity();
+        entity.setMEDICINENAME(jsonNode.get("MEDICINENAME").asText());
+        entity.setMEDICINESPEC(jsonNode.get("MEDICINESPEC").asText());
+        entity.setMERCHANDISEID(jsonNode.get("MERCHANDISEID").asText());
+        entity.setPICBIG(jsonNode.get("PICBIG").asText());
+        entity.setMEMBERPRICE(jsonNode.get("PRICE").asText());
+        entity.setPICSMALL(jsonNode.get("PICSMALL").asText());
+        entity.setPRICE(jsonNode.get("PRICE").asText());
+        entity.setSHOPID(jsonNode.get("SHOPID").asText());
+        entity.setSHOPNAME(jsonNode.get("SHOPNAME").asText());
+        entity.setISRX(jsonNode.get("ISRX").asText());
+        entity.setISCARE(jsonNode.get("ISCARE").asText());
+        return entity;
+    }
 }

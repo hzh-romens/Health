@@ -24,6 +24,7 @@ import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextIconCell;
+import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeToken;

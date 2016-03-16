@@ -36,7 +36,7 @@ public class DrugGroupMenuCell extends FrameLayout {
         textView.setTextColor(ResourcesConfig.bodyText1);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         textView.setIncludeFontPadding(false);
-        FrameLayout.LayoutParams params = LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT,Gravity.CENTER,8,0,8,0);
+        FrameLayout.LayoutParams params = LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER, 8, 0, 8, 0);
         addView(textView, params);
     }
 

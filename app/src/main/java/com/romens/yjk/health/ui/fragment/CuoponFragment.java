@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +15,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.network.FacadeArgs;
-import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -30,6 +33,7 @@ import com.romens.yjk.health.ui.CuoponActivity;
 import com.romens.yjk.health.ui.adapter.CuoponAdapter;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -147,40 +151,40 @@ public class CuoponFragment extends Fragment {
                 .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", requestType, args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
+        Connect connect = new RMConnect.Builder(getActivity().getClass())
                 .withProtocol(protocol)
-                .build();
-        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("GetCoupon", "ERROR");
-            }
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = responseProtocol.getResponse();
 
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (errorMsg == null) {
-                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
-                    String response = responseProtocol.getResponse();
-                    if (result != null) {
-                        result.clear();
+                            result = new ArrayList<CuoponEntity>();
+                            for (int i = 0; i < response.size(); i++) {
+                                CuoponEntity cuoponEntity = CuoponEntity.toEntity(response.get(i));
+                                result.add(cuoponEntity);
+                            }
+                            setChoiceList();
+                            refreshLayout.setRefreshing(false);
+                            cuoponAdapter.bindData(result);
+                            if (choicePosition >= 0) {
+                                choiceArray.append(choicePosition, true);
+                            }
+                            cuoponAdapter.bindChoiceData(choiceArray);
+                            if ("GetCoupon".equals(requestType)) {
+                                cuoponAdapter.setChoice(choicePosition, requestType);
+                            }
+                            listView.setAdapter(cuoponAdapter);
+                        } else {
+                            refreshLayout.setRefreshing(false);
+                            Toast.makeText(getActivity(), "数据为空", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
-                    result = CuoponEntity.toEntity(response);
-                    setChoiceList();
-                    refreshLayout.setRefreshing(false);
-                    cuoponAdapter.bindData(result);
-                    if (choicePosition >= 0) {
-                        choiceArray.append(choicePosition, true);
-                    }
-                    cuoponAdapter.bindChoiceData(choiceArray);
-                    if ("GetCoupon".equals(requestType)) {
-                        cuoponAdapter.setChoice(choicePosition, requestType);
-                    }
-                    listView.setAdapter(cuoponAdapter);
-                } else {
-                    Log.e("GetCoupon", errorMsg.msg);
-                }
-            }
-        });
+                }).build();
+        ConnectManager.getInstance().request(getActivity(), connect);
     }
 
     private void setChoiceList() {

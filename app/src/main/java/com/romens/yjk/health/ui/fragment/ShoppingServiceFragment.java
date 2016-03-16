@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.log.FileLog;
-import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -23,6 +22,7 @@ import com.romens.android.network.request.Connect;
 import com.romens.android.network.request.ConnectManager;
 import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.base.BaseActionBarActivity;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
@@ -141,11 +141,43 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
         }
     }
 
+    /**
+     * 添加药品到购物车
+     *
+     * @param goodsItem
+     */
     public void tryAddToShoppingCart(MedicineGoodsItem goodsItem) {
-        tryAddToShoppingCart(goodsItem.guid, goodsItem.userPrice.doubleValue());
+        tryAddToShoppingCart(goodsItem.guid, goodsItem.userPrice.doubleValue(), GoodsFlag.NORMAL);
     }
 
+    /**
+     * 添加医保药品到购物车
+     *
+     * @param goodsItem
+     */
+    public void tryAddToShoppingCartForMedicare(MedicineGoodsItem goodsItem) {
+        tryAddToShoppingCart(goodsItem.guid, goodsItem.userPrice.doubleValue(), GoodsFlag.MEDICARE);
+    }
+
+    /**
+     * 添加药品到购物车
+     *
+     * @param guid  商品GUID
+     * @param price 商品价格
+     */
     public void tryAddToShoppingCart(String guid, double price) {
+        tryAddToShoppingCart(guid, price, GoodsFlag.NORMAL);
+    }
+
+    /**
+     * 提交商品到购物车
+     * 医保专区销售的药品添加到购物车全部需要传递 {@link GoodsFlag}=1
+     *
+     * @param guid      商品GUID
+     * @param price     商品价格
+     * @param goodsFlag 商品类型（1 医保商品）
+     */
+    public void tryAddToShoppingCart(String guid, double price, int goodsFlag) {
         if (UserConfig.isClientLogined()) {
             needShowProgress("正在加入购物车...");
             Map<String, Object> args = new HashMap<>();
@@ -153,6 +185,9 @@ public class ShoppingServiceFragment extends ServiceFragment implements AppNotif
             args.put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid());
             args.put("BUYCOUNT", "1");
             args.put("PRICE", price);
+            if (goodsFlag == GoodsFlag.MEDICARE) {
+                args.put("GOODSTYPE", GoodsFlag.MEDICARE);
+            }
             FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCar", args);
             protocol.withToken(FacadeToken.getInstance().getAuthToken());
 

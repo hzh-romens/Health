@@ -37,6 +37,7 @@ import com.romens.android.ui.cells.EmptyCell;
 import com.romens.android.ui.cells.LoadingCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
@@ -97,7 +98,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private List<OrderItem> orderItems;
 
     private int selectPayType = Pay.PAY_TYPE_ONLINE;
-    private int selectDeliveryType = Pay.DELIVERY_TYPE_STORE;
+    private int selectDeliveryType = 0;
 
     private String orderCouponID;
     private String orderInvoice;
@@ -177,12 +178,17 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         handleShoppingCartData();
         updateAdapter();
         getUserDefaultAddress();
+        loadDeliveryMode();
     }
 
     private void processItemSelect(int position) {
         if (position == addressRow) {
             UIOpenHelper.openControlAddressActivityForResult(CommitOrderBaseActivity.this, REQUEST_CODE_ADDRESS);
         } else if (position == orderPayTypeRow) {
+            if (isLoadingDeliveryModes) {
+                ToastCell.toast(CommitOrderBaseActivity.this, "正在加载支付和配送方式...");
+                return;
+            }
             Intent intent = new Intent(CommitOrderBaseActivity.this, OrderPayTypeActivity.class);
             boolean supportMedicareCard = supportMedicareCardPay();
             intent.putExtra("SupportMedicareCard", supportMedicareCard);
@@ -294,7 +300,54 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         ConnectManager.getInstance().request(this, connect);
     }
 
+
+    /**
+     * 加载配送方式
+     */
+    public void loadDeliveryMode() {
+        isLoadingDeliveryModes = true;
+        hasLoadDeliveryModesError = false;
+        updateAdapter();
+        Pay.getInstance().clearDelivery();
+        Map<String, String> args = new HashMap<>();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetTransport", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+
+        Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        isLoadingDeliveryModes = false;
+                        hasLoadDeliveryModesError = false;
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = responseProtocol.getResponse();
+                            if (!response.has("ERROR")) {
+                                Pay.getInstance().setupDelivery(response);
+                                updateAdapter();
+                                return;
+                            } else {
+                                hasLoadDeliveryModesError = true;
+                            }
+                        }
+                        hasLoadDeliveryModesError = true;
+                        updateAdapter();
+                    }
+                }).build();
+        ConnectManager.getInstance().request(this, connect);
+    }
+
     private void tryPostOrder() {
+        if (isLoadingDefaultAddress) {
+            ToastCell.toast(CommitOrderBaseActivity.this, "正在加载送货地址...");
+            return;
+        }
+        if (isLoadingDeliveryModes) {
+            ToastCell.toast(CommitOrderBaseActivity.this, "正在加载支付和配送方式...");
+            return;
+        }
         if (addressInfo == null || addressInfo.size() <= 0) {
             ToastCell.toast(CommitOrderBaseActivity.this, "请选择送货地址!");
             return;
@@ -324,7 +377,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         needShowProgress("正在提交订单...");
         ObjectNode orderNode = JacksonMapper.getInstance().createObjectNode();
         orderNode.put("ADDRESSID", addressInfo.get("ID"));
-        orderNode.put("DELIVERYTYPE", Pay.getInstance().getDeliveryTypeKey(selectDeliveryType));
+        Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
+        orderNode.put("DELIVERYTYPE", deliveryMode.key);
         orderNode.put("PAYTYPE", Pay.getInstance().getPayTypeKey(selectPayType));
         orderNode.put("COUPONGUID", orderCouponID);
         orderNode.put("BILLNAME", orderInvoice);
@@ -454,6 +508,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
 
 
     private boolean isLoadingDefaultAddress;
+    private boolean isLoadingDeliveryModes;
+    private boolean hasLoadDeliveryModesError;
 
     private void updateAdapter() {
         rowCount = 0;
@@ -612,7 +668,13 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                         cell.setTextAndValue("", "点击选择送货地址", true, false);
                     }
                 } else if (position == orderPayTypeRow) {
-                    String payAndDelivery = String.format("%s (%s)", Pay.getInstance().getPayType(selectPayType), Pay.getInstance().getDeliveryType(selectDeliveryType));
+                    String payAndDelivery;
+                    if (isLoadingDeliveryModes) {
+                        payAndDelivery = "加载中..";
+                    } else {
+                        Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
+                        payAndDelivery = String.format("%s (%s)", Pay.getInstance().getPayType(selectPayType), deliveryMode.name);
+                    }
                     cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
                     cell.setTextAndValue("优惠券", "点击选择优惠券", true, true);
@@ -635,22 +697,23 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 int goodsIndex = position - item.storePosition - goodsBeginRow - 1;
                 ShoppingCartDataEntity entity = needCommitGoods.get(item.shopID).get(goodsIndex);
                 String iconPath = entity.getIcon();
-                String name = entity.getName();
+                CharSequence name = ShoppingHelper.createShoppingCartGoodsName(entity.getName(), entity.getGoodsType() == GoodsFlag.MEDICARE);
                 String desc = String.format("规格:%s", entity.getSpec());
                 BigDecimal userPrice = entity.getUserPrice();
                 int count = entity.getBuyCount();
                 cell.setValue(iconPath, name, desc, userPrice, count, true);
             } else if (viewType == 7) {
                 OrderInfoCell cell = (OrderInfoCell) holder.itemView;
-                String deliveryType = Pay.getInstance().getDeliveryType(selectDeliveryType);
 
+                Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
                 String name = "";
                 String address = "";
                 if (addressInfo.size() > 0) {
                     name = addressInfo.get("USER");
                     address = addressInfo.get("ADDRESS");
                 }
-                cell.setValue(deliveryType, name, address, goodsAmount, couponAmount);
+                String delivery=deliveryMode==null?"":deliveryMode.name;
+                cell.setValue(delivery, name, address, goodsAmount, couponAmount);
             } else if (viewType == 8) {
                 ActionCell cell = (ActionCell) holder.itemView;
                 cell.setValue("提交订单");
