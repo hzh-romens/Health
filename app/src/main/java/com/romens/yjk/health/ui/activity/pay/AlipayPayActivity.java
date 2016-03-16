@@ -2,9 +2,9 @@ package com.romens.yjk.health.ui.activity.pay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.yjk.health.pay.PayActivity;
 import com.romens.yjk.health.pay.PayParamsForAlipay;
 import com.romens.yjk.health.pay.PayState;
@@ -35,8 +35,8 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
 
     @Override
     protected void onPayRequest(Bundle payParams) {
-        Bundle bundle=payParams.getBundle("PAY");
-        String payOrderInfo=bundle.getString(PayParamsForAlipay.KEY_PAY_PARAMS);
+        Bundle bundle = payParams.getBundle("PAY");
+        String payOrderInfo = bundle.getString(PayParamsForAlipay.KEY_PAY_PARAMS);
         alipayPay.sendPayRequest(AlipayPayActivity.this, payOrderInfo);
     }
 
@@ -52,19 +52,25 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
     }
 
     @Override
-    public void onPaySuccess(String extData) {
+    public void onPaySuccess(Bundle extData) {
         changePayState(PayState.PROCESSING);
-        Map<String,String> args=new HashMap<>();
+        Map<String, String> args = new HashMap<>();
+        args.put("ORDERCODE", orderNo);
+        ObjectNode payResult = JacksonMapper.getInstance().createObjectNode();
+        for (String key : extData.keySet()) {
+            payResult.put(key, extData.getString(key));
+        }
+        args.put("PAYRESULT", payResult.toString());
         postPayResponseToServerAndCheckPayResult(args);
     }
 
     @Override
-    public void onPayFail(String extData) {
+    public void onPayFail(Bundle extData) {
         changePayState(PayState.FAIL);
     }
 
     @Override
-    public void onPayProcessing(String extData) {
+    public void onPayProcessing(Bundle extData) {
         changePayState(PayState.PROCESSING);
     }
 }

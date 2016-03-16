@@ -98,7 +98,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private List<OrderItem> orderItems;
 
     private int selectPayType = Pay.PAY_TYPE_ONLINE;
-    private int selectDeliveryType = -1;
+    private int selectDeliveryType =0;
 
     private String orderCouponID;
     private String orderInvoice;
@@ -350,6 +350,11 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         }
         if (addressInfo == null || addressInfo.size() <= 0) {
             ToastCell.toast(CommitOrderBaseActivity.this, "请选择送货地址!");
+            return;
+        }
+        Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
+        if(deliveryMode==null){
+            ToastCell.toast(CommitOrderBaseActivity.this, "请选择配送方式!");
             return;
         }
         SpannableStringBuilder message = new SpannableStringBuilder();
