@@ -38,7 +38,7 @@ public class ADWebActivity extends WebActivity implements AppNotificationCenter.
         bundle = getIntent().getExtras();
         ActionBar actionBar = getMyActionBar();
         ActionBarMenu menu = actionBar.createMenu();
-        menu.addItem(0, R.drawable.ic_share_grey600_24dp);
+        //menu.addItem(0, R.drawable.ic_share_grey600_24dp);
 
         if (bundle.containsKey(ARGUMENTS_KEY_TITLE)) {
             String title = bundle.getString(ARGUMENTS_KEY_TITLE);

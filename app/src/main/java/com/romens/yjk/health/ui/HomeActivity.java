@@ -38,7 +38,6 @@ import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
 import com.romens.yjk.health.ui.fragment.HomeFocusFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
-import com.romens.yjk.health.ui.fragment.ShopCarFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
@@ -152,7 +151,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 2) {
-
+                    UIOpenHelper.openAbout(HomeActivity.this);
                 } else if (id == 3) {
                     UIOpenHelper.openChangedPasswordActivity(HomeActivity.this);
                 } else if (id == 4) {

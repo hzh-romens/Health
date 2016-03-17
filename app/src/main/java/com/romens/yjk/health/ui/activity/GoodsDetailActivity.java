@@ -265,7 +265,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     private void handleListItemClick(int position) {
         if (position == serviceCallCenterRow) {
-            Toast.makeText(GoodsDetailActivity.this, "敬请期待!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(GoodsDetailActivity.this, "敬请期待!", Toast.LENGTH_SHORT).show();
+            UIOpenHelper.openCallCenterFromGoodsPage(GoodsDetailActivity.this, goodsId);
         } else if (position == serviceMedicineManualRow) {
             UIOpenHelper.openMedicineManualActivity(GoodsDetailActivity.this, currMedicineGoodsItem.guid, currMedicineGoodsItem.name);
         } else if (position == otherStoresRow) {
@@ -873,7 +874,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else if (i == serviceCallCenterRow) {
                     cell.setTextColor(ResourcesConfig.textPrimary);
                     cell.setValueTextColor(ResourcesConfig.bodyText3);
-                    cell.setTextAndValue("联系客服", "(敬请期待!)", true, true);
+                    cell.setTextAndValue("联系客服", "", true, true);
                 } else if (i == otherStoresRow) {
                     cell.setTextColor(ResourcesConfig.bodyText3);
                     cell.setValueTextColor(ResourcesConfig.bodyText3);

@@ -489,6 +489,14 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+
         <!--************** romens pay begin **************************-->
         <activity android:name="com.yunuo.pay.PayActivity"></activity>
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
@@ -549,12 +557,22 @@
 
 
         <!--**************** im begin *****************-->
+        <!-- 用药咨询 -->
         <activity
-            android:name=".ui.im.IMActivity"
+            android:name=".ui.im.HealthConsultActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <!-- 在线客服 -->
+        <activity
+            android:name=".ui.im.CallCenterActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
         <!--**************** im end *****************-->
 
 
@@ -624,12 +642,15 @@
 
 
         <!--**************** Account Manager BEGIN ************-->
-        <service android:name=".AuthenticatorService" android:exported="true">
+        <service
+            android:name=".AuthenticatorService"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator"/>
+                <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/auth"/>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/auth" />
         </service>
         <!--**************** Account Manager END ************-->
 

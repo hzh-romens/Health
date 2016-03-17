@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui.im;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.WebSettings;
@@ -7,6 +8,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -26,11 +29,17 @@ import com.romens.yjk.health.web.JsBaseInterface;
 import java.util.HashMap;
 
 /**
- * Created by siery on 16/1/28.
+ * @author Zhou Lisi
+ * @create 2016-03-17 10:20
+ * @description
  */
-public class IMActivity extends WebActivity {
+public class CallCenterActivity extends WebActivity {
+    public static final String ARGUMENT_KEY_TARGET_GOODSID = "KEY_TARGET_GOODSID";
     private final HashMap<String, String> config = new HashMap<>();
     private JsBaseInterface adWebJsInterface;
+    private boolean isConnectIMServer = false;
+
+    private String fromGoodsPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,13 @@ public class IMActivity extends WebActivity {
         actionBar.setAllowOverlayTitle(true);
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_grey600_24dp);
         needActionBarDivider(actionBar, true);
+        setActionBarTitle(actionBar, "在线客服");
+        Intent intent = getIntent();
+        if (intent.hasExtra(ARGUMENT_KEY_TARGET_GOODSID)) {
+            fromGoodsPage = intent.getStringExtra(ARGUMENT_KEY_TARGET_GOODSID);
+        } else {
+            fromGoodsPage = null;
+        }
 
         WebView webView = getWebView();
         webView.setWebViewClient(new WebViewClient() {
@@ -60,10 +76,8 @@ public class IMActivity extends WebActivity {
     private void loadCallCenterConfigProgress(boolean progress) {
         ActionBar actionBar = getMyActionBar();
         if (progress) {
-            setActionBarTitleOverlayText(actionBar, "正在连接客服...");
-            setActionBarTitle(actionBar, "");
+            setActionBarTitleOverlayText(actionBar, "正在连接在线客服...");
         } else {
-            setActionBarTitle(actionBar, "");
             setActionBarTitleOverlayText(actionBar, "");
         }
 
@@ -74,10 +88,15 @@ public class IMActivity extends WebActivity {
         loadCallCenterConfigProgress(true);
         HashMap<String, String> args = new HashMap<>();
         args.put("ORGGUID", UserConfig.getInstance().getOrgCode());
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetCustomerURL", args);
+        ObjectNode customer = JacksonMapper.getInstance().createObjectNode();
+        if (!TextUtils.isEmpty(fromGoodsPage)) {
+            customer.put("GOODSPAGE", fromGoodsPage);
+        }
+        args.put("CUSTOMER", customer.toString());
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetCallCenterURL", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
-        Connect connect = new RMConnect.Builder(IMActivity.class)
+        Connect connect = new RMConnect.Builder(HealthConsultActivity.class)
                 .withProtocol(protocol)
                 .withParser(new JSONNodeParser())
                 .withDelegate(new Connect.AckDelegate() {
@@ -111,29 +130,21 @@ public class IMActivity extends WebActivity {
     }
 
     private void tryConnectCallCenter() {
-        boolean connected = false;
+        isConnectIMServer = false;
         if (config.containsKey("URL")) {
             String url = config.get("URL");
             if (!TextUtils.isEmpty(url)) {
-                connected = true;
+                isConnectIMServer = true;
                 getWebView().loadUrl(url);
             }
         }
-        ActionBar actionBar = getMyActionBar();
-        setActionBarTitle(actionBar, connected ? "客服已连接" : "客服未连接");
+
     }
-
-
-//    private String buildIMURL() {
-//        String token = FacadeToken.getInstance().getAuthToken();
-//        String url = String.format("http://139.129.4.154/yyzs/kefu/h5.html?tenantId=247&appkey=liyoujing#huanxinkefu&to=123123&token=%s", token == null ? "" : token);
-//
-//        return url;
-//    }
 
     @Override
     protected void onWebPageCompleted() {
-
+        ActionBar actionBar = getMyActionBar();
+        setActionBarTitle(actionBar, isConnectIMServer ? "在线客服" : "在线客服(未连接)");
     }
 
     @Override
