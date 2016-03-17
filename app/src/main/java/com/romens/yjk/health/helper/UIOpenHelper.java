@@ -37,6 +37,7 @@ import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
+import com.romens.yjk.health.ui.activity.ScannerNewActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
@@ -72,10 +73,10 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
-    public static void openQRScanActivity(Activity context, int requestCode) {
-        Intent intent = new Intent("com.romens.yjk.health.QRSCANNER");
-        context.startActivityForResult(intent, requestCode);
-    }
+//    public static void openQRScanActivity(Activity context, int requestCode) {
+//        Intent intent = new Intent("com.romens.yjk.health.QRSCANNER");
+//        context.startActivityForResult(intent, requestCode);
+//    }
 
 //    public static void openDrugDetailActivity(Context context, String drugId) {
 //        Intent intent = new Intent(context, MedicinalDetailActivity.class);
@@ -109,6 +110,16 @@ public class UIOpenHelper {
     //打开搜索页面
     public static void openSearchActivity(Context context) {
         Intent intent = new Intent(context, SearchActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 扫码搜索
+     *
+     * @param context
+     */
+    public static void openQRSearchActivity(Context context) {
+        Intent intent = new Intent(context, ScannerNewActivity.class);
         context.startActivity(intent);
     }
 

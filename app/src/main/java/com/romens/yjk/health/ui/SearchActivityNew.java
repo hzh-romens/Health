@@ -48,6 +48,7 @@ import java.util.Map;
  * Created by anlc on 2015/8/17.
  */
 public class SearchActivityNew extends BaseActivity {
+
     private View searchHistoryContainer;
     private FlowLayout historyLayout;
 

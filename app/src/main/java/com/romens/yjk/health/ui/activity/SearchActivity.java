@@ -117,7 +117,7 @@ public class SearchActivity extends BaseActivity {
             actionBar.setTitle("扫描结果");
         } else {
             ActionBarMenuItem searchItem = actionBarMenu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
-            searchItem.getSearchField().setHint("输入疾病或者药品");
+            searchItem.getSearchField().setHint("输入药品或者症状,比如:感冒");
             searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
 
                 @Override
@@ -159,7 +159,7 @@ public class SearchActivity extends BaseActivity {
                 if (id == -1) {
                     finish();
                 } else if (id == 1) {
-                    UIOpenHelper.openQRScanActivity(SearchActivity.this, 0);
+                    UIOpenHelper.openQRSearchActivity(SearchActivity.this);
                     finish();
                 }
             }
