@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.romens.yjk.health.R;
 import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.UserConfig;
@@ -32,15 +31,18 @@ import com.romens.yjk.health.ui.NewShoppingAddressActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.activity.ADWebActivity;
+import com.romens.yjk.health.ui.activity.AboutActivity;
 import com.romens.yjk.health.ui.activity.ChangePasswordActivity;
 import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
+import com.romens.yjk.health.ui.activity.ScannerNewActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
+import com.romens.yjk.health.ui.im.CallCenterActivity;
 import com.yunuo.pay.PayActivity;
 
 import java.io.Serializable;
@@ -71,10 +73,10 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
-    public static void openQRScanActivity(Activity context, int requestCode) {
-        Intent intent = new Intent("com.romens.yjk.health.QRSCANNER");
-        context.startActivityForResult(intent, requestCode);
-    }
+//    public static void openQRScanActivity(Activity context, int requestCode) {
+//        Intent intent = new Intent("com.romens.yjk.health.QRSCANNER");
+//        context.startActivityForResult(intent, requestCode);
+//    }
 
 //    public static void openDrugDetailActivity(Context context, String drugId) {
 //        Intent intent = new Intent(context, MedicinalDetailActivity.class);
@@ -108,6 +110,16 @@ public class UIOpenHelper {
     //打开搜索页面
     public static void openSearchActivity(Context context) {
         Intent intent = new Intent(context, SearchActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 扫码搜索
+     *
+     * @param context
+     */
+    public static void openQRSearchActivity(Context context) {
+        Intent intent = new Intent(context, ScannerNewActivity.class);
         context.startActivity(intent);
     }
 
@@ -389,5 +401,23 @@ public class UIOpenHelper {
             return true;
         }
         return false;
+    }
+
+    public static final void openCallCenterFromGoodsPage(Context context, String goodsId) {
+        Intent intent = new Intent(context, CallCenterActivity.class);
+        Bundle arguments = new Bundle();
+        arguments.putString(CallCenterActivity.ARGUMENT_KEY_TARGET_GOODSID, goodsId);
+        intent.putExtras(arguments);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 关于
+     *
+     * @param context
+     */
+    public static final void openAbout(Context context) {
+        Intent intent = new Intent(context, AboutActivity.class);
+        context.startActivity(intent);
     }
 }

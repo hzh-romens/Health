@@ -137,7 +137,7 @@ public class Pay {
                 intent = new Intent();
                 ComponentName componentName = new ComponentName(context.getPackageName(), context.getPackageName() + ".ui.activity.MedicarePayActivity");
                 intent.setComponent(componentName);
-            } else {
+            } else if(id==PAY_TYPE_ONLINE) {
                 intent = new Intent(context, PayPrepareActivity.class);
             }
         }

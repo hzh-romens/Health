@@ -43,7 +43,7 @@ public class HistoryEntity {
     }
 
     public String getImgUrl() {
-        return imgUrl;
+        return imgUrl == null ? "" : imgUrl;
     }
 
     public void setImgUrl(String imgUrl) {
@@ -105,27 +105,28 @@ public class HistoryEntity {
     public void setGuid(String guid) {
         this.guid = guid;
     }
-    public static HistoryEntity toEntity(MedicineGoodsItem item){
+
+    public static HistoryEntity toEntity(MedicineGoodsItem item) {
         HistoryEntity historyEntity = new HistoryEntity();
-        if(item.shopName!=null&&!("".equals(item.shopName)))
-        historyEntity.setShopName(item.shopName+"");
-        if(item.smallImageUrl!=null&&!("".equals(item.smallImageUrl)))
-        historyEntity.setImgUrl(item.smallImageUrl+"");
+        if (item.shopName != null && !("".equals(item.shopName)))
+            historyEntity.setShopName(item.shopName + "");
+        if (item.smallImageUrl != null && !("".equals(item.smallImageUrl)))
+            historyEntity.setImgUrl(item.smallImageUrl + "");
         historyEntity.setIsSelect(true);
-        if(item.name!=null&&!("".equals(item.name)))
-        historyEntity.setMedicinalName(item.name+"");
-        if(item.userPrice!=null&&!("".equals(item.userPrice)))
-        historyEntity.setCurrentPrice(item.userPrice + "");
-        if(item.marketPrice!=null&&!("".equals(item.marketPrice)))
-        historyEntity.setDiscountPrice(item.marketPrice + "");
-        if(!("".equals(item.totalSaledCount)))
-        historyEntity.setSaleCount(item.totalSaledCount + "");
-        if(!("".equals(item.storeCount)))
-        historyEntity.setCommentCount(item.storeCount + "");
-        if(!("".equals(item.guid)))
-        historyEntity.setGuid(item.guid);
-        if(!("".equals(item.shopId)))
-        historyEntity.setShopIp(item.shopId);
+        if (item.name != null && !("".equals(item.name)))
+            historyEntity.setMedicinalName(item.name + "");
+        if (item.userPrice != null && !("".equals(item.userPrice)))
+            historyEntity.setCurrentPrice(item.userPrice + "");
+        if (item.marketPrice != null && !("".equals(item.marketPrice)))
+            historyEntity.setDiscountPrice(item.marketPrice + "");
+        if (!("".equals(item.totalSaledCount)))
+            historyEntity.setSaleCount(item.totalSaledCount + "");
+        if (!("".equals(item.storeCount)))
+            historyEntity.setCommentCount(item.storeCount + "");
+        if (!("".equals(item.guid)))
+            historyEntity.setGuid(item.guid);
+        if (!("".equals(item.shopId)))
+            historyEntity.setShopIp(item.shopId);
         return historyEntity;
     }
 }

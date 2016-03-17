@@ -132,7 +132,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         allCheckView.setChecked(false);
         allCheckView.shouldText(true);
         allCheckView.setText("全选");
-        bottomBar.addView(allCheckView, LayoutHelper.createFrame(96, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL, 8, 0, 0, 0));
+        bottomBar.addView(allCheckView, LayoutHelper.createFrame(88, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL, 8, 0, 0, 0));
 
         amountDescView = new TextView(context);
         amountDescView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
@@ -327,7 +327,7 @@ public class ShoppingCartFragment extends BaseFragment implements AppNotificatio
         checkShoppingCartState();
         updateAdapter();
         if (isContainMedicareGoods) {
-            needShowTip("注意: 购物车内含有医保商品.结算时选择的商品必须全部为医保商品才可以进行医保支付.或者使用其他的支付方式.");
+            needShowTip("小提示: 购物车内含有医保商品.结算时选择的商品只有全部为医保商品才可以进行医保支付.或者使用其他的支付方式.");
         } else {
             if (showTip) {
                 needHideTip();

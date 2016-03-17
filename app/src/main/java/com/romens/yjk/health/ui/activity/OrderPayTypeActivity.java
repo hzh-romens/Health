@@ -230,7 +230,7 @@ public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
                 if (supportMedicareCardPay && selectPayType != Pay.PAY_TYPE_OFFLINE) {
                     cell.setValue("医保支付的药品,支持使用医保卡在线支付或者其他现金在线支付方式");
                 } else {
-                    cell.setValue("配送方式选择到店自提和送货上门时，在您的商品准备好后，我们会有专人电话联系您!");
+                    cell.setValue("配送方式选择药店派送或者到店自提时，在您的商品准备好后，我们会有专人电话联系您!");
                 }
             }
             return convertView;

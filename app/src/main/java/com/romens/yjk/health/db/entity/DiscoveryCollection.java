@@ -4,16 +4,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HealthNewsActivity;
 import com.romens.yjk.health.ui.LocationActivity;
 import com.romens.yjk.health.ui.RemindActivity;
-import com.romens.yjk.health.ui.activity.ScannerActivity;
 import com.romens.yjk.health.ui.activity.ScannerNewActivity;
-import com.romens.yjk.health.ui.im.IMActivity;
+import com.romens.yjk.health.ui.im.HealthConsultActivity;
 
 /**
  * Created by siery on 15/5/22.
@@ -42,7 +40,7 @@ public class DiscoveryCollection {
         }
         Intent intent = null;
         if (TextUtils.equals(PharmicCounseling.value, className)) {
-            intent = new Intent(context, IMActivity.class);
+            intent = new Intent(context, HealthConsultActivity.class);
         } else if (TextUtils.equals(IHealth.value, className)) {
             Toast.makeText(context, "正在开发，尽请期待!", Toast.LENGTH_SHORT).show();
         } else {

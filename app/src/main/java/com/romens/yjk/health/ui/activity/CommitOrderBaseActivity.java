@@ -352,6 +352,11 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             ToastCell.toast(CommitOrderBaseActivity.this, "请选择送货地址!");
             return;
         }
+        Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
+        if (deliveryMode == null) {
+            ToastCell.toast(CommitOrderBaseActivity.this, "请选择配送方式!");
+            return;
+        }
         SpannableStringBuilder message = new SpannableStringBuilder();
         message.append(String.format("订单共 %d 个商品,总合计 ", goodsCount));
         message.append(ShoppingHelper.formatPrice(goodsAmount));
@@ -432,12 +437,17 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             String orderDate = response.get("CREATEDATE").asText();
             String payType = response.get("PAYTYPE").asText();
             BigDecimal payAmount = new BigDecimal(response.get("PAYMOUNT").asDouble(0));
-
-            Bundle arguments = new Bundle();
-            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
-            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
-            arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
-            boolean isOpen = UIOpenHelper.openPayPrepareActivity(CommitOrderBaseActivity.this, payType, arguments);
+            boolean isOpen = true;
+            int id = Pay.getInstance().getPayTypeId(payType);
+            if (id == Pay.PAY_TYPE_OFFLINE) {
+                UIOpenHelper.openOrderDetailForOrderNoActivity(CommitOrderBaseActivity.this, orderNo);
+            } else {
+                Bundle arguments = new Bundle();
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+                isOpen = UIOpenHelper.openPayPrepareActivity(CommitOrderBaseActivity.this, payType, arguments);
+            }
             if (isOpen) {
                 finish();
             }
@@ -673,7 +683,11 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                         payAndDelivery = "加载中..";
                     } else {
                         Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
-                        payAndDelivery = String.format("%s (%s)", Pay.getInstance().getPayType(selectPayType), deliveryMode.name);
+                        if (deliveryMode == null) {
+                            payAndDelivery = Pay.getInstance().getPayType(selectPayType);
+                        } else {
+                            payAndDelivery = String.format("%s (%s)", Pay.getInstance().getPayType(selectPayType), deliveryMode.name);
+                        }
                     }
                     cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
@@ -712,7 +726,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     name = addressInfo.get("USER");
                     address = addressInfo.get("ADDRESS");
                 }
-                String delivery=deliveryMode==null?"":deliveryMode.name;
+                String delivery = deliveryMode == null ? "" : deliveryMode.name;
                 cell.setValue(delivery, name, address, goodsAmount, couponAmount);
             } else if (viewType == 8) {
                 ActionCell cell = (ActionCell) holder.itemView;

@@ -279,11 +279,11 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                             }*/ else if (position == 1) {//会员管理
                                 // Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
                                 UIOpenHelper.openMemberActivity(getActivity());
-                            } else if (position == 2) {//我的收藏
+                            } else if (position == 3) {//我的收藏
                                 UIOpenHelper.openFavoritesActivity(getActivity());
-                            } else if (position == 3) {//历史浏览
+                            } else if (position == 4) {//历史浏览
                                 startActivity(new Intent(getActivity(), HistoryActivity.class));
-                            } else if (position == 4) {//收货地址管理
+                            } else if (position == 2) {//收货地址管理
                                 startActivity(new Intent(getActivity(), ControlAddressActivity.class));
                             } else if (position == 5) {//个人健康
                                 Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
@@ -472,7 +472,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     private List<Map<String, Object>> initPersonControlData() {
         List<Map<String, Object>> personControlList = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
-        map.put("name", "账户管理");
+        map.put("name", "个人信息");
         map.put("icon", R.drawable.ic_account);
         personControlList.add(map);
 
@@ -482,8 +482,13 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 //        personControlList.add(map);
 
         map = new HashMap<>();
-        map.put("name", "会员管理");
+        map.put("name", "我的会员");
         map.put("icon", R.drawable.ic_member);
+        personControlList.add(map);
+
+        map = new HashMap<>();
+        map.put("name", "收货地址");
+        map.put("icon", R.drawable.ic_address2);
         personControlList.add(map);
 
         map = new HashMap<>();
@@ -496,15 +501,10 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         map.put("icon", R.drawable.ic_history);
         personControlList.add(map);
 
-        map = new HashMap<>();
-        map.put("name", "收货地址管理");
-        map.put("icon", R.drawable.ic_address2);
-        personControlList.add(map);
-
-        map = new HashMap<>();
-        map.put("name", "个人健康");
-        map.put("icon", R.drawable.ic_health);
-        personControlList.add(map);
+//        map = new HashMap<>();
+//        map.put("name", "个人健康");
+//        map.put("icon", R.drawable.ic_health);
+//        personControlList.add(map);
 
 //        map = new HashMap<>();
 //        map.put("name", "退出登录");

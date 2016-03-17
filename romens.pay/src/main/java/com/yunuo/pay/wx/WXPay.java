@@ -2,6 +2,7 @@ package com.yunuo.pay.wx;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.romens.android.io.json.JacksonMapper;
@@ -23,11 +24,11 @@ import java.util.Map;
  */
 public class WXPay implements IWXAPIEventHandler {
     public interface Delegate {
-        void onPaySuccess(String extData);
+        void onPaySuccess(Bundle extData);
 
         void onPayFail(int errorCode, String error);
 
-        void onPayCancel(String extData);
+        void onPayCancel(Bundle extData);
 
         void onPayProcessing();
     }
@@ -36,19 +37,19 @@ public class WXPay implements IWXAPIEventHandler {
     private final boolean isRegisterApp;
     private Delegate delegate;
 
-    public WXPay(Context context, Delegate delegate) {
+    public WXPay(Context context, String appId, Delegate delegate) {
         this.delegate = delegate;
-        this.wxAPI = WXAPIFactory.createWXAPI(context, getAppId());
-        this.isRegisterApp = wxAPI.registerApp(getAppId());
+        this.wxAPI = WXAPIFactory.createWXAPI(context, appId);
+        this.isRegisterApp = wxAPI.registerApp(appId);
     }
 
     public IWXAPI getWxAPI() {
         return wxAPI;
     }
 
-    public String getAppId() {
-        return "wx0c8c0d4ae1fc56d8";
-    }
+//    public String getAppId() {
+//        return "wx0c8c0d4ae1fc56d8";
+//    }
 
     public boolean isRegisterApp() {
         return isRegisterApp;
@@ -78,14 +79,16 @@ public class WXPay implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp baseResp) {
+        Bundle result = new Bundle();
+        baseResp.toBundle(result);
         if (baseResp instanceof PayResp) {
             PayResp payResp = (PayResp) baseResp;
             if (payResp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
                 final int errorCode = payResp.errCode;
                 if (errorCode == BaseResp.ErrCode.ERR_OK) {
-                    delegate.onPaySuccess(payResp.extData);
+                    delegate.onPaySuccess(result);
                 } else if (errorCode == BaseResp.ErrCode.ERR_USER_CANCEL) {
-                    delegate.onPayCancel(payResp.extData);
+                    delegate.onPayCancel(result);
                 } else {
                     delegate.onPayFail(errorCode, payResp.errStr);
                 }

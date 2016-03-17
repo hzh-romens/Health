@@ -71,9 +71,9 @@ public class WXPayActivity extends Activity implements IWXAPIEventHandler {
     }
 
     private void initWXApi() {
-        wxPay = new WXPay(this, new WXPay.Delegate() {
+        wxPay = new WXPay(this, "",new WXPay.Delegate() {
             @Override
-            public void onPaySuccess(String extData) {
+            public void onPaySuccess(Bundle extData) {
 
             }
 
@@ -83,7 +83,7 @@ public class WXPayActivity extends Activity implements IWXAPIEventHandler {
             }
 
             @Override
-            public void onPayCancel(String extData) {
+            public void onPayCancel(Bundle extData) {
 
             }
 
@@ -132,7 +132,7 @@ public class WXPayActivity extends Activity implements IWXAPIEventHandler {
         Map<String, String> ext = new HashMap<>();
         ext.put("orderId", jsonObject.getString("ordercode"));
 
-        WXPay.WXPayBuilder builder = new WXPay.WXPayBuilder(wxPay.getAppId())
+        WXPay.WXPayBuilder builder = new WXPay.WXPayBuilder("")
                 .withPartnerId(jsonObject.getString("partnerid"))
                 .withPrepayId(jsonObject.getString("prepayid"))
                 .withPackageValue("Sign=WXPay")

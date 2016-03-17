@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +47,6 @@ import java.util.Map;
  * Created by anlc on 2015/8/17.
  */
 public class SearchActivity extends BaseActivity {
-
     private ListView listView;
     private ListAdapter adapter;
 
@@ -127,7 +125,8 @@ public class SearchActivity extends BaseActivity {
 //                    saveHistoryKeyword(searchStr);
 //                    historyLayout.setVisibility(View.GONE);
 //                    showSearchResult(container);
-                    startActivity(new Intent("com.romens.yjk.health.QRSCANNER"));
+                    UIOpenHelper.openQRSearchActivity(SearchActivity.this);
+                    finish();
                 }
             }
         });
@@ -359,7 +358,7 @@ public class SearchActivity extends BaseActivity {
 //                            Intent intent = new Intent(SearchActivity.this, MedicinalDetailActivity.class);
 //                            intent.putExtra("guid", drugList.get(position - 1).get("guid"));
 //                            startActivity(intent);
-                            UIOpenHelper.openMedicineActivity(SearchActivity.this,drugList.get(position - 1).get("guid"));
+                            UIOpenHelper.openMedicineActivity(SearchActivity.this, drugList.get(position - 1).get("guid"));
                         }
                     });
                 }

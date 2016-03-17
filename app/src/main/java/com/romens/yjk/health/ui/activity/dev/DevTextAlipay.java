@@ -37,18 +37,18 @@ public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
         super.onCreate(savedInstanceState);
         alipayPay = new AlipayPay(new AlipayPay.Delegate() {
             @Override
-            public void onPaySuccess(String extData) {
-                Log.e("ALIPAY", extData);
+            public void onPaySuccess(Bundle extData) {
+                Log.e("ALIPAY", extData.toString());
             }
 
             @Override
-            public void onPayFail(String extData) {
-                Log.e("ALIPAY", extData);
+            public void onPayFail(Bundle extData) {
+                Log.e("ALIPAY", extData.toString());
             }
 
             @Override
-            public void onPayProcessing(String extData) {
-                Log.e("ALIPAY", extData);
+            public void onPayProcessing(Bundle extData) {
+                Log.e("ALIPAY", extData.toString());
             }
         });
 
