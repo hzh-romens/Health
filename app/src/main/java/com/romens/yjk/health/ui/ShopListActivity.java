@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -33,6 +34,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.ui.adapter.ShopListAdapter;
@@ -50,7 +52,7 @@ import java.util.Map;
 /**
  * Created by AUSU on 2015/9/23.
  */
-public class ShopListActivity extends BaseActivity implements View.OnClickListener {
+public class ShopListActivity extends BaseActivity implements View.OnClickListener, AppNotificationCenter.NotificationCenterDelegate {
     private ShopListNoPictureAdapter shopListNoPictureAdapter;
     private ReviseRadioButton priceButton, saleButton;
     private LinearLayoutManager linearLayoutManager;
@@ -205,6 +207,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         refreshLayout.setRefreshing(false);
     }
 
+    private ActionBarMenuItem shopCarMenuItem;
 
     private void initView() {
         actionBar = (ActionBar) findViewById(R.id.action_bar);
@@ -221,7 +224,9 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         switchButton.setOnClickListener(this);
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
         ActionBarMenu menu = actionBar.createMenu();
-        ActionBarMenuItem searchItem = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
+
+        shopCarMenuItem = menu.addItem(1, R.drawable.ic_shopping_cart_grey600_24dp);
+        ActionBarMenuItem searchItem = menu.addItem(2, R.drawable.ic_ab_search).setIsSearchField(true, true);
         searchItem.getSearchField().setHint("请输入药品名称...");
         searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
 
@@ -261,9 +266,15 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             public void onItemClick(int i) {
                 if (i == -1) {
                     finish();
+                } else if (i == 1) {
+                    UIOpenHelper.openShoppingCartActivityForCheckLogin(ShopListActivity.this, 0);
                 }
             }
         });
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        int count = ShoppingServiceFragment.instance(getSupportFragmentManager()).getShoppingCartCount();
+        Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(ShopListActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
+        shopCarMenuItem.setIcon(shoppingCartCountBitmap);
     }
 
     @Override
@@ -448,5 +459,28 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     }
                 }).build();
         ConnectManager.getInstance().request(this, connect);
+    }
+
+    int sumCount;
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == AppNotificationCenter.onShoppingCartChanged) {
+            if (shopCarMenuItem != null) {
+                int count = (int) args[0];
+                sumCount = sumCount + count;
+                if (sumCount < 0) {
+                    sumCount = 0;
+                }
+                Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(ShopListActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
+                shopCarMenuItem.setIcon(shoppingCartCountBitmap);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppNotificationCenter.getInstance().removeObserver(this,AppNotificationCenter.onShoppingCartChanged);
     }
 }
