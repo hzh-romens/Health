@@ -21,6 +21,8 @@ import com.romens.android.log.FileLog;
 import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.romens.yjk.health.wx.mta.MTAManager;
+import com.romens.yjk.health.wx.push.PushManager;
 import com.tencent.stat.StatService;
 
 /**
@@ -36,7 +38,11 @@ public class IntroActivityNew extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MTAManager.init(this);
+        PushManager.init(this);
+        PushManager.register(this);
         StatService.trackCustomEvent(this, "onCreate", "");
+
         //是否首次打开App，首次打开App启动引导页
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         openGuidePager = sharedPreferences.getBoolean("open_guide_pager", false);
