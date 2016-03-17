@@ -98,7 +98,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private List<OrderItem> orderItems;
 
     private int selectPayType = Pay.PAY_TYPE_ONLINE;
-    private int selectDeliveryType =0;
+    private int selectDeliveryType = 0;
 
     private String orderCouponID;
     private String orderInvoice;
@@ -353,7 +353,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             return;
         }
         Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
-        if(deliveryMode==null){
+        if (deliveryMode == null) {
             ToastCell.toast(CommitOrderBaseActivity.this, "请选择配送方式!");
             return;
         }
@@ -437,12 +437,17 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             String orderDate = response.get("CREATEDATE").asText();
             String payType = response.get("PAYTYPE").asText();
             BigDecimal payAmount = new BigDecimal(response.get("PAYMOUNT").asDouble(0));
-
-            Bundle arguments = new Bundle();
-            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
-            arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
-            arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
-            boolean isOpen = UIOpenHelper.openPayPrepareActivity(CommitOrderBaseActivity.this, payType, arguments);
+            boolean isOpen = true;
+            int id = Pay.getInstance().getPayTypeId(payType);
+            if (id == Pay.PAY_TYPE_OFFLINE) {
+                UIOpenHelper.openOrderDetailForOrderNoActivity(CommitOrderBaseActivity.this, orderNo);
+            } else {
+                Bundle arguments = new Bundle();
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+                isOpen = UIOpenHelper.openPayPrepareActivity(CommitOrderBaseActivity.this, payType, arguments);
+            }
             if (isOpen) {
                 finish();
             }
