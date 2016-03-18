@@ -114,10 +114,10 @@ public class RemindDao extends AbstractDao<RemindEntity, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, RemindEntity entity) {
         stmt.clearBindings();
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, entity.getId());
-        }
+//        Long id = entity.getId();
+//        if (id != null) {
+//            stmt.bindLong(1, entity.getId());
+//        }
         stmt.bindString(2, entity.getUser());
         stmt.bindString(3, entity.getDrug());
         stmt.bindLong(4, entity.getIntervalDay());
