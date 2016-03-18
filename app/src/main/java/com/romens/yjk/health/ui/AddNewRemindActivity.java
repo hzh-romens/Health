@@ -21,6 +21,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -394,7 +395,6 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("tag", "---->" + listData.get(position) + "");
                 dosageTextView.setText(listData.get(position));
                 popupWindow.dismiss();
             }
