@@ -93,19 +93,20 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
         SpannableString user = new SpannableString(result);
         user.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, receiver.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         user.setSpan(new ForegroundColorSpan(Color.parseColor("#2baf2b")), result.length() - tel.length(), result.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        holder.itemView.setBackgroundResource(R.drawable.list_selector);
         holder.nameView.setText(user);
 //            holder.telView.setText(entity.getCONTACTPHONE());
         holder.addressView.setText(entity.getADDRESS());
         holder.cityView.setText(entity.getPROVINCENAME() + "-" + entity.getCITYNAME() + "-" + entity.getREGIONNAME());
-        holder.outsideLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (onItemLongClickListener != null) {
-                    onItemLongClickListener.itemLongClickListener(position);
-                }
-                return false;
-            }
-        });
+//        holder.outsideLayout.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                if (onItemLongClickListener != null) {
+//                    onItemLongClickListener.itemLongClickListener(position);
+//                }
+//                return false;
+//            }
+//        });
         holder.outsideLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +144,15 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ControlAddressAd
                 if (onItemLongClickListener != null) {
                     onItemLongClickListener.itemClickToCheckListner(position, ControlAddressActivity.ADDRESS_CHECK_TYPE);
                 }
+            }
+        });
+        holder.addressLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (onItemLongClickListener != null) {
+                    onItemLongClickListener.itemLongClickListener(position);
+                }
+                return false;
             }
         });
 

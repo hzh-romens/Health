@@ -1,6 +1,8 @@
 package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,6 +30,7 @@ import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
+import com.romens.android.ui.ActionBar.BottomSheet;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -38,6 +41,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.CitysEntity;
+import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.hyrmtt.ui.activity.CommitOrderActivity;
 import com.romens.yjk.health.ui.adapter.ControlAddressAdapter;
@@ -69,6 +73,7 @@ public class ControlAddressActivity extends BaseActivity {
     private LinearLayout noHaveAddressLayout;
 
     private String userGuid = "3333";
+    private Dialog editDialog;
 
     private String isFromCommitOrderActivity;
     public static final int ADDRESS_EDIT_TYPE = 0;
@@ -231,7 +236,6 @@ public class ControlAddressActivity extends BaseActivity {
             AddressEntity entity = AddressEntity.mapToEntity(item);
             addressListEntitis.add(entity);
         }
-        Log.e("tag", "--->" + new Gson().toJson(addressListEntitis));
         adapter.setData(addressListEntitis);
         refreshLayout();
     }
@@ -266,34 +270,58 @@ public class ControlAddressActivity extends BaseActivity {
         });
     }
 
-    public void removeDialogView(final int position) {
-        final AlertDialog dialog = new AlertDialog.Builder(this).create();
-        TextView textView = new TextView(this);
-
-        textView.setBackgroundResource(R.drawable.bg_white);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        textView.setSingleLine(true);
-        textView.setGravity(Gravity.CENTER);
-        textView.setText("删除");
-        textView.setTextColor(getResources().getColor(R.color.theme_primary));
-        textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(8), AndroidUtilities.dp(32), AndroidUtilities.dp(8));
-        LinearLayout.LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
-        infoViewParams.weight = 1;
-        infoViewParams.gravity = Gravity.CENTER;
-        textView.setLayoutParams(infoViewParams);
-
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestDeleteDataChanged(addressListEntitis.get(position).getADDRESSID());
-                dialog.dismiss();
-                needShowProgress("正在处理...");
-            }
-        });
-
-        dialog.show();
-        dialog.setContentView(textView);
+    @Override
+    protected void onPause() {
+        if (editDialog != null && editDialog.isShowing()) {
+            editDialog.dismiss();
+        }
+        super.onPause();
     }
+
+    public void removeDialogView(final int position) {
+        editDialog = new BottomSheet.Builder(this)
+                .setTitle("地址管理")
+                .setItems(new CharSequence[]{"删除地址"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, final int which) {
+                        if (which == 0) {
+                            requestDeleteDataChanged(addressListEntitis.get(position).getADDRESSID());
+                            dialog.dismiss();
+                            needShowProgress("正在处理...");
+                        }
+                    }
+                }).create();
+        editDialog.show();
+    }
+
+//    public void removeDialogView(final int position) {
+//        final AlertDialog dialog = new AlertDialog.Builder(this).create();
+//        TextView textView = new TextView(this);
+//
+//        textView.setBackgroundResource(R.drawable.bg_white);
+//        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+//        textView.setSingleLine(true);
+//        textView.setGravity(Gravity.CENTER);
+//        textView.setText("删除");
+//        textView.setTextColor(getResources().getColor(R.color.theme_primary));
+//        textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(8), AndroidUtilities.dp(32), AndroidUtilities.dp(8));
+//        LinearLayout.LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
+//        infoViewParams.weight = 1;
+//        infoViewParams.gravity = Gravity.CENTER;
+//        textView.setLayoutParams(infoViewParams);
+//
+//        textView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                requestDeleteDataChanged(addressListEntitis.get(position).getADDRESSID());
+//                dialog.dismiss();
+//                needShowProgress("正在处理...");
+//            }
+//        });
+//
+//        dialog.show();
+//        dialog.setContentView(textView);
+//    }
 
     private void initData() {
         addressListEntitis = new ArrayList<>();
