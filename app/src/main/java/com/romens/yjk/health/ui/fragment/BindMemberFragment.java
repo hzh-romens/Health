@@ -12,7 +12,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.cells.EditTextCells;
 
 /**
  * Created by HZH on 2016/2/1.
@@ -22,7 +21,7 @@ public class BindMemberFragment extends Fragment {
     private CardView btnOk;
     private TextView pharmacyName;
     private RadioGroup radioGroup;
-    private EditTextCells cells;
+   // private EditTextCells cells;
     private int selectMode;
 
     @Nullable

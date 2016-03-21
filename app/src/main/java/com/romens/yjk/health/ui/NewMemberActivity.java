@@ -9,6 +9,7 @@ import android.util.SparseIntArray;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.yjk.health.model.MemberType;
 import com.romens.yjk.health.ui.activity.LightActionBarActivity;
 import com.romens.yjk.health.ui.adapter.NewMemberAdapter;
 
@@ -30,12 +31,27 @@ public class NewMemberActivity extends LightActionBarActivity {
         setContentView(content, actionBar);
         listView.setLayoutManager(new LinearLayoutManager(this));
         setType();
+        adapter = new NewMemberAdapter(this);
+        adapter.bindType(types);
+        listView.setAdapter(adapter);
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int i) {
+                if (i == -1) {
+                    finish();
+                }
+            }
+        });
     }
-    private SparseIntArray types=new SparseIntArray();
+
+    private SparseIntArray types = new SparseIntArray();
 
     private void setType() {
-        for (int i = 0; i <6; i++) {
-
-        }
+        types.append(0, MemberType.TIP);
+        types.append(1, MemberType.EMPTY);
+        types.append(2, MemberType.PHONE);
+        types.append(3, MemberType.PSW);
+        types.append(4, MemberType.ADVICE);
+        types.append(5, MemberType.BUTTON);
     }
 }

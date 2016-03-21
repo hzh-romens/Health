@@ -45,7 +45,7 @@ public class MemberActivity extends BaseActivity {
                     finish();
                 } else if (i == 0) {
                     //跳转到添加会员卡界面
-                    startActivity(new Intent(MemberActivity.this, BindMemberActivity.class));
+                    startActivity(new Intent(MemberActivity.this, NewMemberActivity.class));
                 }
             }
         });
