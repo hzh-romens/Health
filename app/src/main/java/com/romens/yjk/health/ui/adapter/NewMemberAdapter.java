@@ -70,7 +70,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
         int itemViewType = getItemViewType(position);
         if (itemViewType == MemberType.TIP) {
             TipCell cell = (TipCell) holder.itemView;
-            cell.setBackgroundColor(Color.WHITE);
+            cell.setBackgroundColor(mContext.getResources().getColor(R.color.btn_primary_light));
             cell.setTextColor(Color.BLACK);
             cell.setTextSize(16);
             cell.setValue("验证手机号码立即开通会员");
@@ -96,8 +96,15 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
             cell.setNeedDivider(true);
         } else {
             MemberButtonCell cell = (MemberButtonCell) holder.itemView;
+            cell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.sureButtonClickListener(phoneNumber, password, recommend);
+                }
+            });
         }
     }
+
 
     static class Holder extends RecyclerView.ViewHolder {
         public Holder(View view) {
@@ -107,12 +114,22 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        // return mTypes != null ? 0 : mTypes.size();
         if (mTypes != null) {
             return mTypes.size();
         } else {
             return 0;
         }
+    }
+
+    private onItemClickListener mListener;
+    private String phoneNumber, password, recommend;
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        this.mListener = listener;
+    }
+
+    public interface onItemClickListener {
+        void sureButtonClickListener(String phoneValue, String pswValue, String recommendValue);
     }
 
     @Override

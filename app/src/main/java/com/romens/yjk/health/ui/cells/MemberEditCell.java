@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -37,18 +39,34 @@ public class MemberEditCell extends FrameLayout {
         editText = new EditText(context);
         editText.setTextSize(16);
         editText.setMaxLines(1);
+        editText.setBackground(null);
         editText.setEllipsize(TextUtils.TruncateAt.END);
         addView(editText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT, 16, 8, 16, 8));
         textView = new TextView(context);
         textView.setTextColor(getResources().getColor(R.color.theme_primary));
         textView.setTextSize(14);
+        textView.setText("获取验证码");
         addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT, 0, 8, 8, 16));
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-      //  if (needDivider) {
-            canvas.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1, paint);
+        //  if (needDivider) {
+        canvas.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1, paint);
         //}
     }
 
