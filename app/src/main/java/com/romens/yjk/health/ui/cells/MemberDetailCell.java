@@ -1,7 +1,9 @@
 package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -14,9 +16,16 @@ import com.romens.android.ui.Components.LayoutHelper;
  */
 public class MemberDetailCell extends FrameLayout {
     private TextView Level, Point, Balance;
+    private Paint paint;
 
     public MemberDetailCell(Context context) {
         super(context);
+        if(paint==null){
+            paint = new Paint();
+            paint.setColor(0xffd9d9d9);
+            paint.setStrokeWidth(1);
+        }
+        setWillNotDraw(false);
         int left = AndroidUtilities.dp(16);
         int top = AndroidUtilities.dp(8);
 
@@ -45,4 +54,12 @@ public class MemberDetailCell extends FrameLayout {
         Point.setText(point + "\n积分");
         Balance.setText(balance + "\n余额");
     }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        //  if (needDivider) {
+        canvas.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1, paint);
+        //}
+    }
+
 }
