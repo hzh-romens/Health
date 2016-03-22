@@ -14,11 +14,8 @@ import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.Image.AvatarDrawable;
-import com.romens.android.ui.Image.BackupImageView;
 import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.db.entity.UserEntity;
 
 /**
@@ -31,6 +28,7 @@ public class NewUserProfileCell extends FrameLayout {
 
     private TextView userIntegralView;
     private TextView userCouponView;
+    private TextView userRemainMoneyView;
     private LinearLayout subLayout;
 
 
@@ -63,8 +61,10 @@ public class NewUserProfileCell extends FrameLayout {
                     paint.setColor(Color.WHITE);
                     paint.setStyle(Paint.Style.STROKE);
                 }
-                canvas.drawLine(subLayout.getWidth() / 2, AndroidUtilities.dp(8),
-                        subLayout.getWidth() / 2, subLayout.getMeasuredHeight() - AndroidUtilities.dp(8), paint);
+                canvas.drawLine(subLayout.getWidth() / 3, AndroidUtilities.dp(8),
+                        subLayout.getWidth() / 3, subLayout.getMeasuredHeight() - AndroidUtilities.dp(8), paint);
+                canvas.drawLine(subLayout.getWidth() / 3 * 2, AndroidUtilities.dp(8),
+                        subLayout.getWidth() / 3 * 2, subLayout.getMeasuredHeight() - AndroidUtilities.dp(8), paint);
 
             }
         };
@@ -76,12 +76,24 @@ public class NewUserProfileCell extends FrameLayout {
         userIntegralView.setEllipsize(TextUtils.TruncateAt.END);
         userIntegralView.setTextColor(0xffffffff);
         userIntegralView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        userIntegralView.setText("积分余额0");
+        userIntegralView.setText("积分0");
         userIntegralView.setGravity(Gravity.CENTER);
         userIntegralView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
         LinearLayout.LayoutParams integralParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT);
         integralParams.weight = 1;
         subLayout.addView(userIntegralView, integralParams);
+
+        userRemainMoneyView = new TextView(context);
+        userRemainMoneyView.setSingleLine();
+        userRemainMoneyView.setEllipsize(TextUtils.TruncateAt.END);
+        userRemainMoneyView.setTextColor(0xffffffff);
+        userRemainMoneyView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        userRemainMoneyView.setText("余额0");
+        userRemainMoneyView.setGravity(Gravity.CENTER);
+        userRemainMoneyView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+        LinearLayout.LayoutParams remainParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT);
+        remainParams.weight = 1;
+        subLayout.addView(userRemainMoneyView, remainParams);
 
         userCouponView = new TextView(context);
         userCouponView.setSingleLine();
@@ -102,17 +114,22 @@ public class NewUserProfileCell extends FrameLayout {
         super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(152), View.MeasureSpec.EXACTLY));
     }
 
-    public void setUser(UserEntity userEntity) {
-//        AvatarDrawable avatarDrawable = new AvatarDrawable(true);
-//        avatarDrawable.setInfo(0, userEntity.getAvatar(), "a", false);
-//        avatarDrawable.setColor(ResourcesConfig.primaryColor);
-//        userAvatarView.setPlaceholderImage(avatarDrawable);
+    public void setUser(UserEntity userEntity,String integral, String remainMoney, String coupon,String sex) {
         userAvatarView.setRound(40);
         if (TextUtils.isEmpty(userEntity.getAvatar())) {
-            userAvatarView.setImagePath(R.drawable.user_default_icon);
+            if (sex.equals("1")) {
+                userAvatarView.setImagePath(R.drawable.user_default_icon_boy);
+            } else if (sex.equals("0")) {
+                userAvatarView.setImagePath(R.drawable.user_default_icon_girl);
+            } else {
+                userAvatarView.setImagePath(R.drawable.user_default_icon);
+            }
         } else {
             userAvatarView.setImagePath(userEntity.getAvatar());
         }
         userNameView.setText(userEntity.getPhone());
+        userIntegralView.setText("积分" + integral);
+        userRemainMoneyView.setText("余额" + remainMoney);
+        userCouponView.setText("优惠券" + coupon);
     }
 }

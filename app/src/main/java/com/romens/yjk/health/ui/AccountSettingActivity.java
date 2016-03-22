@@ -34,8 +34,11 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.PersonalEntity;
+import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,6 +141,8 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                     String response = responseProtocol.getResponse();
                     Gson gson = new Gson();
                     entity = gson.fromJson(response, PersonalEntity.class);
+                    Log.e("tag", "-AccountSettingInfo-->" + response);
+                    Log.e("tag", "-AccountSettingInfo-entity->" + new Gson().toJson(entity));
                     updateData();
                 } else {
                     Log.e("person message", errorMsg.msg);
@@ -178,6 +183,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if ("yes".equals(jsonObject.getString("success"))) {
+                            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onUserSubjoinChanged);
                             Toast.makeText(AccountSettingActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                             finish();
                         }
@@ -267,18 +273,20 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
     public void chooseSex() {
         new AlertDialog.Builder(this)
                 .setTitle("选择性别")
-                .setSingleChoiceItems(new String[]{"男", "女", "保密"}, 0, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 2) {
-                            entity.setGENDER("");
-                        } else {
-                            entity.setGENDER((which + 1) + "");
-                        }
-                        dialog.dismiss();
-                        updateData();
-                    }
-                })
+                .setSingleChoiceItems(new String[]{"女", "男", "保密"},
+                        Integer.parseInt(entity.getGENDER().equals("") ? "2" : entity.getGENDER()),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//                                if (which == 2) {
+//                                    entity.setGENDER("2");
+//                                } else {
+                                entity.setGENDER(which + "");
+//                                }
+                                dialog.dismiss();
+                                updateData();
+                            }
+                        })
                 .setPositiveButton("取 消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -408,10 +416,10 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                 } else if (position == sexRow) {
                     if (entity != null && entity.getGENDER() != null) {
                         String sex;
-                        if (entity.getGENDER().equals("1")) {
-                            sex = "男";
-                        } else if (entity.getGENDER().equals("2")) {
+                        if (entity.getGENDER().equals("0")) {
                             sex = "女";
+                        } else if (entity.getGENDER().equals("1")) {
+                            sex = "男";
                         } else {
                             sex = "保密";
                         }

@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,20 @@ import android.widget.Toast;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.Message;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.TextIconCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.DevelopModeManager;
+import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
@@ -46,6 +55,10 @@ import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +70,10 @@ import java.util.Map;
 public class HomeMyNewFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
     private ListView listView;
     private ListAdapter adapter;
+    private String integral = "0";
+    private String remainMoney = "0";
+    private String coupon = "0";
+    private String sexType = "0";
 
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -89,6 +106,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
     protected void onRootViewCreated(View view, Bundle savedInstanceState) {
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginOut);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onUserSubjoinChanged);
         listView.setAdapter(adapter);
     }
 
@@ -97,6 +115,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         MonitorHelper.unregisterUpdate();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginOut);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onUserSubjoinChanged);
         super.onDestroy();
     }
 
@@ -110,6 +129,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 
         rowCount = 0;
         if (clientUser != null) {
+            requestUserInfo();
             loginRow = -1;
             userProfileRow = rowCount++;
             orderTitleRow = rowCount++;
@@ -169,6 +189,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
             updateData();
         } else if (i == AppNotificationCenter.loginOut) {
             updateData();
+        } else if (i == AppNotificationCenter.onUserSubjoinChanged) {
+            requestUserInfo();
         }
     }
 
@@ -248,7 +270,11 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 }
                 NewUserProfileCell cell = (NewUserProfileCell) view;
                 UserEntity clientUser = UserSession.getInstance().get();
-                cell.setUser(clientUser);
+                cell.setUser(clientUser, integral, remainMoney, coupon, sexType);
+                Log.e("tag", "-integral-->" + integral);
+                Log.e("tag", "-remainMoney-->" + remainMoney);
+                Log.e("tag", "-coupon-->" + coupon);
+                Log.e("tag", "-sexType-->" + sexType);
             } else if (type == 1) {
                 if (view == null) {
                     view = new TextIconCell(adapterContext);
@@ -406,6 +432,44 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         }
     }
 
+    public void requestUserInfo() {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserInfoList", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
+                .withProtocol(protocol)
+//                .withParser(new JSONNodeParser())
+                .withDelegate(
+                        new Connect.AckDelegate() {
+                            @Override
+                            public void onResult(Message message, Message errorMessage) {
+                                if (errorMessage == null) {
+                                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) message.protocol;
+                                    Log.e("tag", "--->" + responseProtocol.getResponse());
+                                    try {
+                                        JSONObject object = new JSONObject(responseProtocol.getResponse());
+                                        JSONObject jfyeObj = new JSONArray(object.getString("JFYE")).getJSONObject(0);
+                                        double integralD = Double.parseDouble(jfyeObj.getString("SIGNINPOINT")) +
+                                                Double.parseDouble(jfyeObj.getString("CONSUMPTIONPOINT"));
+                                        integral = integralD + "";
+                                        remainMoney = Double.parseDouble(jfyeObj.getString("CONSUMEAMOUNT")) + "";
+                                        coupon = jfyeObj.getString("COUPONNUM") + "";
+                                        JSONObject userinfoObj = new JSONArray(object.getString("USERINFO")).getJSONObject(0);
+                                        sexType = userinfoObj.getString("SEX");
+                                        adapter.notifyDataSetChanged();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    Toast.makeText(getActivity(), "获取积分余额失败!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                ).build();
+
+        ConnectManager.getInstance().request(getActivity(), connect);
+    }
+
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
@@ -482,7 +546,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 //        personControlList.add(map);
 
         map = new HashMap<>();
-        map.put("name", "我的会员");
+        map.put("name", "我的会员卡");
         map.put("icon", R.drawable.ic_member);
         personControlList.add(map);
 

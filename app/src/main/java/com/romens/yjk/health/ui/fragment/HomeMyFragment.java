@@ -304,7 +304,7 @@ public class HomeMyFragment extends BaseFragment implements AppNotificationCente
                     view = new NewUserProfileCell(adapterContext);
                 }
                 NewUserProfileCell cell = (NewUserProfileCell) view;
-                cell.setUser(userEntity);
+//                cell.setUser(userEntity);
             } else if (type == 1) {
                 if (view == null) {
                     view = new ShadowSectionCell(adapterContext);
