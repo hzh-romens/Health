@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ public class MemberEditCell extends FrameLayout {
         init(context);
     }
 
-    private void init(Context context) {
+    private void init(final Context context) {
         if (paint == null) {
             paint = new Paint();
             paint.setColor(0xffd9d9d9);
@@ -46,22 +47,50 @@ public class MemberEditCell extends FrameLayout {
         textView.setTextColor(getResources().getColor(R.color.theme_primary));
         textView.setTextSize(14);
         textView.setText("获取验证码");
-        addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT, 0, 8, 8, 16));
+        addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
+
             @Override
             public void afterTextChanged(Editable s) {
-
+                mEditListener.EditTextChange(s.toString().trim());
+            }
+        });
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.SendRecommond();
             }
         });
     }
+
+    private SendRecommondListener mListener;
+    private EditTextChangeListener mEditListener;
+
+    public void setSendRecommondListener(SendRecommondListener listener) {
+        this.mListener = listener;
+    }
+
+    public interface SendRecommondListener {
+        void SendRecommond();
+    }
+
+    public void SetEditTextChangeListener(EditTextChangeListener listener) {
+        this.mEditListener = listener;
+    }
+
+    public interface EditTextChangeListener {
+        void EditTextChange(String value);
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {

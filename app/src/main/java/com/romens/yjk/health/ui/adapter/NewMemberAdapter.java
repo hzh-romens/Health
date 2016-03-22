@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.EmptyCell;
@@ -45,15 +46,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
             cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             cell.setHeight(16);
             return new Holder(cell);
-        } else if (viewType == MemberType.PHONE) {
-            MemberEditCell cell = new MemberEditCell(parent.getContext());
-            cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            return new Holder(cell);
-        } else if (viewType == MemberType.PSW) {
-            MemberEditCell cell = new MemberEditCell(parent.getContext());
-            cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            return new Holder(cell);
-        } else if (viewType == MemberType.ADVICE) {
+        } else if (viewType == MemberType.PHONE || viewType == MemberType.PSW || viewType == MemberType.ADVICE) {
             MemberEditCell cell = new MemberEditCell(parent.getContext());
             cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             return new Holder(cell);
@@ -67,7 +60,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int itemViewType = getItemViewType(position);
+        final int itemViewType = getItemViewType(position);
         if (itemViewType == MemberType.TIP) {
             TipCell cell = (TipCell) holder.itemView;
             cell.setBackgroundColor(mContext.getResources().getColor(R.color.btn_primary_light));
@@ -76,24 +69,42 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
             cell.setValue("验证手机号码立即开通会员");
         } else if (itemViewType == MemberType.EMPTY) {
             EmptyCell cell = (EmptyCell) holder.itemView;
-        } else if (itemViewType == MemberType.PHONE) {
+        } else if (itemViewType == MemberType.PHONE || itemViewType == MemberType.PSW || itemViewType == MemberType.ADVICE) {
             MemberEditCell cell = (MemberEditCell) holder.itemView;
-            cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
-            cell.setVisible(true);
-            cell.setHintText("请输入手机号码");
-            cell.setNeedDivider(true);
-        } else if (itemViewType == MemberType.PSW) {
-            MemberEditCell cell = (MemberEditCell) holder.itemView;
-            cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
-            cell.setVisible(false);
-            cell.setHintText("请输入验证码");
-            cell.setNeedDivider(true);
-        } else if (itemViewType == MemberType.ADVICE) {
-            MemberEditCell cell = (MemberEditCell) holder.itemView;
-            cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
-            cell.setVisible(true);
-            cell.setHintText("请输入推荐码(选填)");
-            cell.setNeedDivider(true);
+            if (itemViewType == MemberType.PHONE) {
+                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+                cell.setVisible(true);
+                cell.setHintText("请输入手机号码");
+                cell.setNeedDivider(true);
+            } else if (itemViewType == MemberType.PSW) {
+                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+                cell.setVisible(false);
+                cell.setHintText("请输入验证码");
+                cell.setNeedDivider(true);
+                cell.setSendRecommondListener(new MemberEditCell.SendRecommondListener() {
+                    @Override
+                    public void SendRecommond() {
+                        Toast.makeText(mContext, "点击验证码", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+                cell.setVisible(true);
+                cell.setHintText("请输入推荐码(选填)");
+                cell.setNeedDivider(true);
+            }
+            cell.SetEditTextChangeListener(new MemberEditCell.EditTextChangeListener() {
+                @Override
+                public void EditTextChange(String value) {
+                    if (itemViewType == MemberType.PHONE) {
+                        phoneNumber = value;
+                    } else if (itemViewType == MemberType.PSW) {
+                        password = value;
+                    } else {
+                        recommend = value;
+                    }
+                }
+            });
         } else {
             MemberButtonCell cell = (MemberButtonCell) holder.itemView;
             cell.setOnClickListener(new View.OnClickListener() {

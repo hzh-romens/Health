@@ -95,7 +95,7 @@ public class MemberActivity extends BaseActivity {
 
     public void getMemberData() {
         types = new ArrayList<String>();
-        for (int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= 4; i++) {
             types.add(i + "");
         }
     }
