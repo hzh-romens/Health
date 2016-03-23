@@ -18,7 +18,6 @@ import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.Base64Helper;
 import com.romens.yjk.health.helper.MD5Helper;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
