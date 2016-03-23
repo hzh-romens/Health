@@ -87,7 +87,7 @@ public class ControlAddressActivity extends BaseActivity {
         havaAddressLayout = (LinearLayout) findViewById(R.id.control_address_hava_address);
         listView = (RecyclerView) findViewById(R.id.control_address_recycler);
         listView.setLayoutManager(new LinearLayoutManager(this));
-        listView.addItemDecoration(new LineItemDecoration(this));
+//        listView.addItemDecoration(new LineItemDecoration(this));
         addAddress = (Button) findViewById(R.id.control_address_add_address);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
