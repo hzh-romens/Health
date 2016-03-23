@@ -278,11 +278,7 @@ public class AccountSettingActivity extends BaseActivity implements DatePickerDi
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-//                                if (which == 2) {
-//                                    entity.setGENDER("2");
-//                                } else {
                                 entity.setGENDER(which + "");
-//                                }
                                 dialog.dismiss();
                                 updateData();
                             }

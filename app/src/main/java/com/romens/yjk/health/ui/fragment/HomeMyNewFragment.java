@@ -9,7 +9,6 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -271,10 +270,6 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 NewUserProfileCell cell = (NewUserProfileCell) view;
                 UserEntity clientUser = UserSession.getInstance().get();
                 cell.setUser(clientUser, integral, remainMoney, coupon, sexType);
-                Log.e("tag", "-integral-->" + integral);
-                Log.e("tag", "-remainMoney-->" + remainMoney);
-                Log.e("tag", "-coupon-->" + coupon);
-                Log.e("tag", "-sexType-->" + sexType);
             } else if (type == 1) {
                 if (view == null) {
                     view = new TextIconCell(adapterContext);
@@ -445,7 +440,6 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                             public void onResult(Message message, Message errorMessage) {
                                 if (errorMessage == null) {
                                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) message.protocol;
-                                    Log.e("tag", "--->" + responseProtocol.getResponse());
                                     try {
                                         JSONObject object = new JSONObject(responseProtocol.getResponse());
                                         JSONObject jfyeObj = new JSONArray(object.getString("JFYE")).getJSONObject(0);
