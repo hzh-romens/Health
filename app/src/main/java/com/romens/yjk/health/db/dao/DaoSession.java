@@ -73,7 +73,6 @@ public class DaoSession extends AbstractDaoSession {
     private final FavoritesDao favoritesDao;
     private final DaoConfig favoritesDataDaoConfig;
 
-
     //购物车
     private final ShoppingCartDataDao shoppingCartDataDao;
     private final DaoConfig shoppingCartDataDaoConfig;
@@ -148,9 +147,7 @@ public class DaoSession extends AbstractDaoSession {
         favoritesDao = new FavoritesDao(favoritesDataDaoConfig, this);
         registerDao(FavoritesEntity.class, favoritesDao);
 
-
         //购物车
-
         shoppingCartDataDaoConfig = daoConfigMap.get(ShoppingCartDataDao.class).clone();
         shoppingCartDataDaoConfig.initIdentityScope(type);
         shoppingCartDataDao = new ShoppingCartDataDao(shoppingCartDataDaoConfig, this);
@@ -228,7 +225,6 @@ public class DaoSession extends AbstractDaoSession {
     public FavoritesDao getFavoritesDao() {
         return favoritesDao;
     }
-
 
     /**
      * 购物车

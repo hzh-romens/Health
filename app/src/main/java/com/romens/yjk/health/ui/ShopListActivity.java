@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -9,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,6 +35,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodListEntity;
 import com.romens.yjk.health.ui.adapter.ShopListAdapter;
@@ -50,7 +53,7 @@ import java.util.Map;
 /**
  * Created by AUSU on 2015/9/23.
  */
-public class ShopListActivity extends BaseActivity implements View.OnClickListener {
+public class ShopListActivity extends BaseActivity implements View.OnClickListener, AppNotificationCenter.NotificationCenterDelegate {
     private ShopListNoPictureAdapter shopListNoPictureAdapter;
     private ReviseRadioButton priceButton, saleButton;
     private LinearLayoutManager linearLayoutManager;
@@ -205,6 +208,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         refreshLayout.setRefreshing(false);
     }
 
+    private ActionBarMenuItem shopCarMenuItem;
 
     private void initView() {
         actionBar = (ActionBar) findViewById(R.id.action_bar);
@@ -221,13 +225,15 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         switchButton.setOnClickListener(this);
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
         ActionBarMenu menu = actionBar.createMenu();
-        ActionBarMenuItem searchItem = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
+
+        shopCarMenuItem = menu.addItem(1, R.drawable.ic_shopping_cart_grey600_24dp);
+        ActionBarMenuItem searchItem = menu.addItem(2, R.drawable.ic_ab_search).setIsSearchField(true, true);
         searchItem.getSearchField().setHint("请输入药品名称...");
         searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
 
             @Override
             public boolean canCollapseSearch() {
-                return false;
+                return true;
             }
 
             @Override
@@ -261,9 +267,15 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
             public void onItemClick(int i) {
                 if (i == -1) {
                     finish();
+                } else if (i == 1) {
+                    UIOpenHelper.openShoppingCartActivityForCheckLogin(ShopListActivity.this, 0);
                 }
             }
         });
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
+        int count = ShoppingServiceFragment.instance(getSupportFragmentManager()).getShoppingCartCount();
+        Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(ShopListActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
+        shopCarMenuItem.setIcon(shoppingCartCountBitmap);
     }
 
     @Override
@@ -396,19 +408,23 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         if (key != null && !("".equals(key))) {
             args.put("KEY", key);
         }
+        Log.i("sortfield---", sortfiled + "~~~~" + key);
         if (sortfiled != null && !("".equals(sortfiled))) {
             args.put("SORTFIELD", sortfiled);
         } else {
             args.put("SORTFIELD", "default");
         }
-        args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
+     //   args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol;
         if (key != null && !("".equals(key)) && SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
+            Log.i("执行---", "~~~~1");
         } else if (key != null && !("".equals(key)) && !SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "SearchSort", args);
+            Log.i("执行---", "~~~~2");
         } else {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
+            Log.i("执行---", "~~~~3");
         }
 
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
@@ -422,6 +438,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
                             ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                             JsonNode response = responseProtocol.getResponse();
+                            Log.i("数据-----", response.toString());
                             List<GoodListEntity> result = new ArrayList<GoodListEntity>();
                             for (int i = 0; i < response.size(); i++) {
                                 JsonNode jsonNode = response.get(i);
@@ -448,5 +465,37 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
                     }
                 }).build();
         ConnectManager.getInstance().request(this, connect);
+    }
+
+    int sumCount;
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == AppNotificationCenter.onShoppingCartChanged) {
+            if (shopCarMenuItem != null) {
+                int count = (int) args[0];
+                sumCount = sumCount + count;
+                if (sumCount < 0) {
+                    sumCount = 0;
+                }
+                Bitmap shoppingCartCountBitmap = ShoppingCartUtils.createShoppingCartIcon(ShopListActivity.this, R.drawable.ic_shopping_cart_white_24dp, count);
+                shopCarMenuItem.setIcon(shoppingCartCountBitmap);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (actionBar.isSearchFieldVisible()) {
+            actionBar.closeSearchField();
+            return;
+        }
+        finish();
     }
 }
