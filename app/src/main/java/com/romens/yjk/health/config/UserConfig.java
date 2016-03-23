@@ -202,9 +202,6 @@ public class UserConfig {
                 String json = new String(bytes, Charset.forName("utf-8"));
                 try {
                     JsonNode userValues = JacksonMapper.getInstance().readTree(json);
-
-                    //                    String orgCode = userValues.get("OrgCode").asText();
-//                    String orgName = userValues.get("OrgName").asText();
                     String phoneNumber = userValues.get("PhoneNumber").asText();
                     String userName = userValues.get("UserName").asText();
                     String token = userValues.get("Token").asText();
@@ -216,7 +213,7 @@ public class UserConfig {
                             .withUserGuid(userGuid)
                             .build();
                     config = userData;
-                } catch (IOException e) {
+                } catch (Exception e) {
                     FileLog.e(e);
                     config = null;
                 }
