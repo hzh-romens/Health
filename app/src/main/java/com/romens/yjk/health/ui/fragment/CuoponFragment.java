@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,6 +161,7 @@ public class CuoponFragment extends Fragment {
                         if (errorMessage == null) {
                             ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                             JsonNode response = responseProtocol.getResponse();
+                            Log.i("优惠卷数据------",response.toString());
 
                             result = new ArrayList<CuoponEntity>();
                             for (int i = 0; i < response.size(); i++) {

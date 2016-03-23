@@ -92,8 +92,6 @@ public class ShopListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ItemHolder itemHolder = (ItemHolder) holder;
         final GoodListEntity goodListEntity = mResult.get(position);
-
-
         if (goodListEntity.getPICBIG() != null && !("".equals(goodListEntity.getPICBIG()))) {
             itemHolder.icon.setImagePath(goodListEntity.getPICBIG());
         } else {
