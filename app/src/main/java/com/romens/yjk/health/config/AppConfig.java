@@ -10,6 +10,7 @@ import com.easemob.chat.EMChat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.romens.android.common.UniqueCode;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -20,7 +21,6 @@ import com.romens.android.network.request.RMConnect;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.core.AppHelper;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.core.UniqueCode;
 import com.romens.yjk.health.helper.AESHelper;
 import com.romens.yjk.health.helper.Base64Helper;
 
@@ -192,7 +192,7 @@ public class AppConfig {
     }
 
     public static String getID() {
-        return UniqueCode.uniqueID(MyApplication.applicationContext);
+        return UniqueCode.create(MyApplication.applicationContext);
     }
 
     static String getAppKey() {

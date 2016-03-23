@@ -32,12 +32,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
-import com.romens.yjk.health.ui.MyOrderActivity;
-import com.romens.yjk.health.ui.adapter.OrderAllAdpter;
-import com.romens.yjk.health.ui.adapter.BaseExpandableAdapter;
-import com.romens.yjk.health.ui.adapter.OrderEvaluateAdapter;
-import com.romens.yjk.health.ui.adapter.OrderAlreadyCompleteAdapter;
-import com.romens.yjk.health.ui.adapter.OrderBeingAdapter;
+import com.romens.yjk.health.ui.adapter.OrderAdapter;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 
 import java.util.ArrayList;
@@ -53,7 +48,7 @@ public class OrderFragment extends BaseFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ExpandableListView expandableListView;
-    private BaseExpandableAdapter adapter;
+    private OrderAdapter adapter;
     private LoadingCell loadingCell;
 
     private List<AllOrderEntity> mOrderEntities;
@@ -69,20 +64,7 @@ public class OrderFragment extends BaseFragment {
         userGuid = UserGuidConfig.USER_GUID;
         fragmentTypeBase = fragmentType + "";
         mOrderEntities = new ArrayList<>();
-        switch (fragmentType) {
-            case MyOrderActivity.ORDER_TYPE_ALL:
-                adapter = new OrderAllAdpter(getActivity(), mOrderEntities);
-                break;
-            case MyOrderActivity.ORDER_TYPE_COMPLETE:
-                adapter = new OrderAlreadyCompleteAdapter(getActivity(), mOrderEntities);
-                break;
-            case MyOrderActivity.ORDER_TYPE_EVALUATE:
-                adapter = new OrderEvaluateAdapter(getActivity(), mOrderEntities);
-                break;
-            case MyOrderActivity.ORDER_TYPE_BEING:
-                adapter = new OrderBeingAdapter(getActivity(), mOrderEntities);
-                break;
-        }
+        adapter = new OrderAdapter(getActivity(), mOrderEntities);
     }
 
     @Override
