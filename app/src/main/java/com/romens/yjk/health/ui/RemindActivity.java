@@ -67,7 +67,7 @@ public class RemindActivity extends BaseActivity {
         listView.setAdapter(adapter);
 
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        listView.addItemDecoration(new RemindItemDecoration(AndroidUtilities.dp(10), AndroidUtilities.dp(20), data.size()));
+        listView.addItemDecoration(new RemindItemDecoration(AndroidUtilities.dp(8), AndroidUtilities.dp(8), data.size()));
 
         actionBar.setTitle("用药提醒");
         actionBar.setBackgroundResource(R.color.theme_primary);
