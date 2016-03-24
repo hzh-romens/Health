@@ -33,6 +33,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.FamilyDrugGroupDao;
 import com.romens.yjk.health.db.entity.FamilyDrugGroupEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.SearchResultEntity;
 import com.romens.yjk.health.ui.cells.AvatarAndInfoCell;
 import com.romens.yjk.health.ui.cells.ImgAndValueCell;
@@ -93,8 +94,8 @@ public class FamilyDrugGroupActivity extends BaseActivity {
         if (resultCode == UserGuidConfig.RESPONSE_SEARCH_TO_DRUGGROUP) {
             SearchResultEntity entity = (SearchResultEntity) data.getSerializableExtra("searchDrugEntity");
             FamilyDrugGroupEntity drugGroupEntity = new FamilyDrugGroupEntity();
-            drugGroupEntity.setDrugGuid(entity.guid);
-            drugGroupEntity.setRemark(entity.spec);
+            drugGroupEntity.setDrugGuid(entity.id);
+            drugGroupEntity.setRemark(entity.type);
             drugGroupEntity.setDrugName(entity.name);
             FamilyDrugGroupDao familyDrugGroupDao = DBInterface.instance().openWritableDb().getFamilyDrugGroupDao();
             entityList = familyDrugGroupDao.loadAll();
@@ -208,9 +209,10 @@ public class FamilyDrugGroupActivity extends BaseActivity {
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(FamilyDrugGroupActivity.this, SearchActivityNew.class);
-                        intent.putExtra("fromFramilyDrugGroupTag", true);
-                        startActivityForResult(intent, UserGuidConfig.REQUEST_SEARCH);
+                        UIOpenHelper.openSearchActivity(FamilyDrugGroupActivity.this, true);
+//                        Intent intent = new Intent(FamilyDrugGroupActivity.this, SearchActivityNew.class);
+//                        intent.putExtra("fromFramilyDrugGroupTag", true);
+//                        startActivityForResult(intent, UserGuidConfig.REQUEST_SEARCH);
                     }
                 });
             } else if (type == 2) {

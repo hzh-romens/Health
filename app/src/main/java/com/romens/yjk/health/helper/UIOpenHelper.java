@@ -113,6 +113,13 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
+    //打开搜索页面
+    public static void openSearchActivity(Activity context, boolean fromFramilyDrugGroupTag) {
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.putExtra("fromFramilyDrugGroupTag", true);
+        context.startActivityForResult(intent, UserGuidConfig.REQUEST_SEARCH);
+    }
+
     /**
      * 扫码搜索
      *

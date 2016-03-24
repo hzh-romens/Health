@@ -101,7 +101,7 @@ public class ControlAddressAdapter extends RecyclerView.Adapter<ADHolder> {
         int type = getItemViewType(position);
         if (type == 1) {
             TextInfoCell cell = (TextInfoCell) viewHolder.itemView;
-            cell.setText("小提示:长按可以删除提醒哦");
+            cell.setText("小提示:长按可以删除地址哦");
         } else {
             ControlAddressHolder holder = (ControlAddressHolder) viewHolder;
             AddressEntity entity = data.get(position);
