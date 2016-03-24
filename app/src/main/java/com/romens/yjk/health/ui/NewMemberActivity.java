@@ -26,7 +26,7 @@ public class NewMemberActivity extends LightActionBarActivity {
         super.onCreate(bundle);
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
-        actionBar.setTitle("我的会员卡");
+        actionBar.setTitle("绑定会员卡");
         content.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         listView = new RecyclerView(this);
         content.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));

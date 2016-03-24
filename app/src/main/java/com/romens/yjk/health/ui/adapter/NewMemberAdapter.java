@@ -44,7 +44,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
         } else if (viewType == MemberType.EMPTY) {
             EmptyCell cell = new EmptyCell(parent.getContext());
             cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            cell.setHeight(16);
+            cell.setHeight(0);
             return new Holder(cell);
         } else if (viewType == MemberType.PHONE || viewType == MemberType.PSW || viewType == MemberType.ADVICE) {
             MemberEditCell cell = new MemberEditCell(parent.getContext());
@@ -71,6 +71,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
             EmptyCell cell = (EmptyCell) holder.itemView;
         } else if (itemViewType == MemberType.PHONE || itemViewType == MemberType.PSW || itemViewType == MemberType.ADVICE) {
             MemberEditCell cell = (MemberEditCell) holder.itemView;
+            cell.setBackgroundColor(mContext.getResources().getColor(R.color.md_white_1000));
             if (itemViewType == MemberType.PHONE) {
                 cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_edit_phonebumber));
                 cell.setVisible(true);

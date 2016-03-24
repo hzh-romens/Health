@@ -45,6 +45,7 @@ import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackNewActivity;
 import com.romens.yjk.health.ui.HelpNewActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
+import com.romens.yjk.health.ui.MemberBaseActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.SettingActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
@@ -299,7 +300,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                                 startActivity(new Intent(getActivity(), MyOrderActivity.class));
                             }*/ else if (position == 1) {//会员管理
                                 // Toast.makeText(adapterContext, "正在开发，敬请期待!", Toast.LENGTH_SHORT).show();
-                                UIOpenHelper.openMemberActivity(getActivity());
+                                //UIOpenHelper.openMemberActivity(getActivity());
+                                startActivity(new Intent(getActivity(), MemberBaseActivity.class));
                             } else if (position == 3) {//我的收藏
                                 UIOpenHelper.openFavoritesActivity(getActivity());
                             } else if (position == 4) {//历史浏览
