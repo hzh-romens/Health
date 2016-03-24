@@ -23,6 +23,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 
@@ -165,7 +166,8 @@ public class OrderEvaluateActivity extends BaseActivity {
                         Toast.makeText(OrderEvaluateActivity.this, "发表评论成功", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(OrderEvaluateActivity.this, MyOrderActivity.class);
                         intent.putExtra("fragmentIndex", fragmentIndex);
-                        startActivity(intent);
+//                        startActivity(intent);
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
                         finish();
                     } else {
                         Toast.makeText(OrderEvaluateActivity.this, "发表失败", Toast.LENGTH_SHORT).show();

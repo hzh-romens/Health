@@ -1,11 +1,16 @@
 package com.romens.yjk.health.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,11 +19,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -35,6 +43,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
@@ -44,6 +53,9 @@ import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -273,19 +285,72 @@ public class OrderDetailActivity extends BaseActivity {
                 });
                 return linearLayout;
             } else if (type == 4) {
-                ActionCell cell = new ActionCell(context);
-                cell.setValue("去支付");
-                cell.setClickable(true);
-                cell.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        toPay(orderListEntity);
-                    }
-                });
+                LinearLayout cell = getBtnLayout();
                 return cell;
             }
             return null;
         }
+    }
+
+    //取消订单的dialog
+    public void showCancelDialog(final String userGuid, final String orderId) {
+        new AlertDialog.Builder(this).setTitle("确定删除订单吗？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        needShowProgress("正在处理...");
+                        requestCancelOrderList(userGuid, orderId);
+                    }
+                }).create().show();
+    }
+
+    //请求取消订单
+    private void requestCancelOrderList(final String userGuid, String orderId) {
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("ORDERID", orderId);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "CancelOrder", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Message message = new Message.MessageBuilder()
+                .withProtocol(protocol).build();
+        FacadeClient.request(this, message, new FacadeClient.FacadeCallback() {
+            @Override
+            public void onTokenTimeout(Message msg) {
+                Toast.makeText(OrderDetailActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResult(Message msg, Message errorMsg) {
+                if (msg != null) {
+                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
+                    String requestCode = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
+                        requestCode = jsonObject.getString("success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (requestCode.equals("yes")) {
+                        Toast.makeText(OrderDetailActivity.this, "取消成功", Toast.LENGTH_SHORT).show();
+                        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
+                        finish();
+                    } else {
+                        Toast.makeText(OrderDetailActivity.this, "取消失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (errorMsg == null) {
+                } else {
+                    Log.e("reqGetAllUsers", "ERROR");
+                }
+                needHideProgress();
+            }
+        });
     }
 
     private void toPay(OrderListEntity entity) {
@@ -349,29 +414,6 @@ public class OrderDetailActivity extends BaseActivity {
                     }
                 }).build();
         ConnectManager.getInstance().request(this, connect);
-
-//        Message message = new Message.MessageBuilder()
-//                .withProtocol(protocol)
-//                .build();
-//        FacadeClient.request(OrderDetailActivity.this, message, new FacadeClient.FacadeCallback() {
-//            @Override
-//            public void onTokenTimeout(Message msg) {
-//                Toast.makeText(OrderDetailActivity.this, msg.msg, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onResult(Message msg, Message errorMsg) {
-//                if (msg != null) {
-////                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-//                    ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
-//
-//                    setOrderData(responseEntity.getResponse());
-//                }
-//                if (errorMsg != null) {
-//                    Log.e("reqGetAllUsers", "ERROR");
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -419,5 +461,55 @@ public class OrderDetailActivity extends BaseActivity {
         subExpandableadapter.setOrderEntities(goodsListEntities);
         adapter.setOrderListEntity(orderListEntity);
         listView.setAdapter(adapter);
+    }
+
+    public LinearLayout getBtnLayout() {
+        LinearLayout layout = new LinearLayout(this) {
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(56), MeasureSpec.EXACTLY));
+            }
+        };
+
+        TextView confirmBtn = new TextView(this);
+        confirmBtn.setBackgroundResource(R.drawable.btn_primary);
+        confirmBtn.setTextColor(0xffffffff);
+        confirmBtn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
+        confirmBtn.setLines(1);
+        confirmBtn.setText("去支付");
+        confirmBtn.setMaxLines(1);
+        confirmBtn.setSingleLine(true);
+        confirmBtn.setEllipsize(TextUtils.TruncateAt.END);
+        confirmBtn.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams confirmParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 40, 16, 8, 4, 8);
+        confirmParams.weight = 1;
+        layout.addView(confirmBtn, confirmParams);
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toPay(orderListEntity);
+            }
+        });
+
+        TextView cancelBtn = new TextView(this);
+        cancelBtn.setBackgroundResource(R.drawable.order_cancel_btn_bg);
+        cancelBtn.setTextColor(0xff121212);
+        cancelBtn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
+        cancelBtn.setLines(1);
+        cancelBtn.setText("取消订单");
+        cancelBtn.setMaxLines(1);
+        cancelBtn.setSingleLine(true);
+        cancelBtn.setEllipsize(TextUtils.TruncateAt.END);
+        cancelBtn.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams cancelParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 40, 4, 8, 16, 8);
+        cancelParams.weight = 1;
+        layout.addView(cancelBtn, cancelParams);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestCancelOrderList(userGuid, orderId);
+            }
+        });
+        return layout;
     }
 }

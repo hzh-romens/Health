@@ -6,28 +6,10 @@
             android:dither="true"
             android:shape="rectangle">
 
-            <!--<stroke-->
-            <!--android:width="1dp"-->
-            <!--android:color="@color/rm_btn_blue" />-->
-
             <solid android:color="@color/theme_primary_dark" />
 
             <corners android:radius="2dp" />
         </shape>
     </item>
-    <!--<item>-->
-        <!--<shape-->
-            <!--android:dither="true"-->
-            <!--android:shape="rectangle">-->
-
-            <!--&lt;!&ndash;<stroke&ndash;&gt;-->
-            <!--&lt;!&ndash;android:width="1dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:color="@color/rm_btn_blue" />&ndash;&gt;-->
-
-            <!--<solid android:color="#80ffffff" />-->
-
-            <!--<corners android:radius="4dp" />-->
-        <!--</shape>-->
-    <!--</item>-->
 
 </layer-list>

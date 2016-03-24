@@ -7,15 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.LinearLayout;
+import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +27,6 @@ import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.Image.BackupImageView;
-import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -39,160 +34,68 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
-import com.romens.yjk.health.model.GoodsListEntity;
-import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.OrderEvaluateDetailActivity;
-import com.romens.yjk.health.ui.cells.KeyAndViewCell;
-import com.romens.yjk.health.ui.fragment.BaseFragment;
-import com.romens.yjk.health.ui.fragment.OrderFragment;
+import com.romens.yjk.health.ui.cells.OrderTitleCell;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by anlc on 2015/10/22.
+ * Created by anlc on 2016/3/24.
  */
-public class OrderAdapter extends BaseExpandableListAdapter {
+public class OrderListViewAdapter extends BaseAdapter {
 
-    protected List<List<AllOrderEntity>> typeEntitiesList;
-    protected List<String> typeList;
+    protected List<AllOrderEntity> typeEntitiesList;
     protected Context adapterContext;
     protected String userGuid = UserGuidConfig.USER_GUID;
     private ProgressDialog progressDialog;
 
-    public OrderAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
+    public OrderListViewAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
         this.adapterContext = adapterContext;
-        classifyEntity(orderEntities);
+        this.typeEntitiesList = orderEntities;
     }
 
     public void setOrderEntities(List<AllOrderEntity> orderEntities) {
-        if (typeEntitiesList != null) {
-            typeEntitiesList.clear();
-        }
-        if (typeList != null) {
-            typeList.clear();
-        }
-        classifyEntity(orderEntities);
-    }
-
-    private void classifyEntity(List<AllOrderEntity> orderEntities) {
-        typeList = new ArrayList<>();
-        for (int i = 0; i < orderEntities.size(); i++) {
-            boolean flag = true;
-            String drugStroe = orderEntities.get(i).getOrderNo();
-            for (int j = 0; j < typeList.size(); j++) {
-                if (drugStroe.equals(typeList.get(j))) {
-                    flag = false;
-                }
-            }
-            if (flag) {
-                typeList.add(drugStroe);
-            }
-        }
-        typeEntitiesList = new ArrayList<>();
-        for (String drugStroe : typeList) {
-            List<AllOrderEntity> tempList = new ArrayList<>();
-            for (int i = 0; i < orderEntities.size(); i++) {
-                if (drugStroe.equals(orderEntities.get(i).getOrderNo())) {
-                    tempList.add(orderEntities.get(i));
-                }
-            }
-            typeEntitiesList.add(tempList);
-        }
+        this.typeEntitiesList = orderEntities;
     }
 
     @Override
-    public int getGroupCount() {
+    public int getCount() {
         return typeEntitiesList.size();
     }
 
     @Override
-    public int getChildrenCount(int groupPosition) {
-        Log.e("tag", "-groupPosition-->" + groupPosition);
-        Log.e("tag", "-typeEntitiesList.size()-->" + typeEntitiesList.size());
-        Log.e("tag", "-size()-->" + typeEntitiesList.get(groupPosition).size());
-        return typeEntitiesList.get(groupPosition).size();
+    public Object getItem(int position) {
+        return null;
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
-        return typeEntitiesList.get(groupPosition);
-    }
-
-    @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return typeEntitiesList.get(groupPosition).get(childPosition);
-    }
-
-    @Override
-    public long getGroupId(int groupPosition) {
-        return groupPosition;
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
-    @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = new CustomGroupView(adapterContext);
-        }
-        CustomGroupView groupView = (CustomGroupView) convertView;
-        groupView.setInfor(groupPosition);
-        return convertView;
-    }
-
-    class CustomGroupView extends LinearLayout {
-        KeyAndViewCell cell;
-        ShadowSectionCell lineCell;
-
-        public CustomGroupView(Context context) {
-            super(context);
-            setOrientation(LinearLayout.VERTICAL);
-            lineCell = new ShadowSectionCell(adapterContext);
-            addView(lineCell);
-            cell = new KeyAndViewCell(adapterContext);
-            addView(cell);
-        }
-
-        public void setInfor(int groupPosition) {
-            if (groupPosition == 0) {
-                lineCell.setVisibility(GONE);
-            } else {
-                lineCell.setVisibility(VISIBLE);
-            }
-            cell.setKeyAndRightText("订单编号：" + typeList.get(groupPosition), typeEntitiesList.get(groupPosition).get(0).getOrderStatuster(), true);
-            cell.setTextViewColor(adapterContext.getResources().getColor(R.color.order_statu_color));
-            cell.setKeyTextColor(adapterContext.getResources().getColor(R.color.theme_title));
-        }
+    public long getItemId(int position) {
+        return 0;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
-    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
         }
+
+        OrderTitleCell groupView = (OrderTitleCell) convertView.findViewById(R.id.title_view);
+        groupView.setInfor(typeEntitiesList.get(position).getOrderNo(), typeEntitiesList.get(position).getOrderStatuster(), position == 0 ? true : false);
+
         TextView titleTextView = (TextView) convertView.findViewById(R.id.order_title);
         TextView moneyTextView = (TextView) convertView.findViewById(R.id.order_money);
         TextView specTextView = (TextView) convertView.findViewById(R.id.order_date);
         BackupImageView medicineImg = (BackupImageView) convertView.findViewById(R.id.order_img);
 
-        final AllOrderEntity entity = typeEntitiesList.get(groupPosition).get(childPosition);
+        final AllOrderEntity entity = typeEntitiesList.get(position);
         titleTextView.setText(entity.getGoodsName());
         moneyTextView.setText("￥" + entity.getOrderPrice());
         specTextView.setText(entity.getCreateDate());
@@ -212,7 +115,7 @@ public class OrderAdapter extends BaseExpandableListAdapter {
             }
         });
 
-        String orderState = typeEntitiesList.get(groupPosition).get(childPosition).getOrderStatuster();
+        String orderState = typeEntitiesList.get(position).getOrderStatuster();
         TextView buyAgainBtn = (TextView) convertView.findViewById(R.id.order_all_buy_again);
         TextView evaluateBtn = (TextView) convertView.findViewById(R.id.order_all_evaluate_btn);
         TextView cancelBtn = (TextView) convertView.findViewById(R.id.order_all_buy_cancel);
@@ -242,7 +145,7 @@ public class OrderAdapter extends BaseExpandableListAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
                     intent.putExtra("fragmentIndex", 2);
-                    intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
+                    intent.putExtra("orderEntity", typeEntitiesList.get(position));
                     adapterContext.startActivity(intent);
 //                    ((FragmentActivity) adapterContext).finish();
                 }
@@ -297,7 +200,7 @@ public class OrderAdapter extends BaseExpandableListAdapter {
                 @Override
                 public void onClick(View v) {
                     needShowProgress("正在处理...");
-                    requestConfirmReceive(userGuid, entity.getOrderId(), groupPosition, childPosition);
+                    requestConfirmReceive(userGuid, entity.getOrderId(), position);
                 }
             });
             cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -308,11 +211,6 @@ public class OrderAdapter extends BaseExpandableListAdapter {
             });
         }
         return convertView;
-    }
-
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return true;
     }
 
     public void needShowProgress(String progressText) {
@@ -539,7 +437,7 @@ public class OrderAdapter extends BaseExpandableListAdapter {
     }
 
     //访问确认收获
-    public void requestConfirmReceive(final String userGuid, String orderId, final int groupPosition, final int childPosition) {
+    public void requestConfirmReceive(final String userGuid, String orderId, final int position) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERID", orderId);
@@ -572,7 +470,7 @@ public class OrderAdapter extends BaseExpandableListAdapter {
 //                        requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_BEING);
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
                         Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
-                        intent.putExtra("orderEntity", typeEntitiesList.get(groupPosition).get(childPosition));
+                        intent.putExtra("orderEntity", typeEntitiesList.get(position));
                         intent.putExtra("fragmentIndex", 1);
 //                        ((FragmentActivity) adapterContext).finish();
                         adapterContext.startActivity(intent);
