@@ -10,9 +10,13 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.zxing.BarcodeFormat;
+import com.romens.android.io.json.JacksonMapper;
+import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.network.request.Connect;
@@ -32,9 +36,7 @@ import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.utils.CodeUtils;
 import com.romens.yjk.health.ui.utils.DialogUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -138,32 +140,31 @@ public class MemberActivity extends BaseActivity {
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
                 .withProtocol(protocol)
-//                .withParser(new JSONNodeParser())
+                .withParser(new JSONNodeParser())
                 .withDelegate(
                         new Connect.AckDelegate() {
                             @Override
                             public void onResult(Message message, Message errorMessage) {
                                 needHideProgress();
                                 if (errorMessage == null) {
-                                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) message.protocol;
-                                    try {
-                                        JSONObject object = new JSONObject(responseProtocol.getResponse());
+                                    //2016-03-24 zhoulisi 使用JsonNode
+                                    ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                    JsonNode jsonNode = responseProtocol.getResponse();
 //                                        JSONObject dataObj = new JSONArray(object.getString("DATA")).getJSONObject(0);
-                                        String dataStr = object.getString("DATA");
-                                        JSONObject dataObj = new JSONObject(dataStr);
-                                        JSONObject memberObj = dataObj.getJSONArray("member").getJSONObject(0);
-                                        String lvLevel = memberObj.getString("GROUPNAME");//会员等级
-                                        String integral = memberObj.getString("JF");//积分
-                                        String remainMoney = memberObj.getString("BALANCE");//余额
-                                        String cardId = memberObj.getString("ID");
-                                        JSONObject card = dataObj.getJSONObject("card");
-                                        String diybgc = card.getString("diybg");
-                                        String cardbackbg = card.getString("cardbackbg");
+                                    try {
+                                        JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
+                                        JsonNode memberObj = dataObj.get("member").get(0);
+                                        String lvLevel = memberObj.get("GROUPNAME").asText();//会员等级
+                                        String integral = memberObj.get("JF").asText();//积分
+                                        String remainMoney = memberObj.get("BALANCE").asText();//余额
+                                        String cardId = memberObj.get("ID").asText();
+                                        JsonNode card = dataObj.get("card");
+                                        String diybgc = card.get("diybg").asText();
+                                        String cardbackbg = card.get("cardbackbg").asText();
                                         MemberAdapter memberAdapter = (MemberAdapter) listview.getAdapter();
                                         memberAdapter.setData(cardId, lvLevel, integral, remainMoney, diybgc, cardbackbg);
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        FileLog.e(e);
                                     }
                                 } else {
                                     Log.e("tag", "--->" + errorMessage.msg);

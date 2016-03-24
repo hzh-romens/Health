@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
@@ -26,14 +27,8 @@ public class MemberCardView extends FrameLayout {
 
     public MemberCardView(Context context) {
         super(context);
-        FrameLayout container = new FrameLayout(context);
-        container.setBackgroundColor(context.getResources().getColor(R.color.progress_bgc));
-        final ImageView image = new ImageView(context);
-        image.setScaleType(ImageView.ScaleType.FIT_XY);
-        image.setBackgroundResource(R.drawable.ic_card_bgc);
-
-        bgcImage = new CloudImageView(context);
-        bgcImage.setScaleType(ImageView.ScaleType.FIT_XY);
+        bgcImage = CloudImageView.create(context);
+        bgcImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         cardView = new CardView(context);
         cardView.setCardElevation(4);
@@ -50,9 +45,8 @@ public class MemberCardView extends FrameLayout {
         numberView.setTextColor(Color.WHITE);
         cardView.addView(bgcImage, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         cardView.addView(numberView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT, 8, 8, 8, 8));
-        container.addView(image, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 96, Gravity.TOP));
-        container.addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.NO_GRAVITY, 16, 16, 16, 16));
-        addView(container, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 220));
+
+        addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER, 16, 16, 16, 16));
         cardView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +61,15 @@ public class MemberCardView extends FrameLayout {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int height = (int) (AndroidUtilities.displayMetrics.widthPixels * 0.6);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height);
+        int cardWidth = getMeasuredWidth() - AndroidUtilities.dp(32);
+        int cardHeight = getMeasuredHeight() - AndroidUtilities.dp(32);
+        cardView.measure(MeasureSpec.makeMeasureSpec(cardWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(cardHeight, MeasureSpec.EXACTLY));
     }
 
     public void setCardNumber(String idNumber) {
