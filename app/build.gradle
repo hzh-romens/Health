@@ -46,8 +46,8 @@ android {
         }
         channel_nj_xszk {
             applicationId "com.romens.yjk.health.njxszk"
-            versionCode 160324
-            versionName "1.8.11"
+            defaultConfig.versionCode 160324
+            defaultConfig.versionName "1.8.11"
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "4;njxs",
@@ -61,8 +61,8 @@ android {
         }
         channel_hy_rmtt {
             applicationId "com.romens.yjk.health.hyrmtt"
-            versionCode 160324
-            versionName "1.8.11"
+            versionCode 160325
+            versionName "1.8.12"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "20;rmtt",
@@ -115,7 +115,7 @@ android {
                     def file = output.outputFile
                     if (file != null && file.name.endsWith('.apk')) {
                         //def fileName = file.name.replace(".apk", "-v" + versionName + "-c" + versionCode +"_t"+releaseTime()+".apk")
-                        def fileName = file.name.replace(".apk", "_v${defaultConfig.versionName}_c${defaultConfig.versionCode}.apk")
+                        def fileName = file.name.replace(".apk", "_v${versionName}_c${versionCode}.apk")
                         output.outputFile = new File(file.parentFile, fileName)
                     }
                 }
