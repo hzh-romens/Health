@@ -88,9 +88,10 @@ public class CuoponAdapter extends BaseAdapter {
             }
             CuoponCardCell cell = (CuoponCardCell) convertView;
             CuoponEntity entity = mResult.get(position);
-            cell.setValue(entity.getIsused(), entity.getName(), entity.getEnddate(), entity.getLimitamount(), entity.getShuoming(), entity.getAmount(), entity.getStartdate());
-            cell.setStatus("1");
+            cell.setValue(entity.getIsused(), entity.getName(), entity.getEnddate(), entity.getLimitamount(), entity.getDescription(), entity.getAmount(), entity.getStartdate());
+
             if ("GetCoupon".equals(mType)) {
+                cell.setStatus("0");
                 if (mChoiceID >= 0 && mChoiceID == position) {
                     if (mChoiceArray.get(position)) {
                         cell.setShapeColor(true);
@@ -100,6 +101,8 @@ public class CuoponAdapter extends BaseAdapter {
                         mChoiceArray.append(position, false);
                     }
                 }
+            }else {
+                cell.setStatus("1");
             }
         }
 

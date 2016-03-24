@@ -16,7 +16,51 @@ public class CuoponEntity {
     private String limitamount;
     private String startdate;
     private String enddate;
-    private String shuoming;
+    private String shopguid;
+    private String count;
+    private String state;
+    private String maxnum;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getShopguid() {
+        return shopguid;
+    }
+
+    public void setShopguid(String shopguid) {
+        this.shopguid = shopguid;
+    }
+
+    public String getMaxnum() {
+        return maxnum;
+    }
+
+    public void setMaxnum(String maxnum) {
+        this.maxnum = maxnum;
+    }
 
     public String getCouponguid() {
         return couponguid;
@@ -98,13 +142,6 @@ public class CuoponEntity {
         this.enddate = enddate;
     }
 
-    public String getShuoming() {
-        return shuoming;
-    }
-
-    public void setShuoming(String shuoming) {
-        this.shuoming = shuoming;
-    }
 
     public static CuoponEntity toEntity(JsonNode jsonNode) {
         CuoponEntity entity = new CuoponEntity();
@@ -117,8 +154,12 @@ public class CuoponEntity {
         entity.setIsused(jsonNode.get("ISUSED").asText());
         entity.setLimitamount(jsonNode.get("LIMITAMOUNT").asText());
         entity.setName(jsonNode.get("NAME").asText());
-        entity.setShuoming(jsonNode.get("SHUOMING").asText());
+        entity.setCount(jsonNode.get("COUNT").asText());
+        entity.setState(jsonNode.get("STATE").asText());
+        //   entity.setShuoming(jsonNode.get("SHUOMING").asText());
         entity.setStartdate(jsonNode.get("STARTDATE").asText());
+        entity.setDescription(jsonNode.get("DESCRIPTION").asText());
+        entity.setMaxnum(jsonNode.get("maxnum").asText());
         return entity;
     }
 }
