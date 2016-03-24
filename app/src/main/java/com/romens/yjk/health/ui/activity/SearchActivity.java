@@ -38,10 +38,13 @@ import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.model.SearchResultEntity;
+import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
 import com.romens.yjk.health.ui.HealthActivity;
 import com.romens.yjk.health.ui.cells.DrugCell;
 
@@ -77,12 +80,14 @@ public class SearchActivity extends BaseActivity {
 
 
     private boolean isSearchProgress = false;
+    private boolean fromFramilyDrugGroupTag = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        fromFramilyDrugGroupTag = intent.getBooleanExtra("fromFramilyDrugGroupTag", false);
         String targetQueryText = intent.getStringExtra(ARGUMENTS_SEARCH_QUERY_TEXT);
         searchType = intent.getIntExtra(ARGUMENTS_SEARCH_TYPE, SEARCH_TYPE_ALL);
         enableSearchHistory = (searchType == SEARCH_TYPE_ALL);
@@ -494,8 +499,15 @@ public class SearchActivity extends BaseActivity {
                     public void onClick(View v) {
                         SearchResultEntity selectedEntity = getItem(position);
                         if (TextUtils.equals(selectedEntity.type, "0")) {
-                            UIOpenHelper.openMedicineActivity(SearchActivity.this, selectedEntity.id);
-                            //UIOpenHelper.openDrugDescriptionActivity(SearchActivity.this, selectedEntity.id, selectedEntity.name);
+                            if (fromFramilyDrugGroupTag) {
+                                Intent intent = new Intent(SearchActivity.this, FamilyDrugGroupActivity.class);
+                                intent.putExtra("searchDrugEntity", selectedEntity);
+                                setResult(UserGuidConfig.RESPONSE_SEARCH_TO_DRUGGROUP, intent);
+                                finish();
+                            } else {
+                                //UIOpenHelper.openDrugDescriptionActivity(SearchActivity.this, selectedEntity.id, selectedEntity.name);
+                                UIOpenHelper.openMedicineActivity(SearchActivity.this, selectedEntity.id);
+                            }
                         }
                     }
                 });
@@ -530,40 +542,40 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
-    class SearchResultEntity {
-        public final String id;
-        public final String name;
-        public final String type;
-
-        private Map<String, String> properties = new HashMap<>();
-
-        public int viewType = 0;
-
-        public SearchResultEntity(String id, String name, String type) {
-            this.id = id;
-            this.name = name;
-            this.type = type;
-        }
-
-        public SearchResultEntity withViewType(int viewType) {
-            this.viewType = viewType;
-            return this;
-        }
-
-        public SearchResultEntity addProperty(String key, String value) {
-            properties.put(key, value);
-            return this;
-        }
-
-        public String getProperty(String key) {
-            if (properties.containsKey(key)) {
-                return properties.get(key);
-            }
-            return null;
-        }
-
-        public void onAction(Context context) {
-            context.startActivity(new Intent(SearchActivity.this, HealthActivity.class));
-        }
-    }
+//    class SearchResultEntity {
+//        public final String id;
+//        public final String name;
+//        public final String type;
+//
+//        private Map<String, String> properties = new HashMap<>();
+//
+//        public int viewType = 0;
+//
+//        public SearchResultEntity(String id, String name, String type) {
+//            this.id = id;
+//            this.name = name;
+//            this.type = type;
+//        }
+//
+//        public SearchResultEntity withViewType(int viewType) {
+//            this.viewType = viewType;
+//            return this;
+//        }
+//
+//        public SearchResultEntity addProperty(String key, String value) {
+//            properties.put(key, value);
+//            return this;
+//        }
+//
+//        public String getProperty(String key) {
+//            if (properties.containsKey(key)) {
+//                return properties.get(key);
+//            }
+//            return null;
+//        }
+//
+//        public void onAction(Context context) {
+//            context.startActivity(new Intent(SearchActivity.this, HealthActivity.class));
+//        }
+//    }
 }
