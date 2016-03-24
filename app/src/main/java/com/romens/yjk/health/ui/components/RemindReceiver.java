@@ -37,7 +37,7 @@ public class RemindReceiver extends BroadcastReceiver {
 
         Notification notification = new Notification.Builder(context).setContentTitle("要健康提醒您")// 设置通知栏标题
                 .setContentText(entity.getUser() + "请服药：" + entity.getDrug()) // 设置通知栏显示内容</span>
-                .setTicker("要健康提醒您") // 通知首次出现在通知栏，带上升动画效果的
+                .setTicker(context.getResources().getString(R.string.app_name) + "提醒您") // 通知首次出现在通知栏，带上升动画效果的
                 .setPriority(Notification.PRIORITY_DEFAULT) // 设置该通知优先级
                 .setAutoCancel(true)//设置这个标志当用户单击面板就可以让通知将自动取消
                 .setDefaults(Notification.DEFAULT_VIBRATE)// 向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合

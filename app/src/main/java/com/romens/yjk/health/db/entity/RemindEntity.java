@@ -25,8 +25,17 @@ public class RemindEntity implements Serializable {
     private String remark;
 
     private int isRemind = 0;
+    private boolean isAdd;
 
     public RemindEntity() {
+    }
+
+    public boolean isAdd() {
+        return isAdd;
+    }
+
+    public void setIsAdd(boolean isAdd) {
+        this.isAdd = isAdd;
     }
 
     public String getDosage() {

@@ -159,6 +159,7 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
 
     private void writeDb(RemindEntity entity) {
         RemindDao remindDao = DBInterface.instance().openWritableDb().getRemindDao();
+        entity.setIsAdd(true);
         remindDao.insert(entity);
     }
 
