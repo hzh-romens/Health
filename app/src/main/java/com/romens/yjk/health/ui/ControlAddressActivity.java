@@ -1,6 +1,5 @@
 package com.romens.yjk.health.ui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,16 +8,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
@@ -31,7 +26,6 @@ import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.BottomSheet;
-import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -41,11 +35,8 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.CitysEntity;
-import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.hyrmtt.ui.activity.CommitOrderActivity;
 import com.romens.yjk.health.ui.adapter.ControlAddressAdapter;
-import com.romens.yjk.health.ui.components.LineItemDecoration;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import org.json.JSONException;
@@ -464,7 +455,7 @@ public class ControlAddressActivity extends BaseActivity {
 
     private void chooseItemBackEvent(int position) {
         if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
-            Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
+            Intent intent = new Intent();
             AddressEntity entity = addressListEntitis.get(position);
             intent.putExtra("responseCommitEntity", entity);
             setResult(RESULT_OK, intent);
@@ -476,7 +467,7 @@ public class ControlAddressActivity extends BaseActivity {
 
     private void backEvent() {
         if (isFromCommitOrderActivity != null && isFromCommitOrderActivity.equals("chose")) {
-            Intent intent = new Intent(ControlAddressActivity.this, CommitOrderActivity.class);
+            Intent intent = new Intent();
             AddressEntity entity = null;
             for (int j = 0; j < addressListEntitis.size(); j++) {
                 if (addressListEntitis.get(j).getISDEFAULT().equals("1")) {

@@ -143,6 +143,7 @@ public class MemberActivity extends BaseActivity {
                         new Connect.AckDelegate() {
                             @Override
                             public void onResult(Message message, Message errorMessage) {
+                                needHideProgress();
                                 if (errorMessage == null) {
                                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) message.protocol;
                                     try {
@@ -160,7 +161,7 @@ public class MemberActivity extends BaseActivity {
                                         String cardbackbg = card.getString("cardbackbg");
                                         MemberAdapter memberAdapter = (MemberAdapter) listview.getAdapter();
                                         memberAdapter.setData(cardId, lvLevel, integral, remainMoney, diybgc, cardbackbg);
-                                        needHideProgress();
+
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
