@@ -1,20 +1,20 @@
 package com.romens.yjk.health.njxszk.wxapi;
 
-import android.widget.Toast;
+import android.os.Bundle;
 
-import com.yunuo.pay.WXPayActivity;
+import com.romens.yjk.health.ui.activity.pay.WXPayBaseActivity;
 
 /**
  * Created by siery on 16/1/25.
  */
-public class WXPayEntryActivity extends WXPayActivity {
+public class WXPayEntryActivity extends WXPayBaseActivity {
     @Override
-    protected void onWXPayProgress(boolean progress) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void onWXPayFail(int code, String error) {
-        Toast.makeText(WXPayEntryActivity.this, error, Toast.LENGTH_LONG).show();
+    protected String getAppId() {
+        return "wx90fa435b695657da";
     }
 }

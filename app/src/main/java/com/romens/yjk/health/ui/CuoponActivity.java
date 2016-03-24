@@ -76,6 +76,7 @@ public class CuoponActivity extends BaseActivity {
         fragmentsList = new ArrayList<Fragment>();
         CuoponFragment fragment = new CuoponFragment();
         fragment.setPage(NOW);
+        fragment.setCanClick(true);
         fragment.setChoice(choicePosition, Double.parseDouble(sumMoney));
         fragmentsList.add(fragment);
         CuoponFragment historyFragment = new CuoponFragment();

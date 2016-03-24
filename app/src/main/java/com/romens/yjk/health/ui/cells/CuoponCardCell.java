@@ -113,7 +113,8 @@ public class CuoponCardCell extends FrameLayout {
         // span.setSpan(new AbsoluteSizeSpan(26, true), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         priceView.setText(span);
         nameView.setText(name);
-        addressView.setText(shuoming);
+        if (TextUtils.isEmpty(shuoming))
+            addressView.setText(shuoming);
         conditionView.setText("满" + limitamount + "可用");
         timeView.setText("有效期" + startDate + "-" + enddate);
         this.mIsused = isused;
