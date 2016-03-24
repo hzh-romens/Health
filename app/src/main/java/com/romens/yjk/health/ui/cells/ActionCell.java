@@ -45,7 +45,7 @@ public class ActionCell extends FrameLayout {
         button.setSingleLine(true);
         button.setEllipsize(TextUtils.TruncateAt.END);
         button.setGravity(Gravity.CENTER);
-        addView(button, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 40, Gravity.CENTER, 16, 8, 16, 8));
+        addView(button, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 40, Gravity.LEFT, 16, 8, 16, 8));
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -31,8 +33,10 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.ui.adapter.OrderAdapter;
+import com.romens.yjk.health.ui.adapter.OrderListViewAdapter;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 
 import java.util.ArrayList;
@@ -44,11 +48,13 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/10/22.
  */
-public class OrderFragment extends BaseFragment {
+public class OrderFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ExpandableListView expandableListView;
-    private OrderAdapter adapter;
+    //    private ExpandableListView expandableListView;
+//    private OrderAdapter adapter;
+    private ListView listView;
+    private OrderListViewAdapter listViewAdapter;
     private LoadingCell loadingCell;
 
     private List<AllOrderEntity> mOrderEntities;
@@ -60,11 +66,13 @@ public class OrderFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onOrderStateChange);
         this.fragmentType = getArguments().getInt("fragmentType");
         userGuid = UserGuidConfig.USER_GUID;
         fragmentTypeBase = fragmentType + "";
         mOrderEntities = new ArrayList<>();
-        adapter = new OrderAdapter(getActivity(), mOrderEntities);
+//        adapter = new OrderAdapter(getActivity(), mOrderEntities);
+        listViewAdapter = new OrderListViewAdapter(getActivity(), mOrderEntities);
     }
 
     @Override
@@ -84,18 +92,24 @@ public class OrderFragment extends BaseFragment {
             }
         });
         requestOrderList(userGuid, fragmentType);
-        expandableListView = new ExpandableListView(context);
-        swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        expandableListView.setAdapter(adapter);
-        expandableListView.setVerticalScrollBarEnabled(false);
-        expandableListView.setGroupIndicator(null);
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long key) {
-                parent.expandGroup(groupPosition);
-                return true;
-            }
-        });
+//        expandableListView = new ExpandableListView(context);
+//        swipeRefreshLayout.addView(expandableListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+//        expandableListView.setAdapter(adapter);
+//        expandableListView.setVerticalScrollBarEnabled(false);
+//        expandableListView.setGroupIndicator(null);
+//        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+//            @Override
+//            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long key) {
+//                parent.expandGroup(groupPosition);
+//                return true;
+//            }
+//        });
+        listView = new ListView(context);
+        listView.setDivider(null);
+        listView.setDividerHeight(0);
+        swipeRefreshLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        listView.setAdapter(listViewAdapter);
+        listView.setVerticalScrollBarEnabled(false);
 
         addCellView(content);
 //        refershContentView();
@@ -173,7 +187,7 @@ public class OrderFragment extends BaseFragment {
 
     public void setOrderData(List<LinkedTreeMap<String, String>> response) {
         int count = response == null ? 0 : response.size();
-        if (count <= 0) {
+        if (count < 0) {
             return;
         }
         mOrderEntities = new ArrayList<>();
@@ -194,13 +208,16 @@ public class OrderFragment extends BaseFragment {
     private void refreshView() {
         refershContentView();
         swipeRefreshLayout.setRefreshing(false);
-        adapter.setOrderEntities(mOrderEntities);
-        adapter.notifyDataSetChanged();
+//        adapter.setOrderEntities(mOrderEntities);
+//        adapter.notifyDataSetChanged();
+        listViewAdapter.setOrderEntities(mOrderEntities);
+        listViewAdapter.notifyDataSetChanged();
 
-        int count = expandableListView.getCount();
-        for (int i = 0; i < count; i++) {
-            expandableListView.expandGroup(i);
-        }
+//        int count = expandableListView.getCount();
+//        Log.e("tag", "-count-->" + count);
+//        for (int i = 0; i < count; i++) {
+//            expandableListView.expandGroup(i);
+//        }
     }
 
     public void refershContentView() {
@@ -230,15 +247,28 @@ public class OrderFragment extends BaseFragment {
         mOrderEntities.clear();
     }
 
-    public static Fragment getThisFragment(FragmentActivity context, String type) {
-        FragmentManager manager = context.getSupportFragmentManager();
-        List<Fragment> fragments = manager.getFragments();
-        for (int i = 0; i < fragments.size(); i++) {
-            BaseFragment baseFragment = (BaseFragment) fragments.get(i);
-            if (baseFragment.getFragmentTypeBase() != null && baseFragment.getFragmentTypeBase().equals(type)) {
-                return fragments.get(i);
-            }
+//    public static Fragment getThisFragment(FragmentActivity context, String type) {
+//        FragmentManager manager = context.getSupportFragmentManager();
+//        List<Fragment> fragments = manager.getFragments();
+//        for (int i = 0; i < fragments.size(); i++) {
+//            BaseFragment baseFragment = (BaseFragment) fragments.get(i);
+//            if (baseFragment.getFragmentTypeBase() != null && baseFragment.getFragmentTypeBase().equals(type)) {
+//                return fragments.get(i);
+//            }
+//        }
+//        return null;
+//    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onOrderStateChange);
+    }
+
+    @Override
+    public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.onOrderStateChange) {
+            requestOrderList(userGuid, fragmentType);
         }
-        return null;
     }
 }

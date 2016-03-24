@@ -7,11 +7,17 @@
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp">
 
+    <com.romens.yjk.health.ui.cells.OrderTitleCell
+        android:id="@+id/title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <include
         android:id="@+id/order_all_imgs"
         layout="@layout/list_item_order"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_view"/>
 
     <RelativeLayout
         android:id="@+id/order_btn_layout"
