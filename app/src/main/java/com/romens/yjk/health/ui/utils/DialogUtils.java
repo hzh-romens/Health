@@ -3,6 +3,7 @@ package com.romens.yjk.health.ui.utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.romens.yjk.health.R;
@@ -107,21 +109,14 @@ public class DialogUtils {
     /**
      * 弹出一个对话框（只有确定）
      *
-     * @param infor
      * @param owner
      */
-    public void show_infor(String infor, Activity owner, String title) {
+    public void show_infor(Activity owner, Bitmap bitmap) {
 
         View v = owner.getLayoutInflater().inflate(
-                R.layout.dialog_page_standard_infor, null);
-        TextView tv = (TextView) v.findViewById(R.id.tv_tips);
-        tv.setText(infor);
-
-        if (title != null) {
-            TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
-            tv_title.setText(title);
-        }
-
+                R.layout.dialog_page_standard_infor_one, null);
+        ImageView code = (ImageView) v.findViewById(R.id.code);
+        code.setImageBitmap(bitmap);
         Dialog dlg = new Dialog(owner, R.style.Float_Dialog);
         dlg.setCanceledOnTouchOutside(false);// 设置用户点击其他区域不关闭
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -222,7 +217,6 @@ public class DialogUtils {
     public interface CancelListenerCallBack {
         void CancelListener();
     }
-
 
 
 }

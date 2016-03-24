@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -408,7 +407,7 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         if (key != null && !("".equals(key))) {
             args.put("KEY", key);
         }
-        Log.i("sortfield---", sortfiled + "~~~~" + key);
+
         if (sortfiled != null && !("".equals(sortfiled))) {
             args.put("SORTFIELD", sortfiled);
         } else {
@@ -418,13 +417,10 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
         FacadeProtocol protocol;
         if (key != null && !("".equals(key)) && SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
-            Log.i("执行---", "~~~~1");
         } else if (key != null && !("".equals(key)) && !SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "SearchSort", args);
-            Log.i("执行---", "~~~~2");
         } else {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);
-            Log.i("执行---", "~~~~3");
         }
 
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
@@ -438,7 +434,6 @@ public class ShopListActivity extends BaseActivity implements View.OnClickListen
 
                             ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                             JsonNode response = responseProtocol.getResponse();
-                            Log.i("数据-----", response.toString());
                             List<GoodListEntity> result = new ArrayList<GoodListEntity>();
                             for (int i = 0; i < response.size(); i++) {
                                 JsonNode jsonNode = response.get(i);
