@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.romens.android.ui.Components.LayoutHelper;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 
 /**
@@ -20,6 +22,7 @@ public class MemberCardView extends FrameLayout {
     private CardView cardView;
     private TextView numberView;
     private int flag = 1;
+    private final CloudImageView bgcImage;
 
     public MemberCardView(Context context) {
         super(context);
@@ -28,9 +31,10 @@ public class MemberCardView extends FrameLayout {
         final ImageView image = new ImageView(context);
         image.setScaleType(ImageView.ScaleType.FIT_XY);
         image.setBackgroundResource(R.drawable.ic_card_bgc);
-        final ImageView bgcImage = new ImageView(context);
+
+        bgcImage = new CloudImageView(context);
         bgcImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        bgcImage.setBackgroundResource(R.drawable.ic_card_face);
+
         cardView = new CardView(context);
         cardView.setCardElevation(4);
         cardView.setRadius(10.0f);
@@ -54,14 +58,28 @@ public class MemberCardView extends FrameLayout {
             public void onClick(View v) {
                 if (flag == 1) {
                     flag = 2;
-                    bgcImage.setBackgroundResource(R.drawable.ic_card_opposite);
+                    bgcImage.setImagePath(opposeUrl);
                     numberView.setVisibility(GONE);
                 } else if (flag == 2) {
                     flag = 1;
-                    bgcImage.setBackgroundResource(R.drawable.ic_card_face);
+                    bgcImage.setImagePath(faceUrl);
                     numberView.setVisibility(VISIBLE);
                 }
             }
         });
+    }
+
+    public void setCardNumber(String idNumber) {
+        numberView.setText(idNumber);
+    }
+
+    private String faceUrl, opposeUrl;
+
+    public void setCarImage(String face, String oppose) {
+        this.faceUrl = face;
+        this.opposeUrl = oppose;
+        if (faceUrl != null || !TextUtils.isEmpty(faceUrl)) {
+            bgcImage.setImagePath(faceUrl);
+        }
     }
 }

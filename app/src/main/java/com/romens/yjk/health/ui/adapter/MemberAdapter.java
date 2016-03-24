@@ -30,6 +30,23 @@ public class MemberAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    private String cardId;
+    private String lvLevel;
+    private String integral;
+    private String remainMoney;
+    private String mFaceUrl;
+    private String mOpposeUrl;
+
+    public void setData(String id, String level, String integral, String remainMoney, String faceUrl, String opposeUrl) {
+        this.cardId = id;
+        this.lvLevel = level;
+        this.integral = integral;
+        this.remainMoney = remainMoney.equals("") ? "0" : remainMoney;
+        this.mFaceUrl = faceUrl;
+        this.mOpposeUrl = opposeUrl;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mResult.size() == 0 ? 0 : mResult.size();
@@ -57,12 +74,14 @@ public class MemberAdapter extends BaseAdapter {
                 convertView = new MemberCardView(mContext);
             }
             MemberCardView memberCardView = (MemberCardView) convertView;
+            memberCardView.setCardNumber(cardId);
+            memberCardView.setCarImage(mFaceUrl, mOpposeUrl);
         } else if (getItemViewType(position) == 2) {
             if (convertView == null) {
                 convertView = new MemberDetailCell(mContext);
             }
             MemberDetailCell cell = (MemberDetailCell) convertView;
-            cell.setValue("LV5", "100", "20");
+            cell.setValue(lvLevel, integral, remainMoney);
         } else if (getItemViewType(position) == 4 || getItemViewType(position) == 6 || getItemViewType(position) == 7
                 || getItemViewType(position) == 9 || getItemViewType(position) == 10) {
             if (convertView == null) {

@@ -72,12 +72,12 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
         } else if (itemViewType == MemberType.PHONE || itemViewType == MemberType.PSW || itemViewType == MemberType.ADVICE) {
             MemberEditCell cell = (MemberEditCell) holder.itemView;
             if (itemViewType == MemberType.PHONE) {
-                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_edit_phonebumber));
                 cell.setVisible(true);
                 cell.setHintText("请输入手机号码");
                 cell.setNeedDivider(true);
             } else if (itemViewType == MemberType.PSW) {
-                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_edit_phonepassword));
                 cell.setVisible(false);
                 cell.setHintText("请输入验证码");
                 cell.setNeedDivider(true);
@@ -88,7 +88,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
                     }
                 });
             } else {
-                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_recommond));
                 cell.setVisible(true);
                 cell.setHintText("请输入推荐码(选填)");
                 cell.setNeedDivider(true);
