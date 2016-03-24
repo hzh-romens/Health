@@ -17,7 +17,7 @@ allprojects {
         maven { url "http://60.209.248.62:8081/nexus/content/repositories/com.romens.android" }
         maven { url "http://60.209.248.62:8081/nexus/content/repositories/com.romens.extend.scanner"}
         maven { url "http://60.209.248.62:8081/nexus/content/repositories/com.romens.images" }
-
+        maven { url "http://60.209.248.62:8081/nexus/content/repositories/com.romens.bug" }
         flatDir {
             dirs 'aars'
         }

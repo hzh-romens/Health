@@ -15,6 +15,6 @@ public class WXPayEntryActivity extends WXPayBaseActivity {
 
     @Override
     protected String getAppId() {
-        return "wx90fa435b695657da";
+        return "wx0c8c0d4ae1fc56d8";
     }
 }

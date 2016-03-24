@@ -30,6 +30,7 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.core.UserSession;
+import com.romens.yjk.health.helper.BugHelper;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
@@ -244,7 +245,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
             }
         });
-
+        BugHelper.updateBugUser(this);
         //requestShopCarCountData();
         setupConfig();
         onLoginStateChanged();
@@ -327,6 +328,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         if (id == AppNotificationCenter.loginSuccess) {
             onLoginStateChanged();
             UIOpenHelper.syncFavorites(HomeActivity.this);
+            BugHelper.updateBugUser(this);
         } else if (id == AppNotificationCenter.loginOut) {
             onLoginStateChanged();
         } else if (id == AppNotificationCenter.onLastLocationChanged) {
