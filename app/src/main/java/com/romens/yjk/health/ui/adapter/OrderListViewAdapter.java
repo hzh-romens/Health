@@ -120,14 +120,16 @@ public class OrderListViewAdapter extends BaseAdapter {
         TextView evaluateBtn = (TextView) convertView.findViewById(R.id.order_all_evaluate_btn);
         TextView cancelBtn = (TextView) convertView.findViewById(R.id.order_all_buy_cancel);
         if (orderState.equals("未付款")) {
-            cancelBtn.setText("取消订单");
-            cancelBtn.setVisibility(View.VISIBLE);
-            evaluateBtn.setVisibility(View.GONE);
+            evaluateBtn.setText("取消订单");
+            cancelBtn.setVisibility(View.GONE);
+            evaluateBtn.setVisibility(View.VISIBLE);
             buyAgainBtn.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-            layoutParams.rightMargin = AndroidUtilities.dp(16);
-            cancelBtn.setLayoutParams(layoutParams);
+//            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
+//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+//            layoutParams.rightMargin = AndroidUtilities.dp(16);
+//            cancelBtn.setLayoutParams(layoutParams);
+            evaluateBtn.setBackgroundResource(R.drawable.order_cancel_btn_bg);
+            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -140,6 +142,7 @@ public class OrderListViewAdapter extends BaseAdapter {
             cancelBtn.setVisibility(View.GONE);
             evaluateBtn.setVisibility(View.VISIBLE);
             buyAgainBtn.setVisibility(View.VISIBLE);
+            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
             evaluateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,7 +150,6 @@ public class OrderListViewAdapter extends BaseAdapter {
                     intent.putExtra("fragmentIndex", 2);
                     intent.putExtra("orderEntity", typeEntitiesList.get(position));
                     adapterContext.startActivity(intent);
-//                    ((FragmentActivity) adapterContext).finish();
                 }
             });
             buyAgainBtn.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +163,8 @@ public class OrderListViewAdapter extends BaseAdapter {
             cancelBtn.setVisibility(View.GONE);
             evaluateBtn.setVisibility(View.VISIBLE);
             buyAgainBtn.setVisibility(View.GONE);
+            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
             evaluateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -174,10 +178,8 @@ public class OrderListViewAdapter extends BaseAdapter {
             evaluateBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.GONE);
             buyAgainBtn.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
-            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            layoutParams.rightMargin = AndroidUtilities.dp(8);
-            cancelBtn.setLayoutParams(layoutParams);
+            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
             evaluateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -191,11 +193,8 @@ public class OrderListViewAdapter extends BaseAdapter {
             evaluateBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.VISIBLE);
             buyAgainBtn.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
-            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            layoutParams.rightMargin = AndroidUtilities.dp(8);
-            cancelBtn.setLayoutParams(layoutParams);
-
+            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
             evaluateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
