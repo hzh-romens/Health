@@ -163,14 +163,14 @@ public class OrderEvaluateActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                     if (requestCode.equals("yes")) {
-                        Toast.makeText(OrderEvaluateActivity.this, "发表评论成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderEvaluateActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(OrderEvaluateActivity.this, MyOrderActivity.class);
                         intent.putExtra("fragmentIndex", fragmentIndex);
 //                        startActivity(intent);
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
                         finish();
                     } else {
-                        Toast.makeText(OrderEvaluateActivity.this, "发表失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderEvaluateActivity.this, "评论失败", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (errorMsg != null) {

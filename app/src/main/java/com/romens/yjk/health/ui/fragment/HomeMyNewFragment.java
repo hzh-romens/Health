@@ -17,10 +17,13 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
+import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.network.request.Connect;
@@ -55,10 +58,9 @@ import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -435,35 +437,55 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
                 .withProtocol(protocol)
-//                .withParser(new JSONNodeParser())
+                .withParser(new JSONNodeParser())
                 .withDelegate(
                         new Connect.AckDelegate() {
                             @Override
                             public void onResult(Message message, Message errorMessage) {
                                 if (errorMessage == null) {
-                                    ResponseProtocol<String> responseProtocol = (ResponseProtocol) message.protocol;
-                                    try {
-                                        JSONObject object = new JSONObject(responseProtocol.getResponse());
-                                        JSONObject jfyeObj = new JSONArray(object.getString("JFYE")).getJSONObject(0);
-                                        double integralD = Double.parseDouble(jfyeObj.getString("SIGNINPOINT")) +
-                                                Double.parseDouble(jfyeObj.getString("CONSUMPTIONPOINT"));
-                                        integral = integralD + "";
-                                        remainMoney = Double.parseDouble(jfyeObj.getString("CONSUMEAMOUNT")) + "";
-                                        coupon = jfyeObj.getString("COUPONNUM") + "";
-                                        JSONObject userinfoObj = new JSONArray(object.getString("USERINFO")).getJSONObject(0);
-                                        sexType = userinfoObj.getString("SEX");
-                                        adapter.notifyDataSetChanged();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                    ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                    JsonNode response = responseProtocol.getResponse();
+                                    if (!response.has("ERROR")) {
+                                        handleUserInfoResponse(responseProtocol.getResponse());
+                                        return;
                                     }
-                                } else {
-                                    Toast.makeText(getActivity(), "获取积分余额失败!", Toast.LENGTH_SHORT).show();
                                 }
+                                Toast.makeText(getActivity(), "获取积分余额失败!", Toast.LENGTH_SHORT).show();
                             }
                         }
                 ).build();
 
         ConnectManager.getInstance().request(getActivity(), connect);
+    }
+
+    private void handleUserInfoResponse(final JsonNode jsonNode) {
+        AndroidUtilities.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JsonNode jfyeObject = JacksonMapper.getInstance().readTree(jsonNode.get("JFYE").asText()).get(0);
+                    double integralD = jfyeObject.get("SIGNINPOINT").asDouble(0) +
+                            jfyeObject.get("CONSUMPTIONPOINT").asDouble(0);
+                    integral = String.valueOf(integralD);
+                    remainMoney = jfyeObject.get("CONSUMEAMOUNT").asText();
+                    coupon = jfyeObject.get("COUPONNUM").asText();
+                    JsonNode userinfoObj = JacksonMapper.getInstance().readTree(jsonNode.get("USERINFO").asText()).get(0);
+                    sexType = userinfoObj.get("SEX").asText();
+                    adapter.notifyDataSetChanged();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//                JSONObject jfyeObj = new JSONArray(object.getString("JFYE")).getJSONObject(0);
+//                double integralD = Double.parseDouble(jfyeObj.getString("SIGNINPOINT")) +
+//                        Double.parseDouble(jfyeObj.getString("CONSUMPTIONPOINT"));
+//                integral = integralD + "";
+//                remainMoney = Double.parseDouble(jfyeObj.getString("CONSUMEAMOUNT")) + "";
+//                coupon = jfyeObj.getString("COUPONNUM") + "";
+//                JSONObject userinfoObj = new JSONArray(object.getString("USERINFO")).getJSONObject(0);
+//                sexType = userinfoObj.getString("SEX");
+//                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
 //    @Override

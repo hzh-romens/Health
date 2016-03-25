@@ -290,6 +290,7 @@ public class OrderListViewAdapter extends BaseAdapter {
 
     //请求取消订单
     private void requestCancelOrderList(final String userGuid, String orderId) {
+        needShowProgress("正在处理...");
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERID", orderId);
@@ -305,6 +306,7 @@ public class OrderListViewAdapter extends BaseAdapter {
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
                 if (msg != null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String requestCode = "";
@@ -326,14 +328,14 @@ public class OrderListViewAdapter extends BaseAdapter {
                 } else {
                     Log.e("reqGetAllUsers", "ERROR");
                 }
-                needHideProgress();
+
             }
         });
     }
 
     //取消订单的dialog
     public void showCancelDialog(final String userGuid, final String orderId) {
-        new AlertDialog.Builder(adapterContext).setTitle("确定删除订单吗？")
+        new AlertDialog.Builder(adapterContext).setTitle("确定取消订单吗？")
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -343,7 +345,6 @@ public class OrderListViewAdapter extends BaseAdapter {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        needShowProgress("正在处理...");
                         requestCancelOrderList(userGuid, orderId);
                     }
                 }).create().show();

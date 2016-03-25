@@ -3,6 +3,7 @@ package com.romens.yjk.health.helper;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
@@ -22,7 +23,16 @@ public class ShoppingHelper {
     }
 
     public static SpannableString formatPrice(BigDecimal price, boolean formatFont) {
-        DecimalFormat decimalFormat = new DecimalFormat("￥#,##0.00");
+        return formatPrice(price, "", formatFont);
+    }
+
+    public static SpannableString formatPrice(BigDecimal price, String prefix, boolean formatFont) {
+        DecimalFormat decimalFormat;
+        if (TextUtils.isEmpty(prefix)) {
+            decimalFormat = new DecimalFormat("￥#,##0.00");
+        } else {
+            decimalFormat = new DecimalFormat(prefix + "#,##0.00");
+        }
         String priceStr = decimalFormat.format(price);
         SpannableString spannableString = new SpannableString(priceStr);
         int length = priceStr.length();

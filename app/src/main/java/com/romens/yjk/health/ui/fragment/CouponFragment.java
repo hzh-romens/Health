@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.SparseBooleanArray;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +30,10 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.model.CuoponEntity;
 import com.romens.yjk.health.ui.CuoponActivity;
-import com.romens.yjk.health.ui.adapter.CuoponAdapter;
+import com.romens.yjk.health.ui.adapter.CouponAdapter;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +41,28 @@ import java.util.Map;
 /**
  * Created by HZH on 2016/1/15.
  */
-public class CuoponFragment extends Fragment {
-    private SparseBooleanArray choiceArray = new SparseBooleanArray();
+public class CouponFragment extends Fragment {
+    public static final String ARGUMENT_KEY_SELECT_COUPON_ID = "select_coupon_id";
+    public static final String ARGUMENT_KEY_ORDER_AMOUNT = "order_amount";
+
     private SwipeRefreshLayout refreshLayout;
-    private CuoponAdapter cuoponAdapter;
-    private int choicePosition = -1;
+    private CouponAdapter couponAdapter;
+    private String selectedCouponGuid;
     private String requestType;
     private ListView listView;
-    private double sumMoney;
+    private BigDecimal orderAmount = BigDecimal.ZERO;
     private int mPage;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle argument = getArguments();
+        if (argument != null) {
+            selectedCouponGuid = argument.getString(ARGUMENT_KEY_SELECT_COUPON_ID);
+            double amount = argument.getDouble(ARGUMENT_KEY_ORDER_AMOUNT, 0);
+            orderAmount = new BigDecimal(amount);
+        }
+    }
 
     @Nullable
     @Override
@@ -57,36 +70,38 @@ public class CuoponFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cuopon, container, false);
         listView = (ListView) view.findViewById(R.id.listView);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshlayout);
-        cuoponAdapter = new CuoponAdapter(getActivity());
+        couponAdapter = new CouponAdapter(getActivity());
         getData(false);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                 if (mCanclick) {
                                                     CuoponEntity entity = result.get(position);
-                                                    choiceArray = cuoponAdapter.getChoiceArray();
-                                                    cuoponAdapter.setChoiceItem(position, !choiceArray.get(position));
-                                                    if (choiceArray.get(position)) {
-                                                        choiceArray.append(position, false);
-                                                    } else {
-                                                        choiceArray.append(position, true);
-                                                    }
-
-                                                    cuoponAdapter.bindChoiceData(choiceArray);
+//                                                    choiceArray = cuoponAdapter.getChoiceArray();
+//                                                    cuoponAdapter.setChoiceItem(position, !choiceArray.get(position));
+//                                                    if (choiceArray.get(position)) {
+//                                                        choiceArray.append(position, false);
+//                                                    } else {
+//                                                        choiceArray.append(position, true);
+//                                                    }
+                                                    couponAdapter.switchCheck(entity.getGuid());
                                                     if ("GetCoupon".equals(requestType)) {
-                                                        if (sumMoney <= Double.parseDouble(entity.getLimitamount())) {
+                                                        if (orderAmount.compareTo(entity.getLimitAmount()) == -1) {
                                                             Toast.makeText(getActivity(), "未达到优惠卷使用金额", Toast.LENGTH_SHORT).show();
                                                         } else {
+                                                            CuoponEntity cuoponEntity = result.get(position);
                                                             Intent intent = new Intent();
-                                                            String couponguID = result.get(position).getCouponguid();
-                                                            if (position == choicePosition) {
+                                                            String couponguGuid = cuoponEntity.getGuid();
+                                                            if (selectedCouponGuid != null && TextUtils.equals(couponguGuid, selectedCouponGuid)) {
                                                                 intent.putExtra("position", -1);
                                                                 intent.putExtra("orderCouponID", "");
+                                                                intent.putExtra("coupon_name", "");
                                                                 intent.putExtra("amount", "");
                                                                 intent.putExtra("limitAmount", "");
                                                             } else {
                                                                 intent.putExtra("position", position);
-                                                                intent.putExtra("orderCouponID", couponguID);
+                                                                intent.putExtra("orderCouponID", couponguGuid);
+                                                                intent.putExtra("coupon_name", cuoponEntity.getName());
                                                                 intent.putExtra("amount", result.get(position).getAmount());
                                                                 intent.putExtra("limitAmount", result.get(position).getLimitamount());
                                                             }
@@ -141,11 +156,6 @@ public class CuoponFragment extends Fragment {
         this.mCanclick = canClick;
     }
 
-    public void setChoice(int position, double sumMoney) {
-        this.choicePosition = position;
-        this.sumMoney = sumMoney;
-    }
-
     public void getCuopon() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).build();
@@ -166,17 +176,20 @@ public class CuoponFragment extends Fragment {
                                 CuoponEntity cuoponEntity = CuoponEntity.toEntity(response.get(i));
                                 result.add(cuoponEntity);
                             }
-                            setChoiceList();
+                            //setChoiceList();
                             refreshLayout.setRefreshing(false);
-                            cuoponAdapter.bindData(result);
-                            if (choicePosition >= 0) {
-                                choiceArray.append(choicePosition, true);
-                            }
-                            cuoponAdapter.bindChoiceData(choiceArray);
+                            couponAdapter.bindData(result);
+//                            if (choicePosition >= 0) {
+//                                choiceArray.append(choicePosition, true);
+//                            }
+//                            cuoponAdapter.bindChoiceData(choiceArray);
+
                             if ("GetCoupon".equals(requestType)) {
-                                cuoponAdapter.setChoice(choicePosition, requestType);
+                                couponAdapter.setChoice(selectedCouponGuid, requestType);
+                            } else {
+                                couponAdapter.switchCheck(selectedCouponGuid);
                             }
-                            listView.setAdapter(cuoponAdapter);
+                            listView.setAdapter(couponAdapter);
                         } else {
                             refreshLayout.setRefreshing(false);
                             Toast.makeText(getActivity(), "数据为空", Toast.LENGTH_SHORT).show();
@@ -185,12 +198,6 @@ public class CuoponFragment extends Fragment {
                     }
                 }).build();
         ConnectManager.getInstance().request(getActivity(), connect);
-    }
-
-    private void setChoiceList() {
-        for (int i = 0; i < result.size(); i++) {
-            choiceArray.append(i, false);
-        }
     }
 
 }

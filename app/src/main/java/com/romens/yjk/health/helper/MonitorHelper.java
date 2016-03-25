@@ -26,11 +26,7 @@ import com.romens.yjk.health.R;
  */
 public class MonitorHelper {
     public static final void init(Context context) {
-        PgyCrashManager.register(context);
-    }
-
-    public static void postError(Context context, Exception e) {
-        PgyCrashManager.reportCaughtException(context, e);
+        //PgyCrashManager.register(context);
     }
 
     public static void unregisterUpdate() {

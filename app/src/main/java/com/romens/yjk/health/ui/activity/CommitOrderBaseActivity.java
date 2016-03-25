@@ -93,7 +93,6 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
 
     private int goodsCount = 0;
     private BigDecimal goodsAmount = BigDecimal.ZERO;
-    private BigDecimal couponAmount = BigDecimal.ZERO;
 
     private List<OrderItem> orderItems;
 
@@ -101,6 +100,9 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
     private int selectDeliveryType = 0;
 
     private String orderCouponID;
+    private String orderCouponName;
+    private BigDecimal couponAmount = BigDecimal.ZERO;
+    ;
     private String orderInvoice;
 
     private static final int REQUEST_CODE_ADDRESS = 0;
@@ -197,8 +199,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             startActivityForResult(intent, REQUEST_CODE_PAY_DELIVERY);
         } else if (position == couponRow) {
             Intent intent = new Intent(CommitOrderBaseActivity.this, CuoponActivity.class);
-            intent.putExtra("position", cuoponPosition);
-            intent.putExtra("sumMoney", goodsAmount + "");
+            intent.putExtra(CuoponActivity.ARGUMENT_KEY_SELECT_COUPON_ID, orderCouponID);
+            intent.putExtra(CuoponActivity.ARGUMENT_KEY_ORDER_AMOUNT, goodsAmount.doubleValue());
             intent.putExtra("canClick", true);
             startActivityForResult(intent, REQUEST_CODE_COUPON);
         } else if (position == invoiceRow) {
@@ -375,6 +377,53 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 .create().show();
     }
 
+    private void checkOrderAmountForUserCoupon() {
+        needShowProgress("查询优惠券信息...");
+        Map<String, Object> args = new HashMap<>();
+        args.put("COUPONGUID", orderCouponID);
+        args.put("AMOUNT", goodsAmount.doubleValue());
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetNewAmountByCoupon", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+
+        Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        needHideProgress();
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> protocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = protocol.getResponse();
+                            if (!response.has("ERROR")) {
+                                handleCheckOrderAmountForUserCouponResponse(response);
+                                return;
+                            }
+                        }
+                        clearCoupon();
+                        updateAdapter();
+                        ToastCell.toast(CommitOrderBaseActivity.this, "获取优惠券信息失败!");
+                    }
+                }).build();
+        ConnectManager.getInstance().request(CommitOrderBaseActivity.this, connect);
+    }
+
+    private void handleCheckOrderAmountForUserCouponResponse(JsonNode jsonNode) {
+        boolean enableCoupon = TextUtils.equals("1", jsonNode.get("ISUSED").asText());
+        if (enableCoupon) {
+            couponAmount = new BigDecimal(jsonNode.get("COUPON").asDouble());
+        } else {
+            clearCoupon();
+        }
+        updateAdapter();
+    }
+
+    private void clearCoupon() {
+        orderCouponID = "";
+        orderCouponName = "";
+        couponAmount = BigDecimal.ZERO;
+    }
+
     /**
      * 提交订单
      */
@@ -456,8 +505,6 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         }
     }
 
-    private static int cuoponPosition = -1;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -488,8 +535,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         } else if (requestCode == REQUEST_CODE_COUPON) {
             if (resultCode == RESULT_OK) {
                 orderCouponID = data.getStringExtra("orderCouponID");
-                cuoponPosition = data.getIntExtra("position", 0);
-                adapter.notifyDataSetChanged();
+                orderCouponName = data.getStringExtra("coupon_name");
+                checkOrderAmountForUserCoupon();
             }
         }
     }
@@ -691,7 +738,11 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     }
                     cell.setTextAndValue("付款与配送方式", payAndDelivery, true, true);
                 } else if (position == couponRow) {
-                    cell.setTextAndValue("优惠券", "点击选择优惠券", true, true);
+                    if (TextUtils.isEmpty(orderCouponID)) {
+                        cell.setTextAndValue("优惠券", "点击选择优惠券", true, true);
+                    } else {
+                        cell.setTextAndValue("优惠券", orderCouponName, true, true);
+                    }
                 } else if (position == invoiceRow) {
                     if (TextUtils.isEmpty(orderInvoice)) {
                         cell.setTextAndValue("发票信息", "点击填写发票抬头", true, false);

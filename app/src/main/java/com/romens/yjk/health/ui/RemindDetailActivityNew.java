@@ -15,6 +15,8 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.RemindUtils;
+import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.ui.cells.ImgAndValueCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
@@ -138,9 +140,14 @@ public class RemindDetailActivityNew extends BaseActivity {
                     public void onSwitchClick() {
                         if (detailEntity.getIsRemind() == 0) {
                             cell.setCheck(true);
+                            detailEntity.setIsRemind(1);
+                            RemindUtils.setRemind(detailEntity, context);
                         } else {
                             cell.setCheck(false);
+                            detailEntity.setIsRemind(0);
+                            RemindUtils.cancelRemind(detailEntity, context);
                         }
+                        DBInterface.instance().openWritableDb().getRemindDao().insertOrReplace(detailEntity);
                     }
                 });
             } else if (type == 2) {

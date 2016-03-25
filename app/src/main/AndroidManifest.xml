@@ -739,6 +739,7 @@
             android:value="${CHANNEL}" />
 
         <!-- ********************** MTA END *************************** -->
+
     </application>
 
 </manifest>

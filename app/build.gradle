@@ -41,11 +41,13 @@ android {
                                     PUSH_ACCESS_ID   : "2100188535",
                                     PUSH_ACCESS_KEY  : "AE49UMV4G85C",
                                     LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac"]
+
+            buildConfigField "String", "BUG_APP_ID", "\"\""
         }
         channel_nj_xszk {
             applicationId "com.romens.yjk.health.njxszk"
-            versionCode 160324
-            versionName "1.8.11"
+            defaultConfig.versionCode 160324
+            defaultConfig.versionName "1.8.11"
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "4;njxs",
@@ -55,11 +57,12 @@ android {
                                     PUSH_ACCESS_ID   : "2100188533",
                                     PUSH_ACCESS_KEY  : "A44T4Y8GS3XB",
                                     LOCATION_SDK_KEY : "d6aa411b6b1a70541e2d818c91da3e0e"]
+            buildConfigField "String", "BUG_APP_ID", "\"\""
         }
         channel_hy_rmtt {
             applicationId "com.romens.yjk.health.hyrmtt"
-            versionCode 160324
-            versionName "1.8.11"
+            versionCode 160326
+            versionName "1.8.15"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "20;rmtt",
@@ -69,6 +72,10 @@ android {
                                     PUSH_ACCESS_ID   : "2100188529",
                                     PUSH_ACCESS_KEY  : "ACJKC153A79U",
                                     LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0"]
+            buildConfigField "String", "BUG_APP_ID", "\"900023698\""
+            buildConfigField "String", "BUG_CHANNEL", "\"hy_rmtt\""
+            buildConfigField "String", "BUG_VERSION", "\"" + versionName + "\""
+            buildConfigField "String", "BUG_PACKAGE", "\"" + applicationId + "\""
         }
     }
     signingConfigs {
@@ -108,7 +115,7 @@ android {
                     def file = output.outputFile
                     if (file != null && file.name.endsWith('.apk')) {
                         //def fileName = file.name.replace(".apk", "-v" + versionName + "-c" + versionCode +"_t"+releaseTime()+".apk")
-                        def fileName = file.name.replace(".apk", "_v${defaultConfig.versionName}_c${defaultConfig.versionCode}.apk")
+                        def fileName = file.name.replace(".apk", "_v${versionName}_c${versionCode}.apk")
                         output.outputFile = new File(file.parentFile, fileName)
                     }
                 }
@@ -192,6 +199,7 @@ dependencies {
     compile 'romens:com.romens.images:1.2.2@aar'
     compile 'com.facebook.fresco:fresco:0.8.1+'
     compile 'romens:com.romens.extend.scanner:1.3.6@aar'
+    compile 'romens:com.romens.bug:1.1.2@aar'
 
     //信鸽
     compile files('libs/jg_filter_sdk_1.1.jar')
