@@ -107,6 +107,14 @@ public class NewUserProfileCell extends FrameLayout {
         couponParams.weight = 1;
         subLayout.addView(userCouponView, couponParams);
         addView(subLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
+        userCouponView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onViewClickListener != null) {
+                    onViewClickListener.onCouponClick();
+                }
+            }
+        });
     }
 
     @Override
@@ -114,7 +122,7 @@ public class NewUserProfileCell extends FrameLayout {
         super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(152), View.MeasureSpec.EXACTLY));
     }
 
-    public void setUser(UserEntity userEntity,String integral, String remainMoney, String coupon,String sex) {
+    public void setUser(UserEntity userEntity, String integral, String remainMoney, String coupon, String sex) {
         userAvatarView.setRound(40);
         if (TextUtils.isEmpty(userEntity.getAvatar())) {
             if (sex.equals("1")) {
@@ -131,5 +139,15 @@ public class NewUserProfileCell extends FrameLayout {
         userIntegralView.setText("积分" + integral);
         userRemainMoneyView.setText("余额" + remainMoney);
         userCouponView.setText("优惠券" + coupon);
+    }
+
+    private OnViewClickListener onViewClickListener;
+
+    public void setOnViewClickListener(OnViewClickListener onViewClickListener) {
+        this.onViewClickListener = onViewClickListener;
+    }
+
+    public interface OnViewClickListener {
+        void onCouponClick();
     }
 }

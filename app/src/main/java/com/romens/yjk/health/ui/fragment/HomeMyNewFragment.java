@@ -45,6 +45,7 @@ import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.ControlAddressActivity;
+import com.romens.yjk.health.ui.CuoponActivity;
 import com.romens.yjk.health.ui.FeedBackNewActivity;
 import com.romens.yjk.health.ui.HelpNewActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
@@ -212,7 +213,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 
         @Override
         public boolean isEnabled(int i) {
-            return i == developModeRow||i==checkUpdateRow;
+            return i == developModeRow || i == checkUpdateRow;
         }
 
         @Override
@@ -275,6 +276,16 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
                 NewUserProfileCell cell = (NewUserProfileCell) view;
                 UserEntity clientUser = UserSession.getInstance().get();
                 cell.setUser(clientUser, integral, remainMoney, coupon, sexType);
+                cell.setOnViewClickListener(new NewUserProfileCell.OnViewClickListener() {
+                    @Override
+                    public void onCouponClick() {
+                        Intent intent = new Intent(getActivity(), CuoponActivity.class);
+                        intent.putExtra(CuoponActivity.ARGUMENT_KEY_SELECT_COUPON_ID, "");
+                        intent.putExtra(CuoponActivity.ARGUMENT_KEY_ORDER_AMOUNT, 0.0);
+                        intent.putExtra("canClick", false);
+                        startActivity(intent);
+                    }
+                });
             } else if (type == 1) {
                 if (view == null) {
                     view = new TextIconCell(adapterContext);
