@@ -3,18 +3,33 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.EmptyCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.model.MemberType;
 import com.romens.yjk.health.ui.cells.MemberButtonCell;
 import com.romens.yjk.health.ui.cells.MemberEditCell;
 import com.romens.yjk.health.ui.cells.TipCell;
+import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
+
+import java.util.Map;
 
 /**
  * Created by HZH on 2016/3/18.
@@ -41,12 +56,12 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
             TipCell cell = new TipCell(parent.getContext());
             cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             return new Holder(cell);
-        } else if (viewType == MemberType.EMPTY) {
+        } else if (viewType == MemberType.EMPTY || viewType == MemberType.ADVICE) {
             EmptyCell cell = new EmptyCell(parent.getContext());
             cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             cell.setHeight(0);
             return new Holder(cell);
-        } else if (viewType == MemberType.PHONE || viewType == MemberType.PSW || viewType == MemberType.ADVICE) {
+        } else if (viewType == MemberType.PHONE || viewType == MemberType.PSW) {
             MemberEditCell cell = new MemberEditCell(parent.getContext());
             cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             return new Holder(cell);
@@ -67,9 +82,9 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
             cell.setTextColor(Color.BLACK);
             cell.setTextSize(16);
             cell.setValue("验证手机号码立即开通会员");
-        } else if (itemViewType == MemberType.EMPTY) {
+        } else if (itemViewType == MemberType.EMPTY || itemViewType == MemberType.ADVICE) {
             EmptyCell cell = (EmptyCell) holder.itemView;
-        } else if (itemViewType == MemberType.PHONE || itemViewType == MemberType.PSW || itemViewType == MemberType.ADVICE) {
+        } else if (itemViewType == MemberType.PHONE || itemViewType == MemberType.PSW) {
             MemberEditCell cell = (MemberEditCell) holder.itemView;
             cell.setBackgroundColor(mContext.getResources().getColor(R.color.md_white_1000));
             if (itemViewType == MemberType.PHONE) {
@@ -85,15 +100,20 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
                 cell.setSendRecommondListener(new MemberEditCell.SendRecommondListener() {
                     @Override
                     public void SendRecommond() {
-                        Toast.makeText(mContext, "点击验证码", Toast.LENGTH_SHORT).show();
+                        if (TextUtils.isEmpty(phoneNumber)) {
+                            Toast.makeText(mContext, "请填写您的手机号码", Toast.LENGTH_SHORT).show();
+                        } else {
+                            getRecommonCode();
+                        }
                     }
                 });
-            } else {
-                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_recommond));
-                cell.setVisible(true);
-                cell.setHintText("请输入推荐码(选填)");
-                cell.setNeedDivider(true);
             }
+//            else {
+//                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_recommond));
+//                cell.setVisible(true);
+//                cell.setHintText("请输入推荐码(选填)");
+//                cell.setNeedDivider(true);
+//            }
             cell.SetEditTextChangeListener(new MemberEditCell.EditTextChangeListener() {
                 @Override
                 public void EditTextChange(String value) {
@@ -101,9 +121,10 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
                         phoneNumber = value;
                     } else if (itemViewType == MemberType.PSW) {
                         password = value;
-                    } else {
-                        recommend = value;
                     }
+                    //else {
+                    //  recommend = value;
+                    //}
                 }
             });
         } else {
@@ -111,10 +132,41 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
             cell.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.sureButtonClickListener(phoneNumber, password, recommend);
+                    mListener.sureButtonClickListener(phoneNumber, password);
                 }
             });
         }
+    }
+
+    private void getRecommonCode() {
+        Map<String, String> args = new FacadeArgs.MapBuilder().
+                put("PHONE", phoneNumber).build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SendCodeByCard", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(
+                        new Connect.AckDelegate() {
+                            @Override
+                            public void onResult(Message message, Message errorMessage) {
+                                if (errorMessage == null) {
+                                    ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                    JsonNode jsonNode = responseProtocol.getResponse();
+                                    //Log.i("验证码数据--", jsonNode.toString());
+                                    String result = jsonNode.get("RESULT").asText();
+                                    //  if(re)
+//                                    try {
+//                                        //JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
+//                                    } catch (IOException e) {
+//                                        FileLog.e(e);
+//                                    }
+                                }
+                            }
+                        }
+                ).build();
+
+        ConnectManager.getInstance().request(mContext, connect);
     }
 
 
@@ -141,7 +193,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
     }
 
     public interface onItemClickListener {
-        void sureButtonClickListener(String phoneValue, String pswValue, String recommendValue);
+        void sureButtonClickListener(String phoneValue, String pswValue);
     }
 
     @Override

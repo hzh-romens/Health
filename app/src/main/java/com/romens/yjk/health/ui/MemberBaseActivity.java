@@ -2,9 +2,10 @@ package com.romens.yjk.health.ui;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.io.json.JacksonMapper;
@@ -21,9 +22,9 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.ui.fragment.BindMemberFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
+import com.romens.yjk.health.ui.fragment.MemberFragment;
 
 import java.io.IOException;
 import java.util.Map;
@@ -32,23 +33,43 @@ import java.util.Map;
  * Created by HZH on 2016/3/24.
  */
 public class MemberBaseActivity extends BaseActivity {
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private ActionBar actionBar;
+
+    public Handler handler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case 1:
+                    JudgeMember();
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.memebr_base_layout);
+        actionBar = (ActionBar) findViewById(R.id.action_bar);
+        onSetupActionBar(actionBar);
         JudgeMember();
-        ActionBar actionBar = (ActionBar) findViewById(R.id.action_bar);
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        BindMemberFragment bindMemberFragment = new BindMemberFragment();
-        fragmentTransaction.add(R.id.layout_content, bindMemberFragment, "bind");
-        fragmentTransaction.commit();
-
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int i) {
+                if (i == -1) {
+                    finish();
+                }
+            }
+        });
     }
 
     public void JudgeMember() {
+//        Map<String, String> args = new FacadeArgs.MapBuilder().
+//                put("PHONE", UserSession.getInstance().get().getPhone()).build();
         Map<String, String> args = new FacadeArgs.MapBuilder().
-                put("PHONE", UserSession.getInstance().get().getPhone()).build();
+                put("", "").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserMemberCard", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
         Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
@@ -63,31 +84,56 @@ public class MemberBaseActivity extends BaseActivity {
                                     //2016-03-24 zhoulisi 使用JsonNode
                                     ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                                     JsonNode jsonNode = responseProtocol.getResponse();
-//                                        JSONObject dataObj = new JSONArray(object.getString("DATA")).getJSONObject(0);
-                                    Log.i("数据------", jsonNode.toString());
                                     try {
-                                        String result = jsonNode.get("result").asText();
-                                        Log.i("结果----", result + "");
-                                        JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
-                                        JsonNode memberObj = dataObj.get("member").get(0);
-                                        String lvLevel = memberObj.get("GROUPNAME").asText();//会员等级
-                                        String integral = memberObj.get("JF").asText();//积分
-                                        String remainMoney = memberObj.get("BALANCE").asText();//余额
-                                        String cardId = memberObj.get("ID").asText();
-                                        JsonNode card = dataObj.get("card");
-                                        String diybgc = card.get("diybg").asText();
-                                        String cardbackbg = card.get("cardbackbg").asText();
+                                        initFragmentManager();
+                                        String result = jsonNode.get("RESULT").asText();
+                                        if (TextUtils.equals("0", result)) {
+                                            BindMemberFragment bindMemberFragment = new BindMemberFragment();
+                                            fragmentTransaction.add(R.id.layout_content, bindMemberFragment);
+                                            setActionBarTitle("绑定会员卡");
+                                        } else {
+                                            JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
+                                            JsonNode memberObj = dataObj.get("member").get(0);
+                                            String lvLevel = memberObj.get("GROUPNAME").asText();//会员等级
+                                            String integral = memberObj.get("JF").asText();//积分
+                                            String remainMoney = memberObj.get("BALANCE").asText();//余额
+                                            String cardId = memberObj.get("ID").asText();
+                                            JsonNode card = dataObj.get("card");
+                                            String diybgc = card.get("diybg").asText();
+                                            String cardbackbg = card.get("cardbackbg").asText();
+                                            MemberFragment memberFragment = new MemberFragment();
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("lvLevel", lvLevel);
+                                            bundle.putString("integral", integral);
+                                            bundle.putString("remainMoney", remainMoney);
+                                            bundle.putString("cardId", cardId);
+                                            bundle.putString("diybgc", diybgc);
+                                            bundle.putString("cardbackbg", cardbackbg);
+                                            memberFragment.setArguments(bundle);
+                                            fragmentTransaction.add(R.id.layout_content, memberFragment);
+                                            setActionBarTitle("我的会员卡");
+                                        }
+                                        // fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                                        fragmentTransaction.commit();
+                                        fragmentManager.executePendingTransactions();
                                     } catch (IOException e) {
                                         FileLog.e(e);
                                     }
-                                } else {
-                                    Log.e("tag", "--->" + errorMessage.msg);
                                 }
                             }
                         }
                 ).build();
 
         ConnectManager.getInstance().request(this, connect);
+    }
+
+    public void setActionBarTitle(String title) {
+        actionBar.setTitle(title);
+    }
+
+    public void initFragmentManager() {
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
     }
 
 }

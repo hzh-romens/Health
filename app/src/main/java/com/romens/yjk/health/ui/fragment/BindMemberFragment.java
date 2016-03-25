@@ -1,18 +1,34 @@
 package com.romens.yjk.health.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.android.network.FacadeArgs;
+import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
+import com.romens.android.network.protocol.FacadeProtocol;
+import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.FacadeConfig;
+import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.model.MemberType;
+import com.romens.yjk.health.ui.MemberBaseActivity;
 import com.romens.yjk.health.ui.adapter.NewMemberAdapter;
+
+import java.util.Map;
 
 /**
  * Created by HZH on 2016/2/1.
@@ -32,8 +48,61 @@ public class BindMemberFragment extends BaseFragment {
         adapter = new NewMemberAdapter(getActivity());
         adapter.bindType(types);
         listView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new NewMemberAdapter.onItemClickListener() {
+            @Override
+            public void sureButtonClickListener(String phoneValue, String pswValue) {
+                bindMember(phoneValue, pswValue);
+            }
+        });
         return content;
     }
+
+    private void bindMember(String phoneValue, String pswValue) {
+        Map<String, String> args = new FacadeArgs.MapBuilder()
+                .put("PHONE", phoneValue)
+                .put("CODE", pswValue)
+                .build();
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserMemberCard", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(
+                        new Connect.AckDelegate() {
+                            @Override
+                            public void onResult(Message message, Message errorMessage) {
+                                if (errorMessage == null) {
+                                    ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                                    JsonNode jsonNode = responseProtocol.getResponse();
+                                    String error = jsonNode.get("ERROR").asText();
+                                    Log.d("错误信息----", jsonNode.toString());
+                                    // if (TextUtils.isEmpty(error)) {
+                                    //
+                                    // getActivity().finish();
+                                    MemberBaseActivity activity = (MemberBaseActivity) getActivity();
+                                    Handler handler = activity.handler;
+                                    handler.sendEmptyMessage(1);
+
+                                    //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.layout_content, new MemberFragment()).commit();
+                                    // } else {
+                                    //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.layout_content, new MemberFragment()).commit();
+                                    // }
+                                    //Log.i("验证码数据--", jsonNode.toString());
+                                    //String result = jsonNode.get("RESULT").asText();
+                                    //  if(re)
+//                                    try {
+//                                        //JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
+//                                    } catch (IOException e) {
+//                                        FileLog.e(e);
+//                                    }
+                                }
+                            }
+                        }
+                ).build();
+
+        ConnectManager.getInstance().request(getActivity(), connect);
+    }
+
 
     private SparseIntArray types = new SparseIntArray();
 

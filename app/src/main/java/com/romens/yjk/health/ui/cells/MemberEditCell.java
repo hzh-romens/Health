@@ -2,6 +2,7 @@ package com.romens.yjk.health.ui.cells;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -42,17 +43,19 @@ public class MemberEditCell extends FrameLayout {
         editText.setTextSize(16);
         editText.setMaxLines(1);
         editText.setBackground(null);
+        editText.setHintTextColor(getResources().getColor(R.color.member_btn));
+        editText.setTextColor(Color.BLACK);
         editText.setBackgroundColor(getResources().getColor(R.color.white));
         editText.setEllipsize(TextUtils.TruncateAt.END);
         addView(editText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT, 16, 8, 16, 8));
         textView = new TextView(context);
         textView.setTextColor(getResources().getColor(R.color.md_white_1000));
         textView.setTextSize(14);
-        textView.setPadding(8, 8, 8, 8);
+        textView.setPadding(8, 16, 8, 16);
         textView.setText("获取验证码");
         GradientDrawable textDrawable = new GradientDrawable();
         textDrawable.setCornerRadius(8);
-        textDrawable.setColor(getResources().getColor(R.color.progress_bgc));
+        textDrawable.setColor(getResources().getColor(R.color.member_btn));
         textView.setBackground(textDrawable);
         addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
         editText.addTextChangedListener(new TextWatcher() {

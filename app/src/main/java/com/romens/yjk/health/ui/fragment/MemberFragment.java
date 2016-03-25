@@ -33,18 +33,26 @@ public class MemberFragment extends BaseFragment {
     private List<String> types;
     private ListView listview, cardList;
     private CardListAdapter cardListAdapter;
+    private MemberAdapter memberAdapter;
 
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(getActivity());
         listview = new ListView(getActivity());
+        initMember();
+        Bundle arguments = getArguments();
+        getBundleValue(arguments);
         content.addView(listview, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-
         return content;
     }
 
+    private void getBundleValue(Bundle arguments) {
+        memberAdapter.setData(arguments.getString("cardId"), arguments.getString("lvLevel"), arguments.getString("integral")
+                , arguments.getString("remainMoney"), arguments.getString("diybgc"), arguments.getString("cardbackbg"));
+    }
+
     private void initMember() {
-        MemberAdapter memberAdapter = new MemberAdapter(getActivity());
+        memberAdapter = new MemberAdapter(getActivity());
         getMemberData();
         memberAdapter.bindData(types);
         listview.setAdapter(memberAdapter);
