@@ -61,8 +61,8 @@ android {
         }
         channel_hy_rmtt {
             applicationId "com.romens.yjk.health.hyrmtt"
-            versionCode 160326
-            versionName "1.8.15"
+            versionCode 160328
+            versionName "1.8.17"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "20;rmtt",
