@@ -1,22 +1,23 @@
 package com.romens.yjk.health.ui.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.zxing.BarcodeFormat;
-import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.adapter.CardListAdapter;
 import com.romens.yjk.health.ui.adapter.MemberAdapter;
 import com.romens.yjk.health.ui.utils.CodeUtils;
 import com.romens.yjk.health.ui.utils.DialogUtils;
@@ -28,19 +29,26 @@ import java.util.List;
  * Created by HZH on 2016/3/24.
  */
 public class MemberFragment extends BaseFragment {
-    private boolean isMember = true;
-    private LinearLayout btnOk, pwdLayout;
-    private ActionBar actionBar;
     private List<String> types;
-    private ListView listview, cardList;
-    private CardListAdapter cardListAdapter;
+    private ListView listview;
     private MemberAdapter memberAdapter;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    dialogUtils.show_infor(getActivity(), codeImage, cardId);
+                    break;
+            }
+        }
+    };
 
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(getActivity());
         content.setBackgroundColor(Color.WHITE);
         listview = new ListView(getActivity());
+        listview.setDividerHeight(0);
         initMember();
         Bundle arguments = getArguments();
         getBundleValue(arguments);
@@ -49,9 +57,15 @@ public class MemberFragment extends BaseFragment {
     }
 
     private void getBundleValue(Bundle arguments) {
-        memberAdapter.setData(arguments.getString("cardId"), arguments.getString("lvLevel"), arguments.getString("integral")
-                , arguments.getString("remainMoney"), arguments.getString("diybgc"), arguments.getString("cardbackbg"));
+        cardId = arguments.getString("cardId");
+        if (arguments != null) {
+            memberAdapter.setData(cardId, arguments.getString("lvLevel"), arguments.getString("integral")
+                    , arguments.getString("remainMoney"), arguments.getString("diybgc"), arguments.getString("cardbackbg"));
+        }
     }
+
+    private String cardId;
+    private DialogUtils dialogUtils;
 
     private void initMember() {
         memberAdapter = new MemberAdapter(getActivity());
@@ -62,9 +76,9 @@ public class MemberFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 3) {
-                    Bitmap bitmap = CodeUtils.encodeAsBitmap(UserConfig.getInstance().getClientUserPhone(), BarcodeFormat.CODE_128, 300, 96);
-                    DialogUtils dialogUtils = new DialogUtils();
-                    dialogUtils.show_infor(getActivity(), bitmap);
+                    dialogUtils = new DialogUtils();
+                    int mWidth = (int) (((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth() / 1.2);
+                    getCodeImage(mWidth);
                 } else if (position == 5) {
                     //优惠卷
                     UIOpenHelper.openCuoponActivityWithBundle(getActivity(), false);
@@ -74,6 +88,18 @@ public class MemberFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    private Bitmap codeImage;
+
+    private void getCodeImage(final int width) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                codeImage = CodeUtils.encodeAsBitmap(UserConfig.getInstance().getClientUserPhone(), BarcodeFormat.CODE_128, width - 24, 96);
+                handler.sendEmptyMessage(1);
+            }
+        }).start();
     }
 
     public void getMemberData() {
