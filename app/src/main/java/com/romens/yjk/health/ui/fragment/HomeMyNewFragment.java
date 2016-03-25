@@ -98,6 +98,8 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == developModeRow) {
                     DevelopModeManager.openDebug(getActivity());
+                } else if (position == checkUpdateRow) {
+                    MonitorHelper.checkUpdate(getActivity(), true);
                 }
             }
         });
@@ -210,7 +212,7 @@ public class HomeMyNewFragment extends BaseFragment implements AppNotificationCe
 
         @Override
         public boolean isEnabled(int i) {
-            return i == developModeRow;
+            return i == developModeRow||i==checkUpdateRow;
         }
 
         @Override
