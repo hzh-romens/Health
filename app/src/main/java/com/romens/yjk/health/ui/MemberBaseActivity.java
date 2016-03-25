@@ -19,6 +19,7 @@ import com.romens.android.network.request.Connect;
 import com.romens.android.network.request.ConnectManager;
 import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -42,6 +43,8 @@ public class MemberBaseActivity extends BaseActivity {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case 1:
+                    initFragmentManager();
+                    needShowProgress("正在加载");
                     JudgeMember();
                     break;
             }
@@ -54,20 +57,30 @@ public class MemberBaseActivity extends BaseActivity {
         setContentView(R.layout.memebr_base_layout);
         actionBar = (ActionBar) findViewById(R.id.action_bar);
         onSetupActionBar(actionBar);
+        needShowProgress("正在加载");
         JudgeMember();
+        ActionBarMenu menu = actionBar.createMenu();
+        menu.addItem(0, R.drawable.ic_add_white_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
                     finish();
+                } else if (i == 0) {
+                    //跳转到添加会员卡界面
+                    initFragmentManager();
+                    BindMemberFragment bindMemberFragment = new BindMemberFragment();
+                    fragmentTransaction.add(R.id.layout_content, bindMemberFragment);
+                    setActionBarTitle("绑定会员卡");
+                    fragmentTransaction.commit();
+                    fragmentManager.executePendingTransactions();
                 }
             }
         });
+
     }
 
     public void JudgeMember() {
-//        Map<String, String> args = new FacadeArgs.MapBuilder().
-//                put("PHONE", UserSession.getInstance().get().getPhone()).build();
         Map<String, String> args = new FacadeArgs.MapBuilder().
                 put("", "").build();
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserMemberCard", args);
@@ -85,13 +98,15 @@ public class MemberBaseActivity extends BaseActivity {
                                     ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                                     JsonNode jsonNode = responseProtocol.getResponse();
                                     try {
-                                        initFragmentManager();
+
                                         String result = jsonNode.get("RESULT").asText();
                                         if (TextUtils.equals("0", result)) {
+                                            initFragmentManager();
                                             BindMemberFragment bindMemberFragment = new BindMemberFragment();
                                             fragmentTransaction.add(R.id.layout_content, bindMemberFragment);
                                             setActionBarTitle("绑定会员卡");
                                         } else {
+                                            initFragmentManager();
                                             JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
                                             JsonNode memberObj = dataObj.get("member").get(0);
                                             String lvLevel = memberObj.get("GROUPNAME").asText();//会员等级
@@ -113,9 +128,9 @@ public class MemberBaseActivity extends BaseActivity {
                                             fragmentTransaction.add(R.id.layout_content, memberFragment);
                                             setActionBarTitle("我的会员卡");
                                         }
-                                        // fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                                         fragmentTransaction.commit();
                                         fragmentManager.executePendingTransactions();
+                                        needHideProgress();
                                     } catch (IOException e) {
                                         FileLog.e(e);
                                     }
@@ -123,7 +138,6 @@ public class MemberBaseActivity extends BaseActivity {
                             }
                         }
                 ).build();
-
         ConnectManager.getInstance().request(this, connect);
     }
 

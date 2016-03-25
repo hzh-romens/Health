@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.fragment;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public class MemberFragment extends BaseFragment {
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(getActivity());
+        content.setBackgroundColor(Color.WHITE);
         listview = new ListView(getActivity());
         initMember();
         Bundle arguments = getArguments();
