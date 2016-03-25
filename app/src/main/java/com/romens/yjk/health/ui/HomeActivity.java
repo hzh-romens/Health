@@ -18,6 +18,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.location.core.AMapLocException;
+import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -250,8 +251,14 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         setupConfig();
         onLoginStateChanged();
         initLastLocation();
-        UIOpenHelper.syncFavorites(this);
-        MonitorHelper.checkUpdate(this);
+        AndroidUtilities.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                UIOpenHelper.syncFavorites(HomeActivity.this);
+                MonitorHelper.checkUpdate(HomeActivity.this);
+            }
+        });
+
     }
 
     /**
