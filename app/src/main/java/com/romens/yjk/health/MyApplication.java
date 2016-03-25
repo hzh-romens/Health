@@ -4,15 +4,14 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.PowerManager;
 
-import com.pgyersdk.crash.PgyCrashManager;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
 import com.romens.android.network.request.ConnectManager;
+import com.romens.bug.BugConfig;
+import com.romens.bug.BugManager;
 import com.romens.images.CloudImagesManager;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.helper.MonitorHelper;
-import com.romens.yjk.health.im.IMHXSDKHelper;
 
 /**
  * Created by zhoulisi on 15/1/15.
@@ -30,7 +29,16 @@ public class MyApplication extends ApplicationLoader {
         FileLog.setEnableSystemLog(BuildConfig.ENABLE_DEVELOP_MODE);
         //初始化图片库
         CloudImagesManager.init(applicationContext);
-        MonitorHelper.init(this);
+
+        //2016-03-25 zhoulisi Crash渠道由蒲公英切换为腾讯Bugly
+        //MonitorHelper.init(this);
+        BugConfig bugConfig = new BugConfig.Builder(this, BuildConfig.BUG_APP_ID)
+                .withPackageName(BuildConfig.BUG_PACKAGE)
+                .withAppVersion(BuildConfig.BUG_VERSION)
+                .withAppChannel(BuildConfig.BUG_CHANNEL)
+                .build();
+        BugManager.init(getApplicationContext(), bugConfig);
+
 //        //初始化环信SDK
 //        IMHXSDKHelper.getInstance().onInit(MyApplication.applicationContext);
         UserConfig.getInstance().loadConfig();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -41,12 +42,18 @@ public class MemberEditCell extends FrameLayout {
         editText.setTextSize(16);
         editText.setMaxLines(1);
         editText.setBackground(null);
+        editText.setBackgroundColor(getResources().getColor(R.color.white));
         editText.setEllipsize(TextUtils.TruncateAt.END);
         addView(editText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT, 16, 8, 16, 8));
         textView = new TextView(context);
-        textView.setTextColor(getResources().getColor(R.color.theme_primary));
+        textView.setTextColor(getResources().getColor(R.color.md_white_1000));
         textView.setTextSize(14);
+        textView.setPadding(8, 8, 8, 8);
         textView.setText("获取验证码");
+        GradientDrawable textDrawable = new GradientDrawable();
+        textDrawable.setCornerRadius(8);
+        textDrawable.setColor(getResources().getColor(R.color.progress_bgc));
+        textView.setBackground(textDrawable);
         addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
         editText.addTextChangedListener(new TextWatcher() {
             @Override

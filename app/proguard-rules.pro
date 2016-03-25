@@ -315,3 +315,8 @@ public static final int *;
 -keep class com.romens.yjk.health.hyrmtt.pay.**{
     public protected *;
 }
+
+
+##romens bug begin
+-keep public class com.tencent.bugly.**{*;}
+##romens bug end
