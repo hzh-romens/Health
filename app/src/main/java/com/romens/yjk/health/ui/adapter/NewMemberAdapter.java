@@ -153,14 +153,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
                                 if (errorMessage == null) {
                                     ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                                     JsonNode jsonNode = responseProtocol.getResponse();
-                                    //Log.i("验证码数据--", jsonNode.toString());
                                     String result = jsonNode.get("RESULT").asText();
-                                    //  if(re)
-//                                    try {
-//                                        //JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
-//                                    } catch (IOException e) {
-//                                        FileLog.e(e);
-//                                    }
                                 }
                             }
                         }

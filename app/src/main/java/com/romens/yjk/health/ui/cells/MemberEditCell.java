@@ -47,11 +47,11 @@ public class MemberEditCell extends FrameLayout {
         editText.setTextColor(Color.BLACK);
         editText.setBackgroundColor(getResources().getColor(R.color.white));
         editText.setEllipsize(TextUtils.TruncateAt.END);
-        addView(editText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT, 16, 8, 16, 8));
+        addView(editText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 42, Gravity.LEFT, 16, 8, 16, 8));
         textView = new TextView(context);
         textView.setTextColor(getResources().getColor(R.color.md_white_1000));
         textView.setTextSize(14);
-        textView.setPadding(8, 16, 8, 16);
+        textView.setPadding(16, 16, 16, 16);
         textView.setText("获取验证码");
         GradientDrawable textDrawable = new GradientDrawable();
         textDrawable.setCornerRadius(8);

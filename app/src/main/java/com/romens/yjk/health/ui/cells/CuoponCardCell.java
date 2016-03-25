@@ -110,7 +110,6 @@ public class CuoponCardCell extends FrameLayout {
     public void setValue(String isused, String name, String enddate, String limitamount, String shuoming, String amount, String startDate) {
         SpannableString span = new SpannableString("¥" + amount);
         span.setSpan(new AbsoluteSizeSpan(30), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        // span.setSpan(new AbsoluteSizeSpan(26, true), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         priceView.setText(span);
         nameView.setText(name);
         if (TextUtils.isEmpty(shuoming))
@@ -150,7 +149,6 @@ public class CuoponCardCell extends FrameLayout {
             cardView.setBackground(dra);
             cardView.setCardElevation(4);
         } else {
-            cardView.setBackground(null);
             cardView.setCardElevation(4);
         }
     }
