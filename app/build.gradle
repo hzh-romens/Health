@@ -199,7 +199,7 @@ dependencies {
     compile 'romens:com.romens.images:1.2.2@aar'
     compile 'com.facebook.fresco:fresco:0.8.1+'
     compile 'romens:com.romens.extend.scanner:1.3.6@aar'
-    compile 'romens:com.romens.bug:1.0.1@aar'
+    compile 'romens:com.romens.bug:1.1.0@aar'
 
     //信鸽
     compile files('libs/jg_filter_sdk_1.1.jar')
