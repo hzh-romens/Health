@@ -35,7 +35,8 @@ public class RemindReceiver extends BroadcastReceiver {
     private void showNotification(int type, RemindEntity entity) {
         NotificationManager fm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Notification notification = new Notification.Builder(context).setContentTitle("要健康提醒您")// 设置通知栏标题
+        Notification notification = new Notification.Builder(context)
+                .setContentTitle(context.getResources().getString(R.string.app_name) + "提醒您")// 设置通知栏标题
                 .setContentText(entity.getUser() + "请服药：" + entity.getDrug()) // 设置通知栏显示内容</span>
                 .setTicker(context.getResources().getString(R.string.app_name) + "提醒您") // 通知首次出现在通知栏，带上升动画效果的
                 .setPriority(Notification.PRIORITY_DEFAULT) // 设置该通知优先级
