@@ -10,8 +10,9 @@ import android.widget.RadioGroup;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.adapter.CuoponFragmentPagerAdapter;
-import com.romens.yjk.health.ui.fragment.CuoponFragment;
+import com.romens.yjk.health.ui.fragment.CouponFragment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,9 @@ import java.util.List;
  */
 
 public class CuoponActivity extends BaseActivity {
+    public static final String ARGUMENT_KEY_SELECT_COUPON_ID="select_coupon_id";
+    public static final String ARGUMENT_KEY_ORDER_AMOUNT="order_amount";
+
     private ActionBar actionBar;
     private RadioGroup radioGroup;
     private ViewPager viewPager;
@@ -30,9 +34,9 @@ public class CuoponActivity extends BaseActivity {
     private List<Fragment> fragmentsList;
     private List<String> titles;
 
-    private String sumMoney;
+    private BigDecimal sumMoney = BigDecimal.ZERO;
     private boolean canClick;
-    private int choicePosition;
+    private String selectCouponId;
     public static final int NOW = 1;
     public static final int HISTORY = 2;
 
@@ -40,9 +44,10 @@ public class CuoponActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cuopon, R.id.action_bar);
-        choicePosition = getIntent().getIntExtra("position", 0);
-        sumMoney = getIntent().getStringExtra("sumMoney");
-        canClick = getIntent().getBooleanExtra("canClick", true);
+        Intent intent = getIntent();
+        selectCouponId = intent.getStringExtra(ARGUMENT_KEY_SELECT_COUPON_ID);
+        sumMoney = new BigDecimal(intent.getDoubleExtra(ARGUMENT_KEY_ORDER_AMOUNT, 0));
+        canClick = intent.getBooleanExtra("canClick", true);
 
         actionBar = (ActionBar) findViewById(R.id.action_bar);
         actionBar.setTitle("我的优惠券");
@@ -74,12 +79,16 @@ public class CuoponActivity extends BaseActivity {
 
     private void initFragments() {
         fragmentsList = new ArrayList<Fragment>();
-        CuoponFragment fragment = new CuoponFragment();
+        CouponFragment fragment = new CouponFragment();
+        Bundle argument=new Bundle();
+        argument.putString(CouponFragment.ARGUMENT_KEY_SELECT_COUPON_ID,selectCouponId);
+        argument.putDouble(CouponFragment.ARGUMENT_KEY_ORDER_AMOUNT,sumMoney.doubleValue());
+        fragment.setArguments(argument);
         fragment.setPage(NOW);
         fragment.setCanClick(true);
-        fragment.setChoice(choicePosition, Double.parseDouble(sumMoney));
+        //fragment.setChoice(choicePosition, sumMoney.doubleValue());
         fragmentsList.add(fragment);
-        CuoponFragment historyFragment = new CuoponFragment();
+        CouponFragment historyFragment = new CouponFragment();
         historyFragment.setPage(HISTORY);
         fragmentsList.add(historyFragment);
 

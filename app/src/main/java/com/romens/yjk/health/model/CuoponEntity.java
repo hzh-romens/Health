@@ -2,6 +2,8 @@ package com.romens.yjk.health.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.math.BigDecimal;
+
 /**
  * Created by HZH on 2016/2/4.
  */
@@ -120,6 +122,10 @@ public class CuoponEntity {
 
     public String getLimitamount() {
         return limitamount;
+    }
+
+    public BigDecimal getLimitAmount() {
+        return limitamount==null?BigDecimal.ZERO:new BigDecimal(limitamount);
     }
 
     public void setLimitamount(String limitamount) {

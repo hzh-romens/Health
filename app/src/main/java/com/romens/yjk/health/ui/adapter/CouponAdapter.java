@@ -1,6 +1,7 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,43 +11,54 @@ import com.romens.yjk.health.model.CuoponEntity;
 import com.romens.yjk.health.ui.cells.CuoponCardCell;
 import com.romens.yjk.health.ui.cells.CuoponEmptyCell;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by HZH on 2016/1/18.
  */
-public class CuoponAdapter extends BaseAdapter {
+public class CouponAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<CuoponEntity> mResult;
-    private SparseBooleanArray mChoiceArray = new SparseBooleanArray();
+    private final List<CuoponEntity> mResult = new ArrayList<>();
+    private final List<String> mChoiceArray = new ArrayList<>();
 
-    public CuoponAdapter(Context context) {
+    public CouponAdapter(Context context) {
         this.mContext = context;
     }
 
     public void bindData(List<CuoponEntity> result) {
-        if (mResult != null) {
-            mResult.clear();
+        mResult.clear();
+        mChoiceArray.clear();
+        if (result != null && result.size() > 0) {
+            mResult.addAll(result);
         }
-        this.mResult = result;
         notifyDataSetChanged();
     }
 
-    public void bindChoiceData(SparseBooleanArray choiceArray) {
-        if (mChoiceArray != null) {
-            mChoiceArray.clear();
-        }
-        this.mChoiceArray = choiceArray;
-        notifyDataSetChanged();
-    }
-
-    private int mChoiceID = -1;
     private String mType;
 
-    public void setChoice(int choiceID, String requestType) {
-        this.mChoiceID = choiceID;
+    public void setChoice(String choiceCouponGuid, String requestType) {
+        mChoiceArray.clear();
+        mChoiceArray.add(choiceCouponGuid);
         this.mType = requestType;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 现阶段只支持使用一张优惠券
+     * @param choiceCouponGuid
+     */
+    public void switchCheck(String choiceCouponGuid) {
+//        boolean isChecked=mChoiceArray.contains(choiceCouponGuid);
+//        if (isChecked) {
+//            mChoiceArray.clear();
+//        } else {
+//            mChoiceArray.add(choiceCouponGuid);
+//        }
+        mChoiceArray.clear();
+        mChoiceArray.add(choiceCouponGuid);
         notifyDataSetChanged();
     }
 
@@ -92,34 +104,18 @@ public class CuoponAdapter extends BaseAdapter {
 
             if ("GetCoupon".equals(mType)) {
                 cell.setStatus("0");
-                if (mChoiceID >= 0 && mChoiceID == position) {
-                    if (mChoiceArray.get(position)) {
-                        cell.setShapeColor(true);
-                        mChoiceArray.append(position, true);
-                    } else {
-                        cell.setShapeColor(false);
-                        mChoiceArray.append(position, false);
-                    }
+                final String couponGuid = entity.getGuid();
+                if (mChoiceArray.contains(couponGuid)) {
+                    cell.setShapeColor(true);
+                } else {
+                    cell.setShapeColor(false);
                 }
-            }else {
+            } else {
                 cell.setStatus("1");
             }
         }
 
         return convertView;
-    }
-
-    public SparseBooleanArray getChoiceArray() {
-        return mChoiceArray;
-    }
-
-
-    private int mPosition;
-    private boolean mValue;
-
-    public void setChoiceItem(int position, boolean value) {
-        this.mPosition = position;
-        this.mValue = value;
     }
 
     @Override

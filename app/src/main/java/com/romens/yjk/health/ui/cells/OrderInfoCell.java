@@ -160,7 +160,7 @@ public class OrderInfoCell extends LinearLayout {
         //商品
         goodsAmountView.setText(ShoppingHelper.formatPrice(goodsAmount, false));
         //优惠
-        couponView.setText(ShoppingHelper.formatPrice(couponAmount, false));
+        couponView.setText(ShoppingHelper.formatPrice(couponAmount, "-￥", false));
 
         BigDecimal orderAmount = goodsAmount.subtract(couponAmount);
         orderAmountView.setText(ShoppingHelper.formatPrice(orderAmount));
