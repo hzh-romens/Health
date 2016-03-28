@@ -46,8 +46,8 @@ android {
         }
         channel_nj_xszk {
             applicationId "com.romens.yjk.health.njxszk"
-            defaultConfig.versionCode 160324
-            defaultConfig.versionName "1.8.11"
+            defaultConfig.versionCode 160325
+            defaultConfig.versionName "1.8.16"
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "4;njxs",
@@ -57,12 +57,15 @@ android {
                                     PUSH_ACCESS_ID   : "2100188533",
                                     PUSH_ACCESS_KEY  : "A44T4Y8GS3XB",
                                     LOCATION_SDK_KEY : "d6aa411b6b1a70541e2d818c91da3e0e"]
-            buildConfigField "String", "BUG_APP_ID", "\"\""
+            buildConfigField "String", "BUG_APP_ID", "\"900023163\""
+            buildConfigField "String", "BUG_CHANNEL", "\"nj_xszk\""
+            buildConfigField "String", "BUG_VERSION", "\"" + versionName + "\""
+            buildConfigField "String", "BUG_PACKAGE", "\"" + applicationId + "\""
         }
         channel_hy_rmtt {
             applicationId "com.romens.yjk.health.hyrmtt"
-            versionCode 160328
-            versionName "1.8.17"
+            versionCode 160329
+            versionName "1.8.18"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "20;rmtt",
