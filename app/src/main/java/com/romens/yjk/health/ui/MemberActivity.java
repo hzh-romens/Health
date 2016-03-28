@@ -108,7 +108,7 @@ public class MemberActivity extends BaseActivity {
                 if (position == 3) {
                     Bitmap bitmap = CodeUtils.encodeAsBitmap(UserConfig.getInstance().getClientUserPhone(), BarcodeFormat.CODE_128, 300, 96);
                     DialogUtils dialogUtils = new DialogUtils();
-                    dialogUtils.show_infor(MemberActivity.this, bitmap);
+                //    dialogUtils.show_infor(MemberActivity.this, bitmap,cardI);
                 } else if (position == 5) {
                     //优惠卷
                     UIOpenHelper.openCuoponActivityWithBundle(MemberActivity.this, false);

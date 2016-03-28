@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +53,7 @@ public class BindMemberFragment extends BaseFragment {
                 bindMember(phoneValue, pswValue);
             }
         });
+
         return content;
     }
 
@@ -74,27 +74,9 @@ public class BindMemberFragment extends BaseFragment {
                                 if (errorMessage == null) {
                                     ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                                     JsonNode jsonNode = responseProtocol.getResponse();
-                                    String error = jsonNode.get("ERROR").asText();
-                                    Log.d("错误信息----", jsonNode.toString());
-                                    // if (TextUtils.isEmpty(error)) {
-                                    //
-                                    // getActivity().finish();
                                     MemberBaseActivity activity = (MemberBaseActivity) getActivity();
                                     Handler handler = activity.handler;
                                     handler.sendEmptyMessage(1);
-
-                                    //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.layout_content, new MemberFragment()).commit();
-                                    // } else {
-                                    //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.layout_content, new MemberFragment()).commit();
-                                    // }
-                                    //Log.i("验证码数据--", jsonNode.toString());
-                                    //String result = jsonNode.get("RESULT").asText();
-                                    //  if(re)
-//                                    try {
-//                                        //JsonNode dataObj = JacksonMapper.getInstance().readTree(jsonNode.get("DATA").textValue());
-//                                    } catch (IOException e) {
-//                                        FileLog.e(e);
-//                                    }
                                 }
                             }
                         }

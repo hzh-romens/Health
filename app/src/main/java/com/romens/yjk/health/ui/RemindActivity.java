@@ -7,10 +7,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -172,7 +175,7 @@ public class RemindActivity extends BaseActivity {
                 cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 return new ADHolder(cell);
             } else {
-                RemindItemCell cell = new RemindItemCell(context);
+                RemindView cell = new RemindView(context);
                 cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 return new ADHolder(cell);
             }
@@ -186,28 +189,23 @@ public class RemindActivity extends BaseActivity {
                 cell.setText("小提示:长按可以删除提醒哦");
             } else {
                 final RemindEntity entity = data.get(position);
-                final RemindItemCell cell = (RemindItemCell) viewHolder.itemView;
-                cell.setData(R.drawable.remind_drug, entity.getDrug(), true);
-                if (entity.getIsRemind() == 0) {
-                    cell.setCheck(false);
-                } else {
-                    cell.setCheck(true);
+//                final RemindItemCell cell = (RemindItemCell) viewHolder.itemView;
+                final RemindView cell = (RemindView) viewHolder.itemView;
+                String timeStr = "";
+                timeStr += entity.getFirstTime() + "  ";
+                if (!entity.getSecondtime().equals("-1")) {
+                    timeStr += entity.getSecondtime() + "  ";
                 }
-                cell.setOnSwitchClickLinstener(new RemindItemCell.onSwitchClickLinstener() {
-                    @Override
-                    public void onSwitchClick() {
-                        if (entity.getIsRemind() == 0) {
-                            cell.setCheck(true);
-                            entity.setIsRemind(1);
-                            RemindUtils.setRemind(entity, context);
-                        } else {
-                            cell.setCheck(false);
-                            entity.setIsRemind(0);
-                            RemindUtils.cancelRemind(entity, context);
-                        }
-                        DBInterface.instance().openWritableDb().getRemindDao().insertOrReplace(entity);
-                    }
-                });
+                if (!entity.getThreeTime().equals("-1")) {
+                    timeStr += entity.getThreeTime() + "  ";
+                }
+                if (!entity.getFourTime().equals("-1")) {
+                    timeStr += entity.getFourTime() + "  ";
+                }
+                if (!entity.getFiveTime().equals("-1")) {
+                    timeStr += entity.getFiveTime();
+                }
+                cell.setData(entity.getDrug(), timeStr, entity);
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -262,6 +260,68 @@ public class RemindActivity extends BaseActivity {
         initData();
         adapter.setData(data);
         adapter.notifyDataSetChanged();
+    }
+
+    class RemindView extends LinearLayout {
+
+        RemindItemCell cell;
+        TextView remindTimeView;
+        Context context;
+        Paint paint;
+
+        public RemindView(Context context) {
+            super(context);
+            if (paint == null) {
+                paint = new Paint();
+                paint.setColor(0xffd9d9d9);
+                paint.setStrokeWidth(1);
+            }
+            this.context = context;
+            setOrientation(VERTICAL);
+            cell = new RemindItemCell(context);
+            addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+            remindTimeView = new TextView(context);
+            remindTimeView.setSingleLine();
+            remindTimeView.setEllipsize(TextUtils.TruncateAt.END);
+            remindTimeView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            remindTimeView.setTextColor(getResources().getColor(R.color.theme_sub_title));
+            remindTimeView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(16));
+            addView(remindTimeView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        }
+
+        public void setData(String title, final String remindTime, final RemindEntity entity) {
+            cell.setData(R.drawable.remind_drug, title, false);
+            remindTimeView.setText(remindTime);
+            if (entity.getIsRemind() == 0) {
+                cell.setCheck(false);
+            } else {
+                cell.setCheck(true);
+            }
+            cell.setOnSwitchClickLinstener(new RemindItemCell.onSwitchClickLinstener() {
+                @Override
+                public void onSwitchClick() {
+                    if (entity.getIsRemind() == 0) {
+                        cell.setCheck(true);
+                        entity.setIsRemind(1);
+                        RemindUtils.setRemind(entity, context);
+                    } else {
+                        cell.setCheck(false);
+                        entity.setIsRemind(0);
+                        RemindUtils.cancelRemind(entity, context);
+                    }
+                    DBInterface.instance().openWritableDb().getRemindDao().insertOrReplace(entity);
+                }
+            });
+            setWillNotDraw(false);
+        }
+
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            canvas.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1, paint);
+        }
     }
 
 //    //添加提醒到系统中

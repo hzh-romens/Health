@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.CardView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -25,7 +24,7 @@ public class CuoponCardCell extends FrameLayout {
     private CardView cardView;
     private TextView nameView, addressView, priceView, conditionView, timeView, statusView;
     private Paint mPaint;
-    private ImageView image, statusIcon;
+    private ImageView image, statusIcon, choiceView;
     private Context mContext;
 
     public CuoponCardCell(Context context) {
@@ -36,10 +35,12 @@ public class CuoponCardCell extends FrameLayout {
         this.mContext = context;
         setWillNotDraw(false);
         cardView = new CardView(context);
-        cardView.setRadius(10.0f);
+        //cardView.setRadius(10.0f);
+        cardView.setRadius(0.0f);
         cardView.setCardElevation(4);
         image = new ImageView(context);
-        cardView.addView(image, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 8, Gravity.TOP));
+        image.setScaleType(ImageView.ScaleType.FIT_XY);
+        cardView.addView(image, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP));
 
         nameView = new TextView(context);
         nameView.setTextColor(context.getResources().getColor(R.color.theme_primary));
@@ -71,6 +72,10 @@ public class CuoponCardCell extends FrameLayout {
         timeView.setEllipsize(TextUtils.TruncateAt.END);
         cardView.addView(timeView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 8, 48, 8));
 
+        ImageView lineView = new ImageView(context);
+        lineView.setBackground(getResources().getDrawable(R.drawable.ic_cuopon_line));
+        cardView.addView(lineView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM, 0, 0, 0, 48));
+
         statusView = new TextView(context);
         statusView.setTextSize(14);
         statusView.setTextColor(0xff666666);
@@ -79,6 +84,9 @@ public class CuoponCardCell extends FrameLayout {
         statusIcon = new ImageView(context);
         cardView.addView(statusIcon, LayoutHelper.createFrame(96, 96, Gravity.RIGHT, 16, 24, 16, 0));
 
+        choiceView = new ImageView(context);
+        cardView.addView(choiceView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.RIGHT));
+
         addView(cardView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.NO_GRAVITY, 16, 8, 16, 8));
     }
 
@@ -86,15 +94,21 @@ public class CuoponCardCell extends FrameLayout {
         //未使用字体颜色:#aaaaaa
         if ("1".equals(flag)) {
             statusView.setText("已使用");
+            image.setVisibility(GONE);
             setStatusImage(R.drawable.ic_cuopon_used);
             setHistoryTextColor();
+            choiceView.setVisibility(GONE);
         } else if ("0".equals(flag)) {
             statusView.setText("未使用");
             setTextColor();
+            image.setBackground(getResources().getDrawable(R.drawable.ic_status_line));
+            choiceView.setVisibility(GONE);
         } else {
             statusView.setText("已过期");
             setStatusImage(R.drawable.ic_coupon_expired);
             setHistoryTextColor();
+            image.setVisibility(GONE);
+            choiceView.setVisibility(GONE);
         }
     }
 
@@ -110,7 +124,6 @@ public class CuoponCardCell extends FrameLayout {
     public void setValue(String isused, String name, String enddate, String limitamount, String shuoming, String amount, String startDate) {
         SpannableString span = new SpannableString("¥" + amount);
         span.setSpan(new AbsoluteSizeSpan(30), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        // span.setSpan(new AbsoluteSizeSpan(26, true), 1, amount.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         priceView.setText(span);
         nameView.setText(name);
         if (TextUtils.isEmpty(shuoming))
@@ -144,14 +157,10 @@ public class CuoponCardCell extends FrameLayout {
 
     public void setShapeColor(boolean choice) {
         if (choice) {
-            GradientDrawable dra = new GradientDrawable();
-            dra.setCornerRadius(10.f);
-            dra.setStroke(4, mContext.getResources().getColor(R.color.theme_primary));
-            cardView.setBackground(dra);
-            cardView.setCardElevation(4);
+            choiceView.setVisibility(VISIBLE);
+            choiceView.setImageDrawable(getResources().getDrawable(R.drawable.ic_cuopon_choice));
         } else {
-            cardView.setBackground(null);
-            cardView.setCardElevation(4);
+            choiceView.setVisibility(GONE);
         }
     }
 }

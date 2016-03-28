@@ -9,19 +9,37 @@
 
     <ImageView
         android:id="@+id/code"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_standard"
         android:scaleType="fitXY"></ImageView>
+
+    <TextView
+        android:id="@+id/memberId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:gravity="center"
+        android:textColor="@color/md_black_1000"
+        android:textSize="@dimen/text_size_medium" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#a9a9a9" />
 
 
     <TextView
         android:id="@+id/btn_ok"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
+        android:background="#f9f9f9"
         android:gravity="center"
         android:text="@string/confirm"
+        android:layout_marginTop="@dimen/margin_standard"
+        android:layout_marginBottom="@dimen/margin_standard"
         android:textColor="@color/theme_primary"
         android:textSize="@dimen/text_size_large" />
 

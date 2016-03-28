@@ -1,8 +1,6 @@
 package com.romens.yjk.health.ui.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,7 +10,6 @@ import com.romens.yjk.health.ui.cells.CuoponCardCell;
 import com.romens.yjk.health.ui.cells.CuoponEmptyCell;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -48,6 +45,7 @@ public class CouponAdapter extends BaseAdapter {
 
     /**
      * 现阶段只支持使用一张优惠券
+     *
      * @param choiceCouponGuid
      */
     public void switchCheck(String choiceCouponGuid) {
@@ -93,7 +91,6 @@ public class CouponAdapter extends BaseAdapter {
                 convertView = new CuoponEmptyCell(mContext);
             }
             CuoponEmptyCell cuoponEmptyCell = (CuoponEmptyCell) convertView;
-            // cuoponEmptyCell.
         } else {
             if (convertView == null) {
                 convertView = new CuoponCardCell(mContext);

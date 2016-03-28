@@ -22,8 +22,8 @@ import java.util.List;
  */
 
 public class CuoponActivity extends BaseActivity {
-    public static final String ARGUMENT_KEY_SELECT_COUPON_ID="select_coupon_id";
-    public static final String ARGUMENT_KEY_ORDER_AMOUNT="order_amount";
+    public static final String ARGUMENT_KEY_SELECT_COUPON_ID = "select_coupon_id";
+    public static final String ARGUMENT_KEY_ORDER_AMOUNT = "order_amount";
 
     private ActionBar actionBar;
     private RadioGroup radioGroup;
@@ -80,9 +80,9 @@ public class CuoponActivity extends BaseActivity {
     private void initFragments() {
         fragmentsList = new ArrayList<Fragment>();
         CouponFragment fragment = new CouponFragment();
-        Bundle argument=new Bundle();
-        argument.putString(CouponFragment.ARGUMENT_KEY_SELECT_COUPON_ID,selectCouponId);
-        argument.putDouble(CouponFragment.ARGUMENT_KEY_ORDER_AMOUNT,sumMoney.doubleValue());
+        Bundle argument = new Bundle();
+        argument.putString(CouponFragment.ARGUMENT_KEY_SELECT_COUPON_ID, selectCouponId);
+        argument.putDouble(CouponFragment.ARGUMENT_KEY_ORDER_AMOUNT, sumMoney.doubleValue());
         fragment.setArguments(argument);
         fragment.setPage(NOW);
         fragment.setCanClick(true);

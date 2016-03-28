@@ -111,11 +111,14 @@ public class DialogUtils {
      *
      * @param owner
      */
-    public void show_infor(Activity owner, Bitmap bitmap) {
+    public void show_infor(Activity owner, Bitmap bitmap, String id) {
 
         View v = owner.getLayoutInflater().inflate(
                 R.layout.dialog_page_standard_infor_one, null);
         ImageView code = (ImageView) v.findViewById(R.id.code);
+        TextView memberCode = (TextView) v.findViewById(R.id.memberId);
+        memberCode.setScaleX(1.2f);
+        memberCode.setText(id);
         code.setImageBitmap(bitmap);
         Dialog dlg = new Dialog(owner, R.style.Float_Dialog);
         dlg.setCanceledOnTouchOutside(false);// 设置用户点击其他区域不关闭
@@ -141,7 +144,6 @@ public class DialogUtils {
 //            dlg.getWindow().setAttributes(lp);
 //        }
         dlg.show();
-
         View ok = v.findViewById(R.id.btn_ok);
 
         ok.setTag(dlg);

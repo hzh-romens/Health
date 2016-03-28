@@ -1,7 +1,9 @@
 package com.romens.yjk.health.ui.components;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
@@ -14,7 +16,6 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.images.ui.CloudImageView;
-import com.romens.yjk.health.R;
 
 /**
  * Created by HZH on 2016/1/25.
@@ -24,9 +25,16 @@ public class MemberCardView extends FrameLayout {
     private TextView numberView;
     private int flag = 1;
     private final CloudImageView bgcImage;
+    private Paint mPaint;
 
     public MemberCardView(Context context) {
         super(context);
+        setWillNotDraw(false);
+        if (mPaint == null) {
+            mPaint = new Paint();
+            mPaint.setColor(0xffd9d9d9);
+            mPaint.setStrokeWidth(1);
+        }
         bgcImage = CloudImageView.create(context);
         bgcImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
@@ -84,5 +92,10 @@ public class MemberCardView extends FrameLayout {
         if (faceUrl != null || !TextUtils.isEmpty(faceUrl)) {
             bgcImage.setImagePath(faceUrl);
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1, mPaint);
     }
 }

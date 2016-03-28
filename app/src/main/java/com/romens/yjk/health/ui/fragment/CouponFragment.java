@@ -77,18 +77,11 @@ public class CouponFragment extends Fragment {
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                 if (mCanclick) {
                                                     CuoponEntity entity = result.get(position);
-//                                                    choiceArray = cuoponAdapter.getChoiceArray();
-//                                                    cuoponAdapter.setChoiceItem(position, !choiceArray.get(position));
-//                                                    if (choiceArray.get(position)) {
-//                                                        choiceArray.append(position, false);
-//                                                    } else {
-//                                                        choiceArray.append(position, true);
-//                                                    }
-                                                    couponAdapter.switchCheck(entity.getGuid());
                                                     if ("GetCoupon".equals(requestType)) {
                                                         if (orderAmount.compareTo(entity.getLimitAmount()) == -1) {
                                                             Toast.makeText(getActivity(), "未达到优惠卷使用金额", Toast.LENGTH_SHORT).show();
                                                         } else {
+                                                            couponAdapter.switchCheck(entity.getGuid());
                                                             CuoponEntity cuoponEntity = result.get(position);
                                                             Intent intent = new Intent();
                                                             String couponguGuid = cuoponEntity.getGuid();
@@ -176,14 +169,8 @@ public class CouponFragment extends Fragment {
                                 CuoponEntity cuoponEntity = CuoponEntity.toEntity(response.get(i));
                                 result.add(cuoponEntity);
                             }
-                            //setChoiceList();
                             refreshLayout.setRefreshing(false);
                             couponAdapter.bindData(result);
-//                            if (choicePosition >= 0) {
-//                                choiceArray.append(choicePosition, true);
-//                            }
-//                            cuoponAdapter.bindChoiceData(choiceArray);
-
                             if ("GetCoupon".equals(requestType)) {
                                 couponAdapter.setChoice(selectedCouponGuid, requestType);
                             } else {

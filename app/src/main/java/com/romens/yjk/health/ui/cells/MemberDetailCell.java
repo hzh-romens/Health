@@ -45,4 +45,5 @@ public class MemberDetailCell extends FrameLayout {
         Point.setText(point + "\n积分");
         Balance.setText(balance + "\n余额");
     }
+
 }

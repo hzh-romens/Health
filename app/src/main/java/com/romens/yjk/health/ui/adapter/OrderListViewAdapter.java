@@ -54,7 +54,7 @@ public class OrderListViewAdapter extends BaseAdapter {
     protected List<AllOrderEntity> typeEntitiesList;
     protected Context adapterContext;
     protected String userGuid = UserGuidConfig.USER_GUID;
-    private ProgressDialog progressDialog;
+    private static ProgressDialog progressDialog;
 
     public OrderListViewAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
         this.adapterContext = adapterContext;
@@ -130,7 +130,7 @@ public class OrderListViewAdapter extends BaseAdapter {
 //            cancelBtn.setLayoutParams(layoutParams);
             evaluateBtn.setBackgroundResource(R.drawable.order_cancel_btn_bg);
             evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-            cancelBtn.setOnClickListener(new View.OnClickListener() {
+            evaluateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showCancelDialog(userGuid, entity.getOrderId());
@@ -300,6 +300,7 @@ public class OrderListViewAdapter extends BaseAdapter {
         FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                needHideProgress();
                 Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
@@ -362,11 +363,13 @@ public class OrderListViewAdapter extends BaseAdapter {
         FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                needHideProgress();
                 Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
@@ -451,11 +454,13 @@ public class OrderListViewAdapter extends BaseAdapter {
         FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
+                needHideProgress();
                 Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
+                needHideProgress();
                 if (msg != null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String requestCode = "";
@@ -483,7 +488,6 @@ public class OrderListViewAdapter extends BaseAdapter {
                     Toast.makeText(adapterContext, "出现未知错误", Toast.LENGTH_SHORT).show();
                     Log.e("ConfirmReceive", "ERROR---->" + errorMsg.msg);
                 }
-                needHideProgress();
             }
         });
     }
