@@ -442,8 +442,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
         orderNode.put("DELIVERYTYPE", deliveryMode.key);
         orderNode.put("PAYTYPE", Pay.getInstance().getPayTypeKey(selectPayType));
-        orderNode.put("COUPONGUID", orderCouponID);
-        orderNode.put("BILLNAME", orderInvoice);
+        orderNode.put("COUPONGUID", TextUtils.isEmpty(orderCouponID) ? "" : orderCouponID);
+        orderNode.put("BILLNAME", TextUtils.isEmpty(orderInvoice) ? "" : orderInvoice);
         ArrayNode goodsArrayNode = JacksonMapper.getInstance().createArrayNode();
 
         Iterator<Map.Entry<String, List<ShoppingCartDataEntity>>> goodsData = needCommitGoods.entrySet().iterator();
