@@ -141,7 +141,7 @@ public class MemberEditCell extends FrameLayout {
     public void setTextViewValueAndChrono(String value) {
         initGradientDrawable(R.color.member_btn);
         textView.setBackground(textDrawable);
-        time = 15;
+        time = 120;
         createTimer();
     }
 
