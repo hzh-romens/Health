@@ -362,7 +362,15 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         SpannableStringBuilder message = new SpannableStringBuilder();
         message.append(String.format("订单共 %d 个商品,总合计 ", goodsCount));
         message.append(ShoppingHelper.formatPrice(goodsAmount));
-        message.append(" ,是否确定提交订单?");
+        if (!TextUtils.isEmpty(orderCouponID)) {
+            message.append("\n优惠 ");
+            message.append(ShoppingHelper.formatPrice(couponAmount));
+            message.append(",还需支付 ");
+            BigDecimal amount = goodsAmount.subtract(couponAmount);
+            message.append(ShoppingHelper.formatPrice(amount));
+        }
+
+        message.append("\n是否确定提交订单?");
 
         new AlertDialog.Builder(CommitOrderBaseActivity.this)
                 .setTitle("提交订单")
@@ -434,8 +442,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
         Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
         orderNode.put("DELIVERYTYPE", deliveryMode.key);
         orderNode.put("PAYTYPE", Pay.getInstance().getPayTypeKey(selectPayType));
-        orderNode.put("COUPONGUID", orderCouponID);
-        orderNode.put("BILLNAME", orderInvoice);
+        orderNode.put("COUPONGUID", TextUtils.isEmpty(orderCouponID) ? "" : orderCouponID);
+        orderNode.put("BILLNAME", TextUtils.isEmpty(orderInvoice) ? "" : orderInvoice);
         ArrayNode goodsArrayNode = JacksonMapper.getInstance().createArrayNode();
 
         Iterator<Map.Entry<String, List<ShoppingCartDataEntity>>> goodsData = needCommitGoods.entrySet().iterator();
@@ -536,7 +544,13 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             if (resultCode == RESULT_OK) {
                 orderCouponID = data.getStringExtra("orderCouponID");
                 orderCouponName = data.getStringExtra("coupon_name");
-                checkOrderAmountForUserCoupon();
+                if (!TextUtils.isEmpty(orderCouponID)) {
+                    checkOrderAmountForUserCoupon();
+                } else {
+                    clearCoupon();
+                    updateAdapter();
+                }
+
             }
         }
     }
