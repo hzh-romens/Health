@@ -423,8 +423,10 @@ public class UIOpenHelper {
      *
      * @param context
      */
-    public static final void openAbout(Context context) {
+    public static final void openAbout(Context context, String title) {
         Intent intent = new Intent(context, AboutActivity.class);
+        intent.putExtra("title", title);
         context.startActivity(intent);
     }
+
 }
