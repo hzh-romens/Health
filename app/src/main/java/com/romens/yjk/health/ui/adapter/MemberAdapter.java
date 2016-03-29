@@ -83,14 +83,14 @@ public class MemberAdapter extends BaseAdapter {
             MemberDetailCell cell = (MemberDetailCell) convertView;
             cell.setValue(lvLevel, integral, remainMoney);
         } else if (getItemViewType(position) == 4 || getItemViewType(position) == 6 || getItemViewType(position) == 7
-                || getItemViewType(position) == 9 || getItemViewType(position) == 10) {
+                || getItemViewType(position) == 9 || getItemViewType(position) == 10 || getItemViewType(position) == 5) {
             if (convertView == null) {
                 convertView = new TextIconCell(mContext);
             }
             TextIconCell textIconCell = (TextIconCell) convertView;
             if (getItemViewType(position) == 4) {
                 textIconCell.setIconTextAndNav(R.drawable.ic_member_code, "会员条形码", R.drawable.ic_chevron_right_grey600_24dp, true);
-            } else if (getItemViewType(position) == 6) {
+            } else if (getItemViewType(position) == 5) {
                 textIconCell.setIconTextAndNav(R.drawable.ic_member_coupon, "优惠券", R.drawable.ic_chevron_right_grey600_24dp, true);
             } else if (getItemViewType(position) == 7) {
                 textIconCell.setIconTextAndNav(R.drawable.ic_member_point, "积分商城", R.drawable.ic_chevron_right_grey600_24dp, true);
@@ -98,8 +98,10 @@ public class MemberAdapter extends BaseAdapter {
                 textIconCell.setIconTextAndNav(R.drawable.ic_member_infor, "个人资料", R.drawable.ic_chevron_right_grey600_24dp, true);
             } else if (getItemViewType(position) == 10) {
                 textIconCell.setIconTextAndNav(R.drawable.ic_member_detail, "消费明细", R.drawable.ic_chevron_right_grey600_24dp, true);
+            } else if (getItemViewType(position) == 6) {
+                textIconCell.setIconTextAndNav(R.drawable.ic_member, "会员权益", R.drawable.ic_chevron_right_grey600_24dp, true);
             }
-        } else if (getItemViewType(position) == 3 || getItemViewType(position) == 5 || getItemViewType(position) == 8) {
+        } else if (getItemViewType(position) == 3 || getItemViewType(position) == 8) {
             if (convertView == null) {
                 convertView = new ShadowSectionCell(mContext);
             }

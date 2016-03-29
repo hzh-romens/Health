@@ -79,12 +79,15 @@ public class MemberFragment extends BaseFragment {
                     dialogUtils = new DialogUtils();
                     int mWidth = (int) (((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth() / 1.2);
                     getCodeImage(mWidth);
-                } else if (position == 5) {
+                } else if (position == 4) {
                     //优惠卷
                     UIOpenHelper.openCuoponActivityWithBundle(getActivity(), false);
                 } else if (position == 8) {
                     //跳转到个人资料
                     UIOpenHelper.openAccountSettingActivity(getActivity());
+                } else if (position == 5) {
+                    //跳转到会员权益页面
+                    UIOpenHelper.openAbout(getActivity());
                 }
             }
         });
@@ -104,7 +107,7 @@ public class MemberFragment extends BaseFragment {
 
     public void getMemberData() {
         types = new ArrayList<String>();
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 6; i++) {
             types.add(i + "");
         }
     }

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by anlc on 2015/9/22.
  * 订单的实体
  */
-public class AllOrderEntity implements Serializable {
+public class OrderEntity implements Serializable {
 
     private String orderId;
     private String orderStatus;
@@ -92,8 +92,8 @@ public class AllOrderEntity implements Serializable {
         this.picSmall = picSmall;
     }
 
-    public static AllOrderEntity mapToEntity(LinkedTreeMap<String, String> item) {
-        AllOrderEntity entity = new AllOrderEntity();
+    public static OrderEntity mapToEntity(LinkedTreeMap<String, String> item) {
+        OrderEntity entity = new OrderEntity();
         entity.setOrderId(item.get("ORDERID"));
         entity.setOrderStatus(item.get("ORDERSTATUS"));
         entity.setOrderStatuster(item.get("ORDERSTATUSSTR"));

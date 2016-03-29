@@ -13,7 +13,7 @@ import com.romens.android.log.FileLog;
 /**
  * Created by zhoulisi on 15/4/23.
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class AppFragment extends Fragment {
     protected String fragmentTypeBase;
 
     protected AlertDialog visibleDialog = null;
