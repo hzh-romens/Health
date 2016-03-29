@@ -87,7 +87,7 @@ public class MemberFragment extends BaseFragment {
                     UIOpenHelper.openAccountSettingActivity(getActivity());
                 } else if (position == 5) {
                     //跳转到会员权益页面
-                    UIOpenHelper.openAbout(getActivity());
+                    UIOpenHelper.openAbout(getActivity(), "会员权益");
                 }
             }
         });

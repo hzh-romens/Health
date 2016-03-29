@@ -253,12 +253,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.ShopCarActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"></activity>
-
-        <activity
             android:name=".ui.activity.ShoppingCartActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
@@ -462,12 +456,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <activity
-            android:name=".ui.HomeNewActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <activity
             android:name=".ui.HelpNewActivity"
@@ -559,6 +547,7 @@
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
+
         <!--*********** pay end **********************-->
 
 
