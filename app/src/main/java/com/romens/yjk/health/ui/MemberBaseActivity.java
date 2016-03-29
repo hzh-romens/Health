@@ -19,6 +19,7 @@ import com.romens.android.network.request.Connect;
 import com.romens.android.network.request.ConnectManager;
 import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
+import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
@@ -58,8 +59,8 @@ public class MemberBaseActivity extends BaseActivity {
         onSetupActionBar(actionBar);
         needShowProgress("正在加载");
         JudgeMember();
-        //ActionBarMenu menu = actionBar.createMenu();
-        // menu.addItem(0, R.drawable.ic_add_white_24dp);
+        ActionBarMenu menu = actionBar.createMenu();
+        menu.addItem(0, R.drawable.ic_add_white_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {

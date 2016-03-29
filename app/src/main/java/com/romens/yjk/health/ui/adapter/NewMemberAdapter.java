@@ -85,7 +85,7 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
         } else if (itemViewType == MemberType.EMPTY || itemViewType == MemberType.ADVICE) {
             EmptyCell cell = (EmptyCell) holder.itemView;
         } else if (itemViewType == MemberType.PHONE || itemViewType == MemberType.PSW) {
-            MemberEditCell cell = (MemberEditCell) holder.itemView;
+            final MemberEditCell cell = (MemberEditCell) holder.itemView;
             cell.setBackgroundColor(mContext.getResources().getColor(R.color.md_white_1000));
             if (itemViewType == MemberType.PHONE) {
                 cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_edit_phonebumber));
@@ -103,17 +103,17 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
                         if (TextUtils.isEmpty(phoneNumber)) {
                             Toast.makeText(mContext, "请填写您的手机号码", Toast.LENGTH_SHORT).show();
                         } else {
-                            getRecommonCode();
+                            String textValue = cell.getTextValue();
+                            if ("获取验证码".equals(textValue) || "再次获取".equals(textValue)) {
+                                cell.setTextViewValueAndChrono("");
+                                getRecommonCode();
+                            }
                         }
+
+
                     }
                 });
             }
-//            else {
-//                cell.setDrawableLeft(mContext.getResources().getDrawable(R.drawable.ic_recommond));
-//                cell.setVisible(true);
-//                cell.setHintText("请输入推荐码(选填)");
-//                cell.setNeedDivider(true);
-//            }
             cell.SetEditTextChangeListener(new MemberEditCell.EditTextChangeListener() {
                 @Override
                 public void EditTextChange(String value) {
@@ -122,13 +122,10 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
                     } else if (itemViewType == MemberType.PSW) {
                         password = value;
                     }
-                    //else {
-                    //  recommend = value;
-                    //}
                 }
             });
         } else {
-            MemberButtonCell cell = (MemberButtonCell) holder.itemView;
+            final MemberButtonCell cell = (MemberButtonCell) holder.itemView;
             cell.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -178,8 +175,8 @@ public class NewMemberAdapter extends RecyclerView.Adapter {
         }
     }
 
+    private String phoneNumber, password;
     private onItemClickListener mListener;
-    private String phoneNumber, password, recommend;
 
     public void setOnItemClickListener(onItemClickListener listener) {
         this.mListener = listener;
