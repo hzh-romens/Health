@@ -18,7 +18,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.db.entity.AllOrderEntity;
+import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.model.EvaluateDatailsEntity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 
@@ -58,17 +58,17 @@ public class OrderEvaluateDetailActivity extends BaseActivity {
 
     private void initData() {
         Intent intent = getIntent();
-        AllOrderEntity entity = (AllOrderEntity) intent.getSerializableExtra("evaluateDetailEntity");
+        OrderEntity entity = (OrderEntity) intent.getSerializableExtra("evaluateDetailEntity");
         if (null != entity) {
-            requestAssessDetail(userGuid, entity.getOrderId());
-            titleTextView.setText(entity.getGoodsName());
-            moneyTextView.setText("￥" + entity.getOrderPrice());
-            dateTextView.setText(entity.getCreateDate());
-            if (entity.getPicSmall() != null) {
-                leftImageView.setImageUrl(entity.getPicSmall(), null, null);
-            } else {
-                leftImageView.setImageResource(R.drawable.no_img_upload);
-            }
+//            requestAssessDetail(userGuid, entity.getOrderId());
+//            titleTextView.setText(entity.getGoodsName());
+//            moneyTextView.setText("￥" + entity.getOrderPrice());
+//            dateTextView.setText(entity.getCreateDate());
+//            if (entity.getPicSmall() != null) {
+//                leftImageView.setImageUrl(entity.getPicSmall(), null, null);
+//            } else {
+//                leftImageView.setImageResource(R.drawable.no_img_upload);
+//            }
         }
     }
 

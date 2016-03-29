@@ -45,7 +45,6 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
-import com.romens.yjk.health.helper.LabelHelper;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.CommitOrderBaseActivity;
@@ -70,7 +69,7 @@ import java.util.Map;
  * @create 16/2/26
  * @description
  */
-public class ShoppingCartFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class ShoppingCartFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView listView;

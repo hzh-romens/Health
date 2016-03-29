@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 /**
  * Created by siery on 15/8/18.
  */
-public class DrugGroupFragment extends BaseFragment {
+public class DrugGroupFragment extends AppFragment {
     @Override
     protected View onCreateRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return null;

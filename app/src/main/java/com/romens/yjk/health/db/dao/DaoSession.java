@@ -12,6 +12,7 @@ import com.romens.yjk.health.db.entity.FamilyMemberEntity;
 import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
+import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
@@ -76,6 +77,11 @@ public class DaoSession extends AbstractDaoSession {
     //购物车
     private final ShoppingCartDataDao shoppingCartDataDao;
     private final DaoConfig shoppingCartDataDaoConfig;
+
+    //订单数据
+    private final OrderDao orderDataDao;
+    private final DaoConfig orderDataDaoConfig;
+
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -152,6 +158,13 @@ public class DaoSession extends AbstractDaoSession {
         shoppingCartDataDaoConfig.initIdentityScope(type);
         shoppingCartDataDao = new ShoppingCartDataDao(shoppingCartDataDaoConfig, this);
         registerDao(ShoppingCartDataEntity.class, shoppingCartDataDao);
+
+        //订单
+
+        orderDataDaoConfig = daoConfigMap.get(OrderDao.class).clone();
+        orderDataDaoConfig.initIdentityScope(type);
+        orderDataDao = new OrderDao(orderDataDaoConfig, this);
+        registerDao(OrderEntity.class, orderDataDao);
     }
 
     public void clear() {
@@ -171,6 +184,8 @@ public class DaoSession extends AbstractDaoSession {
 
         //购物车
         shoppingCartDataDaoConfig.getIdentityScope().clear();
+
+        orderDataDaoConfig.getIdentityScope().clear();
     }
 
     public DataCacheDao getDataCacheDao() {
@@ -233,5 +248,9 @@ public class DaoSession extends AbstractDaoSession {
      */
     public ShoppingCartDataDao getShoppingCartDataDao() {
         return shoppingCartDataDao;
+    }
+
+    public OrderDao getOrderDataDao() {
+        return orderDataDao;
     }
 }

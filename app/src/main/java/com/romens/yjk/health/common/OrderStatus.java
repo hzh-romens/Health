@@ -6,4 +6,8 @@ package com.romens.yjk.health.common;
  * @description
  */
 public class OrderStatus {
+    public static final int ALL = 0;
+    public static final int NO_COMPLETED = 2;
+    public static final int COMPLETED = 3;
+    public static final int COMMIT = 4;
 }

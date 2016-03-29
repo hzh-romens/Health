@@ -1,108 +1,84 @@
 package com.romens.yjk.health.db.entity;
 
-import com.google.gson.internal.LinkedTreeMap;
+import android.os.Bundle;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.android.time.FastDateFormat;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by anlc on 2015/9/22.
  * 订单的实体
  */
-public class OrderEntity implements Serializable {
+public class OrderEntity {
+    public static final String ClassId = "com.romens.yjk.health.db.entity.OrderEntity";
 
-    private String orderId;
-    private String orderStatus;
-    private String orderStatuster;
-    private String goodsName;
-    private String orderPrice;
-    private String createDate;
-    private String merCount;
-    private String orderNo;
-    private String picSmall;
+    public String orderId;
+    public String orderStatus;
+    public String memberId;
+    public String orderNo;
+    public String createDate;
+    public String orderStatusStr;
+    public BigDecimal orderPrice;
+    public List<OrderGoodsEntity> goodsList = new ArrayList<>();
 
-    public String getCreateDate() {
-        return createDate;
+    public long created;
+
+    public OrderEntity() {
+
     }
 
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
+    public OrderEntity(JsonNode item) {
+        orderId = item.get("ORDERID").asText();
+        orderStatus = item.get("ORDERSTATUS").asText();
+        memberId = item.get("memberId").asText();
+        orderNo = item.get("ORDERNO").asText();
+        createDate = item.get("CREATEDATE").asText();
+
+        try {
+            created = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").parse(createDate).getTime();
+        } catch (ParseException e) {
+            created = 0;
+        }
+
+        orderStatusStr = item.get("ORDERSTATUSSTR").asText();
+        double price = item.get("ORDERPRICE").asDouble(0);
+        orderPrice = new BigDecimal(price);
+
+        JsonNode goodsListNode = item.get("JSON");
+        int size = goodsListNode.size();
+        for (int i = 0; i < size; i++) {
+            goodsList.add(new OrderGoodsEntity(goodsListNode.get(i)));
+        }
     }
 
-    public String getMerCount() {
-        return merCount;
+    public Bundle toBundle() {
+        return null;
     }
 
-    public void setMerCount(String merCount) {
-        this.merCount = merCount;
-    }
+    public static class OrderGoodsEntity {
+        private String icon;
+        private String name;
 
-    public String getOrderNo() {
-        return orderNo;
-    }
+        public OrderGoodsEntity() {
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-    }
+        }
 
-    public String getOrderStatuster() {
-        return orderStatuster;
-    }
+        public String getIcon() {
+            return icon;
+        }
 
-    public void setOrderStatuster(String orderStatuster) {
-        this.orderStatuster = orderStatuster;
-    }
+        public String getName() {
+            return name;
+        }
 
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public String getGoodsName() {
-        return goodsName;
-    }
-
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
-    }
-
-    public String getOrderPrice() {
-        return orderPrice;
-    }
-
-    public void setOrderPrice(String orderPrice) {
-        this.orderPrice = orderPrice;
-    }
-
-    public String getPicSmall() {
-        return picSmall;
-    }
-
-    public void setPicSmall(String picSmall) {
-        this.picSmall = picSmall;
-    }
-
-    public static OrderEntity mapToEntity(LinkedTreeMap<String, String> item) {
-        OrderEntity entity = new OrderEntity();
-        entity.setOrderId(item.get("ORDERID"));
-        entity.setOrderStatus(item.get("ORDERSTATUS"));
-        entity.setOrderStatuster(item.get("ORDERSTATUSSTR"));
-        entity.setGoodsName(item.get("MEDICINENAME"));
-        entity.setOrderPrice(item.get("ORDERPRICE"));
-        entity.setCreateDate(item.get("CREATEDATE"));
-        entity.setMerCount(item.get("MERCOUNT"));
-        entity.setOrderNo(item.get("ORDERNO"));
-        entity.setPicSmall(item.get("PICSMALL"));
-        return entity;
+        public OrderGoodsEntity(JsonNode jsonNode) {
+            icon = jsonNode.get("PICSMALL").asText();
+            name = jsonNode.get("MEDICINENAME").asText();
+        }
     }
 }

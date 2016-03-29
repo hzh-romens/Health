@@ -24,7 +24,6 @@ import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextIconCell;
-import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeToken;
@@ -48,7 +47,7 @@ import com.romens.yjk.health.ui.utils.UIHelper;
 /**
  * Created by siery on 15/8/10.
  */
-public class HomeMyFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class HomeMyFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
     private ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
 

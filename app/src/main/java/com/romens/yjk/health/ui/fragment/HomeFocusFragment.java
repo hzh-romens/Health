@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.io.json.JacksonMapper;
 import com.romens.android.network.FacadeArgs;
-import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
@@ -66,7 +65,7 @@ import java.util.Map;
 /**
  * Created by siery on 15/8/10.
  */
-public class HomeFocusFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class HomeFocusFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
 
     //private LastLocationCell lastLocationCell;
     private SwipeRefreshLayout refreshLayout;

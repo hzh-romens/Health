@@ -28,7 +28,6 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.ui.ShopListActivity;
-import com.romens.yjk.health.ui.cells.ADDiseaseCell;
 import com.romens.yjk.health.ui.cells.ADDiseaseCell.ADDisease;
 import com.romens.yjk.health.ui.cells.DrugChildCell;
 import com.romens.yjk.health.ui.cells.DrugGroupCell;
@@ -42,7 +41,7 @@ import java.util.Map;
 /**
  * Created by siery on 15/9/12.
  */
-public class HomeHealthFragment extends BaseFragment {
+public class HomeHealthFragment extends AppFragment {
     private ExpandableListView listView;
     private ListAdapter adapter;
     private List<ADDisease> adDiseaseList = new ArrayList<>();

@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by HZH on 2016/3/24.
  */
-public class MemberFragment extends BaseFragment {
+public class MemberFragment extends AppFragment {
     private List<String> types;
     private ListView listview;
     private MemberAdapter memberAdapter;

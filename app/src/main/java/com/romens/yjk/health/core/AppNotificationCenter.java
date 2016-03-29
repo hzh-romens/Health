@@ -35,4 +35,7 @@ public class AppNotificationCenter extends NotificationCenter {
 
     public static final int onUserSubjoinChanged = appTotalEvents++;
     public static final int onOrderStateChange = appTotalEvents++;
+
+    public static final int needUpdateOrderData = appTotalEvents++;
+    public static final int onOrderDataUpdated = appTotalEvents++;
 }

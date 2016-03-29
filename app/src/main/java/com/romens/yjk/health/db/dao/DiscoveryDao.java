@@ -173,22 +173,22 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         values.putAll(value);
         db.insert(TABLENAME, null, values);
 
-        //个人健康
-        value = new ContentValues();
-        value.put("KEY", IHealth.key);
-        value.put("ICON_RES", IHealth.iconRes);
-        value.put("ICON_URL", IHealth.iconUrl);
-        value.put("NAME", IHealth.name);
-        value.put("VALUE", IHealth.value);
-        value.put("STATUS", 0);
-        time = (int) Calendar.getInstance().getTimeInMillis();
-        value.put("CREATED", time);
-        value.put("UPDATED", time);
-        value.put("IS_COVER", IHealth.isCover);
-        value.put("SORT_INDEX", IHealth.sortIndex);
-        value.put("PRIMARY_COLOR", IHealth.primaryColor);
-        values.putAll(value);
-        db.insert(TABLENAME, null, values);
+//        //个人健康
+//        value = new ContentValues();
+//        value.put("KEY", IHealth.key);
+//        value.put("ICON_RES", IHealth.iconRes);
+//        value.put("ICON_URL", IHealth.iconUrl);
+//        value.put("NAME", IHealth.name);
+//        value.put("VALUE", IHealth.value);
+//        value.put("STATUS", 0);
+//        time = (int) Calendar.getInstance().getTimeInMillis();
+//        value.put("CREATED", time);
+//        value.put("UPDATED", time);
+//        value.put("IS_COVER", IHealth.isCover);
+//        value.put("SORT_INDEX", IHealth.sortIndex);
+//        value.put("PRIMARY_COLOR", IHealth.primaryColor);
+//        values.putAll(value);
+//        db.insert(TABLENAME, null, values);
     }
 
     /**

@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.db.entity.AllOrderEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -27,7 +25,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/10/15.
  */
-public class CollectFragment extends BaseFragment {
+public class CollectFragment extends AppFragment {
 
     private Context mContext;
     private SwipeRefreshLayout refreshLayout;
