@@ -60,7 +60,7 @@ public class MemberBaseActivity extends BaseActivity {
         needShowProgress("正在加载");
         JudgeMember();
         ActionBarMenu menu = actionBar.createMenu();
-        menu.addItem(0, R.drawable.ic_add_white_24dp);
+        // menu.addItem(0, R.drawable.ic_add_white_24dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
