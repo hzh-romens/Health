@@ -46,8 +46,8 @@ android {
         }
         channel_nj_xszk {
             applicationId "com.romens.yjk.health.njxszk"
-            defaultConfig.versionCode 160325
-            defaultConfig.versionName "1.8.16"
+            versionCode 160327
+            versionName "1.8.18"
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "4;njxs",
@@ -64,8 +64,8 @@ android {
         }
         channel_hy_rmtt {
             applicationId "com.romens.yjk.health.hyrmtt"
-            versionCode 160330
-            versionName "1.9.0"
+            versionCode 160331
+            versionName "1.9.1"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "20;rmtt",
@@ -192,7 +192,7 @@ dependencies {
     compile files('libs/mta-mid-sdk-2.20.jar')
     compile files('libs/mta-stats-sdk-2.0.4.jar')
     //romens.android
-    compile 'romens:com.romens.android:2.0.1@aar'
+    compile 'romens:com.romens.android:2.0.3@aar'
     compile 'com.squareup.okhttp:okhttp:2.7.4'
     compile 'com.squareup.okio:okio:1.6.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'

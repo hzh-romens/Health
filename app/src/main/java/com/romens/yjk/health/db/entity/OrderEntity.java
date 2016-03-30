@@ -26,7 +26,8 @@ public class OrderEntity {
     public BigDecimal orderPrice;
     public List<OrderGoodsEntity> goodsList = new ArrayList<>();
 
-    public long created;
+    public Long created;
+    public Long updated;
 
     public OrderEntity() {
 
@@ -42,8 +43,10 @@ public class OrderEntity {
         try {
             created = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").parse(createDate).getTime();
         } catch (ParseException e) {
-            created = 0;
+            created = 0l;
         }
+
+        updated=item.get("UPDATED").asLong(0);
 
         orderStatusStr = item.get("ORDERSTATUSSTR").asText();
         double price = item.get("ORDERPRICE").asDouble(0);

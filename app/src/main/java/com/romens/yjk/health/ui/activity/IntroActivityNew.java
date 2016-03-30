@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.log.FileLog;
 import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
@@ -58,7 +59,7 @@ public class IntroActivityNew extends Activity {
             viewPager.setAdapter(new MyPagerAdapter(pagerImages, this));
         } else {
             viewPager.setAdapter(new ADPagerAdapter(this));
-            new Handler().postDelayed(new Runnable() {
+            AndroidUtilities.runOnUIThread(new Runnable() {
                 @Override
                 public void run() {
                     openHomeActivity();

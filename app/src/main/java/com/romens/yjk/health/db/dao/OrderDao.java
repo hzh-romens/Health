@@ -76,8 +76,10 @@ public class OrderDao extends AbstractDao<OrderEntity, String> {
     }
 
     public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion) {
-        dropTable(db, true);
-        createTable(db, false);
+        if (oldVersion < 68) {
+            dropTable(db, true);
+            createTable(db, false);
+        }
     }
 
     /**
@@ -94,7 +96,7 @@ public class OrderDao extends AbstractDao<OrderEntity, String> {
         stmt.bindLong(2, entity.created);
         stmt.bindString(3, entity.orderStatus);
         stmt.bindBlob(4, SerializedData.getInstance().toBytes(entity));
-        stmt.bindLong(5, entity.created);
+        stmt.bindLong(5, entity.updated);
     }
 
     /**
