@@ -4,12 +4,16 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.ui.components.RemindReceiver;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by anlc on 2016/3/24.
@@ -67,6 +71,21 @@ public class RemindUtils {
             PendingIntent sender = PendingIntent.getBroadcast(context, (int) remindTime, intent, 0);
             AlarmManager manager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
             manager.cancel(sender);
+        }
+    }
+
+    //通过 08:00 获取时间戳
+    private long getTime(String time){
+        SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd ");
+        SimpleDateFormat timeFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            String t1 = dateFormat.format(new Date()) ;
+            String t2 = t1+time ;
+            long t = timeFormat.parse(t2).getTime() ;
+            return t ;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 }
