@@ -35,8 +35,9 @@ public class RemindUtils {
         if (!timeStr.equals("-1")) {
 //            long time = TransformDateUitls.getTimeLong(timeStr);
 //            long remindTime = (startDateLong+time) + currentDate.getTimeZone().getRawOffset();
-            long startTime = TransformDateUitls.getTimeLong(timeStr) + startDateLong;
-            long remindTime = startTime + currentDate.getTimeZone().getRawOffset();
+//            long startTime = TransformDateUitls.getTimeLong(timeStr) + startDateLong;
+//            long remindTime = startTime + currentDate.getTimeZone().getRawOffset();
+            long remindTime = getTime(timeStr) ;
             if (remindTime < currentDate.getTimeInMillis()) {
                 remindTime += intervalTime;
             }
@@ -75,7 +76,7 @@ public class RemindUtils {
     }
 
     //通过 08:00 获取时间戳
-    private long getTime(String time){
+    private static long getTime(String time){
         SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd ");
         SimpleDateFormat timeFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {

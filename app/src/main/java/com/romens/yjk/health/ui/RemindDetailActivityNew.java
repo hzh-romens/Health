@@ -1,14 +1,23 @@
 package com.romens.yjk.health.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
@@ -20,6 +29,9 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.ui.cells.ImgAndValueCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by anlc on 2015/10/30.
@@ -34,6 +46,7 @@ public class RemindDetailActivityNew extends BaseActivity {
     private int countRow;
     private int timesRow;
     private int remarkRow;
+    private String dosage ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +128,10 @@ public class RemindDetailActivityNew extends BaseActivity {
         public int getItemViewType(int position) {
             if (position == drugRow) {
                 return 1;
-            } else {
+            } else if(position == countRow){
                 return 2;
+            } else{
+                return 3;
             }
         }
 
@@ -151,12 +166,23 @@ public class RemindDetailActivityNew extends BaseActivity {
                 });
             } else if (type == 2) {
                 if (convertView == null) {
+                    convertView = LayoutInflater.from(context).inflate(R.layout.list_item_remind_measure, null);
+                }
+                final TextView name = (TextView) convertView.findViewById(R.id.remind_measure_text);
+                name.setText(detailEntity.getDosage());
+                TextView edit = (TextView) convertView.findViewById(R.id.remind_measure_edit);
+                edit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showChooseDosageDialog(detailEntity);
+                    }
+                });
+            }else if(type == 3){
+                if (convertView == null) {
                     convertView = new ImgAndValueCell(context);
                 }
                 ImgAndValueCell cell = (ImgAndValueCell) convertView;
-                if (position == countRow) {
-                    cell.setData(R.drawable.remind_count, detailEntity.getDosage(), true);
-                } else if (position == timesRow) {
+                if (position == timesRow) {
                     String timeStr = "";
                     timeStr += detailEntity.getFirstTime() + "  ";
                     if (!detailEntity.getSecondtime().equals("-1")) {
@@ -177,6 +203,71 @@ public class RemindDetailActivityNew extends BaseActivity {
                 }
             }
             return convertView;
+        }
+
+        private TextView dosageTextView;
+
+        public void showChooseDosageDialog(final RemindEntity entity) {
+            final AlertDialog dialog = new AlertDialog.Builder(context).create();
+            View view = LayoutInflater.from(context).inflate(R.layout.dialog_choose_dosage, null);
+            dosageTextView = (TextView) view.findViewById(R.id.remind_dosage);
+            dosageTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showChoosDosageView(dosageTextView);
+                }
+            });
+            final MaterialEditText editText = (MaterialEditText) view.findViewById(R.id.choose_dosage_edit);
+            editText.setFocusable(true);
+            editText.setEnabled(true);
+            final TextView textView = (TextView) view.findViewById(R.id.choose_dosage_confirm);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dosage = editText.getText().toString() + " " + dosageTextView.getText().toString();
+                    entity.setDosage(dosage);
+                    adapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                }
+            });
+            dialog.setView(view);
+            dialog.show();
+        }
+
+        public void showChoosDosageView(View view) {
+            final List<String> listData = new ArrayList<>();
+            listData.add("片");
+            listData.add("粒");
+            listData.add("丸");
+            listData.add("ML");
+            listData.add("L");
+
+            FrameLayout layout = new FrameLayout(context);
+            ListView listView = new ListView(context);
+            listView.setDivider(null);
+            listView.setDividerHeight(0);
+            listView.setVerticalScrollBarEnabled(false);
+            listView.setSelection(R.drawable.list_selector);
+            FrameLayout.LayoutParams layoutParams = LayoutHelper.createFrame(AndroidUtilities.dp(60), LayoutHelper.WRAP_CONTENT);
+            layoutParams.gravity = Gravity.CENTER;
+            layout.addView(listView, layoutParams);
+            listView.setAdapter(new ArrayAdapter<String>(context, R.layout.popupwindow_list_itme, listData));
+
+            final PopupWindow popupWindow = new PopupWindow(layout, AndroidUtilities.dp(62), LayoutHelper.WRAP_CONTENT);
+
+            popupWindow.setBackgroundDrawable(getResources().getDrawable(
+                    R.drawable.bg_white));
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    dosageTextView.setText(listData.get(position));
+                    popupWindow.dismiss();
+                }
+            });
+            popupWindow.setOutsideTouchable(true);
+            popupWindow.setFocusable(true);
+            popupWindow.showAsDropDown(view);
         }
     }
 }

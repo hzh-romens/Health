@@ -20,9 +20,12 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
 import com.romens.yjk.health.ui.BaseActivity;
+import com.romens.yjk.health.ui.components.SwLin;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anlc on 2015/8/27.
@@ -35,11 +38,13 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
     public static final String TIMEPICKER_TAG = "timepicker";
     private int index;
     private TimesAdapterCallBack dailog;
+    private Map<Integer, SwLin> mapView;
 
     public TimesAdapter(List<String> data, Context context, TimesAdapterCallBack callBack) {
         this.dailog = callBack;
         this.data = data;
         this.context = context;
+        mapView = new HashMap<Integer, SwLin>();
     }
 
     @Override
@@ -61,15 +66,48 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
     public View getView(final int position, View convertView, ViewGroup parent) {
         TimesViewHolder holder = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_text, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_swlin, null);
             holder = new TimesViewHolder();
-            holder.textView = (TextView) convertView.findViewById(R.id.list_item_text);
+            holder.textView = (TextView) convertView.findViewById(R.id.swlin_time);
+            holder.textDelete = (TextView) convertView.findViewById(R.id.swlin_delete);
             convertView.setTag(holder);
         } else {
             holder = (TimesViewHolder) convertView.getTag();
         }
+        SwLin sw = (SwLin) convertView.findViewById(R.id.swlin_layout);
+        sw.setTag(position);
+        mapView.put(position, sw);
+        sw.setScreenListener(new SwLin.ScreenListener() {
+
+            @Override
+            public boolean startTouch(String tag) {
+                if (mTouch) {
+                    if (showMenuTag.equals(tag)) {
+                        mTouch = false;
+                    } else {
+                        int p = Integer.parseInt(showMenuTag);
+                        showMainLayout();
+                    }
+                }
+                return mTouch;
+            }
+
+            @Override
+            public void changeScreen(int screen, String tag) {
+                if (screen == 1) {
+                    mTouch = true;
+                    showMenuTag = tag;
+                }
+            }
+
+            @Override
+            public void canTouch(boolean flag) {
+                mTouch = false;
+            }
+
+        });
         holder.textView.setText(data.get(position));
-        convertView.setOnClickListener(new View.OnClickListener() {
+        holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
@@ -80,34 +118,7 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
                 index = position;
             }
         });
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                removeDialogView(position);
-                return true;
-            }
-        });
-        convertView.setBackgroundColor(Color.WHITE);
-        return convertView;
-    }
-
-    public void removeDialogView(final int position) {
-        final AlertDialog dialog = new AlertDialog.Builder(context).create();
-        TextView textView = new TextView(context);
-
-        textView.setBackgroundResource(R.drawable.bg_white);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        textView.setSingleLine(true);
-        textView.setGravity(Gravity.CENTER);
-        textView.setText("删除");
-        textView.setTextColor(context.getResources().getColor(R.color.theme_primary));
-        textView.setPadding(AndroidUtilities.dp(32), AndroidUtilities.dp(8), AndroidUtilities.dp(32), AndroidUtilities.dp(8));
-        LinearLayout.LayoutParams infoViewParams = LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT);
-        infoViewParams.weight = 1;
-        infoViewParams.gravity = Gravity.CENTER;
-        textView.setLayoutParams(infoViewParams);
-
-        textView.setOnClickListener(new View.OnClickListener() {
+        holder.textDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (data.size() > 1) {
@@ -115,13 +126,13 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
                 } else {
                     Toast.makeText(context, "默认选项不能删除", Toast.LENGTH_SHORT).show();
                 }
+                showMainLayout();
                 notifyDataSetChanged();
-                dialog.dismiss();
+
             }
         });
-
-        dialog.show();
-        dialog.setContentView(textView);
+        convertView.setBackgroundColor(Color.WHITE);
+        return convertView;
     }
 
     @Override
@@ -135,8 +146,20 @@ public class TimesAdapter extends BaseAdapter implements TimePickerDialog.OnTime
         notifyDataSetChanged();
     }
 
+    public void showMainLayout() {
+
+        for (int key : mapView.keySet()) {
+            mapView.get(key).showScreen(0);
+
+        }
+    }
+
+    private boolean mTouch = false;
+    private String showMenuTag;
+
     class TimesViewHolder {
         private TextView textView;
+        private TextView textDelete ;
     }
 }
 
