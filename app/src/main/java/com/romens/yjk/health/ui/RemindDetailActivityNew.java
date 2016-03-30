@@ -83,7 +83,6 @@ public class RemindDetailActivityNew extends BaseActivity {
                 if (i == -1) {
                     finish();
                 } else if (i == 0) {
-
                 }
             }
         });
