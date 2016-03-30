@@ -1,34 +1,18 @@
 package com.romens.yjk.health.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gc.materialdesign.views.ProgressBarDeterminate;
-import com.romens.android.io.json.JacksonMapper;
-import com.romens.android.network.Message;
-import com.romens.android.network.parser.JSONNodeParser;
-import com.romens.android.network.protocol.FacadeProtocol;
-import com.romens.android.network.protocol.ResponseProtocol;
-import com.romens.android.network.request.Connect;
-import com.romens.android.network.request.ConnectManager;
-import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
-import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.ui.im.HealthConsultActivity;
 import com.romens.yjk.health.web.ADWebJsInterface;
 import com.romens.yjk.health.web.JsBaseInterface;
-
-import java.util.HashMap;
 
 /**
  * @author Zhou Lisi
@@ -37,15 +21,18 @@ import java.util.HashMap;
  */
 public class AboutActivity extends WebActivity {
     private JsBaseInterface adWebJsInterface;
+    private String title;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        title = getIntent().getStringExtra("title");
         ActionBar actionBar = getMyActionBar();
         actionBar.setBackgroundColor(ResourcesConfig.primaryColor);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
-        actionBar.setTitle("关于", 0xffffffff);
+        actionBar.setTitle(title, 0xffffffff);
         ProgressBarDeterminate progress = getWebProgressBar();
         progress.setBackgroundColor(ResourcesConfig.accentColor);
 
@@ -62,7 +49,11 @@ public class AboutActivity extends WebActivity {
                 .withWebView(webView);
         webView.addJavascriptInterface(adWebJsInterface, adWebJsInterface.toString());
 
-        String url = String.format("%sAbout?user=%s", FacadeConfig.getUrl(), FacadeToken.getInstance().getAuthToken());
+        if ("关于".equals(title)) {
+            url = String.format("%sAbout?user=%s", FacadeConfig.getUrl(), FacadeToken.getInstance().getAuthToken());
+        } else if ("会员权益".equals(title)) {
+            url = String.format("%sSystem?user=%s", FacadeConfig.getUrl(), FacadeToken.getInstance().getAuthToken());
+        }
         webView.loadUrl(url);
     }
 

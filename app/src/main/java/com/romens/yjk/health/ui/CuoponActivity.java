@@ -85,7 +85,7 @@ public class CuoponActivity extends BaseActivity {
         argument.putDouble(CouponFragment.ARGUMENT_KEY_ORDER_AMOUNT, sumMoney.doubleValue());
         fragment.setArguments(argument);
         fragment.setPage(NOW);
-        fragment.setCanClick(true);
+        fragment.setCanClick(canClick);
         //fragment.setChoice(choicePosition, sumMoney.doubleValue());
         fragmentsList.add(fragment);
         CouponFragment historyFragment = new CouponFragment();

@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Created by HZH on 2016/2/1.
  */
-public class BindMemberFragment extends BaseFragment {
+public class BindMemberFragment extends AppFragment {
     private RecyclerView listView;
     private NewMemberAdapter adapter;
 

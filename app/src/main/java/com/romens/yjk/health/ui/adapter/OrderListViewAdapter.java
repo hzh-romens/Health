@@ -1,78 +1,92 @@
 package com.romens.yjk.health.ui.adapter;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
-import com.romens.android.AndroidUtilities;
-import com.romens.android.log.FileLog;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
-import com.romens.android.ui.Image.BackupImageView;
-import com.romens.yjk.health.R;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.entity.AllOrderEntity;
-import com.romens.yjk.health.ui.OrderDetailActivity;
+import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
-import com.romens.yjk.health.ui.OrderEvaluateDetailActivity;
-import com.romens.yjk.health.ui.cells.OrderTitleCell;
+import com.romens.yjk.health.ui.cells.OrderCell;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by anlc on 2016/3/24.
  */
-public class OrderListViewAdapter extends BaseAdapter {
+public class OrderListViewAdapter extends RecyclerView.Adapter {
 
-    protected List<AllOrderEntity> typeEntitiesList;
+    private final List<OrderEntity> orderEntities=new ArrayList<>();
     protected Context adapterContext;
-    protected String userGuid = UserGuidConfig.USER_GUID;
-    private static ProgressDialog progressDialog;
 
-    public OrderListViewAdapter(Context adapterContext, List<AllOrderEntity> orderEntities) {
+    public interface Delegate extends OrderCell.Delegate{
+        void onItemSelect(OrderEntity orderEntity);
+    }
+
+    private Delegate adapterDelegate;
+
+    public OrderListViewAdapter(Context adapterContext,Delegate delegate) {
         this.adapterContext = adapterContext;
-        this.typeEntitiesList = orderEntities;
+        this.adapterDelegate=delegate;
     }
 
-    public void setOrderEntities(List<AllOrderEntity> orderEntities) {
-        this.typeEntitiesList = orderEntities;
+    public void bindData(List<OrderEntity> entities) {
+        orderEntities.clear();
+        if(entities!=null&&entities.size()>0){
+            orderEntities.addAll(entities);
+        }
+        notifyDataSetChanged();
+    }
+
+    public OrderEntity getItem(int position) {
+        return orderEntities.get(position);
     }
 
     @Override
-    public int getCount() {
-        return typeEntitiesList.size();
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        OrderCell cell=new OrderCell(parent.getContext());
+        cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT,LayoutHelper.WRAP_CONTENT));
+        return new Holder(cell);
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public void onBindViewHolder(RecyclerView.ViewHolder holder,final int position) {
+        OrderCell cell=(OrderCell)holder.itemView;
+        OrderEntity orderEntity=getItem(position);
+        cell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(adapterDelegate!=null){
+                    adapterDelegate.onItemSelect(getItem(position));
+                }
+            }
+        });
+        cell.setValue(orderEntity,adapterDelegate);
     }
 
     @Override
@@ -80,160 +94,147 @@ public class OrderListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(adapterContext).inflate(R.layout.list_item_order_complete, null);
-        }
-
-        OrderTitleCell groupView = (OrderTitleCell) convertView.findViewById(R.id.title_view);
-        groupView.setInfor(typeEntitiesList.get(position).getOrderNo(), typeEntitiesList.get(position).getOrderStatuster(), position == 0 ? true : false);
-
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.order_title);
-        TextView moneyTextView = (TextView) convertView.findViewById(R.id.order_money);
-        TextView specTextView = (TextView) convertView.findViewById(R.id.order_date);
-        BackupImageView medicineImg = (BackupImageView) convertView.findViewById(R.id.order_img);
-
-        final AllOrderEntity entity = typeEntitiesList.get(position);
-        titleTextView.setText(entity.getGoodsName());
-        moneyTextView.setText("￥" + entity.getOrderPrice());
-        specTextView.setText(entity.getCreateDate());
-        if (entity.getPicSmall() != null) {
-            medicineImg.setImageUrl(entity.getPicSmall(), null, null);
-        } else {
-            medicineImg.setImageResource(R.drawable.no_img_upload);
-        }
-
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(adapterContext, OrderDetailActivity.class);
-                intent.putExtra("orderId", entity.getOrderId());
-                adapterContext.startActivity(intent);
-                notifyDataSetChanged();
-            }
-        });
-
-        String orderState = typeEntitiesList.get(position).getOrderStatuster();
-        TextView buyAgainBtn = (TextView) convertView.findViewById(R.id.order_all_buy_again);
-        TextView evaluateBtn = (TextView) convertView.findViewById(R.id.order_all_evaluate_btn);
-        TextView cancelBtn = (TextView) convertView.findViewById(R.id.order_all_buy_cancel);
-        if (orderState.equals("未付款")) {
-            evaluateBtn.setText("取消订单");
-            cancelBtn.setVisibility(View.GONE);
-            evaluateBtn.setVisibility(View.VISIBLE);
-            buyAgainBtn.setVisibility(View.GONE);
-//            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
-//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-//            layoutParams.rightMargin = AndroidUtilities.dp(16);
-//            cancelBtn.setLayoutParams(layoutParams);
-            evaluateBtn.setBackgroundResource(R.drawable.order_cancel_btn_bg);
-            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
-            evaluateBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showCancelDialog(userGuid, entity.getOrderId());
-                }
-            });
-        } else if (orderState.equals("交易完成")) {
-            buyAgainBtn.setText("再来一单");
-            evaluateBtn.setText(" 评    价 ");
-            cancelBtn.setVisibility(View.GONE);
-            evaluateBtn.setVisibility(View.VISIBLE);
-            buyAgainBtn.setVisibility(View.VISIBLE);
-            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
-            evaluateBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
-                    intent.putExtra("fragmentIndex", 2);
-                    intent.putExtra("orderEntity", typeEntitiesList.get(position));
-                    adapterContext.startActivity(intent);
-                }
-            });
-            buyAgainBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    requestOrderBuyAgain(UserGuidConfig.USER_GUID, entity.getOrderId());
-                }
-            });
-        } else if (orderState.equals("已评价")) {
-            evaluateBtn.setText("查看评价");
-            cancelBtn.setVisibility(View.GONE);
-            evaluateBtn.setVisibility(View.VISIBLE);
-            buyAgainBtn.setVisibility(View.GONE);
-            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
-            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
-            evaluateBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(adapterContext, OrderEvaluateDetailActivity.class);
-                    intent.putExtra("evaluateDetailEntity", entity);
-                    adapterContext.startActivity(intent);
-                }
-            });
-        } else if (orderState.equals("交易取消")) {
-            evaluateBtn.setText("重新购买");
-            evaluateBtn.setVisibility(View.VISIBLE);
-            cancelBtn.setVisibility(View.GONE);
-            buyAgainBtn.setVisibility(View.GONE);
-            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
-            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
-            evaluateBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    needShowProgress("正在处理...");
-                    requestOrderBuyAgain(UserGuidConfig.USER_GUID, entity.getOrderId());
-                }
-            });
-        } else {
-            cancelBtn.setText("取消订单");
-            evaluateBtn.setText("确认收货");
-            evaluateBtn.setVisibility(View.VISIBLE);
-            cancelBtn.setVisibility(View.VISIBLE);
-            buyAgainBtn.setVisibility(View.GONE);
-            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
-            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
-            evaluateBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    needShowProgress("正在处理...");
-                    requestConfirmReceive(userGuid, entity.getOrderId(), position);
-                }
-            });
-            cancelBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showCancelDialog(userGuid, entity.getOrderId());
-                }
-            });
-        }
-        return convertView;
+    public int getItemCount() {
+        return orderEntities.size();
     }
 
-    public void needShowProgress(String progressText) {
-        if (progressDialog != null) {
-            return;
+    static class Holder extends RecyclerView.ViewHolder{
+
+        public Holder(View itemView) {
+            super(itemView);
         }
-        progressDialog = new ProgressDialog(adapterContext);
-        progressDialog.setMessage(progressText);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
     }
 
-    public void needHideProgress() {
-        if (progressDialog == null) {
-            return;
-        }
-        try {
-            progressDialog.dismiss();
-        } catch (Exception e) {
-            FileLog.e(adapterContext.getPackageName(), e);
-        }
-        progressDialog = null;
-    }
+//    @Override
+//    public View getView(final int position, View convertView, ViewGroup parent) {
+//        if (convertView == null) {
+//            convertView =new OrderCell(adapterContext);
+//        }
+//
+//
+//
+////        OrderTitleCell groupView = (OrderTitleCell) convertView.findViewById(R.id.title_view);
+////        groupView.setInfor(orderEntity.orderNo, orderEntity.orderStatusStr, position == 0 ? true : false);
+////
+////        TextView titleTextView = (TextView) convertView.findViewById(R.id.order_title);
+////        TextView moneyTextView = (TextView) convertView.findViewById(R.id.order_money);
+////        TextView specTextView = (TextView) convertView.findViewById(R.id.order_date);
+////        BackupImageView medicineImg = (BackupImageView) convertView.findViewById(R.id.order_img);
+////
+////        titleTextView.setText(entity.getGoodsName());
+////        moneyTextView.setText("￥" + entity.getOrderPrice());
+////        specTextView.setText(entity.getCreateDate());
+////        if (entity.getPicSmall() != null) {
+////            medicineImg.setImageUrl(entity.getPicSmall(), null, null);
+////        } else {
+////            medicineImg.setImageResource(R.drawable.no_img_upload);
+////        }
+////
+////        convertView.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View view) {
+////                Intent intent = new Intent(adapterContext, OrderDetailActivity.class);
+////                intent.putExtra("orderId", getItem(position).orderId);
+////                adapterContext.startActivity(intent);
+////                notifyDataSetChanged();
+////            }
+////        });
+////        TextView buyAgainBtn = (TextView) convertView.findViewById(R.id.order_all_buy_again);
+////        TextView evaluateBtn = (TextView) convertView.findViewById(R.id.order_all_evaluate_btn);
+////        TextView cancelBtn = (TextView) convertView.findViewById(R.id.order_all_buy_cancel);
+////        if (TextUtils.equals("未付款",orderEntity.orderStatusStr)) {
+////            evaluateBtn.setText("取消订单");
+////            cancelBtn.setVisibility(View.GONE);
+////            evaluateBtn.setVisibility(View.VISIBLE);
+////            buyAgainBtn.setVisibility(View.GONE);
+//////            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cancelBtn.getLayoutParams();
+//////            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+//////            layoutParams.rightMargin = AndroidUtilities.dp(16);
+//////            cancelBtn.setLayoutParams(layoutParams);
+////            evaluateBtn.setBackgroundResource(R.drawable.order_cancel_btn_bg);
+////            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.theme_sub_title));
+////            evaluateBtn.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    showCancelDialog(userGuid, entity.getOrderId());
+////                }
+////            });
+////        } else if (TextUtils.equals("交易完成",orderEntity.orderStatusStr)) {
+////            buyAgainBtn.setText("再来一单");
+////            evaluateBtn.setText(" 评    价 ");
+////            cancelBtn.setVisibility(View.GONE);
+////            evaluateBtn.setVisibility(View.VISIBLE);
+////            buyAgainBtn.setVisibility(View.VISIBLE);
+////            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+////            evaluateBtn.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
+////                    intent.putExtra("fragmentIndex", 2);
+////                    intent.putExtra("orderEntity", typeEntitiesList.get(position));
+////                    adapterContext.startActivity(intent);
+////                }
+////            });
+////            buyAgainBtn.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    requestOrderBuyAgain(UserGuidConfig.USER_GUID, entity.getOrderId());
+////                }
+////            });
+////        } else if (TextUtils.equals("已评价",orderEntity.orderStatusStr)) {
+////            evaluateBtn.setText("查看评价");
+////            cancelBtn.setVisibility(View.GONE);
+////            evaluateBtn.setVisibility(View.VISIBLE);
+////            buyAgainBtn.setVisibility(View.GONE);
+////            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+////            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
+////            evaluateBtn.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    Intent intent = new Intent(adapterContext, OrderEvaluateDetailActivity.class);
+////                    intent.putExtra("evaluateDetailEntity", entity);
+////                    adapterContext.startActivity(intent);
+////                }
+////            });
+////        } else if (TextUtils.equals("交易取消",orderEntity.orderStatusStr)) {
+////            evaluateBtn.setText("重新购买");
+////            evaluateBtn.setVisibility(View.VISIBLE);
+////            cancelBtn.setVisibility(View.GONE);
+////            buyAgainBtn.setVisibility(View.GONE);
+////            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+////            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
+////            evaluateBtn.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    needShowProgress("正在处理...");
+////                    requestOrderBuyAgain(UserGuidConfig.USER_GUID, entity.getOrderId());
+////                }
+////            });
+////        } else {
+////            cancelBtn.setText("取消订单");
+////            evaluateBtn.setText("确认收货");
+////            evaluateBtn.setVisibility(View.VISIBLE);
+////            cancelBtn.setVisibility(View.VISIBLE);
+////            buyAgainBtn.setVisibility(View.GONE);
+////            evaluateBtn.setBackgroundResource(R.drawable.order_confirm_btn_bg);
+////            evaluateBtn.setTextColor(adapterContext.getResources().getColor(R.color.order_btn_bg));
+////            evaluateBtn.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    needShowProgress("正在处理...");
+////                    requestConfirmReceive(userGuid, entity.getOrderId(), position);
+////                }
+////            });
+////            cancelBtn.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    showCancelDialog(userGuid, entity.getOrderId());
+////                }
+////            });
+////        }
+//        return convertView;
+//    }
 
     //根据type，请求不同状态下的订单
     public void requestOrderList(String userGuid, final int fragmentType) {
@@ -276,7 +277,7 @@ public class OrderListViewAdapter extends BaseAdapter {
 //            Fragment fragment = OrderFragment.getThisFragment((FragmentActivity) adapterContext, fragmentType + "");
 //            OrderFragment orderFragment = (OrderFragment) fragment;
 //            orderFragment.clearListEntities();
-//            orderFragment.refershContentView();
+//            orderFragment.refreshContentView();
 //        }
 //        List<AllOrderEntity> orderEntities = new ArrayList<>();
 //        for (LinkedTreeMap<String, String> item : response) {
@@ -289,7 +290,7 @@ public class OrderListViewAdapter extends BaseAdapter {
 
     //请求取消订单
     private void requestCancelOrderList(final String userGuid, String orderId) {
-        needShowProgress("正在处理...");
+        //needShowProgress("正在处理...");
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
         args.put("USERGUID", userGuid);
         args.put("ORDERID", orderId);
@@ -300,13 +301,13 @@ public class OrderListViewAdapter extends BaseAdapter {
         FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                needHideProgress();
+                //needHideProgress();
                 Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
+                //needHideProgress();
                 if (msg != null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String requestCode = "";
@@ -363,13 +364,13 @@ public class OrderListViewAdapter extends BaseAdapter {
         FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                needHideProgress();
+                //needHideProgress();
                 Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
+                //needHideProgress();
                 if (msg != null) {
                     ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
                     ResponseProtocol<String> responseEntity = (ResponseProtocol<String>) msg.protocol;
@@ -454,13 +455,13 @@ public class OrderListViewAdapter extends BaseAdapter {
         FacadeClient.request(adapterContext, message, new FacadeClient.FacadeCallback() {
             @Override
             public void onTokenTimeout(Message msg) {
-                needHideProgress();
+                //needHideProgress();
                 Toast.makeText(adapterContext, msg.msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResult(Message msg, Message errorMsg) {
-                needHideProgress();
+                //needHideProgress();
                 if (msg != null) {
                     ResponseProtocol<String> responseProtocol = (ResponseProtocol) msg.protocol;
                     String requestCode = "";
@@ -475,7 +476,7 @@ public class OrderListViewAdapter extends BaseAdapter {
 //                        requestOrderList(userGuid, MyOrderActivity.ORDER_TYPE_BEING);
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
                         Intent intent = new Intent(adapterContext, OrderEvaluateActivity.class);
-                        intent.putExtra("orderEntity", typeEntitiesList.get(position));
+                        //intent.putExtra("orderEntity", typeEntitiesList.get(position));
                         intent.putExtra("fragmentIndex", 1);
 //                        ((FragmentActivity) adapterContext).finish();
                         adapterContext.startActivity(intent);

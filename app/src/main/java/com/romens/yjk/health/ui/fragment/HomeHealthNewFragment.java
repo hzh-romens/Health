@@ -46,7 +46,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2016/1/11.
  */
-public class HomeHealthNewFragment extends BaseFragment {
+public class HomeHealthNewFragment extends AppFragment {
     private ListView leftMenuListView;
     private RecyclerView contentListView;
 

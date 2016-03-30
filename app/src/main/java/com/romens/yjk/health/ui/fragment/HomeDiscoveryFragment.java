@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * Created by siery on 15/8/10.
  */
-public class HomeDiscoveryFragment extends BaseFragment {
+public class HomeDiscoveryFragment extends AppFragment {
     private RecyclerView gridView;
     private DiscoveryAdapter discoveryAdapter;
 

@@ -35,11 +35,15 @@ public class UserSession {
         return clientUser;
     }
 
+    public String getUser() {
+        return clientUser == null ? null : clientUser.getGuid();
+    }
+
     public void onChanged() {
         clientUser = UserConfig.getInstance().getClientUserEntity();
     }
 
-    public boolean isClientLogin(){
+    public boolean isClientLogin() {
         return UserConfig.isClientLogined();
     }
 

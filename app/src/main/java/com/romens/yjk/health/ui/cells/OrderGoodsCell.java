@@ -125,9 +125,25 @@ public class OrderGoodsCell extends FrameLayout {
         nameView.setText(name);
         descView.setText(desc);
         CharSequence priceText = ShoppingHelper.formatPrice(price);
+        priceView.setVisibility(VISIBLE);
         priceView.setText(priceText);
 
+        countView.setVisibility(VISIBLE);
         countView.setText(String.format("数量: %d", count));
+
+        needDivider = divider;
+        setWillNotDraw(!divider);
+    }
+
+    public void setValue(String iconPath, CharSequence name, CharSequence desc, boolean divider) {
+        iconView.setImagePath(iconPath);
+
+        nameView.setText(name);
+        descView.setText(desc);
+        priceView.setVisibility(INVISIBLE);
+        priceView.setText("");
+        countView.setVisibility(INVISIBLE);
+        countView.setText("");
 
         needDivider = divider;
         setWillNotDraw(!divider);

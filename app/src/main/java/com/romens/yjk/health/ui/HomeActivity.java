@@ -153,7 +153,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 2) {
-                    UIOpenHelper.openAbout(HomeActivity.this);
+                    UIOpenHelper.openAbout(HomeActivity.this, "关于");
                 } else if (id == 3) {
                     UIOpenHelper.openChangedPasswordActivity(HomeActivity.this);
                 } else if (id == 4) {

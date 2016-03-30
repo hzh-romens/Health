@@ -207,7 +207,7 @@
 
 
 #----------extend library ------------------#
-#环信
+#----------- 环信 begin ---------------------#
 -keep class com.easemob.** {*;}
 -keep class org.jivesoftware.** {*;}
 -keep class org.apache.** {*;}
@@ -227,7 +227,7 @@
 -keep class org.bitlet.** {*;}
 -keep class org.slf4j.** {*;}
 -keep class ch.imvs.** {*;}
-
+#----------- 环信 end ---------------------#
 
 -dontwarn com.romens.android.**
 -keep class com.romens.android.**{*;}

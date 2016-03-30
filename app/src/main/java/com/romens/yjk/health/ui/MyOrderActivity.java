@@ -8,13 +8,17 @@ import android.support.v4.view.ViewPager;
 import android.widget.FrameLayout;
 
 import com.romens.android.AndroidUtilities;
+import com.romens.android.network.request.ConnectManager;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.FragmentViewPagerAdapter;
 import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.OrderStatus;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.fragment.OrderFragment;
+import com.romens.yjk.health.ui.fragment.OrderServiceFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,7 @@ import java.util.List;
  * Created by anlc on 2015/9/18.
  * 我的订单页面
  */
-public class MyOrderActivity extends BaseActivity {
+public class MyOrderActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SlidingFixTabLayout slidingFixTabLayout;
     private ViewPager viewPager;
@@ -39,6 +43,8 @@ public class MyOrderActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onOrderStateChange);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onOrderDataUpdated);
         ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = actionBarEvent();
         container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
@@ -63,6 +69,18 @@ public class MyOrderActivity extends BaseActivity {
 
         fragmentInde = getIntent().getIntExtra("fragmentIndex", 0);
         viewPager.setCurrentItem(fragmentInde);
+
+
+        OrderServiceFragment.instance(getSupportFragmentManager()).syncOrderData();
+    }
+
+    @Override
+    public void onDestroy() {
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onOrderStateChange);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onOrderDataUpdated);
+        ConnectManager.getInstance().destroyInitiator(MyOrderActivity.class);
+        super.onDestroy();
+
     }
 
     private List<Fragment> initFragment() {
@@ -71,13 +89,34 @@ public class MyOrderActivity extends BaseActivity {
 //        fragments.add(new OrderFragment(ORDER_TYPE_BEING));
 //        fragments.add(new OrderFragment(ORDER_TYPE_COMPLETE));
 //        fragments.add(new OrderFragment(ORDER_TYPE_EVALUATE));
-        for (int i = 1; i < 5; i++) {
-            OrderFragment orderFragment = new OrderFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("fragmentType", i);
-            orderFragment.setArguments(bundle);
-            fragments.add(orderFragment);
-        }
+
+        OrderFragment orderFragment = new OrderFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(OrderFragment.ARGUMENTS_KEY_ORDER_STATUS, OrderStatus.ALL);
+        orderFragment.setArguments(bundle);
+        fragments.add(orderFragment);
+
+        //
+        orderFragment = new OrderFragment();
+        bundle = new Bundle();
+        bundle.putInt(OrderFragment.ARGUMENTS_KEY_ORDER_STATUS, OrderStatus.NO_COMPLETED);
+        orderFragment.setArguments(bundle);
+        fragments.add(orderFragment);
+
+        //
+        orderFragment = new OrderFragment();
+        bundle = new Bundle();
+        bundle.putInt(OrderFragment.ARGUMENTS_KEY_ORDER_STATUS, OrderStatus.COMPLETED);
+        orderFragment.setArguments(bundle);
+        fragments.add(orderFragment);
+
+        //
+        orderFragment = new OrderFragment();
+        bundle = new Bundle();
+        bundle.putInt(OrderFragment.ARGUMENTS_KEY_ORDER_STATUS, OrderStatus.COMMIT);
+        orderFragment.setArguments(bundle);
+        fragments.add(orderFragment);
+
         return fragments;
     }
 
@@ -104,6 +143,15 @@ public class MyOrderActivity extends BaseActivity {
             }
         });
         return actionBar;
+    }
+
+    @Override
+    public void didReceivedNotification(int i, Object... objects) {
+        if (i == AppNotificationCenter.onOrderDataUpdated) {
+            needHideProgress();
+        }else if(i==AppNotificationCenter.onOrderStateChange){
+            OrderServiceFragment.instance(getSupportFragmentManager()).syncOrderData();
+        }
     }
 
     class OrderPagerAdapter extends FragmentViewPagerAdapter {

@@ -59,8 +59,6 @@ import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
 
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +68,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2016/2/17.
  */
-public class HomeMyNewFragment extends BaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class HomeMyNewFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
     private ListView listView;
     private ListAdapter adapter;
     private String integral = "0";

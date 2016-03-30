@@ -52,7 +52,7 @@ import java.util.Map;
 /**
  * Created by HZH on 2016/2/2.
  */
-public class ShopCarFragment extends BaseFragment {
+public class ShopCarFragment extends AppFragment {
     private ExpandableListView expandableListView;
     private CheckableFrameLayout checkAll;
     private TextView sumMoneyView, accountsView;

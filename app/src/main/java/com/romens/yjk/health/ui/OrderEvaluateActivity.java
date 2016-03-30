@@ -10,7 +10,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -24,7 +23,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.db.entity.AllOrderEntity;
+import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 
 import org.json.JSONException;
@@ -49,7 +48,7 @@ public class OrderEvaluateActivity extends BaseActivity {
     private FlexibleRatingBar speedRatingBar;
     private EditText opinionEditText;
     private Button submitBut;
-    private AllOrderEntity entity;
+    private OrderEntity entity;
 
     private int qualityEvaluateLevel;
     private int speedEvaluateLevel;
@@ -69,17 +68,17 @@ public class OrderEvaluateActivity extends BaseActivity {
 
     private void viewSetData() {
         Intent intent = getIntent();
-        entity = (AllOrderEntity) intent.getSerializableExtra("orderEntity");
+        entity = (OrderEntity) intent.getSerializableExtra("orderEntity");
         fragmentIndex = intent.getIntExtra("fragmentIndex", 0);
         if (null != entity) {
-            titleTextView.setText(entity.getGoodsName());
-            moneyTextView.setText("￥" + entity.getOrderPrice());
-            dateTextView.setText(entity.getCreateDate());
-            if (entity.getPicSmall() != null) {
-                leftImageView.setImageUrl(entity.getPicSmall(), null, null);
-            } else {
-                leftImageView.setImageResource(R.drawable.no_img_upload);
-            }
+//            titleTextView.setText(entity.getGoodsName());
+//            moneyTextView.setText("￥" + entity.getOrderPrice());
+//            dateTextView.setText(entity.getCreateDate());
+//            if (entity.getPicSmall() != null) {
+//                leftImageView.setImageUrl(entity.getPicSmall(), null, null);
+//            } else {
+//                leftImageView.setImageResource(R.drawable.no_img_upload);
+//            }
         }
     }
 
@@ -97,7 +96,7 @@ public class OrderEvaluateActivity extends BaseActivity {
         submitBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestAssessMerch(userGuid, entity.getOrderId(), qualityEvaluateLevel + "", speedEvaluateLevel + "", opinionEditText.getText().toString());
+                requestAssessMerch(userGuid, entity.orderId, qualityEvaluateLevel + "", speedEvaluateLevel + "", opinionEditText.getText().toString());
             }
         });
         qualityRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
