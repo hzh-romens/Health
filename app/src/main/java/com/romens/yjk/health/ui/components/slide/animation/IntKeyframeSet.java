@@ -18,7 +18,7 @@ package com.romens.yjk.health.ui.components.slide.animation;
 
 import android.view.animation.Interpolator;
 
-import com.nineoldandroids.animation.Keyframe.IntKeyframe;
+import com.romens.yjk.health.ui.components.slide.animation.Keyframe.IntKeyframe;
 
 import java.util.ArrayList;
 

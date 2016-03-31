@@ -20,7 +20,7 @@ import java.util.WeakHashMap;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.Interpolator;
-import com.nineoldandroids.animation.Animator;
+import com.romens.yjk.health.ui.components.slide.animation.Animator;
 
 /**
  * This class enables automatic and optimized animation of select properties on View objects.

@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.romens.yjk.health.ui.components.slide.animation.Animator;
+import com.romens.yjk.health.ui.components.slide.animation.AnimatorListenerAdapter;
+import com.romens.yjk.health.ui.components.slide.animation.ValueAnimator;
+import com.romens.yjk.health.ui.components.slide.view.ViewHelper;
+import com.romens.yjk.health.ui.components.slide.view.ViewPropertyAnimator;
+
 
 public class SwipeDismissListView extends ListView {
 
@@ -152,9 +152,6 @@ public class SwipeDismissListView extends ListView {
 		}
 
 		if (dismiss) {
-			
-
-			
 			ViewPropertyAnimator.animate(mDownView)
 					.translationX(dismissRight ? mViewWidth : -mViewWidth)
 					.alpha(0)
@@ -162,6 +159,7 @@ public class SwipeDismissListView extends ListView {
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
+							//Item滑出界面之后执行删除
 							performDismiss(mDownView, mDownPosition);
 						}
 					});

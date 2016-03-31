@@ -2,8 +2,8 @@ package com.romens.yjk.health.ui.components.slide.view;
 
 import android.view.View;
 
-import static com.nineoldandroids.view.animation.AnimatorProxy.NEEDS_PROXY;
-import static com.nineoldandroids.view.animation.AnimatorProxy.wrap;
+import static com.romens.yjk.health.ui.components.slide.view.animation.AnimatorProxy.NEEDS_PROXY;
+import static com.romens.yjk.health.ui.components.slide.view.animation.AnimatorProxy.wrap;
 
 public final class ViewHelper {
     private ViewHelper() {}

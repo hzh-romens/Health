@@ -22,8 +22,9 @@ import java.util.HashMap;
 import java.util.Set;
 import android.view.View;
 import android.view.animation.Interpolator;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.ValueAnimator;
+
+import com.romens.yjk.health.ui.components.slide.animation.Animator;
+import com.romens.yjk.health.ui.components.slide.animation.ValueAnimator;
 
 class ViewPropertyAnimatorHC extends ViewPropertyAnimator {
 

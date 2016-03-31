@@ -4,7 +4,8 @@ import java.lang.ref.WeakReference;
 
 import android.view.View;
 import android.view.animation.Interpolator;
-import com.nineoldandroids.animation.Animator.AnimatorListener;
+
+import com.romens.yjk.health.ui.components.slide.animation.Animator;
 
 class ViewPropertyAnimatorICS extends ViewPropertyAnimator {
     /**
@@ -68,7 +69,7 @@ class ViewPropertyAnimatorICS extends ViewPropertyAnimator {
     }
 
     @Override
-    public ViewPropertyAnimator setListener(final AnimatorListener listener) {
+    public ViewPropertyAnimator setListener(final Animator.AnimatorListener listener) {
         android.view.ViewPropertyAnimator n = mNative.get();
         if (n != null) {
             if (listener == null) {
