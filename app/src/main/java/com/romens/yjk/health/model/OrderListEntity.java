@@ -16,6 +16,8 @@ public class OrderListEntity {
     private String orderNo;
     private String createTime;
     private String orderPrice;
+    private String payPrice ;
+    private String couponPrice ;
     private String receiver;
     private String address;
     private String telephone;
@@ -112,12 +114,30 @@ public class OrderListEntity {
         this.orderStatusStr = orderStatusStr;
     }
 
+    public String getPayPrice() {
+        return payPrice;
+    }
+
+    public void setPayPrice(String payPrice) {
+        this.payPrice = payPrice;
+    }
+
+    public String getCouponPrice() {
+        return couponPrice;
+    }
+
+    public void setCouponPrice(String couponPrice) {
+        this.couponPrice = couponPrice;
+    }
+
     public static OrderListEntity mapToEntity(LinkedTreeMap<String, String> item) {
         OrderListEntity entity = new OrderListEntity();
         entity.setOrderId(item.get("ORDERID"));
         entity.setOrderNo(item.get("ORDERNO"));
         entity.setCreateTime(item.get("CREATETIME"));
         entity.setOrderPrice(item.get("ORDERPRICE"));
+        entity.setPayPrice(item.get("PAYPRICE"));
+        entity.setCouponPrice(item.get("COUPONPRICE"));
         entity.setReceiver(item.get("RECEIVER"));
         entity.setAddress(item.get("ADDRESS"));
         entity.setTelephone(item.get("TELEPHONE"));

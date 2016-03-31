@@ -4,30 +4,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.melnykov.fab.FloatingActionButton;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.library.datetimepicker.time.RadialPickerLayout;
 import com.romens.android.library.datetimepicker.time.TimePickerDialog;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
-import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
-import com.romens.yjk.health.ui.components.logger.Log;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -46,15 +42,13 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
         ActionBar actionBar = new ActionBar(this);
         container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        container.setBackgroundResource(R.color.line_color);
+        container.addView(LayoutInflater.from(this).inflate(R.layout.activity_remind_add_time, null), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         setContentView(container, actionBar);
         actionBarEvent();
 
         initData();
 
-        FrameLayout frameLayout = new FrameLayout(this);
-        container.addView(frameLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        listView = new ListView(this);
+        listView = (ListView) findViewById(R.id.remind_add_time_list);
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
@@ -62,12 +56,9 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         timesAdapter = new TimesAdapter(timesData, this, this);
         listView.setAdapter(timesAdapter);
         listView.setSelector(R.drawable.list_selector);
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        FloatingActionButton actionButton = new FloatingActionButton(this);
+        FloatingActionButton actionButton = (FloatingActionButton) findViewById(R.id.remind_add_time_addbtn);
         actionButton.setImageResource(R.drawable.ic_add_white_24dp);
-        actionButton.setColorNormal(getResources().getColor(R.color.theme_primary));
-        actionButton.setColorPressed(getResources().getColor(R.color.line_color));
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +73,7 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
                     TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-                            String time = hourOfDay+":"+minute ;
+                            String time = amendTime(hourOfDay) + ":" + amendTime(minute) ;
                             timesData.add(time) ;
                             timesAdapter.notifyDataSetChanged();
                         }
@@ -98,7 +89,6 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         actionButtonLp.bottomMargin = AndroidUtilities.dp(16);
         actionButtonLp.rightMargin = AndroidUtilities.dp(16);
         actionButton.setLayoutParams(actionButtonLp);
-        frameLayout.addView(actionButton);
     }
 
     private void initData() {
@@ -159,5 +149,13 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
     @Override
     public void setTimesData(List<String> data) {
         timesData = (ArrayList<String>) data;
+    }
+
+    public String amendTime(int time){
+        if(time <  10){
+            return "0" + time ;
+        }else {
+            return time + "" ;
+        }
     }
 }
