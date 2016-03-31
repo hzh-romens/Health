@@ -52,4 +52,6 @@
     <color name="medicare_card_avatar">#ff549cdd</color>
     <color name="member_btn">#a9a9a9</color>
 
+    <color name="transparents">#00000000</color>
+
 </resources>
