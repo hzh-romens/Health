@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +61,8 @@ public class CouponFragment extends Fragment {
             selectedCouponGuid = argument.getString(ARGUMENT_KEY_SELECT_COUPON_ID);
             double amount = argument.getDouble(ARGUMENT_KEY_ORDER_AMOUNT, 0);
             orderAmount = new BigDecimal(amount);
+            this.mPage = argument.getInt("page", 0);
+            this.mCanclick = argument.getBoolean("click");
         }
     }
 
@@ -76,7 +77,6 @@ public class CouponFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                Log.i("是否能点击------", mCanclick + "");
                                                 if (mCanclick) {
                                                     CuoponEntity entity = result.get(position);
                                                     if ("GetCoupon".equals(requestType)) {
@@ -143,13 +143,13 @@ public class CouponFragment extends Fragment {
     private boolean mCanclick;
 
 
-    public void setPage(int page) {
-        this.mPage = page;
-    }
+//    public void setPage(int page) {
+//        this.mPage = page;
+//    }
 
-    public void setCanClick(boolean canClick) {
-        this.mCanclick = canClick;
-    }
+//    public void setCanClick(boolean canClick) {
+//        this.mCanclick = canClick;
+//    }
 
     public void getCuopon() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
