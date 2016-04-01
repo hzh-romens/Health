@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.romens.android.AndroidUtilities;
+import com.romens.android.library.datetimepicker.time.RadialPickerLayout;
+import com.romens.android.library.datetimepicker.time.TimePickerDialog;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -21,8 +24,10 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
+import com.romens.yjk.health.ui.components.logger.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -67,9 +72,25 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
             @Override
             public void onClick(View v) {
                 if (timesData.size() < 5) {
-                    timesData.add("08:30");
+                    int hour = Integer.parseInt(timesData.get(timesData.size()-1).split(":")[0]);
+                    if(hour<23){
+                        hour++ ;
+                    }else {
+                        hour = 0 ;
+                    }
+                    int minute = Integer.parseInt(timesData.get(timesData.size()-1).split(":")[1]);
+                    TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+                            String time = hourOfDay+":"+minute ;
+                            timesData.add(time) ;
+                            timesAdapter.notifyDataSetChanged();
+                        }
+                    }, hour, minute, false, false);
+                    timePickerDialog.setVibrate(true);
+                    timePickerDialog.setCloseOnSingleTapMinute(false);
+                    timePickerDialog.show((AddRemindTimesActivity.this).getSupportFragmentManager(), TimesAdapter.TIMEPICKER_TAG);
                 }
-                timesAdapter.notifyDataSetChanged();
             }
         });
         FrameLayout.LayoutParams actionButtonLp = LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
@@ -89,14 +110,10 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
         actionBar.setTitle("服药时间");
         actionBar.setMinimumHeight(AndroidUtilities.dp(100));
         actionBar.setBackgroundResource(R.color.theme_primary);
-        ActionBarMenu actionBarMenu = actionBar.createMenu();
-        actionBarMenu.addItem(0, R.drawable.checkbig);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
-                    finish();
-                } else if (i == 0) {
                     Intent intent = new Intent(AddRemindTimesActivity.this, AddNewRemindActivity.class);
                     intent.putStringArrayListExtra("resultTimesDataList", timesData);
                     setResult(UserGuidConfig.RESPONSE_REMIND_TIMES_TO_NEW_REMIND, intent);
@@ -104,6 +121,17 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK ){
+            Intent intent = new Intent(AddRemindTimesActivity.this, AddNewRemindActivity.class);
+            intent.putStringArrayListExtra("resultTimesDataList", timesData);
+            setResult(UserGuidConfig.RESPONSE_REMIND_TIMES_TO_NEW_REMIND, intent);
+            finish();
+        }
+        return false;
     }
 
     class HintViewCell extends FrameLayout {
@@ -114,7 +142,7 @@ public class AddRemindTimesActivity extends BaseActivity implements TimesAdapter
             textView.setBackgroundColor(Color.TRANSPARENT);
             textView.setTextColor(getResources().getColor(R.color.theme_sub_title));
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-            textView.setText("长按删除单条记录");
+            textView.setText("左划删除单条记录");
             textView.setGravity(Gravity.CENTER);
             textView.setSingleLine(true);
             textView.setPadding(AndroidUtilities.dp(20), AndroidUtilities.dp(8), AndroidUtilities.dp(20), AndroidUtilities.dp(8));

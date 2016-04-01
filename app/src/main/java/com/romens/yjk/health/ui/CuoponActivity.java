@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.widget.RadioGroup;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
@@ -26,7 +25,6 @@ public class CuoponActivity extends BaseActivity {
     public static final String ARGUMENT_KEY_ORDER_AMOUNT = "order_amount";
 
     private ActionBar actionBar;
-    private RadioGroup radioGroup;
     private ViewPager viewPager;
     private CuoponFragmentPagerAdapter fragmentPagerAdapter;
     private TabLayout tabLayout;
@@ -83,13 +81,19 @@ public class CuoponActivity extends BaseActivity {
         Bundle argument = new Bundle();
         argument.putString(CouponFragment.ARGUMENT_KEY_SELECT_COUPON_ID, selectCouponId);
         argument.putDouble(CouponFragment.ARGUMENT_KEY_ORDER_AMOUNT, sumMoney.doubleValue());
+        argument.putInt("page", NOW);
+        argument.putBoolean("click", canClick);
         fragment.setArguments(argument);
-        fragment.setPage(NOW);
-        fragment.setCanClick(canClick);
-        //fragment.setChoice(choicePosition, sumMoney.doubleValue());
+        //fragment.setPage(NOW);
+        //fragment.setCanClick(canClick);
         fragmentsList.add(fragment);
+
         CouponFragment historyFragment = new CouponFragment();
-        historyFragment.setPage(HISTORY);
+        Bundle historyArgument = new Bundle();
+        historyArgument.putInt("page", HISTORY);
+        historyArgument.putBoolean("click", canClick);
+        historyFragment.setArguments(historyArgument);
+        //historyFragment.setPage(HISTORY);
         fragmentsList.add(historyFragment);
 
     }

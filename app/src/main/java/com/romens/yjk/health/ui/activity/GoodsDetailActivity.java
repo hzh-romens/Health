@@ -18,7 +18,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -538,7 +537,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "正品保证"));
         currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "免运费"));
         currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "货到付款"));
-        currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_remove_circle_outline_grey600_18dp, 0xfff36c60, "在线支付"));
+        currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "在线支付"));
     }
 
     private int rowCount = 1;

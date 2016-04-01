@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -35,6 +37,7 @@ import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.RemindTimesDailogCallBack;
+import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
 import com.romens.yjk.health.ui.cells.KeyAndImgCell;
 import com.romens.yjk.health.ui.cells.KeyAndViewCell;
@@ -82,7 +85,24 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         listView.setSelector(R.drawable.list_selector);
         adapter = new AddRemindAdapter(this, timesDataTemp);
         listView.setAdapter(adapter);
-        container.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        container.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, 1f));
+        ActionCell savebtn = new ActionCell(AddNewRemindActivity.this) ;
+        savebtn.setValue("保存");
+        savebtn.setClickable(true);
+        savebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.equals("点击选择用户") || user.equals("")) {
+                    Toast.makeText(AddNewRemindActivity.this, "请选择用户", Toast.LENGTH_SHORT).show();
+                } /*else if (drug.equals("点击选择药品") || drug.equals("")) {
+                        Toast.makeText(AddNewRemindActivity.this, "请选择药品", Toast.LENGTH_SHORT).show();
+                    }*/ else {
+                    saveAddFinish();
+                }
+            }
+        });
+
+        container.addView(savebtn);
     }
 
     private void initData() {
@@ -103,21 +123,11 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
         actionBar.setTitle("用药提醒");
         actionBar.setMinimumHeight(AndroidUtilities.dp(100));
         actionBar.setBackgroundResource(R.color.theme_primary);
-        ActionBarMenu actionBarMenu = actionBar.createMenu();
-        actionBarMenu.addItem(0, R.drawable.checkbig);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
                     finish();
-                } else if (i == 0) {
-                    if (user.equals("点击选择用户") || user.equals("")) {
-                        Toast.makeText(AddNewRemindActivity.this, "请选择用户", Toast.LENGTH_SHORT).show();
-                    } /*else if (drug.equals("点击选择药品") || drug.equals("")) {
-                        Toast.makeText(AddNewRemindActivity.this, "请选择药品", Toast.LENGTH_SHORT).show();
-                    }*/ else {
-                        saveAddFinish();
-                    }
                 }
             }
         });
@@ -315,7 +325,6 @@ public class AddNewRemindActivity extends BaseActivity implements RemindTimesDai
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        new AddRemindTimesDailog(context, timesData, oldTimes).show();
                         UIOpenHelper.openAddRemindTimesActivity((Activity) context, (ArrayList<String>) timesData);
                     }
                 });
