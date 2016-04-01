@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.romens.android.AndroidUtilities;
 import com.romens.android.io.image.ImageManager;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.HistoryEntity;
@@ -122,7 +123,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
 
         parentHolder.name.setText(typeList.get(groupPosition));
         parentHolder.name.setTextSize(18);
-
+        AndroidUtilities.setMaterialTypeface(parentHolder.name);
         return convertView;
     }
 
@@ -159,11 +160,16 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         String discountPrice = entity.getDiscountPrice();
         childHolder.realPrice.setText("¥" + UIUtils.getDouvleValue(currentPrice));
         childHolder.realPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        childHolder.discountPrice.setText("¥" + UIUtils.getDouvleValue(currentPrice));
+        childHolder.discountPrice.setText("¥" + UIUtils.getDouvleValue(discountPrice));
         childHolder.shop.setImageDrawable(adapterContext.getResources().getDrawable(R.drawable.ic_list_shopcaricon));
         childHolder.shop.setVisibility(View.GONE);
         childHolder.comment.setText(entity.getCommentCount() + "条评论");
-        childHolder.saleCount.setText(entity.getSaleCount() + "件已售");
+        AndroidUtilities.setMaterialTypeface(childHolder.comment);
+        AndroidUtilities.setMaterialTypeface(childHolder.name);
+        AndroidUtilities.setMaterialTypeface(childHolder.realPrice);
+        AndroidUtilities.setMaterialTypeface(childHolder.discountPrice);
+        //   childHolder.saleCount.setText(entity.getSaleCount() + "件已售");
+        childHolder.saleCount.setVisibility(View.GONE);
         childHolder.childitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

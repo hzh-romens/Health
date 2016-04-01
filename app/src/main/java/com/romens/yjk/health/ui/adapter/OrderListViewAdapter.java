@@ -358,6 +358,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter {
         args.put("ORDERID", orderId);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrderDetail", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        //换成新的，参照OrderDetailActivity 410行
         Message message = new Message.MessageBuilder()
                 .withProtocol(protocol)
                 .build();

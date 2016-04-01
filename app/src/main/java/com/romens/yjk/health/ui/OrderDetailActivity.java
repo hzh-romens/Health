@@ -40,10 +40,13 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
+import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
@@ -51,6 +54,8 @@ import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.adapter.OrderExpandableDetailAdapter;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
+import com.romens.yjk.health.ui.cells.OrderGoodsCell;
+import com.romens.yjk.health.ui.cells.OrderStoreCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -134,7 +139,7 @@ public class OrderDetailActivity extends BaseActivity {
 
 
     public void initData() {
-        setRow();
+//        setRow();
         Intent intent = getIntent();
         if (intent.hasExtra(ARGUMENT_KEY_ORDER_NO)) {
             currOrderNo = intent.getStringExtra(ARGUMENT_KEY_ORDER_NO);
@@ -148,8 +153,12 @@ public class OrderDetailActivity extends BaseActivity {
     private int orderNumRow;
     private int dataRow;
     private int lineRow;
-    private int expandableRow;
+    private int shopNameRow ;
+    private int goodsBeginRow;
+    private int goodsEndRow;
     private int totalPriceRow;
+    private int couponPriceRow ;
+    private int payPriceRow ;
     private int payWayRow;
     private int line2Row;
     private int consigneeTitleRow;
@@ -163,8 +172,13 @@ public class OrderDetailActivity extends BaseActivity {
         orderNumRow = rowCount++;
         dataRow = rowCount++;
         lineRow = rowCount++;
-        expandableRow = rowCount++;
+        shopNameRow = rowCount++ ;
+        goodsBeginRow = rowCount;
+        rowCount += goodsListEntities.size();
+        goodsEndRow = rowCount - 1;
         totalPriceRow = rowCount++;
+        couponPriceRow = rowCount++ ;
+        payPriceRow = rowCount++ ;
         payWayRow = rowCount++;
         line2Row = rowCount++;
         consigneeTitleRow = rowCount++;
@@ -210,16 +224,19 @@ public class OrderDetailActivity extends BaseActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == dataRow || position == totalPriceRow || position == payWayRow) {
+            if (position == dataRow || position == totalPriceRow || position == payWayRow || position == couponPriceRow || position == payPriceRow) {
                 return 0;
             } else if (position == consigneeTitleRow || position == orderNumRow) {
                 return 2;
             } else if (position == consigneeNameRow || position == consigneePhoneRow || position == consignessAddressRow) {
                 return 0;
-            } else if (position == expandableRow) {
+            } else if (position >= goodsBeginRow && position <= goodsEndRow) {
+                int itemIndex = position - goodsBeginRow;
                 return 3;
             } else if (position == toPayRow) {
                 return 4;
+            } else if (position == shopNameRow){
+                return 5;
             }
             return 1;
         }
@@ -234,6 +251,12 @@ public class OrderDetailActivity extends BaseActivity {
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_statu_color));
                 } else if (position == totalPriceRow) {
                     cell.setKeyAndValue("总计", "￥" + orderListEntity.getOrderPrice());
+                    cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
+                } else if (position == couponPriceRow) {
+                    cell.setKeyAndValue("优惠券金额", "￥" + orderListEntity.getCouponPrice());
+                    cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
+                } else if (position == payPriceRow) {
+                    cell.setKeyAndValue("需支付金额", "￥" + orderListEntity.getPayPrice());
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == payWayRow) {
 //                    String result = "";
@@ -264,29 +287,25 @@ public class OrderDetailActivity extends BaseActivity {
                     cell.setText("订单编号：" + orderListEntity.getOrderNo());
                 }
                 return cell;
-            } else if (type == 3) {
-                LinearLayout linearLayout = new LinearLayout(context);
-                final ExpandableListView subListView = new ExpandableListView(context);
-                subListView.setAdapter(subExpandableadapter);
-                subListView.setGroupIndicator(null);
-                subListView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                int count = subListView.getCount();
-                for (int i = 0; i < count; i++) {
-                    subListView.expandGroup(i);
-                }
-                setListViewHeight(subListView);
-                linearLayout.addView(subListView);
-                subListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-                    @Override
-                    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                        setListViewHeight(subListView);
-                        return true;
-                    }
-                });
-                return linearLayout;
+            } else if (type == 3) {//药品
+                OrderGoodsCell cell = new OrderGoodsCell(parent.getContext());
+                int itemIndex = position - goodsBeginRow;
+                GoodsListEntity item = goodsListEntities.get(itemIndex);
+                String iconPath = item.getGoodsUrl() ;
+                String name = item.getName() ;
+                String desc = String.format("规格:%s", item.getSpec());
+                BigDecimal userPrice = new BigDecimal(item.getGoodsPrice()) ;
+                int count = Integer.parseInt(item.getBuyCount()) ;
+                cell.setValue(iconPath, name, desc, userPrice, count, true);
+                return cell;
             } else if (type == 4) {
                 LinearLayout cell = getBtnLayout();
                 return cell;
+            } else if (type == 5){//药店
+                OrderStoreCell cell = new OrderStoreCell(parent.getContext()) ;
+                GoodsListEntity item = goodsListEntities.get(0);
+                cell.setValue(item.getShopName(),true);
+                return cell ;
             }
             return null;
         }
@@ -408,8 +427,10 @@ public class OrderDetailActivity extends BaseActivity {
                         if (errorMessage == null) {
                             ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol<JsonNode>) message.protocol;
                             setOrderData(responseProtocol.getResponse());
+                            swipeRefreshLayout.setRefreshing(false);
                         } else {
                             ToastCell.toast(OrderDetailActivity.this, "查询订单失败!");
+                            swipeRefreshLayout.setRefreshing(false);
                         }
                     }
                 }).build();
@@ -432,6 +453,8 @@ public class OrderDetailActivity extends BaseActivity {
         orderListEntity.setOrderNo(response.get("ORDERNO").asText());
         orderListEntity.setCreateTime(response.get("CREATETIME").asText());
         orderListEntity.setOrderPrice(response.get("ORDERPRICE").asText());
+        orderListEntity.setCouponPrice(response.get("COUPONPRICE").asText());
+        orderListEntity.setPayPrice(response.get("PAYPRICE").asText());
         orderListEntity.setReceiver(response.get("RECEIVER").asText());
         orderListEntity.setAddress(response.get("ADDRESS").asText());
         orderListEntity.setDeliverType(response.get("DELIVERYTYPE").asText());
