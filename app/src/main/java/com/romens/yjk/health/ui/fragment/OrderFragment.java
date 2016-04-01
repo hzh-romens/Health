@@ -312,6 +312,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.needUpdateOrderData);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
