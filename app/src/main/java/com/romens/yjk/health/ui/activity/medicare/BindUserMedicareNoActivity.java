@@ -204,7 +204,7 @@ public class BindUserMedicareNoActivity extends BaseActionBarActivityWithAnalyti
         args.put("MEDICARENO", currMedicareCard.cardNo);
         UserEntity client = UserSession.getInstance().get();
         String userId = client.getGuid();
-        String deviceId = UniqueCode.uniqueID(this);
+        String deviceId = UniqueCode.create(this);
         String note = String.format("由用户[%s]使用设备#%s执行绑定操作", userId, deviceId);
         args.put("NOTE", note);
 

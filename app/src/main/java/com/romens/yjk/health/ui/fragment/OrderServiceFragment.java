@@ -62,10 +62,9 @@ public class OrderServiceFragment extends ServiceFragment implements AppNotifica
     }
 
     public void syncOrderData() {
-        Map<String, String> args = new HashMap<>();
-        args.put("USERGUID", UserSession.getInstance().getUser());
-        args.put("ORDERSTATUS", "0");
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrders", args);
+        Map<String, Object> args = new HashMap<>();
+        args.put("LASTTIME", DBInterface.instance().getOrderSyncLastTime());
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SynchronizeOrderLists", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
         Connect connect = new RMConnect.Builder(MyOrderActivity.class)

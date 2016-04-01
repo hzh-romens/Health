@@ -308,11 +308,11 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
         swipeRefreshLayout = new SwipeRefreshLayout(context);
         UIHelper.setupSwipeRefreshLayoutProgress(swipeRefreshLayout);
         content.addView(swipeRefreshLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //应该刷新页面，从新读取订单列表，可能有变化
+                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.needUpdateOrderData);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });

@@ -5,20 +5,21 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
-import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.core.UserSession;
+import com.romens.yjk.health.common.OrderStatus;
 import com.romens.yjk.health.db.dao.DaoMaster;
 import com.romens.yjk.health.db.dao.DaoSession;
 import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.dao.FavoritesDao;
 import com.romens.yjk.health.db.dao.HistoryDao;
+import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.dao.ShoppingCartDataDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
 import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
+import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 
@@ -302,5 +303,48 @@ public class DBInterface {
                 .orderDesc(ShoppingCartDataDao.Properties.CreateDate)
                 .list();
         return entities;
+    }
+
+    public Long getOrderSyncLastTime() {
+        OrderDao dao = openReadableDb().getOrderDataDao();
+        OrderEntity entity = dao.queryBuilder()
+                .orderDesc(OrderDao.Properties.Updated)
+                .limit(1)
+                .unique();
+        if (entity != null) {
+            return entity.updated;
+        }
+        return 0l;
+    }
+
+    public List<OrderEntity> loadOrderData(int orderStatus) {
+        OrderDao orderDao = DBInterface.instance().openReadableDb().getOrderDataDao();
+        List<OrderEntity> orderEntities;
+        if (orderStatus == OrderStatus.ALL) {
+            orderEntities = orderDao.queryBuilder()
+                    .orderDesc(OrderDao.Properties.Created)
+                    .list();
+        } else if (orderStatus == OrderStatus.NO_COMPLETED) {
+            //待处理
+            orderEntities = orderDao.queryBuilder()
+                    .where(OrderDao.Properties.Status.in("2", "4", "5", "8", "13"))
+                    .orderDesc(OrderDao.Properties.Created)
+                    .list();
+        } else if (orderStatus == OrderStatus.COMPLETED) {
+            //已完成
+            orderEntities = orderDao.queryBuilder()
+                    .where(OrderDao.Properties.Status.eq("11"))
+                    .orderDesc(OrderDao.Properties.Created)
+                    .list();
+        } else if (orderStatus == OrderStatus.COMMIT) {
+            //已完成
+            orderEntities = orderDao.queryBuilder()
+                    .where(OrderDao.Properties.Status.eq("16"))
+                    .orderDesc(OrderDao.Properties.Created)
+                    .list();
+        } else {
+            orderEntities = new ArrayList<>();
+        }
+        return orderEntities;
     }
 }
