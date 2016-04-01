@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,9 +16,9 @@ public class OrderListEntity {
     private String orderId;
     private String orderNo;
     private String createTime;
-    private String orderPrice;
-    private String payPrice ;
-    private String couponPrice ;
+    private BigDecimal orderPrice;
+    private BigDecimal payPrice ;
+    private BigDecimal couponPrice ;
     private String receiver;
     private String address;
     private String telephone;
@@ -58,12 +59,12 @@ public class OrderListEntity {
         this.createTime = createTime;
     }
 
-    public String getOrderPrice() {
+    public BigDecimal getOrderPrice() {
         return orderPrice;
     }
 
-    public void setOrderPrice(String orderPrice) {
-        this.orderPrice = orderPrice;
+    public void setOrderPrice(double orderPrice) {
+        this.orderPrice = new BigDecimal(orderPrice);
     }
 
     public String getReceiver() {
@@ -114,40 +115,40 @@ public class OrderListEntity {
         this.orderStatusStr = orderStatusStr;
     }
 
-    public String getPayPrice() {
+    public BigDecimal getPayPrice() {
         return payPrice;
     }
 
-    public void setPayPrice(String payPrice) {
-        this.payPrice = payPrice;
+    public void setPayPrice(double payPrice) {
+        this.payPrice = new BigDecimal(payPrice);
     }
 
-    public String getCouponPrice() {
+    public BigDecimal getCouponPrice() {
         return couponPrice;
     }
 
-    public void setCouponPrice(String couponPrice) {
-        this.couponPrice = couponPrice;
+    public void setCouponPrice(double couponPrice) {
+        this.couponPrice =new BigDecimal(couponPrice);
     }
 
-    public static OrderListEntity mapToEntity(LinkedTreeMap<String, String> item) {
-        OrderListEntity entity = new OrderListEntity();
-        entity.setOrderId(item.get("ORDERID"));
-        entity.setOrderNo(item.get("ORDERNO"));
-        entity.setCreateTime(item.get("CREATETIME"));
-        entity.setOrderPrice(item.get("ORDERPRICE"));
-        entity.setPayPrice(item.get("PAYPRICE"));
-        entity.setCouponPrice(item.get("COUPONPRICE"));
-        entity.setReceiver(item.get("RECEIVER"));
-        entity.setAddress(item.get("ADDRESS"));
-        entity.setTelephone(item.get("TELEPHONE"));
-        entity.setDeliverType(item.get("DELIVERYTYPE"));
-        entity.setOrderStatus(item.get("ORDERSTATUS"));
-        entity.setOrderStatusStr(item.get("ORDERSTATUSSTR"));
-        String goodsList = item.get("GOODSLIST");
-        Gson gson = new Gson();
-        List<GoodsListEntity> tempGoodsListEntity = (List<GoodsListEntity>) gson.fromJson(goodsList, GoodsListEntity.class);
-        Log.e("tag", "--->" + gson.toJson(tempGoodsListEntity));
-        return null;
-    }
+//    public static OrderListEntity mapToEntity(LinkedTreeMap<String, String> item) {
+//        OrderListEntity entity = new OrderListEntity();
+//        entity.setOrderId(item.get("ORDERID"));
+//        entity.setOrderNo(item.get("ORDERNO"));
+//        entity.setCreateTime(item.get("CREATETIME"));
+//        entity.setOrderPrice(item.get("ORDERPRICE"));
+//        entity.setPayPrice(item.get("PAYPRICE"));
+//        entity.setCouponPrice(item.get("COUPONPRICE"));
+//        entity.setReceiver(item.get("RECEIVER"));
+//        entity.setAddress(item.get("ADDRESS"));
+//        entity.setTelephone(item.get("TELEPHONE"));
+//        entity.setDeliverType(item.get("DELIVERYTYPE"));
+//        entity.setOrderStatus(item.get("ORDERSTATUS"));
+//        entity.setOrderStatusStr(item.get("ORDERSTATUSSTR"));
+//        String goodsList = item.get("GOODSLIST");
+//        Gson gson = new Gson();
+//        List<GoodsListEntity> tempGoodsListEntity = (List<GoodsListEntity>) gson.fromJson(goodsList, GoodsListEntity.class);
+//        Log.e("tag", "--->" + gson.toJson(tempGoodsListEntity));
+//        return null;
+//    }
 }

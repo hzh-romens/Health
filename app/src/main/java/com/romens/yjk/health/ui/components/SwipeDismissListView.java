@@ -159,7 +159,6 @@ public class SwipeDismissListView extends ListView {
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							//Item滑出界面之后执行删除
 							performDismiss(mDownView, mDownPosition);
 						}
 					});
