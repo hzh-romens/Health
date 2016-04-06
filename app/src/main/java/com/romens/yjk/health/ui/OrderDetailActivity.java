@@ -261,13 +261,10 @@ public class OrderDetailActivity extends BaseActivity {
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_statu_color));
                 } else if (position == totalPriceRow) {
                     cell.setKeyAndValue("总计",ShoppingHelper.formatPrice(  orderListEntity.getOrderPrice(),"￥",false));
-                    cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == couponPriceRow) {
                     cell.setKeyAndValue("优惠金额",ShoppingHelper.formatPrice( orderListEntity.getCouponPrice(), "-￥", false));
-                    cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == payPriceRow) {
-                    cell.setKeyAndValue("支付金额", ShoppingHelper.formatPrice(  orderListEntity.getPayPrice(),"￥",false));
-                    cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
+                    cell.setKeyAndValue("支付金额", ShoppingHelper.formatPrice(  orderListEntity.getPayPrice(),"￥",true));
                 } else if (position == payWayRow) {
 //                    String result = "";
 //                    if (orderListEntity.getDeliverType().equals("1")) {
