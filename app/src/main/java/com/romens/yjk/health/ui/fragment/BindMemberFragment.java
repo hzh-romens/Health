@@ -8,6 +8,7 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.network.FacadeArgs;
@@ -74,9 +75,14 @@ public class BindMemberFragment extends AppFragment {
                                 if (errorMessage == null) {
                                     ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                                     JsonNode jsonNode = responseProtocol.getResponse();
-                                    MemberBaseActivity activity = (MemberBaseActivity) getActivity();
-                                    Handler handler = activity.handler;
-                                    handler.sendEmptyMessage(1);
+                                    boolean error = jsonNode.has("ERROR");
+                                    if (error) {
+                                        Toast.makeText(getActivity(), jsonNode.get("ERROR").asText(), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        MemberBaseActivity activity = (MemberBaseActivity) getActivity();
+                                        Handler handler = activity.handler;
+                                        handler.sendEmptyMessage(1);
+                                    }
                                 }
                             }
                         }

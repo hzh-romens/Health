@@ -74,7 +74,7 @@ import java.util.Map;
 public class OrderDetailActivity extends BaseActivity {
     public static final String ARGUMENT_KEY_ORDER_NO = "KEY_ORDER_NO";
 
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayout linearLayout;
     private ListView listView;
     private OrderDetailAdapter adapter;
     private OrderListEntity orderListEntity;
@@ -95,18 +95,18 @@ public class OrderDetailActivity extends BaseActivity {
         ActionBar actionBar = actionBarEvent();
         container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        swipeRefreshLayout = new SwipeRefreshLayout(this);
-        UIHelper.setupSwipeRefreshLayoutProgress(swipeRefreshLayout);
-        container.addView(swipeRefreshLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                requestOrderDetailList(userGuid, orderId);
-            }
-        });
+        linearLayout = new LinearLayout(this);
+//        UIHelper.setupSwipeRefreshLayoutProgress(swipeRefreshLayout);
+        container.addView(linearLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                requestOrderDetailList(userGuid, orderId);
+//            }
+//        });
 
         FrameLayout listContainer = new FrameLayout(this);
-        swipeRefreshLayout.addView(listContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        linearLayout.addView(listContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView = new ListView(this);
         listView.setDivider(null);
@@ -202,6 +202,16 @@ public class OrderDetailActivity extends BaseActivity {
             notifyDataSetChanged();
         }
 
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return false;
+        }
+
         public OrderDetailAdapter(Context context) {
             this.context = context;
             this.orderListEntity = new OrderListEntity();
@@ -250,13 +260,13 @@ public class OrderDetailActivity extends BaseActivity {
                     cell.setKeyAndValue(orderListEntity.getCreateTime() + "  下单", orderListEntity.getOrderStatusStr());
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_statu_color));
                 } else if (position == totalPriceRow) {
-                    cell.setKeyAndValue("总计", "￥" + orderListEntity.getOrderPrice());
+                    cell.setKeyAndValue("总计",ShoppingHelper.formatPrice(  orderListEntity.getOrderPrice(),"￥",false));
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == couponPriceRow) {
-                    cell.setKeyAndValue("优惠券金额", "￥" + orderListEntity.getCouponPrice());
+                    cell.setKeyAndValue("优惠金额",ShoppingHelper.formatPrice( orderListEntity.getCouponPrice(), "-￥", false));
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == payPriceRow) {
-                    cell.setKeyAndValue("需支付金额", "￥" + orderListEntity.getPayPrice());
+                    cell.setKeyAndValue("支付金额", ShoppingHelper.formatPrice(  orderListEntity.getPayPrice(),"￥",false));
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_money_color));
                 } else if (position == payWayRow) {
 //                    String result = "";
@@ -377,7 +387,7 @@ public class OrderDetailActivity extends BaseActivity {
         String orderNo = entity.getOrderNo();
         String orderDate = entity.getCreateTime();
         String payType = entity.getPayType();
-        BigDecimal payAmount = new BigDecimal(Double.parseDouble(entity.getOrderPrice()));
+        BigDecimal payAmount = entity.getOrderPrice();
 
         Bundle arguments = new Bundle();
         arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
@@ -427,10 +437,10 @@ public class OrderDetailActivity extends BaseActivity {
                         if (errorMessage == null) {
                             ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol<JsonNode>) message.protocol;
                             setOrderData(responseProtocol.getResponse());
-                            swipeRefreshLayout.setRefreshing(false);
+//                            swipeRefreshLayout.setRefreshing(false);
                         } else {
                             ToastCell.toast(OrderDetailActivity.this, "查询订单失败!");
-                            swipeRefreshLayout.setRefreshing(false);
+//                            swipeRefreshLayout.setRefreshing(false);
                         }
                     }
                 }).build();
@@ -452,9 +462,9 @@ public class OrderDetailActivity extends BaseActivity {
         orderListEntity.setOrderId(response.get("ORDER_ID").asText());
         orderListEntity.setOrderNo(response.get("ORDERNO").asText());
         orderListEntity.setCreateTime(response.get("CREATETIME").asText());
-        orderListEntity.setOrderPrice(response.get("ORDERPRICE").asText());
-        orderListEntity.setCouponPrice(response.get("COUPONPRICE").asText());
-        orderListEntity.setPayPrice(response.get("PAYPRICE").asText());
+        orderListEntity.setOrderPrice(response.get("ORDERPRICE").asDouble());
+        orderListEntity.setCouponPrice(response.get("COUPONPRICE").asDouble());
+        orderListEntity.setPayPrice(response.get("PAYPRICE").asDouble());
         orderListEntity.setReceiver(response.get("RECEIVER").asText());
         orderListEntity.setAddress(response.get("ADDRESS").asText());
         orderListEntity.setDeliverType(response.get("DELIVERYTYPE").asText());
