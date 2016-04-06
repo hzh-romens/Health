@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -23,16 +22,12 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.LocationAddressHelper;
-import com.romens.yjk.health.db.DBHelper;
 import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.dao.DiscoveryDao;
 import com.romens.yjk.health.db.dao.LocationAddressDao;
-import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
-import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.ui.activity.BaseActivity;
 import com.romens.yjk.health.ui.activity.LocationAddressSelectActivity;
-import com.romens.yjk.health.ui.cells.InputTextCell;
+import com.romens.yjk.health.ui.cells.TextInputNoLineCell;
 import com.romens.yjk.health.ui.cells.LocationAddressInputCell;
 
 import org.json.JSONException;
@@ -46,10 +41,10 @@ import java.util.Map;
  */
 public class NewShoppingAddressActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
-    private InputTextCell editUserView;
-    private InputTextCell editPhoneView;
+    private TextInputNoLineCell editUserView;
+    private TextInputNoLineCell editPhoneView;
     private LocationAddressInputCell editAddressIdView;
-    private InputTextCell editAddressDetailView;
+    private TextInputNoLineCell editAddressDetailView;
 
     private final String[] locationNames = new String[3];
     private final String[] locationValues = new String[3];
@@ -208,12 +203,12 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
     }
 
     private void initView() {
-        editUserView = (InputTextCell) findViewById(R.id.new_shopping_address_user_name);
+        editUserView = (TextInputNoLineCell) findViewById(R.id.new_shopping_address_user_name);
         editUserView.setTextAndValue("联系人:", "", "请输入联系人", false, true);
-        editPhoneView = (InputTextCell) findViewById(R.id.new_shopping_address_user_phone);
+        editPhoneView = (TextInputNoLineCell) findViewById(R.id.new_shopping_address_user_phone);
         editPhoneView.setInputType(InputType.TYPE_CLASS_PHONE);
         editPhoneView.setTextAndValue("联系人电话:", "", "请输入联系人电话", false, true);
-        editAddressDetailView = (InputTextCell) findViewById(R.id.new_shopping_address_detail);
+        editAddressDetailView = (TextInputNoLineCell) findViewById(R.id.new_shopping_address_detail);
         editAddressDetailView.setMultilineValue(true);
         editAddressDetailView.setTextAndValue("详细地址:", "", "请输入收货详细地址", false, true);
         editAddressIdView = (LocationAddressInputCell) findViewById(R.id.new_shopping_address_address);

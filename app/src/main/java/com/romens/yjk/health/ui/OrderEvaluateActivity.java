@@ -23,6 +23,9 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.db.DBHelper;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 
@@ -36,6 +39,7 @@ import java.util.Map;
  * 编辑订单评价页面
  */
 public class OrderEvaluateActivity extends BaseActivity {
+    public static final String ARGUMENT_KEY_ORDER_ENTITY = "key_order_entity";
 
     private BackupImageView leftImageView;
     private TextView titleTextView;
@@ -53,33 +57,18 @@ public class OrderEvaluateActivity extends BaseActivity {
     private int qualityEvaluateLevel;
     private int speedEvaluateLevel;
 
-    private String userGuid = "";
-    private int fragmentIndex = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userGuid = UserGuidConfig.USER_GUID;
         setContentView(R.layout.activity_order_evaluate, R.id.action_bar);
+
+        Intent intent = getIntent();
+        String orderId=intent.getStringExtra(ARGUMENT_KEY_ORDER_ENTITY);
+        OrderDao orderDao = DBInterface.instance().openReadableDb().getOrderDataDao();
+        entity=orderDao.queryBuilder().where(OrderDao.Properties.Id.eq(orderId)).unique();
+
         actionBarEvent();
         initView();
-        viewSetData();
-    }
-
-    private void viewSetData() {
-        Intent intent = getIntent();
-        entity = (OrderEntity) intent.getSerializableExtra("orderEntity");
-        fragmentIndex = intent.getIntExtra("fragmentIndex", 0);
-        if (null != entity) {
-//            titleTextView.setText(entity.getGoodsName());
-//            moneyTextView.setText("￥" + entity.getOrderPrice());
-//            dateTextView.setText(entity.getCreateDate());
-//            if (entity.getPicSmall() != null) {
-//                leftImageView.setImageUrl(entity.getPicSmall(), null, null);
-//            } else {
-//                leftImageView.setImageResource(R.drawable.no_img_upload);
-//            }
-        }
     }
 
     private void initView() {
@@ -96,7 +85,7 @@ public class OrderEvaluateActivity extends BaseActivity {
         submitBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestAssessMerch(userGuid, entity.orderId, qualityEvaluateLevel + "", speedEvaluateLevel + "", opinionEditText.getText().toString());
+                requestAssessMerch(entity.orderId, qualityEvaluateLevel + "", speedEvaluateLevel + "", opinionEditText.getText().toString());
             }
         });
         qualityRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -129,9 +118,8 @@ public class OrderEvaluateActivity extends BaseActivity {
     }
 
     //访问订单评价
-    private void requestAssessMerch(String userGuid, String merchandiseId, String dileveryStar, String speedStar, String bodyText) {
+    private void requestAssessMerch( String merchandiseId, String dileveryStar, String speedStar, String bodyText) {
         Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", userGuid);
         args.put("MERCHANDISEID", merchandiseId);
         args.put("DILEVERYSTAR", speedStar);
         args.put("QUALITYSTAR", dileveryStar);
@@ -164,7 +152,6 @@ public class OrderEvaluateActivity extends BaseActivity {
                     if (requestCode.equals("yes")) {
                         Toast.makeText(OrderEvaluateActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(OrderEvaluateActivity.this, MyOrderActivity.class);
-                        intent.putExtra("fragmentIndex", fragmentIndex);
 //                        startActivity(intent);
                         AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
                         finish();

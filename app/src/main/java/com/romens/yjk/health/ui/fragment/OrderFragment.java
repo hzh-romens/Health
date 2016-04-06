@@ -37,6 +37,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.OrderCommitActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.adapter.OrderListViewAdapter;
@@ -55,7 +56,7 @@ import java.util.Map;
  * Created by anlc on 2015/10/22.
  */
 public class OrderFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
-    public static final String  ARGUMENTS_KEY_ORDER_STATUS="key_order_status";
+    public static final String ARGUMENTS_KEY_ORDER_STATUS = "key_order_status";
     private SwipeRefreshLayout swipeRefreshLayout;
     //    private ExpandableListView expandableListView;
 //    private OrderAdapter adapter;
@@ -64,7 +65,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
     private LoadingCell loadingCell;
 
     private ImageAndTextCell attachView;
-    private int orderStatus= OrderStatus.ALL;
+    private int orderStatus = OrderStatus.ALL;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onOrderStateChange);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onOrderDataUpdated);
 
-        this.orderStatus = getArguments().getInt(ARGUMENTS_KEY_ORDER_STATUS,OrderStatus.ALL);
+        this.orderStatus = getArguments().getInt(ARGUMENTS_KEY_ORDER_STATUS, OrderStatus.ALL);
         listViewAdapter = new OrderListViewAdapter(getActivity(), new OrderListViewAdapter.Delegate() {
             @Override
             public void onItemSelect(OrderEntity orderEntity) {
@@ -96,7 +97,9 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
 
             @Override
             public void onCommit(OrderEntity entity) {
-
+                Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
+                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY, entity.orderId);
+                startActivity(intent);
             }
 
             @Override
@@ -203,9 +206,8 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
                             if (requestCode.equals("yes")) {
                                 ToastCell.toast(getActivity(), "确认收货成功!");
                                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
-                                Intent intent = new Intent(getActivity(), OrderEvaluateActivity.class);
-                                intent.putExtra("orderEntity", entity.toBundle());
-                                intent.putExtra("fragmentIndex", 1);
+                                Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
+                                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY,entity.orderId);
                                 startActivity(intent);
                             }
                         } else {
@@ -381,7 +383,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
             public void run() {
                 OrderDao orderDao = DBInterface.instance().openReadableDb().getOrderDataDao();
                 List<OrderEntity> orderEntities;
-                if (orderStatus ==OrderStatus.ALL) {
+                if (orderStatus == OrderStatus.ALL) {
                     orderEntities = orderDao.loadAll();
                 } else {
                     orderEntities = orderDao.queryBuilder()

@@ -27,7 +27,7 @@ import com.romens.yjk.health.config.ResourcesConfig;
 /**
  * Created by siery on 15/11/4.
  */
-public class InputTextCell extends LinearLayout {
+public class TextInputNoLineCell extends LinearLayout {
 
     private TextView textView;
     private MaterialEditText valueTextView;
@@ -36,17 +36,17 @@ public class InputTextCell extends LinearLayout {
     private boolean multiline;
     private boolean isMustInput = false;
 
-    public InputTextCell(Context context) {
+    public TextInputNoLineCell(Context context) {
         super(context);
         init(context);
     }
 
-    public InputTextCell(Context context, AttributeSet attrs) {
+    public TextInputNoLineCell(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public InputTextCell(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TextInputNoLineCell(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

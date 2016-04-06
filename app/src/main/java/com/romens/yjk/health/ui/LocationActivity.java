@@ -270,7 +270,9 @@ public class LocationActivity extends BaseActivity {
             locationButton.setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
-                    outline.setOval(0, 0, AndroidUtilities.dp(56), AndroidUtilities.dp(56));
+                    if(Build.VERSION.SDK_INT>=21) {
+                        outline.setOval(0, 0, AndroidUtilities.dp(56), AndroidUtilities.dp(56));
+                    }
                 }
             });
         }

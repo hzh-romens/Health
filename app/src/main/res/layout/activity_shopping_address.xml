@@ -16,12 +16,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.romens.yjk.health.ui.cells.InputTextCell
+            <com.romens.yjk.health.ui.cells.TextInputNoLineCell
                 android:id="@+id/new_shopping_address_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.romens.yjk.health.ui.cells.InputTextCell
+            <com.romens.yjk.health.ui.cells.TextInputNoLineCell
                 android:id="@+id/new_shopping_address_user_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.romens.yjk.health.ui.cells.InputTextCell
+            <com.romens.yjk.health.ui.cells.TextInputNoLineCell
                 android:id="@+id/new_shopping_address_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
