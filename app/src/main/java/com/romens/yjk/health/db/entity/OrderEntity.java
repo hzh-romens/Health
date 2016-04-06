@@ -59,9 +59,6 @@ public class OrderEntity {
         }
     }
 
-    public Bundle toBundle() {
-        return null;
-    }
 
     public static class OrderGoodsEntity {
         private String icon;
