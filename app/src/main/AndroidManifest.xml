@@ -341,6 +341,11 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.OrderCommitActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.NewShoppingAddressActivity"

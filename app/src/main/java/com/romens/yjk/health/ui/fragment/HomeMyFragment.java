@@ -35,7 +35,6 @@ import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.ControlAddressActivity;
 import com.romens.yjk.health.ui.FeedBackActivity;
-import com.romens.yjk.health.ui.HelpActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
@@ -111,7 +110,7 @@ public class HomeMyFragment extends AppFragment implements AppNotificationCenter
                 } else if (position == feedbackRow) {
                     startActivity(new Intent(getActivity(), FeedBackActivity.class));
                 } else if (position == helpRow) {
-                    startActivity(new Intent(getActivity(), HelpActivity.class));
+                    //startActivity(new Intent(getActivity(), HelpActivity.class));
                 } else if (position == accountRow) {
                     //startActivity(new Intent(getActivity(), PersonalInformationActivity.class));
                     UIOpenHelper.openAccountSettingActivity(getActivity());

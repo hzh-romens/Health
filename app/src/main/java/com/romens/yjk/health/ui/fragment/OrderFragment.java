@@ -37,6 +37,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.ui.MyOrderActivity;
+import com.romens.yjk.health.ui.OrderCommitActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
 import com.romens.yjk.health.ui.adapter.OrderListViewAdapter;
@@ -96,8 +97,8 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
 
             @Override
             public void onCommit(OrderEntity entity) {
-                Intent intent = new Intent(getActivity(), OrderEvaluateActivity.class);
-                intent.putExtra(OrderEvaluateActivity.ARGUMENT_KEY_ORDER_ENTITY, entity.orderId);
+                Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
+                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY, entity.orderId);
                 startActivity(intent);
             }
 
@@ -205,8 +206,8 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
                             if (requestCode.equals("yes")) {
                                 ToastCell.toast(getActivity(), "确认收货成功!");
                                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
-                                Intent intent = new Intent(getActivity(), OrderEvaluateActivity.class);
-                                intent.putExtra(OrderEvaluateActivity.ARGUMENT_KEY_ORDER_ENTITY,entity.orderId);
+                                Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
+                                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY,entity.orderId);
                                 startActivity(intent);
                             }
                         } else {
