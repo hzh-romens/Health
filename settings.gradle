@@ -1,1 +1,1 @@
-include ':romens.pay',':app',':datetimepicker',':MaterialDesign'
+include ':MaterialDesign', ':app', ':datetimepicker', ':romens.pay'
