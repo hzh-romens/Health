@@ -137,7 +137,7 @@ public class OrderInfoCell extends LinearLayout {
 
     }
 
-    public void setValue(String deliveryType, String name, String address, BigDecimal goodsAmount, BigDecimal couponAmount) {
+    public void setValue(String deliveryType, String name, String address, BigDecimal goodsAmount, BigDecimal couponAmount,BigDecimal orderAmount) {
         //配送
         SpannableStringBuilder deliveryString = new SpannableStringBuilder();
         deliveryString.append("配送: ");
@@ -162,7 +162,6 @@ public class OrderInfoCell extends LinearLayout {
         //优惠
         couponView.setText(ShoppingHelper.formatPrice(couponAmount, "-￥", false));
 
-        BigDecimal orderAmount = goodsAmount.subtract(couponAmount);
         orderAmountView.setText(ShoppingHelper.formatPrice(orderAmount));
     }
 }

@@ -366,7 +366,7 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             message.append("\n优惠 ");
             message.append(ShoppingHelper.formatPrice(couponAmount));
             message.append(",还需支付 ");
-            BigDecimal amount = goodsAmount.subtract(couponAmount);
+            BigDecimal amount = createOrderAmount();
             message.append(ShoppingHelper.formatPrice(amount));
         }
 
@@ -383,6 +383,14 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     }
                 }).setNegativeButton("取消", null)
                 .create().show();
+    }
+
+    private BigDecimal createOrderAmount() {
+        BigDecimal amount = goodsAmount.subtract(couponAmount);
+        if (BigDecimal.ZERO.compareTo(amount) > 0) {
+            amount = BigDecimal.ZERO;
+        }
+        return amount;
     }
 
     private void checkOrderAmountForUserCoupon() {
@@ -792,7 +800,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                     address = addressInfo.get("ADDRESS");
                 }
                 String delivery = deliveryMode == null ? "" : deliveryMode.name;
-                cell.setValue(delivery, name, address, goodsAmount, couponAmount);
+                BigDecimal orderAmount = createOrderAmount();
+                cell.setValue(delivery, name, address, goodsAmount, couponAmount, orderAmount);
             } else if (viewType == 8) {
                 ActionCell cell = (ActionCell) holder.itemView;
                 cell.setValue("提交订单");
