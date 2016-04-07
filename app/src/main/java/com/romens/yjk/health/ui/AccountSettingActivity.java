@@ -38,6 +38,7 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.PersonalEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
 import org.json.JSONArray;
@@ -50,7 +51,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/12/21.
  */
-public class AccountSettingActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
+public class AccountSettingActivity extends BaseActionBarActivityWithAnalytics implements DatePickerDialog.OnDateSetListener {
 
     private ListView listView;
     private AccountAdapter adapter;

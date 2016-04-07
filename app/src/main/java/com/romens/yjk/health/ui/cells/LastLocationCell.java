@@ -44,9 +44,8 @@ public class LastLocationCell extends FrameLayoutFixed {
         locationAddressView = new TextView(context);
         locationAddressView.setTextColor(0xffffffff);
         locationAddressView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        locationAddressView.setLines(1);
-        locationAddressView.setMaxLines(1);
-        locationAddressView.setSingleLine(true);
+        locationAddressView.setLines(2);
+        locationAddressView.setMaxLines(2);
         locationAddressView.setEllipsize(TextUtils.TruncateAt.START);
         addView(locationAddressView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL, 8, 0, 32, 0));
 

@@ -35,6 +35,7 @@ import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.pay.MedicareCard;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
@@ -49,7 +50,7 @@ import java.util.List;
  * Created by anlc on 2015/8/21.
  * 用药提醒列表页面
  */
-public class RemindActivity extends BaseActivity {
+public class RemindActivity extends BaseActionBarActivityWithAnalytics {
 
     private ActionBar actionBar;
     private RecyclerView listView;

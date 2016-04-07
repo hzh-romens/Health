@@ -51,6 +51,7 @@ import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.adapter.OrderExpandableDetailAdapter;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
@@ -71,7 +72,7 @@ import java.util.Map;
  * Created by anlc on 2015/9/24.
  * 订单详情
  */
-public class OrderDetailActivity extends BaseActivity {
+public class OrderDetailActivity extends BaseActionBarActivityWithAnalytics {
     public static final String ARGUMENT_KEY_ORDER_NO = "KEY_ORDER_NO";
 
     private LinearLayout linearLayout;

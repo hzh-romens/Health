@@ -19,11 +19,12 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 
 /**
  * Created by anlc on 2016/2/23.
  */
-public class SettingActivity extends BaseActivity {
+public class SettingActivity extends BaseActionBarActivityWithAnalytics {
 
     private ListView listView;
 

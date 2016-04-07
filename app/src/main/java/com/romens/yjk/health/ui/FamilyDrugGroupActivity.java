@@ -35,6 +35,7 @@ import com.romens.yjk.health.db.dao.FamilyDrugGroupDao;
 import com.romens.yjk.health.db.entity.FamilyDrugGroupEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.SearchResultEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.AvatarAndInfoCell;
 import com.romens.yjk.health.ui.cells.ImgAndValueCell;
 import com.romens.yjk.health.ui.utils.DialogUtils;
@@ -45,7 +46,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/9.
  */
-public class FamilyDrugGroupActivity extends BaseActivity {
+public class FamilyDrugGroupActivity extends BaseActionBarActivityWithAnalytics {
 
     private ListView listView;
     private List<FamilyDrugGroupEntity> entityList;

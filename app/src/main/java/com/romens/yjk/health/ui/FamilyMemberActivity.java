@@ -28,6 +28,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.FamilyMemberDao;
 import com.romens.yjk.health.db.entity.FamilyMemberEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.AvatarAndInfoCell;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/9.
  */
-public class FamilyMemberActivity extends BaseActivity {
+public class FamilyMemberActivity extends BaseActionBarActivityWithAnalytics {
 
     private ListView listView;
     private List<FamilyMemberEntity> entitiesList;
@@ -118,7 +119,7 @@ public class FamilyMemberActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         initData();
         adapter.setEntitiesList(entitiesList);

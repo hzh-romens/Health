@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
-import com.amap.api.services.poisearch.PoiItemDetail;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.google.gson.internal.LinkedTreeMap;
@@ -68,7 +67,7 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
         this.delegate = delegate;
     }
 
-    public void searchDelayed( final SearchType searchType,final String query, final Location coordinate) {
+    public void searchDelayed(final SearchType searchType, final String query, final Location coordinate) {
         if (query == null || query.length() == 0) {
             places.clear();
             notifyDataSetChanged();
@@ -157,7 +156,7 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
                 }
 
                 @Override
-                public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int i) {
+                public void onPoiItemSearched(PoiItem poiItem, int i) {
 
                 }
             });//设置回调数据的监听器

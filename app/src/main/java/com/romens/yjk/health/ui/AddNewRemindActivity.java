@@ -37,6 +37,7 @@ import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.RemindTimesDailogCallBack;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
 import com.romens.yjk.health.ui.cells.KeyAndImgCell;
@@ -50,7 +51,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/10.
  */
-public class AddNewRemindActivity extends BaseActivity implements RemindTimesDailogCallBack {
+public class AddNewRemindActivity extends BaseActionBarActivityWithAnalytics implements RemindTimesDailogCallBack {
 
     private ListView listView;
     private List<String> timesDataTemp;

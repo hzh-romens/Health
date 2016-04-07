@@ -8,12 +8,13 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.fragment.HomeHealthFragment;
 
 /**
  * Created by anlc on 2015/12/15.
  */
-public class HealthActivity extends BaseActivity {
+public class HealthActivity extends BaseActionBarActivityWithAnalytics {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

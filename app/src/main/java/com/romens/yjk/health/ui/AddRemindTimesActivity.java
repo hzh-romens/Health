@@ -25,6 +25,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
 import com.romens.yjk.health.ui.components.SwipeDismissListView;
 
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/16.
  */
-public class AddRemindTimesActivity extends BaseActivity implements TimesAdapterCallBack {
+public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics implements TimesAdapterCallBack {
 
     private SwipeDismissListView listView;
     private TimesAdapter timesAdapter;

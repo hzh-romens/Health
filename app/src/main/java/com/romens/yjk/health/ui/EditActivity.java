@@ -28,11 +28,12 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 
 /**
  * Created by anlc on 2015/12/21.
  */
-public class EditActivity extends BaseActivity {
+public class EditActivity extends BaseActionBarActivityWithAnalytics {
 
     private String formActivityName;
     private String result;

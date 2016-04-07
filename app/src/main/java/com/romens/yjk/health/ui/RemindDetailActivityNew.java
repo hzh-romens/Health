@@ -27,6 +27,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.RemindUtils;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.RemindEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ImgAndValueCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
 
@@ -36,7 +37,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/10/30.
  */
-public class RemindDetailActivityNew extends BaseActivity {
+public class RemindDetailActivityNew extends BaseActionBarActivityWithAnalytics {
 
     private ListView listView;
     private DetailListViewAdapter adapter;

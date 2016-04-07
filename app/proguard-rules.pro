@@ -193,17 +193,26 @@
 
 #高德相关混淆文件
 #如果有其它包有warning，在报出warning的包加入下面类似的-dontwarn 报名
--dontwarn com.amap.api.**
--dontwarn com.aps.**
 #3D 地图
--keep   class com.amap.api.maps2d.**{*;}
+-keep   class com.amap.api.mapcore.**{*;}
 -keep   class com.amap.api.maps.**{*;}
 -keep   class com.autonavi.amap.mapcore.*{*;}
-#Location
--keep   class com.amap.api.location.**{*;}
--keep   class com.aps.**{*;}
-#Service
+
+#定位
+-keep class com.amap.api.location.**{*;}
+-keep class com.amap.api.fence.**{*;}
+-keep class com.autonavi.aps.amapapi.model.**{*;}
+
+#搜索
 -keep   class com.amap.api.services.**{*;}
+
+#2D地图
+-keep class com.amap.api.maps2d.**{*;}
+-keep class com.amap.api.mapcore2d.**{*;}
+
+#导航
+-keep class com.amap.api.navi.**{*;}
+-keep class com.autonavi.**{*;}
 
 
 #----------extend library ------------------#

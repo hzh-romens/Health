@@ -23,6 +23,7 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.fragment.BindMemberFragment;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.MemberFragment;
@@ -33,7 +34,7 @@ import java.util.Map;
 /**
  * Created by HZH on 2016/3/24.
  */
-public class MemberBaseActivity extends BaseActivity {
+public class MemberBaseActivity extends BaseActionBarActivityWithAnalytics {
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private ActionBar actionBar;

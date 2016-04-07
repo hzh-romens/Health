@@ -37,6 +37,7 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.DrugDetailEntity;
 import com.romens.yjk.health.model.LocationEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import org.json.JSONException;
@@ -49,7 +50,7 @@ import java.util.Map;
  * Created by anlc on 2015/10/17.
  * 药店详情页面
  */
-public class DrugStoryDetailActivity extends BaseActivity {
+public class DrugStoryDetailActivity extends BaseActionBarActivityWithAnalytics {
 
     private ListView listView;
     private SwipeRefreshLayout refreshLayout;

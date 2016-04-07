@@ -56,7 +56,6 @@ import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserData;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UserSession;
-import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.components.SlideView;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.components.TypefaceSpan;
@@ -75,7 +74,7 @@ import java.util.regex.Pattern;
 /**
  * Created by siery on 15/6/24.
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActionBarActivityWithAnalytics {
     private final static int PAGER_COUNT = 3;
     private int currentViewNum = 0;
     private SlideView[] views = new SlideView[PAGER_COUNT];
@@ -159,11 +158,6 @@ public class LoginActivity extends BaseActivity {
             params.putString(PhoneView.PARAM_PHONE, UserConfig.getInstance().getClientUserPhone());
             setPage(0, true, params, false);
         }
-    }
-
-    @Override
-    protected boolean enableResetNotifier() {
-        return false;
     }
 
 
