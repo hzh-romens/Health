@@ -71,9 +71,9 @@ import java.util.Map;
 public class HomeMyNewFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
     private ListView listView;
     private ListAdapter adapter;
-    private String integral = "0";
-    private String remainMoney = "0";
-    private String coupon = "0";
+    private int integral = 0;
+    private double remainMoney = 0;
+    private int coupon = 0;
     private String sexType = "0";
 
     public void onCreate(Bundle saveInstanceState) {
@@ -475,11 +475,10 @@ public class HomeMyNewFragment extends AppFragment implements AppNotificationCen
             public void run() {
                 try {
                     JsonNode jfyeObject = JacksonMapper.getInstance().readTree(jsonNode.get("JFYE").asText()).get(0);
-                    double integralD = jfyeObject.get("SIGNINPOINT").asDouble(0) +
-                            jfyeObject.get("CONSUMPTIONPOINT").asDouble(0);
-                    integral = String.valueOf(integralD);
-                    remainMoney = jfyeObject.get("CONSUMEAMOUNT").asText();
-                    coupon = jfyeObject.get("COUPONNUM").asText();
+                    integral = jfyeObject.get("SIGNINPOINT").asInt(0) +
+                            jfyeObject.get("CONSUMPTIONPOINT").asInt(0);
+                    remainMoney = jfyeObject.get("CONSUMEAMOUNT").asDouble(0);
+                    coupon = jfyeObject.get("COUPONNUM").asInt(0);
                     JsonNode userinfoObj = JacksonMapper.getInstance().readTree(jsonNode.get("USERINFO").asText()).get(0);
                     sexType = userinfoObj.get("SEX").asText();
                     adapter.notifyDataSetChanged();

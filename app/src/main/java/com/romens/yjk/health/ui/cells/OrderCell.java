@@ -211,7 +211,7 @@ public class OrderCell extends LinearLayout {
             color = 0xff212121;
         } else if (TextUtils.equals("已评价", orderStatus)) {
             btn1Action = Action.NONE;
-            btn2Action = Action.LOOK_COMMIT;
+            btn2Action = Action.NONE;// Action.LOOK_COMMIT;
             color = 0xff212121;
         } else {
             color = 0xff2baf2b;

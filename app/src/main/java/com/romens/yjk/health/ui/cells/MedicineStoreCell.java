@@ -26,6 +26,7 @@ import com.romens.android.ui.Image.BackupImageView;
 import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.helper.FormatHelper;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -144,7 +145,7 @@ public class MedicineStoreCell extends FrameLayout {
         avatarDrawable.setInfo(0, storeName);
         avatarDrawable.setColor(ResourcesConfig.primaryColor);
         imageView.setPlaceholderImage(avatarDrawable);
-        imageView.setImagePath(storeIcon,AndroidUtilities.dp(40),AndroidUtilities.dp(40));
+        imageView.setImagePath(storeIcon, AndroidUtilities.dp(40), AndroidUtilities.dp(40));
 
         distanceTextView.setText("");
         distanceTextView.setVisibility(View.GONE);
@@ -176,8 +177,8 @@ public class MedicineStoreCell extends FrameLayout {
 
         addShoppingCartView.setBackgroundResource(addShoppingCartResId);
         addShoppingCartView.setTextColor(storeCountFontColor);
-        DecimalFormat decimalFormat = new DecimalFormat("￥#,###.00");
-        String priceStr = decimalFormat.format(price);
+        //DecimalFormat decimalFormat = new DecimalFormat("￥#,###.00");
+        String priceStr = FormatHelper.formatPrice(price);//decimalFormat.format(price);
         String addShoppingCartText = String.format("加入购物车 %s", priceStr);
         addShoppingCartView.setText(addShoppingCartText);
 

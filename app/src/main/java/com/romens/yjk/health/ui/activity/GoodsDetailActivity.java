@@ -566,7 +566,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private int commentEmptyRow;
     private int commentBeginRow;
     private int commentEndRow;
-    private int commentMoreRow;
+    //private int commentMoreRow;
 
     private int bottomDividerRow;
 
@@ -633,7 +633,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     commentBeginRow = rowCount;
                     rowCount += goodsCommentEntities.size();
                     commentEndRow = rowCount;
-                    commentMoreRow = rowCount++;
+                    //commentMoreRow = rowCount++;
                 }
             }
 
@@ -673,7 +673,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         commentEmptyRow = -1;
         commentBeginRow = -1;
         commentEndRow = -1;
-        commentMoreRow = -1;
+        //commentMoreRow = -1;
 
         bottomDividerRow = -1;
     }
@@ -732,7 +732,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 return 5;
             } else if (position == storeSectionRow || position == serviceSectionRow || position == commentSection1Row) {
                 return 6;
-            } else if (position == serviceMedicineManualRow || position == serviceCallCenterRow || position == commentMoreRow || position == otherStoresRow) {
+            } else if (position == serviceMedicineManualRow || position == serviceCallCenterRow || position == otherStoresRow) {
                 return 7;
             } else if (position == goodsServiceModesRow) {
                 return 8;
@@ -758,7 +758,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
         @Override
         public boolean isEnabled(int i) {
-            if (i == serviceMedicineManualRow || i == serviceCallCenterRow || i == otherStoresRow || i == commentMoreRow) {
+            if (i == serviceMedicineManualRow || i == serviceCallCenterRow || i == otherStoresRow ) {
                 return true;
             }
             return false;
@@ -879,11 +879,12 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     cell.setValueTextColor(ResourcesConfig.bodyText3);
                     String value = String.format("(%d家)", saleStoreEntities.size());
                     cell.setTextAndValue("更多附近在售药店", value, true, true);
-                } else if (i == commentMoreRow) {
-                    cell.setTextColor(ResourcesConfig.bodyText3);
-                    cell.setValueTextColor(ResourcesConfig.bodyText3);
-                    cell.setText("查看更多评价", true, true);
                 }
+//                else if (i == commentMoreRow) {
+//                    cell.setTextColor(ResourcesConfig.bodyText3);
+//                    cell.setValueTextColor(ResourcesConfig.bodyText3);
+//                    cell.setText("查看更多评价", true, true);
+//                }
             } else if (viewType == 8) {
                 if (view == null) {
                     view = new MedicineServiceModesCell(adapterContext);
@@ -910,7 +911,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 }
                 GoodsCommentCell cell = (GoodsCommentCell) view;
                 GoodsCommentEntity entity = goodsCommentEntities.get(i - commentBeginRow);
-                cell.setValue(entity.qualityLevel, entity.allCount, entity.assessDate, entity.advice, entity.memberId, true);
+                cell.setValue(entity.qualityLevel, entity.allCount, entity.assessDate, entity.advice, entity.getMemberName(), true);
             }
             return view;
         }

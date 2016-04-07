@@ -113,6 +113,12 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
+    public static void openSearchActivity(Context context,int goodsFlag) {
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.putExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, goodsFlag);
+        context.startActivity(intent);
+    }
+
     //打开搜索页面
     public static void openSearchActivity(Activity context, boolean fromFramilyDrugGroupTag) {
         Intent intent = new Intent(context, SearchActivity.class);

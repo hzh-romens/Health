@@ -36,12 +36,14 @@ import com.romens.android.ui.cells.TextActionCell;
 import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
+import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.SearchResultEntity;
 import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
@@ -82,11 +84,16 @@ public class SearchActivity extends BaseActivity {
     private boolean isSearchProgress = false;
     private boolean fromFramilyDrugGroupTag = false;
 
+    private int goodsFlag = GoodsFlag.NORMAL;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        if (intent.hasExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG)) {
+            goodsFlag = intent.getIntExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.NORMAL);
+        }
         fromFramilyDrugGroupTag = intent.getBooleanExtra("fromFramilyDrugGroupTag", false);
         String targetQueryText = intent.getStringExtra(ARGUMENTS_SEARCH_QUERY_TEXT);
         searchType = intent.getIntExtra(ARGUMENTS_SEARCH_TYPE, SEARCH_TYPE_ALL);
@@ -279,6 +286,7 @@ public class SearchActivity extends BaseActivity {
     private void requestSearchData(String queryText) {
         changeSearchProgress(true);
         Map<String, Object> args = new HashMap<>();
+        args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         args.put("QUERYTEXT", queryText);
         args.put("SEARCHTYPE", searchType);
         args.put("SEARCHSIZE", 10);
@@ -375,13 +383,14 @@ public class SearchActivity extends BaseActivity {
                     if (TextUtils.equals("0", sectionType)) {
                         searchResult.add(new SearchResultEntity(item.get("MERCHANDISEID").asText(), item.get("MEDICINENAME").asText(), sectionType)
                                 .addProperty("MEDICINESPEC", item.get("MEDICINESPEC").asText())
+                                .addProperty("GOODSTYPE", item.get("GOODSTYPE").asText())
                                 .withViewType(4));
                     } else if (TextUtils.equals("1", sectionType)) {
                         searchResult.add(new SearchResultEntity(item.get("DISEASEID").asText(), item.get("DISEASENAME").asText(), sectionType)
                                 .withViewType(3));
                     }
                 }
-                searchResult.add(new SearchResultEntity("", String.format("查看更多%s", sectionName), sectionType).withViewType(5));
+                //searchResult.add(new SearchResultEntity("", String.format("查看更多%s", sectionName), sectionType).withViewType(5));
             }
         }
     }
@@ -491,9 +500,11 @@ public class SearchActivity extends BaseActivity {
             } else if (itemViewType == 4) {
                 DrugCell cell = (DrugCell) holder.itemView;
                 SearchResultEntity entity = getItem(position);
+                boolean isMedicareGoods = TextUtils.equals(String.valueOf(GoodsFlag.MEDICARE), entity.getProperty("GOODSTYPE"));
+                CharSequence name = ShoppingHelper.createShoppingCartGoodsName(entity.name, isMedicareGoods);
                 String spec = entity.getProperty("MEDICINESPEC");
                 String desc = String.format("规格:%s", TextUtils.isEmpty(spec) ? "-" : spec);
-                cell.setValue("药", entity.name, desc, true);
+                cell.setValue("药", name, desc, true);
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -505,8 +516,9 @@ public class SearchActivity extends BaseActivity {
                                 setResult(UserGuidConfig.RESPONSE_SEARCH_TO_DRUGGROUP, intent);
                                 finish();
                             } else {
+                                final boolean isMedicareGoods = TextUtils.equals(String.valueOf(GoodsFlag.MEDICARE), selectedEntity.getProperty("GOODSTYPE"));
                                 //UIOpenHelper.openDrugDescriptionActivity(SearchActivity.this, selectedEntity.id, selectedEntity.name);
-                                UIOpenHelper.openMedicineActivity(SearchActivity.this, selectedEntity.id);
+                                UIOpenHelper.openMedicineActivity(SearchActivity.this, selectedEntity.id, isMedicareGoods ? GoodsFlag.MEDICARE : GoodsFlag.NORMAL);
                             }
                         }
                     }
@@ -515,12 +527,6 @@ public class SearchActivity extends BaseActivity {
                 TextActionCell cell = (TextActionCell) holder.itemView;
                 SearchResultEntity entity = getItem(position);
                 cell.setText(entity.name, false);
-                cell.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getItem(position).onAction(adapterContext);
-                    }
-                });
             }
         }
 
