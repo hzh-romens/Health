@@ -276,7 +276,7 @@ public class OrderDetailActivity extends BaseActionBarActivityWithAnalytics {
 //                    cell.setKeyAndValue("支付方式", result, true);
                     cell.setKeyAndValue("支付方式", orderListEntity.getDeliverType());
                 } else if (position == consigneeNameRow) {
-                    cell.setKeyAndValue("收获人姓名", orderListEntity.getReceiver());
+                    cell.setKeyAndValue("收货人姓名", orderListEntity.getReceiver());
                 } else if (position == consigneePhoneRow) {
                     cell.setKeyAndValue("联系方式", orderListEntity.getTelephone());
                 } else if (position == consignessAddressRow) {
