@@ -19,7 +19,8 @@ android {
                                 MTA_APPKEY       : "AQ5Q612ZPGBQ",
                                 PUSH_ACCESS_ID   : "2100188535",
                                 PUSH_ACCESS_KEY  : "AE49UMV4G85C",
-                                LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac"]
+                                LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac",
+                                WX_PAY_KEY       : ""]
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
@@ -44,7 +45,8 @@ android {
                                     MTA_APPKEY       : "AQ5Q612ZPGBQ",
                                     PUSH_ACCESS_ID   : "2100188535",
                                     PUSH_ACCESS_KEY  : "AE49UMV4G85C",
-                                    LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac"]
+                                    LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac",
+                                    WX_PAY_KEY       : ""]
 
             buildConfigField "String", "BUG_APP_ID", "\"\""
         }
@@ -60,7 +62,8 @@ android {
                                     MTA_APPKEY       : "APZ5T57IF1YH",
                                     PUSH_ACCESS_ID   : "2100188533",
                                     PUSH_ACCESS_KEY  : "A44T4Y8GS3XB",
-                                    LOCATION_SDK_KEY : "d6aa411b6b1a70541e2d818c91da3e0e"]
+                                    LOCATION_SDK_KEY : "d6aa411b6b1a70541e2d818c91da3e0e",
+                                    WX_PAY_KEY       : "wx0c8c0d4ae1fc56d8"]
             buildConfigField "String", "BUG_APP_ID", "\"900023163\""
             buildConfigField "String", "BUG_CHANNEL", "\"nj_xszk\""
             buildConfigField "String", "BUG_VERSION", "\"" + versionName + "\""
@@ -68,8 +71,8 @@ android {
         }
         channel_hy_rmtt {
             applicationId "com.romens.yjk.health.hyrmtt"
-            versionCode 160407
-            versionName "1.9.3"
+            versionCode 160408
+            versionName "1.9.5"
             manifestPlaceholders = [CHANNEL          : "hy_rmtt",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "20;rmtt",
@@ -78,7 +81,8 @@ android {
                                     MTA_APPKEY       : "AK6C73XIU4QY",
                                     PUSH_ACCESS_ID   : "2100188529",
                                     PUSH_ACCESS_KEY  : "ACJKC153A79U",
-                                    LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0"]
+                                    LOCATION_SDK_KEY : "15b546de7957fc009c5a1da8370ba1b0",
+                                    WX_PAY_KEY       : "wx90fa435b695657da"]
             buildConfigField "String", "BUG_APP_ID", "\"900023698\""
             buildConfigField "String", "BUG_CHANNEL", "\"hy_rmtt\""
             buildConfigField "String", "BUG_VERSION", "\"" + versionName + "\""
@@ -127,6 +131,10 @@ android {
                     }
                 }
             }
+        }
+        dev.initWith(debug)
+        dev {
+            signingConfig signingConfigs.release
         }
     }
 

@@ -194,6 +194,8 @@
 #高德相关混淆文件
 #如果有其它包有warning，在报出warning的包加入下面类似的-dontwarn 报名
 #3D 地图
+-dontwarn com.amap.api.**
+-dontwarn com.autonavi.**
 -keep   class com.amap.api.mapcore.**{*;}
 -keep   class com.amap.api.maps.**{*;}
 -keep   class com.autonavi.amap.mapcore.*{*;}
@@ -213,6 +215,9 @@
 #导航
 -keep class com.amap.api.navi.**{*;}
 -keep class com.autonavi.**{*;}
+
+-dontwarn org.apache.**
+-keep class org.apache.**{*;}
 
 
 #----------extend library ------------------#
@@ -310,6 +315,10 @@ public static final int *;
 #************************************************************
 
 
+-keep class * extends com.romens.yjk.health.ui.activity.pay.WXPayBaseActivity {
+  public protected *;
+}
+
 -dontwarn com.romens.yjk.health.njxszk.wxapi.**
 -keep class com.romens.yjk.health.njxszk.wxapi.**{
     public protected *;
@@ -319,7 +328,6 @@ public static final int *;
 -keep class com.romens.yjk.health.hyrmtt.wxapi.**{
     public protected *;
 }
-
 -dontwarn com.romens.yjk.health.hyrmtt.pay.**
 -keep class com.romens.yjk.health.hyrmtt.pay.**{
     public protected *;
