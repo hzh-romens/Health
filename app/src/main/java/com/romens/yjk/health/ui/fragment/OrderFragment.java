@@ -418,16 +418,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
         AndroidUtilities.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                OrderDao orderDao = DBInterface.instance().openReadableDb().getOrderDataDao();
-                List<OrderEntity> orderEntities;
-                if (orderStatus == OrderStatus.ALL) {
-                    orderEntities = orderDao.loadAll();
-                } else {
-                    orderEntities = orderDao.queryBuilder()
-                            .where(OrderDao.Properties.Status.eq(String.valueOf(orderStatus)))
-                            .orderDesc(OrderDao.Properties.Created)
-                            .list();
-                }
+                List<OrderEntity> orderEntities=DBInterface.instance().loadOrderData(orderStatus);
                 listViewAdapter.bindData(orderEntities);
                 refreshContentView();
             }
