@@ -26,9 +26,12 @@ public class ShoppingCartActivity extends BaseActionBarActivityWithAnalytics {
                 }
             }
         });
+        Bundle arguments = getIntent().getExtras();
+        ShoppingCartFragment fragment = new ShoppingCartFragment();
+        fragment.setArguments(arguments);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment, new ShoppingCartFragment())
+                .replace(R.id.fragment, fragment)
                 .commit();
     }
 }

@@ -40,6 +40,7 @@ import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.OrderCommitActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
 import com.romens.yjk.health.ui.OrderEvaluateActivity;
+import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.adapter.OrderListViewAdapter;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 import com.romens.yjk.health.ui.components.ToastCell;
@@ -87,7 +88,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
 
             @Override
             public void onBuyAgain(OrderEntity entity) {
-
+                putOrderGoodsToShoppingCart(entity);
             }
 
             @Override
@@ -109,9 +110,45 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
 
             @Override
             public void onRetry(OrderEntity entity) {
-
+                putOrderGoodsToShoppingCart(entity);
             }
         });
+    }
+
+    private void putOrderGoodsToShoppingCart(OrderEntity entity) {
+        needShowProgress("正在处理...");
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("ORDERCODE", entity.orderNo);
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCarFromOrder", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Connect content = new RMConnect.Builder(MyOrderActivity.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        needHideProgress();
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = responseProtocol.getResponse();
+                            if (!response.has("ERROR")) {
+                                ArrayList<String> shoppingCart = new ArrayList<>();
+                                int size = response.size();
+                                for (int i = 0; i < size; i++) {
+                                    shoppingCart.add(response.get(i).asText());
+                                }
+                                Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
+                                Bundle arguments = new Bundle();
+                                arguments.putStringArrayList(ShoppingCartFragment.ARGUMENTS_KEY_SELECT_GOODS, shoppingCart);
+                                intent.putExtras(arguments);
+                                startActivity(intent);
+                                return;
+                            }
+                        }
+                        ToastCell.toast(getContext(), "失败,请重试!");
+                    }
+                }).build();
+        ConnectManager.getInstance().request(getContext(), content);
     }
 
     private void openOrderDetail(OrderEntity entity) {
@@ -207,7 +244,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
                                 ToastCell.toast(getActivity(), "确认收货成功!");
                                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
                                 Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
-                                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY,entity.orderId);
+                                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY, entity.orderId);
                                 startActivity(intent);
                             }
                         } else {
