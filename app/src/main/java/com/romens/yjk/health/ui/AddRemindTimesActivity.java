@@ -46,11 +46,7 @@ public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActionBarLayout.LinearLayoutContainer container = new ActionBarLayout.LinearLayoutContainer(this);
-        ActionBar actionBar = new ActionBar(this);
-        container.addView(actionBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        container.addView(LayoutInflater.from(this).inflate(R.layout.activity_remind_add_time, null), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        setContentView(container, actionBar);
+        setContentView(R.layout.activity_remind_add_time, R.id.action_bar);
         actionBarEvent();
 
         initData();
@@ -71,7 +67,7 @@ public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics i
                     timesData.remove(dismissPosition);
                     timesAdapter.notifyDataSetChanged();
                 } else {
-                   Toast.makeText(getApplicationContext(), "默认选项不能删除", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "默认选项不能删除", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -82,9 +78,9 @@ public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics i
                 TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-                        String time = amendTime(hourOfDay) + ":" + amendTime(minute) ;
-                        timesData.remove(position) ;
-                        timesData.add(position,time);
+                        String time = amendTime(hourOfDay) + ":" + amendTime(minute);
+                        timesData.remove(position);
+                        timesData.add(position, time);
                         timesAdapter.notifyDataSetChanged();
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
@@ -100,18 +96,18 @@ public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics i
             @Override
             public void onClick(View v) {
                 if (timesData.size() < 5) {
-                    int hour = Integer.parseInt(timesData.get(timesData.size()-1).split(":")[0]);
-                    if(hour<23){
-                        hour++ ;
-                    }else {
-                        hour = 0 ;
+                    int hour = Integer.parseInt(timesData.get(timesData.size() - 1).split(":")[0]);
+                    if (hour < 23) {
+                        hour++;
+                    } else {
+                        hour = 0;
                     }
-                    int minute = Integer.parseInt(timesData.get(timesData.size()-1).split(":")[1]);
+                    int minute = Integer.parseInt(timesData.get(timesData.size() - 1).split(":")[1]);
                     TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-                            String time = amendTime(hourOfDay) + ":" + amendTime(minute) ;
-                            timesData.add(time) ;
+                            String time = amendTime(hourOfDay) + ":" + amendTime(minute);
+                            timesData.add(time);
                             timesAdapter.notifyDataSetChanged();
                         }
                     }, hour, minute, false, false);
@@ -152,7 +148,7 @@ public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics i
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK ){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent(AddRemindTimesActivity.this, AddNewRemindActivity.class);
             intent.putStringArrayListExtra("resultTimesDataList", timesData);
             setResult(UserGuidConfig.RESPONSE_REMIND_TIMES_TO_NEW_REMIND, intent);
@@ -188,11 +184,11 @@ public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics i
         timesData = (ArrayList<String>) data;
     }
 
-    public String amendTime(int time){
-        if(time <  10){
-            return "0" + time ;
-        }else {
-            return time + "" ;
+    public String amendTime(int time) {
+        if (time < 10) {
+            return "0" + time;
+        } else {
+            return time + "";
         }
     }
 }
