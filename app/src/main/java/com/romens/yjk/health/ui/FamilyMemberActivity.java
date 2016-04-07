@@ -214,7 +214,7 @@ public class FamilyMemberActivity extends BaseActionBarActivityWithAnalytics {
             AvatarAndInfoCell cell = (AvatarAndInfoCell) convertView;
             cell.setBackgroundColor(Color.WHITE);
             FamilyMemberEntity entity = entitiesList.get(position);
-            String subTitle = entity.getSex() + "," + entity.getBirthday();
+            String subTitle = entity.getBirthday();
             cell.setTitleAndSubTitle(entity.getName(), subTitle, true);
             return convertView;
         }
