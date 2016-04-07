@@ -54,10 +54,10 @@ import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.SettingActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.GridViewCell;
-import com.romens.yjk.health.ui.cells.KeyAndImgCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
+import com.romens.yjk.health.ui.cells.TextInfoCell;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -423,14 +423,14 @@ public class HomeMyNewFragment extends AppFragment implements AppNotificationCen
                 }
             } else if (type == 6) {
                 if (view == null) {
-                    view = new KeyAndImgCell(adapterContext);
+                    view = new TextInfoCell(adapterContext);
                 }
-                KeyAndImgCell cell = (KeyAndImgCell) view;
-//                cell.setBackgroundResource(R.drawable.greydivider);
-                cell.setLeftTextViewPadding(24, 0);
-                cell.setKeyColor(0xff121212);
-                cell.setInfo("全部订单", "查看全部订单", R.drawable.y, true);
-                cell.setDivider(true, AndroidUtilities.dp(24), 0);
+                TextInfoCell cell = (TextInfoCell) view;
+                cell.setTextColor(0xff757575);
+                cell.setValueTextColor(0xff757575);
+                cell.setClickable(true);
+                cell.setBackgroundResource(R.drawable.list_selector);
+                cell.setTextAndValue("全部订单", "查看全部订单", true, true);
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
