@@ -142,15 +142,6 @@ public class CouponFragment extends Fragment {
     private List<CuoponEntity> result;
     private boolean mCanclick;
 
-
-//    public void setPage(int page) {
-//        this.mPage = page;
-//    }
-
-//    public void setCanClick(boolean canClick) {
-//        this.mCanclick = canClick;
-//    }
-
     public void getCuopon() {
         Map<String, String> args = new FacadeArgs.MapBuilder()
                 .put("USERGUID", UserConfig.getInstance().getClientUserEntity().getGuid()).build();
