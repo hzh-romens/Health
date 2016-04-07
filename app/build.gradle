@@ -8,8 +8,8 @@ android {
         applicationId "com.romens.yjk.health"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 160328
-        versionName "1.8.12"
+        versionCode 160408
+        versionName "1.9.5"
         multiDexEnabled true
         manifestPlaceholders = [CHANNEL          : "yjk",
                                 CHANNEL_PACKAGE  : applicationId,
@@ -21,6 +21,11 @@ android {
                                 PUSH_ACCESS_KEY  : "AE49UMV4G85C",
                                 LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac",
                                 WX_PAY_KEY       : ""]
+
+        buildConfigField "String", "BUG_APP_ID", "\"900024979\""
+        buildConfigField "String", "BUG_CHANNEL", "\"yjk\""
+        buildConfigField "String", "BUG_VERSION", "\"" + versionName + "\""
+        buildConfigField "String", "BUG_PACKAGE", "\"" + applicationId + "\""
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
@@ -37,18 +42,6 @@ android {
     productFlavors {
         channel_yjk {
             applicationId "com.romens.yjk.health"
-            manifestPlaceholders = [CHANNEL          : "yjk",
-                                    CHANNEL_PACKAGE  : applicationId,
-                                    APK_CHANNEL_VALUE: "19;romens",
-                                    IM_SDK_APPKEY    : "romens#wsc609129",
-                                    PGYER_APPID      : "c369efd3284683568819c1767a19c5ed",
-                                    MTA_APPKEY       : "AQ5Q612ZPGBQ",
-                                    PUSH_ACCESS_ID   : "2100188535",
-                                    PUSH_ACCESS_KEY  : "AE49UMV4G85C",
-                                    LOCATION_SDK_KEY : "13b71e6b441c27dae8977c502091eaac",
-                                    WX_PAY_KEY       : ""]
-
-            buildConfigField "String", "BUG_APP_ID", "\"\""
         }
         channel_nj_xszk {
             applicationId "com.romens.yjk.health.njxszk"

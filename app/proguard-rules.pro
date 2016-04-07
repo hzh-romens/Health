@@ -319,6 +319,11 @@ public static final int *;
   public protected *;
 }
 
+-dontwarn com.romens.yjk.health.wxapi.**
+-keep class com.romens.yjk.health.wxapi.**{
+    public protected *;
+}
+
 -dontwarn com.romens.yjk.health.njxszk.wxapi.**
 -keep class com.romens.yjk.health.njxszk.wxapi.**{
     public protected *;
