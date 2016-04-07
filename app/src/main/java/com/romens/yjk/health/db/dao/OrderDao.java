@@ -76,7 +76,7 @@ public class OrderDao extends AbstractDao<OrderEntity, String> {
     }
 
     public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 68) {
+        if (oldVersion < 70) {
             dropTable(db, true);
             createTable(db, false);
         }

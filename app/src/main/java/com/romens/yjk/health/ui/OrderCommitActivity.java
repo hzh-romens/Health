@@ -1,13 +1,18 @@
 package com.romens.yjk.health.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.easemob.exceptions.EMNetworkUnconnectedException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -23,17 +28,25 @@ import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
+import com.romens.yjk.health.model.GoodsListEntity;
+import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ActionCell;
+import com.romens.yjk.health.ui.cells.OrderGoodsCell;
+import com.romens.yjk.health.ui.cells.OrderStoreCell;
 import com.romens.yjk.health.ui.cells.RatingBarCell;
 import com.romens.yjk.health.ui.cells.TextInputNoLineCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,8 +61,10 @@ public class OrderCommitActivity extends BaseActionBarActivityWithAnalytics {
     private RatingBarCell ratingBarCell1;
     private RatingBarCell ratingBarCell2;
     private ListView listView;
-
     private OrderEntity entity;
+
+    private List<GoodsListEntity> goodsListEntities;
+    private GoodsAdapter adapter ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +132,8 @@ public class OrderCommitActivity extends BaseActionBarActivityWithAnalytics {
         listView.setVerticalScrollBarEnabled(false);
         dataContent.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
+        adapter = new GoodsAdapter() ;
+        initData();
     }
 
     private void trySubmitCommit() {
@@ -126,6 +143,74 @@ public class OrderCommitActivity extends BaseActionBarActivityWithAnalytics {
         int goodsStar = (int) ratingBarCell1.getValue();
         int buyStar = (int) ratingBarCell2.getValue();
         submitCommit(orderId, bodyText, goodsStar, buyStar);
+    }
+
+    public void initData(){
+        requestOrderDetailList(entity.orderId);
+    }
+
+    private int rowCount ;
+    private int shopNameRow ;
+    private int goodsBeginRow;
+    private int goodsEndRow;
+
+    public void setRow(){
+        rowCount = 0;
+        shopNameRow = rowCount++ ;
+        goodsBeginRow = rowCount;
+        rowCount += goodsListEntities.size();
+        goodsEndRow = rowCount - 1;
+    }
+
+    private void requestOrderDetailList(String orderId) {
+        String userGuid = UserGuidConfig.USER_GUID;
+        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+        args.put("USERGUID", userGuid);
+        args.put("ORDERID", orderId);
+
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "getMyOrderDetail", args);
+        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+        Connect connect = new RMConnect.Builder(OrderDetailActivity.class)
+                .withProtocol(protocol)
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol<JsonNode>) message.protocol;
+                            setOrderData(responseProtocol.getResponse());
+                        } else {
+                            ToastCell.toast(OrderCommitActivity.this, "查询订单失败!");
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(this, connect);
+    }
+
+    public void setOrderData(JsonNode response) {
+        if (response == null) {
+            return;
+        }
+        goodsListEntities = new ArrayList<>();
+        JsonNode array = response.get("GOODSLIST");
+        for (int i = 0; i < array.size(); i++) {
+            JsonNode subObjcet = array.get(i);
+            GoodsListEntity goodsEntity = new GoodsListEntity();
+            goodsEntity.setGoodsGuid(subObjcet.get("GOODSGUID").asText());
+            goodsEntity.setBuyCount(subObjcet.get("BUYCOUNT").asText());
+            goodsEntity.setGoodsPrice(subObjcet.get("GOODSPRICE").asText());
+            goodsEntity.setName(subObjcet.get("NAME").asText());
+            goodsEntity.setCode(subObjcet.get("CODE").asText());
+            goodsEntity.setGoodsUrl(subObjcet.get("GOODURL").asText());
+            goodsEntity.setDetailDescitption(subObjcet.get("DETAILDESCRIPTION").asText());
+            goodsEntity.setSpec(subObjcet.get("SPEC").asText());
+            goodsEntity.setGoodsSortGuid(subObjcet.get("GOODSSORTGUID").asText());
+            goodsEntity.setShopId(subObjcet.get("SHOPID").asText());
+            goodsEntity.setShopName(subObjcet.get("SHOPNAME").asText());
+            goodsListEntities.add(goodsEntity);
+        }
+        setRow();
+        listView.setAdapter(adapter);
     }
 
 
@@ -153,6 +238,7 @@ public class OrderCommitActivity extends BaseActionBarActivityWithAnalytics {
                             if (!response.has("ERROR")) {
                                 AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
                                 finish();
+                                return;
                             }
                         }
                         ToastCell.toast(OrderCommitActivity.this, "提交评价失败,请重试!");
@@ -197,5 +283,67 @@ public class OrderCommitActivity extends BaseActionBarActivityWithAnalytics {
 //                }
 //            }
 //        });
+    }
+
+    class GoodsAdapter extends BaseAdapter{
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return false;
+        }
+
+        @Override
+        public int getCount() {
+            return rowCount;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if(position == shopNameRow){
+                return 1 ;
+            }else if(position >= goodsBeginRow && position <= goodsEndRow){
+                return 2 ;
+            }
+
+            return 0 ;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            int type = getItemViewType(position);
+            if(type == 1){
+                OrderStoreCell cell = new OrderStoreCell(parent.getContext()) ;
+                GoodsListEntity item = goodsListEntities.get(0);
+                cell.setValue(item.getShopName(),true);
+                return cell ;
+            }else if(type == 2){
+                OrderGoodsCell cell = new OrderGoodsCell(parent.getContext());
+                int itemIndex = position - goodsBeginRow;
+                GoodsListEntity item = goodsListEntities.get(itemIndex);
+                String iconPath = item.getGoodsUrl() ;
+                String name = item.getName() ;
+                String desc = String.format("规格:%s", item.getSpec());
+                BigDecimal userPrice = new BigDecimal(item.getGoodsPrice()) ;
+                int count = Integer.parseInt(item.getBuyCount()) ;
+                cell.setValue(iconPath, name, desc, userPrice, count, true);
+                return cell;
+            }
+            return null;
+        }
     }
 }

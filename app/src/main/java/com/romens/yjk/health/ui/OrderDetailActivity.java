@@ -79,7 +79,7 @@ public class OrderDetailActivity extends BaseActivity {
     private OrderDetailAdapter adapter;
     private OrderListEntity orderListEntity;
     private List<GoodsListEntity> goodsListEntities;
-    private OrderExpandableDetailAdapter subExpandableadapter;
+
 
     private String userGuid;
 
@@ -116,7 +116,7 @@ public class OrderDetailActivity extends BaseActivity {
         setContentView(container);
         initData();
         adapter = new OrderDetailAdapter(this);
-        subExpandableadapter = new OrderExpandableDetailAdapter(this);
+
 //        listView.setAdapter(adapter);
     }
 
@@ -488,7 +488,7 @@ public class OrderDetailActivity extends BaseActivity {
             goodsListEntities.add(goodsEntity);
         }
         setRow();
-        subExpandableadapter.setOrderEntities(goodsListEntities);
+
         adapter.setOrderListEntity(orderListEntity);
         listView.setAdapter(adapter);
     }
