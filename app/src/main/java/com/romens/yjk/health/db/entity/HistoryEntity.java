@@ -17,6 +17,15 @@ public class HistoryEntity {
     private String commentCount;
     private String guid;
     private String shopIp;
+    private int isCare;
+
+    public int getIsCare() {
+        return isCare;
+    }
+
+    public void setIsCare(int isCare) {
+        this.isCare = isCare;
+    }
 
     public String getShopIp() {
         return shopIp;
@@ -106,7 +115,7 @@ public class HistoryEntity {
         this.guid = guid;
     }
 
-    public static HistoryEntity toEntity(MedicineGoodsItem item) {
+    public static HistoryEntity toEntity(MedicineGoodsItem item, int goodFlag) {
         HistoryEntity historyEntity = new HistoryEntity();
         if (item.shopName != null && !("".equals(item.shopName)))
             historyEntity.setShopName(item.shopName + "");
@@ -127,6 +136,8 @@ public class HistoryEntity {
             historyEntity.setGuid(item.guid);
         if (!("".equals(item.shopId)))
             historyEntity.setShopIp(item.shopId);
+        //goodFlag:0 非医保 ；1 医保
+        historyEntity.setIsCare(goodFlag);
         return historyEntity;
     }
 }
