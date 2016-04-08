@@ -8,7 +8,7 @@ import com.tencent.stat.StatService;
  * @create 16/2/20
  * @description
  */
-public class BaseActionBarActivityWithAnalytics extends BaseActionBarActivity {
+public class BaseActionBarActivityWithAnalytics extends BaseActivity {
 
     @Override
     public void onResume() {

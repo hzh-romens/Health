@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,10 +13,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
-import com.amap.api.location.core.AMapLocException;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
@@ -34,6 +29,7 @@ import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.helper.BugHelper;
 import com.romens.yjk.health.helper.MonitorHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.activity.BaseLocationActivity;
 import com.romens.yjk.health.ui.cells.HomeTabsCell;
 import com.romens.yjk.health.ui.cells.LastLocationCell;
 import com.romens.yjk.health.ui.fragment.HomeDiscoveryFragment;
@@ -46,7 +42,7 @@ import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends BaseActivity implements AppNotificationCenter.NotificationCenterDelegate {
+public class HomeActivity extends BaseLocationActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
     private LastLocationCell lastLocationCell;
     private ViewPager viewPager;
@@ -250,7 +246,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         //requestShopCarCountData();
         setupConfig();
         onLoginStateChanged();
-        initLastLocation();
+        startLocation();
         AndroidUtilities.runOnUIThread(new Runnable() {
             @Override
             public void run() {
@@ -293,16 +289,6 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
     private void setupConfig() {
         LocationAddressHelper.syncServerLocationAddress(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
 
@@ -351,11 +337,15 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 
     @Override
     public void onDestroy() {
-        stopLocation();
         MonitorHelper.unregisterUpdate();
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onLocationSuccess(AMapLocation aMapLocation) {
+        LocationHelper.updateLastLocation(HomeActivity.this, aMapLocation);
     }
 
     class HomePagerAdapter extends FragmentViewPagerAdapter {
@@ -379,7 +369,7 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
         if (TextUtils.isEmpty(address)) {
             address = "无法获取当前位置";
         }
-        lastLocationCell.setValue(address);
+        lastLocationCell.setValue(String.format("送至: %s", address));
     }
 
 //    //获取购物车数量
@@ -424,54 +414,4 @@ public class HomeActivity extends BaseActivity implements AppNotificationCenter.
 //        }
 //    }
 
-    private LocationManagerProxy mAMapLocationManager;
-
-    private void initLastLocation() {
-        mAMapLocationManager = LocationManagerProxy.getInstance(this);
-        mAMapLocationManager.setGpsEnable(true);
-            /*
-             * mAMapLocManager.setGpsEnable(false);//
-			 * 1.0.2版本新增方法，设置true表示混合定位中包含gps定位，false表示纯网络定位，默认是true
-			 */
-        // Location API定位采用GPS和网络混合定位方式，时间最短是2000毫秒
-        mAMapLocationManager.requestLocationData(
-                LocationProviderProxy.AMapNetwork, -1, 50, new AMapLocationListener() {
-                    @Override
-                    public void onLocationChanged(AMapLocation aMapLocation) {
-                        if (aMapLocation != null) {
-                            AMapLocException exception = aMapLocation.getAMapException();
-                            if (exception == null || exception.getErrorCode() == 0) {
-                                LocationHelper.updateLastLocation(HomeActivity.this, aMapLocation);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onLocationChanged(Location location) {
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                });
-    }
-
-    private void stopLocation() {
-        if (mAMapLocationManager != null) {
-            mAMapLocationManager.destroy();
-        }
-        mAMapLocationManager = null;
-    }
 }

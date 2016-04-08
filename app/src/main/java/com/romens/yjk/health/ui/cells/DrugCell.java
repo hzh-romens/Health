@@ -58,7 +58,8 @@ public class DrugCell extends FrameLayout {
         nameTextView.setMaxLines(1);
         nameTextView.setSingleLine(true);
         nameTextView.setEllipsize(TextUtils.TruncateAt.END);
-        nameTextView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        nameTextView.setGravity(Gravity.CENTER_VERTICAL);
+        AndroidUtilities.setMaterialTypeface(nameTextView);
         addView(nameTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT, 68, 10, 16, 0));
 
         descTextView = new TextView(context);

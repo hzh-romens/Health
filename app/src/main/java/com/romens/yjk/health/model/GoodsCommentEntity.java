@@ -1,5 +1,7 @@
 package com.romens.yjk.health.model;
 
+import android.text.TextUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 public class GoodsCommentEntity {
     public final String id;
     public final String memberId;
+    private final String memberName;
     public final String isAppEnd;
     public final String advice;
     public final int qualityLevel;
@@ -29,11 +32,28 @@ public class GoodsCommentEntity {
     public GoodsCommentEntity(JSONObject jsonObject) throws JSONException {
         id = jsonObject.getString("ID");
         memberId = jsonObject.getString("MEMBERID");
+        memberName = jsonObject.has("MEMBERNAME") ? jsonObject.getString("MEMBERNAME") : "***";
         isAppEnd = jsonObject.getString("ISAPPEND");
         advice = jsonObject.getString("ADVICE");
         qualityLevel = jsonObject.getInt("QUALITYLEVEL");
         dileveryLevel = jsonObject.getInt("DILEVERYLEVEL");
         allCount = jsonObject.getInt("ALLCOUNT");
         assessDate = jsonObject.getString("ASSESSDATE");
+    }
+
+    public String getMemberName() {
+        StringBuilder member = new StringBuilder();
+        if (!TextUtils.isEmpty(memberName)) {
+            final int length = memberName.length();
+            if (length > 2) {
+                member.append(memberName.substring(0, 2));
+            } else if (length > 1) {
+                member.append(memberName.substring(0, 1));
+            }
+            member.append("***");
+        } else {
+            member.append("***");
+        }
+        return member.toString();
     }
 }

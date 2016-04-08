@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.easemob.exceptions.EMNetworkUnconnectedException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.Message;

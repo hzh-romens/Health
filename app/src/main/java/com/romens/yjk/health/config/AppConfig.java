@@ -6,7 +6,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
-import com.easemob.chat.EMChat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,36 +38,36 @@ public class AppConfig {
     private static boolean isInitHXSDK = false;
 
     public static void initHXSDK() {
-        synchronized (sync) {
-            /**
-             * this function will initialize the HuanXin SDK
-             *
-             * @return boolean true if caller can continue to call HuanXin related APIs after calling onInit, otherwise false.
-             *
-             * 环信初始化SDK帮助函数
-             * 返回true如果正确初始化，否则false，如果返回为false，请在后续的调用中不要调用任何和环信相关的代码
-             *
-             * for example:
-             * 例子：
-             *
-             * public class DemoHXSDKHelper extends HXSDKHelper
-             *
-             * HXHelper = new DemoHXSDKHelper();
-             * if(HXHelper.onInit(context)){
-             *     // do HuanXin related work
-             * }
-             */
-            if (isInitHXSDK) {
-                return;
-            }
-            String hxAppId = getHXId();
-            hxAppId = "romens#yjkim888888";
-            if (!TextUtils.isEmpty(hxAppId)) {
-                EMChat.getInstance().setAppkey(hxAppId);
-                //IMHXSDKHelper.getInstance().onInit();
-                isInitHXSDK = true;
-            }
-        }
+//        synchronized (sync) {
+//            /**
+//             * this function will initialize the HuanXin SDK
+//             *
+//             * @return boolean true if caller can continue to call HuanXin related APIs after calling onInit, otherwise false.
+//             *
+//             * 环信初始化SDK帮助函数
+//             * 返回true如果正确初始化，否则false，如果返回为false，请在后续的调用中不要调用任何和环信相关的代码
+//             *
+//             * for example:
+//             * 例子：
+//             *
+//             * public class DemoHXSDKHelper extends HXSDKHelper
+//             *
+//             * HXHelper = new DemoHXSDKHelper();
+//             * if(HXHelper.onInit(context)){
+//             *     // do HuanXin related work
+//             * }
+//             */
+//            if (isInitHXSDK) {
+//                return;
+//            }
+//            String hxAppId = getHXId();
+//            hxAppId = "romens#yjkim888888";
+//            if (!TextUtils.isEmpty(hxAppId)) {
+//                EMChat.getInstance().setAppkey(hxAppId);
+//                //IMHXSDKHelper.getInstance().onInit();
+//                isInitHXSDK = true;
+//            }
+//        }
     }
 
     public static boolean isLoading() {

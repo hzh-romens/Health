@@ -1,5 +1,7 @@
 package com.romens.yjk.health.helper;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -10,6 +12,18 @@ import java.util.regex.Pattern;
  */
 public class FormatHelper {
     public static final String priceFormat = "￥#,##0.00";
+
+    public static String formatPrice(BigDecimal price) {
+        DecimalFormat decimalFormat = new DecimalFormat(priceFormat);
+        String priceStr = decimalFormat.format(price);
+        return priceStr;
+    }
+
+    public static String format(double value) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        String valueStr = decimalFormat.format(value);
+        return valueStr;
+    }
 
     public static List<String> stringToList(String value) {
         if (value == null || value.length() <= 0) {

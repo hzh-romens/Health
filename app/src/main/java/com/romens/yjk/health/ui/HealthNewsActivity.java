@@ -27,6 +27,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.HealthNewsEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.NewsCell;
 import com.romens.yjk.health.ui.cells.NewsTopCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -48,7 +49,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/8/13.
  */
-public class HealthNewsActivity extends BaseActivity {
+public class HealthNewsActivity extends BaseActionBarActivityWithAnalytics {
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerListView recyclerView;

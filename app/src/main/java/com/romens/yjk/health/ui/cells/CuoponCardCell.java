@@ -129,7 +129,7 @@ public class CuoponCardCell extends FrameLayout {
         if (TextUtils.isEmpty(shuoming))
             addressView.setText(shuoming);
         conditionView.setText("满" + limitamount + "可用");
-        timeView.setText("有效期" + startDate + "-" + enddate);
+        timeView.setText("有效期" + subSring(startDate) + "-" + subSring(enddate));
         this.mIsused = isused;
         this.mEnddate = enddate;
         this.mName = name;
@@ -161,6 +161,17 @@ public class CuoponCardCell extends FrameLayout {
             choiceView.setImageDrawable(getResources().getDrawable(R.drawable.ic_cuopon_choice));
         } else {
             choiceView.setVisibility(GONE);
+        }
+    }
+
+    public String subSring(String date) {
+        boolean contains = date.contains(".");
+        if (contains) {
+            int end = date.indexOf(".");
+            String newStr = date.substring(0, end);
+            return newStr;
+        } else {
+            return date;
         }
     }
 }

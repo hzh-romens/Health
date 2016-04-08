@@ -28,13 +28,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
-import com.amap.api.location.core.AMapLocException;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -56,6 +51,7 @@ import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.model.LocationEntity;
+import com.romens.yjk.health.ui.activity.BaseLocationActivity;
 import com.romens.yjk.health.ui.adapter.BaseLocationAdapter;
 import com.romens.yjk.health.ui.adapter.LocationActivityAdapter;
 import com.romens.yjk.health.ui.adapter.LocationActivitySearchAdapter;
@@ -64,7 +60,7 @@ import com.romens.yjk.health.ui.components.MapPlaceholderDrawable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationActivity extends BaseActivity {
+public class LocationActivity extends BaseLocationActivity {
 
     public static final String ARGUMENT_KEY_QUERY_KEYWORD = "query_keyword";
     public static final String ARGUMENT_KEY_TARGET_LOCATION_LAT = "target_location_lat";
@@ -126,7 +122,6 @@ public class LocationActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopLocation();
         if (mapView != null) {
             mapView.onDestroy();
         }
@@ -137,6 +132,7 @@ public class LocationActivity extends BaseActivity {
             searchAdapter.destroy();
         }
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,7 +266,7 @@ public class LocationActivity extends BaseActivity {
             locationButton.setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
-                    if(Build.VERSION.SDK_INT>=21) {
+                    if (Build.VERSION.SDK_INT >= 21) {
                         outline.setOval(0, 0, AndroidUtilities.dp(56), AndroidUtilities.dp(56));
                     }
                 }
@@ -359,7 +355,9 @@ public class LocationActivity extends BaseActivity {
                 routeButton.setOutlineProvider(new ViewOutlineProvider() {
                     @Override
                     public void getOutline(View view, Outline outline) {
-                        outline.setOval(0, 0, AndroidUtilities.dp(56), AndroidUtilities.dp(56));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            outline.setOval(0, 0, AndroidUtilities.dp(56), AndroidUtilities.dp(56));
+                        }
                     }
                 });
             }
@@ -400,7 +398,7 @@ public class LocationActivity extends BaseActivity {
             }
 
             listView = new ListView(context);
-            listView.setAdapter(adapter = new LocationActivityAdapter(context,searchType));
+            listView.setAdapter(adapter = new LocationActivityAdapter(context, searchType));
             listView.setVerticalScrollBarEnabled(false);
             listView.setDividerHeight(0);
             listView.setDivider(null);
@@ -609,7 +607,7 @@ public class LocationActivity extends BaseActivity {
             });
             positionMarker(myLocation = getLastLocation());
         }
-        initMyLocation();
+        startLocation();
     }
 
     /**
@@ -629,66 +627,24 @@ public class LocationActivity extends BaseActivity {
     }
 
     private float getLocationFitZoom() {
-        return aMap.getMaxZoomLevel() - 6;
+        return aMap.getMaxZoomLevel() - 3;
     }
 
-    private LocationManagerProxy mAMapLocationManager;
-
-    private void initMyLocation() {
-
-        mAMapLocationManager = LocationManagerProxy.getInstance(this);
-        mAMapLocationManager.setGpsEnable(true);
-            /*
-             * mAMapLocManager.setGpsEnable(false);//
-			 * 1.0.2版本新增方法，设置true表示混合定位中包含gps定位，false表示纯网络定位，默认是true
-			 */
-        // Location API定位采用GPS和网络混合定位方式，时间最短是2000毫秒
-        mAMapLocationManager.requestLocationData(
-                LocationProviderProxy.AMapNetwork, -1, 50, new AMapLocationListener() {
-                    @Override
-                    public void onLocationChanged(AMapLocation aMapLocation) {
-                        myLocation = null;
-                        if (aMapLocation != null) {
-                            AMapLocException exception = aMapLocation.getAMapException();
-                            if (exception == null || exception.getErrorCode() == 0) {
-                                myLocation = new Location("my");
-                                myLocation.setLatitude(aMapLocation.getLatitude());
-                                myLocation.setLongitude(aMapLocation.getLongitude());
-                                myLocation.setAltitude(aMapLocation.getAltitude());
-                                myLocation.setAccuracy(aMapLocation.getAccuracy());
-                                LocationHelper.writeLastLocation(aMapLocation.getCityCode(), aMapLocation.getLatitude(), aMapLocation.getLongitude());
-                            }
-                        }
-                        positionMarker(myLocation);
-                    }
-
-                    @Override
-                    public void onLocationChanged(Location location) {
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                });
+    @Override
+    protected void onLocationSuccess(AMapLocation aMapLocation) {
+        myLocation = new Location("my");
+        myLocation.setLatitude(aMapLocation.getLatitude());
+        myLocation.setLongitude(aMapLocation.getLongitude());
+        myLocation.setAltitude(aMapLocation.getAltitude());
+        myLocation.setAccuracy(aMapLocation.getAccuracy());
+        LocationHelper.writeLastLocation(aMapLocation.getCityCode(), aMapLocation.getLatitude(), aMapLocation.getLongitude());
+        positionMarker(myLocation);
     }
 
-    private void stopLocation() {
-        if (mAMapLocationManager != null) {
-            mAMapLocationManager.destory();
-        }
-        mAMapLocationManager = null;
+    @Override
+    protected void onLocationFail(AMapLocation aMapLocation) {
+        myLocation = null;
+        positionMarker(myLocation);
     }
 
     private void updateClipView(int firstVisibleItem) {
@@ -838,9 +794,9 @@ public class LocationActivity extends BaseActivity {
         } else if (aMap != null) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             if (adapter != null) {
-                if(searchType== BaseLocationAdapter.SearchType.SHOP) {
+                if (searchType == BaseLocationAdapter.SearchType.SHOP) {
                     adapter.searchMapPlacesWithServerQuery(MAP_SEARCH_DEFAULT_KEY, myLocation);
-                }else{
+                } else {
                     adapter.searchMapPlacesWithQuery(MAP_SEARCH_DEFAULT_KEY, myLocation);
                 }
                 adapter.setGpsLocation(myLocation);

@@ -54,10 +54,10 @@ import com.romens.yjk.health.ui.MyOrderActivity;
 import com.romens.yjk.health.ui.SettingActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.cells.GridViewCell;
-import com.romens.yjk.health.ui.cells.KeyAndImgCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
+import com.romens.yjk.health.ui.cells.TextInfoCell;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,9 +71,9 @@ import java.util.Map;
 public class HomeMyNewFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
     private ListView listView;
     private ListAdapter adapter;
-    private String integral = "0";
-    private String remainMoney = "0";
-    private String coupon = "0";
+    private int integral = 0;
+    private double remainMoney = 0;
+    private int coupon = 0;
     private String sexType = "0";
 
     public void onCreate(Bundle saveInstanceState) {
@@ -423,14 +423,14 @@ public class HomeMyNewFragment extends AppFragment implements AppNotificationCen
                 }
             } else if (type == 6) {
                 if (view == null) {
-                    view = new KeyAndImgCell(adapterContext);
+                    view = new TextInfoCell(adapterContext);
                 }
-                KeyAndImgCell cell = (KeyAndImgCell) view;
-//                cell.setBackgroundResource(R.drawable.greydivider);
-                cell.setLeftTextViewPadding(24, 0);
-                cell.setKeyColor(0xff121212);
-                cell.setInfo("全部订单", "查看全部订单", R.drawable.y, true);
-                cell.setDivider(true, AndroidUtilities.dp(24), 0);
+                TextInfoCell cell = (TextInfoCell) view;
+                cell.setTextColor(0xff757575);
+                cell.setValueTextColor(0xff757575);
+                cell.setClickable(true);
+                cell.setBackgroundResource(R.drawable.list_selector);
+                cell.setTextAndValue("全部订单", "查看全部订单", true, true);
                 cell.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -475,11 +475,10 @@ public class HomeMyNewFragment extends AppFragment implements AppNotificationCen
             public void run() {
                 try {
                     JsonNode jfyeObject = JacksonMapper.getInstance().readTree(jsonNode.get("JFYE").asText()).get(0);
-                    double integralD = jfyeObject.get("SIGNINPOINT").asDouble(0) +
-                            jfyeObject.get("CONSUMPTIONPOINT").asDouble(0);
-                    integral = String.valueOf(integralD);
-                    remainMoney = jfyeObject.get("CONSUMEAMOUNT").asText();
-                    coupon = jfyeObject.get("COUPONNUM").asText();
+                    integral = jfyeObject.get("SIGNINPOINT").asInt(0) +
+                            jfyeObject.get("CONSUMPTIONPOINT").asInt(0);
+                    remainMoney = jfyeObject.get("CONSUMEAMOUNT").asDouble(0);
+                    coupon = jfyeObject.get("COUPONNUM").asInt(0);
                     JsonNode userinfoObj = JacksonMapper.getInstance().readTree(jsonNode.get("USERINFO").asText()).get(0);
                     sexType = userinfoObj.get("SEX").asText();
                     adapter.notifyDataSetChanged();

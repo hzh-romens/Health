@@ -70,6 +70,7 @@ import java.util.Map;
  * @description
  */
 public class ShoppingCartFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
+    public static final String ARGUMENTS_KEY_SELECT_GOODS="key_select_goods";
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView listView;
@@ -92,9 +93,15 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
     private boolean showTip = false;
     private String tipText;
 
+    private List<String> needSelectedGoods;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle arguments=getArguments();
+        if(arguments!=null&&arguments.containsKey(ARGUMENTS_KEY_SELECT_GOODS)){
+            needSelectedGoods=arguments.getStringArrayList(ARGUMENTS_KEY_SELECT_GOODS);
+        }
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginOut);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);

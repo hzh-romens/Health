@@ -17,6 +17,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.UserEntity;
+import com.romens.yjk.health.helper.FormatHelper;
 
 /**
  * Created by HZH on 2015/11/9.
@@ -122,7 +123,7 @@ public class NewUserProfileCell extends FrameLayout {
         super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(152), View.MeasureSpec.EXACTLY));
     }
 
-    public void setUser(UserEntity userEntity, String integral, String remainMoney, String coupon, String sex) {
+    public void setUser(UserEntity userEntity, int integral, double remainMoney, int coupon, String sex) {
         userAvatarView.setRound(40);
         if (TextUtils.isEmpty(userEntity.getAvatar())) {
             if (sex.equals("1")) {
@@ -136,9 +137,9 @@ public class NewUserProfileCell extends FrameLayout {
             userAvatarView.setImagePath(userEntity.getAvatar());
         }
         userNameView.setText(userEntity.getPhone());
-        userIntegralView.setText("积分" + integral);
-        userRemainMoneyView.setText("余额" + remainMoney);
-        userCouponView.setText("优惠券" + coupon);
+        userIntegralView.setText(String.format("积分 %d", integral));
+        userRemainMoneyView.setText(String.format("余额 %s", FormatHelper.format(remainMoney)));
+        userCouponView.setText(String.format("优惠券 %d", coupon));
     }
 
     private OnViewClickListener onViewClickListener;

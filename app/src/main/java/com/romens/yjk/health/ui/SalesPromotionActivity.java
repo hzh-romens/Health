@@ -16,6 +16,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.ADProductEntity;
 import com.romens.yjk.health.model.ADSalesListEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ProductCell;
 import com.romens.yjk.health.ui.cells.SalesPromotionADCell;
 import com.romens.yjk.health.ui.components.CollectionView;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 /**
  * Created by siery on 15/8/17.
  */
-public class SalesPromotionActivity extends BaseActivity implements CollectionViewCallbacks {
+public class SalesPromotionActivity extends BaseActionBarActivityWithAnalytics implements CollectionViewCallbacks {
     private static final int ANIM_DURATION = 250;
     private static final int AD_GROUP_ID = 0;
 

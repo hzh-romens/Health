@@ -107,6 +107,8 @@
             android:name="com.amap.api.v2.apikey"
             android:value="${LOCATION_SDK_KEY}" />
 
+        <service android:name="com.amap.api.location.APSService"></service>
+
         <!--<meta-data-->
         <!--android:name="com.google.android.wearable.beta.app"-->
         <!--android:resource="@xml/wearable_app_desc"/>-->
@@ -128,32 +130,32 @@
         <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
         <!-- im sdk begin-->
         <!-- 开机自启动服务 -->
-        <receiver android:name="com.easemob.chat.StartServiceReceiver">
-            <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name="com.easemob.chat.StartServiceReceiver">-->
+        <!--<intent-filter android:priority="1000">-->
+        <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+        <!--<action android:name="android.intent.action.QUICKBOOT_POWERON" />-->
+        <!--</intent-filter>-->
+        <!--</receiver>-->
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
             android:value="${IM_SDK_APPKEY}" />
         <!-- 声明sdk所需的service -->
-        <service
-            android:name="com.easemob.chat.EMChatService"
-            android:exported="true" />
-        <!-- 声明sdk所需的receiver -->
-        <receiver android:name="com.easemob.chat.EMMonitorReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-                <data android:scheme="package" />
-            </intent-filter>
-            <!-- 可选filter -->
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
+        <!--<service-->
+        <!--android:name="com.easemob.chat.EMChatService"-->
+        <!--android:exported="true" />-->
+        <!--&lt;!&ndash; 声明sdk所需的receiver &ndash;&gt;-->
+        <!--<receiver android:name="com.easemob.chat.EMMonitorReceiver">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.PACKAGE_REMOVED" />-->
+        <!--<data android:scheme="package" />-->
+        <!--</intent-filter>-->
+        <!--&lt;!&ndash; 可选filter &ndash;&gt;-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+        <!--<action android:name="android.intent.action.USER_PRESENT" />-->
+        <!--</intent-filter>-->
+        <!--</receiver>-->
         <!-- im sdk end-->
         <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
@@ -535,18 +537,18 @@
 
         <!--*********** pay begin **********************-->
         <activity
-            android:name=".hyrmtt.wxapi.WXPayEntryActivity"
+            android:name="${CHANNEL_PACKAGE}.wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="wx0c8c0d4ae1fc56d8" />
+                <data android:scheme="${WX_PAY_KEY}" />
             </intent-filter>
         </activity>
 
         <receiver
-            android:name=".hyrmtt.AppRegister"
+            android:name="${CHANNEL_PACKAGE}.AppRegister"
             android:permission="com.tencent.mm.plugin.permission.SEND">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />

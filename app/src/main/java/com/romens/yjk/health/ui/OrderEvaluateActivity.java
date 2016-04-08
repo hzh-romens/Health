@@ -27,6 +27,7 @@ import com.romens.yjk.health.db.DBHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 
 import org.json.JSONException;
@@ -38,7 +39,7 @@ import java.util.Map;
  * Created by anlc on 2015/9/23.
  * 编辑订单评价页面
  */
-public class OrderEvaluateActivity extends BaseActivity {
+public class OrderEvaluateActivity extends BaseActionBarActivityWithAnalytics {
     public static final String ARGUMENT_KEY_ORDER_ENTITY = "key_order_entity";
 
     private BackupImageView leftImageView;

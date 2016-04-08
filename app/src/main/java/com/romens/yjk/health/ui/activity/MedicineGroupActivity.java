@@ -16,11 +16,16 @@ import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
  */
 public class MedicineGroupActivity extends BaseActionBarActivity {
     private HomeHealthNewFragment fragment;
+    private int goodsFlag = GoodsFlag.NORMAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        if (intent.hasExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG)) {
+            goodsFlag = intent.getIntExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.NORMAL);
+        }
+
         setContentView(R.layout.activity_fragment, R.id.action_bar);
         ActionBar actionBar = getMyActionBar();
         final ActionBarMenu menu = actionBar.createMenu();
@@ -31,7 +36,7 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
                 if (id == -1) {
                     finish();
                 } else if (id == 0) {
-                    UIOpenHelper.openSearchActivity(MedicineGroupActivity.this);
+                    UIOpenHelper.openSearchActivity(MedicineGroupActivity.this, goodsFlag);
                 }
             }
         });
@@ -40,11 +45,6 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
             actionBar.setTitle(intent.getStringExtra("title"));
         } else {
             actionBar.setTitle(getString(R.string.app_name));
-        }
-
-        int goodsFlag = GoodsFlag.NORMAL;
-        if (intent.hasExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG)) {
-            goodsFlag = intent.getIntExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.NORMAL);
         }
         fragment = new HomeHealthNewFragment();
         Bundle arguments = new Bundle();

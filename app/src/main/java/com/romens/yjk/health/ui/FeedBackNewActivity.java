@@ -21,6 +21,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.helper.LabelHelper;
+import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2016/2/25.
  */
-public class FeedBackNewActivity extends BaseActivity implements View.OnClickListener {
+public class FeedBackNewActivity extends BaseActionBarActivityWithAnalytics implements View.OnClickListener {
 
     private EditText feedBackInfo;
     private TextView submitBtn;

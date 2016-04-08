@@ -20,7 +20,6 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.BaseActivity;
 import com.romens.yjk.health.ui.components.SlideView;
 
 import java.util.Set;
@@ -28,7 +27,7 @@ import java.util.Set;
 /**
  * Created by siery on 15/9/17.
  */
-public abstract class SlideBaseActivity extends BaseActivity {
+public abstract class SlideBaseActivity extends BaseActionBarActivityWithAnalytics {
 
     private int currentViewNum = 0;
     private int pageCount;
@@ -109,11 +108,6 @@ public abstract class SlideBaseActivity extends BaseActivity {
     protected abstract SlideView onCreatePage(int position);
 
     protected abstract int getStartPagePosition();
-
-    @Override
-    protected boolean enableResetNotifier() {
-        return false;
-    }
 
 
     @Override
