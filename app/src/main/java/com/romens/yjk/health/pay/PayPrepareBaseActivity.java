@@ -50,7 +50,8 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
     public static final String ARGUMENTS_KEY_FROM_ORDER_DETAIL = "key_from_order_detail";
     public static final String ARGUMENTS_KEY_ORDER_NO = "key_order_no";
     public static final String ARGUMENTS_KEY_ORDER_DATE = "key_order_date";
-    public static final String ARGUMENTS_KEY_NEED_PAY_AMOUNT = "key_need_pay_amount";
+    public static final String ARGUMENTS_KEY_ORDER_AMOUNT = "key_order_amount";
+    public static final String ARGUMENTS_KEY_ORDER_PAY_AMOUNT = "key_order_pay_amount";
 
     protected ListView listView;
     protected BaseAdapter listAdapter;
@@ -60,6 +61,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
     //订单编号
     protected String orderNo;
     protected String orderDate;
+    protected BigDecimal orderAmount;
     //订单待支付金额
     protected BigDecimal orderPayAmount;
 
@@ -73,7 +75,9 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         isFromOrderDetail = bundle.getBoolean(ARGUMENTS_KEY_FROM_ORDER_DETAIL, false);
         orderNo = bundle.getString(ARGUMENTS_KEY_ORDER_NO);
         orderDate = bundle.getString(ARGUMENTS_KEY_ORDER_DATE);
-        double amount = bundle.getDouble(ARGUMENTS_KEY_NEED_PAY_AMOUNT, 0);
+        double amount = bundle.getDouble(ARGUMENTS_KEY_ORDER_AMOUNT, 0);
+        orderAmount = new BigDecimal(amount);
+        amount = bundle.getDouble(ARGUMENTS_KEY_ORDER_PAY_AMOUNT, 0);
         orderPayAmount = new BigDecimal(amount);
 
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
@@ -219,6 +223,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         billSection = rowCount++;
         billNoRow = rowCount++;
         orderDateRow = rowCount++;
+        orderAmountRow = rowCount++;
         payAmountRow = rowCount++;
 
         dividerRow = rowCount++;
@@ -237,6 +242,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
     protected int billSection;
     protected int billNoRow;
     protected int orderDateRow;
+    protected int orderAmountRow;
     protected int payAmountRow;
 
     protected int dividerRow;
@@ -286,7 +292,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
 
         @Override
         public int getItemViewType(int position) {
-            if (position == billNoRow || position == orderDateRow || position == payAmountRow) {
+            if (position == billNoRow || position == orderDateRow || position == payAmountRow||position==orderAmountRow) {
                 return 1;
             } else if (position == billSection || position == payModeSection) {
                 return 2;
@@ -333,6 +339,9 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
                 } else if (position == payAmountRow) {
                     cell.setValueTextColor(ResourcesConfig.priceFontColor);
                     cell.setTextAndValue("支付金额", ShoppingHelper.formatPrice(orderPayAmount), false);
+                } else if (position == orderAmountRow) {
+                    cell.setValueTextColor(0xff212121);
+                    cell.setTextAndValue("订单金额", ShoppingHelper.formatPrice(orderPayAmount,false), true);
                 }
             } else if (viewType == 2) {
                 if (convertView == null) {

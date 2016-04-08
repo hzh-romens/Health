@@ -67,7 +67,8 @@ public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
                     SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
                     String orderNo = format.format(Calendar.getInstance().getTime());
                     arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
-                    arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, 0.01);
+                    arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, 0.01);
+                    arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, 0.01);
                     intent.putExtras(arguments);
                     startActivity(intent);
                 } else if (position == testShoppingCartRow) {

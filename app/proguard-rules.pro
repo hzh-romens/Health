@@ -340,5 +340,6 @@ public static final int *;
 
 
 ##romens bug begin
+-dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 ##romens bug end

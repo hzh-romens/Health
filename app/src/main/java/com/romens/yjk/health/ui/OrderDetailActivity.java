@@ -390,7 +390,8 @@ public class OrderDetailActivity extends BaseActionBarActivityWithAnalytics {
         Bundle arguments = new Bundle();
         arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
         arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
-        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, payAmount.doubleValue());
+        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, payAmount.doubleValue());
         boolean isOpen = UIOpenHelper.openPayPrepareActivity(OrderDetailActivity.this, payType, arguments);
         if (isOpen) {
             finish();

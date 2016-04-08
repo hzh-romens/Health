@@ -501,7 +501,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
             String orderNo = response.get("ORDERCODE").asText();
             String orderDate = response.get("CREATEDATE").asText();
             String payType = response.get("PAYTYPE").asText();
-            BigDecimal payAmount = new BigDecimal(response.get("PAYMOUNT").asDouble(0));
+            BigDecimal orderAmount = new BigDecimal(response.get("PAYMOUNT").asDouble());
+            BigDecimal payAmount=new BigDecimal(response.get("PAYPRICE").asDouble());
             boolean isOpen = true;
             int id = Pay.getInstance().getPayTypeId(payType);
             if (id == Pay.PAY_TYPE_OFFLINE) {
@@ -510,7 +511,8 @@ public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithA
                 Bundle arguments = new Bundle();
                 arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
                 arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
-                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_NEED_PAY_AMOUNT, payAmount.doubleValue());
+                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, orderAmount.doubleValue());
+                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, payAmount.doubleValue());
                 isOpen = UIOpenHelper.openPayPrepareActivity(CommitOrderBaseActivity.this, payType, arguments);
             }
             if (isOpen) {

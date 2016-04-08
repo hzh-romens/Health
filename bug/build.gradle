@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+
+def VERSION_CODE = 160408
+def VERSION_NAME = '2.1.1'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 22
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+
+        libraryVariants.all { variant ->
+            variant.outputs.each { output ->
+                def file = output.outputFile
+                def fileName = file.name.replace(".aar", "-v" + versionName + "-c" + versionCode + ".aar")
+                output.outputFile = new File(file.parentFile, fileName)
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+    sourceSets.main {
+        jniLibs.srcDir 'libs'
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/bugly_crash_release__2.1.jar')
+}
