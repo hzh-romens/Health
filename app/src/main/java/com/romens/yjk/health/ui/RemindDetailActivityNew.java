@@ -1,5 +1,6 @@
 package com.romens.yjk.health.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -25,8 +27,10 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.RemindUtils;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.RemindEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
 import com.romens.yjk.health.ui.cells.ImgAndValueCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
@@ -95,11 +99,68 @@ public class RemindDetailActivityNew extends BaseActionBarActivityWithAnalytics 
             @Override
             public void onItemClick(int i) {
                 if (i == -1) {
+                    Intent intent = new Intent(RemindDetailActivityNew.this,RemindActivity.class) ;
+                    intent.putExtra("detailEntity",detailEntity) ;
+                    intent.putExtra("position",getIntent().getIntExtra("position",-1)) ;
+                    setResult(UserGuidConfig.RESPONSE_REMIND_TIMES_TO_REMIND,intent);
                     finish();
                 } else if (i == 0) {
                 }
             }
         });
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == UserGuidConfig.RESPONSE_REMIND_TIMES_TO_NEW_REMIND){
+            List<String> times = new ArrayList<>() ;
+            times = data.getStringArrayListExtra("resultTimesDataList");
+            detailEntity.setFirstTime("-1");
+            detailEntity.setSecondtime("-1");
+            detailEntity.setThreeTime("-1");
+            detailEntity.setFourTime("-1");
+            detailEntity.setFiveTime("-1");
+            if(times.size()>0){
+                detailEntity.setFirstTime(times.get(0));
+            }
+            if(times.size()>1){
+                detailEntity.setSecondtime(times.get(1));
+            }
+            if(times.size()>2){
+                detailEntity.setThreeTime(times.get(2));
+            }
+            if(times.size()>3){
+                detailEntity.setFourTime(times.get(3));
+            }
+            if(times.size()>4){
+                detailEntity.setFiveTime(times.get(4));
+            }
+            adapter.notifyDataSetChanged();
+            if (detailEntity.getIsRemind() != 0) {
+                RemindUtils.cancelRemind(detailEntity, RemindDetailActivityNew.this);
+                RemindUtils.setRemind(detailEntity, RemindDetailActivityNew.this);
+            }
+        }
+    }
+
+    public List<String> getTimes(){
+        List<String> times = new ArrayList<>() ;
+        times.add(detailEntity.getFirstTime());
+        if(!detailEntity.getSecondtime().equals("-1")){
+            times.add(detailEntity.getSecondtime());
+        }
+        if (!detailEntity.getThreeTime().equals("-1")) {
+            times.add(detailEntity.getThreeTime());
+        }
+        if (!detailEntity.getFourTime().equals("-1")) {
+            times.add(detailEntity.getFourTime());
+        }
+        if (!detailEntity.getFiveTime().equals("-1")) {
+            times.add(detailEntity.getFiveTime());
+        }
+        return times ;
     }
 
     class DetailListViewAdapter extends BaseAdapter {
@@ -169,7 +230,7 @@ public class RemindDetailActivityNew extends BaseActionBarActivityWithAnalytics 
                 if (convertView == null) {
                     convertView = LayoutInflater.from(context).inflate(R.layout.list_item_remind_measure, null);
                 }
-                final TextView name = (TextView) convertView.findViewById(R.id.remind_measure_text);
+                TextView name = (TextView) convertView.findViewById(R.id.remind_measure_text);
                 name.setText(detailEntity.getDosage());
                 TextView edit = (TextView) convertView.findViewById(R.id.remind_measure_edit);
                 edit.setOnClickListener(new View.OnClickListener() {
@@ -180,9 +241,11 @@ public class RemindDetailActivityNew extends BaseActionBarActivityWithAnalytics 
                 });
             }else if(type == 3){
                 if (convertView == null) {
-                    convertView = new ImgAndValueCell(context);
+                    convertView = LayoutInflater.from(context).inflate(R.layout.list_item_remind_measure, null);
                 }
-                ImgAndValueCell cell = (ImgAndValueCell) convertView;
+                ImageView image = (ImageView) convertView.findViewById(R.id.remind_measure_image);
+                image.setImageResource(R.drawable.remind_time);
+                TextView name = (TextView) convertView.findViewById(R.id.remind_measure_text);
                 if (position == timesRow) {
                     String timeStr = "";
                     timeStr += detailEntity.getFirstTime() + "  ";
@@ -198,10 +261,17 @@ public class RemindDetailActivityNew extends BaseActionBarActivityWithAnalytics 
                     if (!detailEntity.getFiveTime().equals("-1")) {
                         timeStr += detailEntity.getFiveTime();
                     }
-                    cell.setData(R.drawable.remind_time, timeStr, true);
-                } else if (position == remarkRow) {
+                    name.setText(timeStr);
+                } /*else if (position == remarkRow) {
                     cell.setData(R.drawable.remind_remark, detailEntity.getRemark(), true);
-                }
+                }*/
+                TextView edit = (TextView) convertView.findViewById(R.id.remind_measure_edit);
+                edit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UIOpenHelper.openAddRemindTimesActivity((Activity) context, (ArrayList<String>) getTimes());
+                    }
+                });
             }
             return convertView;
         }

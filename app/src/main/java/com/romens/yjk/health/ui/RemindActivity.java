@@ -30,6 +30,7 @@ import com.romens.android.ui.cells.TextInfoCell;
 import com.romens.android.ui.cells.TextInfoPrivacyCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.RemindUtils;
+import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
@@ -132,6 +133,23 @@ public class RemindActivity extends BaseActionBarActivityWithAnalytics {
         adapter.notifyDataSetChanged();
     }
 
+    public void amendEntity(RemindEntity entity){
+        RemindDao remindDao = DBInterface.instance().openReadableDb().getRemindDao();
+        remindDao.insertOrReplace(entity) ;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent i) {
+        if (resultCode == UserGuidConfig.RESPONSE_REMIND_TIMES_TO_REMIND){
+            int position = i.getIntExtra("position",-1) ;
+            RemindEntity entity = (RemindEntity)i.getSerializableExtra("detailEntity");
+            data.remove(position) ;
+            data.add(position, entity);
+            adapter.notifyDataSetChanged();
+            amendEntity(entity);
+        }
+    }
+
     class RemindItemDecoration extends RecyclerView.ItemDecoration {
         private int horMargin;
         private int verMargin;
@@ -212,7 +230,8 @@ public class RemindActivity extends BaseActionBarActivityWithAnalytics {
                     public void onClick(View v) {
                         Intent intent = new Intent(RemindActivity.this, RemindDetailActivityNew.class);
                         intent.putExtra("detailEntity", entity);
-                        startActivity(intent);
+                        intent.putExtra("position",position) ;
+                        startActivityForResult(intent, 1);
                     }
                 });
                 cell.setOnLongClickListener(new View.OnLongClickListener() {
