@@ -14,6 +14,7 @@ public class UserGuidConfig {
     public final static int RESPONSE_DRUGGROUP_TO_REMIND = 1004;
     public final static int RESPONSE_SEARCH_TO_DRUGGROUP = 1001;
     public final static int RESPONSE_REMIND_TIMES_TO_NEW_REMIND = 1006;
+    public final static int RESPONSE_REMIND_TIMES_TO_REMIND = 1016;
     public final static int RESPONSE_EDITACTIVITY = 1008;
     public final static int RESPONSE_USERLABELS_TO_ACCOUNTSETTING = 1012;
     public final static int RESPONSE_SETTING_TO_HOMEMY = 1012;

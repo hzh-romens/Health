@@ -173,7 +173,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         childHolder.childitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIOpenHelper.openMedicineActivity(adapterContext, entity.getGuid());
+                UIOpenHelper.openMedicineActivity(adapterContext, entity.getGuid(), entity.getIsCare(), true);
             }
         });
         return convertView;

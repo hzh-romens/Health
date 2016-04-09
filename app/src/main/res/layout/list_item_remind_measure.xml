@@ -12,7 +12,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
+            android:id="@+id/remind_measure_image"
             android:src="@drawable/remind_count"
             android:layout_gravity="center"
             android:layout_marginLeft="8dp"

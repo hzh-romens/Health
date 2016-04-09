@@ -1018,7 +1018,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     }
 
     public void AddToHistory(MedicineGoodsItem item) {
-        HistoryEntity historyEntity = HistoryEntity.toEntity(item);
+        HistoryEntity historyEntity = HistoryEntity.toEntity(item,goodsFlag);
         HistoryDao historyDao = DBInterface.instance().openWritableDb().getHistoryDao();
         DeleteQuery<HistoryEntity> historyEntityDeleteQuery = historyDao.queryBuilder().where(HistoryDao.Properties.Guid.eq(item.guid)).buildDelete();
         historyEntityDeleteQuery.executeDeleteWithoutDetachingEntities();

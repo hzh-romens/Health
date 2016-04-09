@@ -3,7 +3,9 @@ package com.romens.yjk.health.db.dao;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+
 import com.romens.yjk.health.db.entity.HistoryEntity;
+
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.DaoConfig;
@@ -13,19 +15,21 @@ import de.greenrobot.dao.internal.DaoConfig;
  */
 public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
     public static final String TABLENAME = "History";
+
     public static class Properties {
-    public final static Property Id = new Property(0, Long.class, "key", true, "_id");
-    public final static Property ShopName = new Property(1, String.class, "shopName", false, "SHOPNAME");
-    public final static Property ImgUrl = new Property(2, String.class, "imgUrl", false, "IMGURL");
-    public final static Property IsSelect = new Property(3, int.class, "isSelect", false, "ISSELECT");
-    public final static Property MedicinalName = new Property(4, String.class, "medicinalName", false, "MEDICINALNAME");
-    public final static Property CurrentPrice = new Property(5, String.class, "currentPrice", false, "CURRENTPRICE");
-    public final static Property DiscountPrice = new Property(6, String.class, "discountPrice", false, "DISCOUNTPRICE");
-    public final static Property SaleCount = new Property(7, String.class, "saleCount", false, "SALECOUNT");
-    public final static Property CommentCount = new Property(8, String.class, "commentCount", false, "COMMENTCOUNT");
-    public final static Property Guid = new Property(9, String.class, "guid", false, "GUID");
-        public final static Property ShopId= new Property(10, String.class, "shopIp", false, "SHOPID");
-}
+        public final static Property Id = new Property(0, Long.class, "key", true, "_id");
+        public final static Property ShopName = new Property(1, String.class, "shopName", false, "SHOPNAME");
+        public final static Property ImgUrl = new Property(2, String.class, "imgUrl", false, "IMGURL");
+        public final static Property IsSelect = new Property(3, int.class, "isSelect", false, "ISSELECT");
+        public final static Property MedicinalName = new Property(4, String.class, "medicinalName", false, "MEDICINALNAME");
+        public final static Property CurrentPrice = new Property(5, String.class, "currentPrice", false, "CURRENTPRICE");
+        public final static Property DiscountPrice = new Property(6, String.class, "discountPrice", false, "DISCOUNTPRICE");
+        public final static Property SaleCount = new Property(7, String.class, "saleCount", false, "SALECOUNT");
+        public final static Property CommentCount = new Property(8, String.class, "commentCount", false, "COMMENTCOUNT");
+        public final static Property Guid = new Property(9, String.class, "guid", false, "GUID");
+        public final static Property ShopId = new Property(10, String.class, "shopIp", false, "SHOPID");
+        public final static Property IsCare = new Property(11, String.class, "isCare", false, "ISCARE");
+    }
 
     public HistoryDao(DaoConfig config) {
         super(config);
@@ -47,8 +51,9 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
                 "'DISCOUNTPRICE' TEXT ," +
                 "'SALECOUNT' TEXT ," +
                 "'COMMENTCOUNT' TEXT ," +
-                "'GUID' TEXT ,"+
-                "'SHOPID' TEXT );");
+                "'GUID' TEXT ," +
+                "'SHOPID' TEXT," +
+                "'ISCARE' INTEGER );");
 
         // Add Indexes
 //        db.execSQL("CREATE INDEX " + constraint + "IDX_ShopCar_NAME ON "+ TABLENAME +
@@ -59,6 +64,11 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
     }
 
     public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion) {
+//        if(oldVersion<35){
+//            db.execSQL("DROP TABLE IF EXISTS HISTORY");
+//        }
+        dropTable(db, true);
+        createTable(db, false);
     }
 
     public static void initCreatedTableData(SQLiteDatabase db) {
@@ -86,7 +96,8 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
         entity.setSaleCount(cursor.getString(offset + 7));
         entity.setCommentCount(cursor.getString(offset + 8));
         entity.setGuid(cursor.getString(offset + 9));
-        entity.setShopIp(cursor.getString(offset+10));
+        entity.setShopIp(cursor.getString(offset + 10));
+        entity.setIsCare(cursor.getInt(offset + 11));
         return entity;
     }
 
@@ -109,25 +120,27 @@ public class HistoryDao extends AbstractDao<HistoryEntity, Long> {
         entity.setCommentCount(cursor.getString(offset + 8));
         entity.setGuid(cursor.getString(offset + 9));
         entity.setShopIp(cursor.getString(offset + 10));
+        entity.setIsCare(cursor.getInt(offset + 11));
     }
 
     @Override
     protected void bindValues(SQLiteStatement stmt, HistoryEntity entity) {
         stmt.clearBindings();
-     //   Long key = entity.key;
-       // if (key != null) {
-         //   stmt.bindLong(1, key);
+        //   Long key = entity.key;
+        // if (key != null) {
+        //   stmt.bindLong(1, key);
         //}
-        stmt.bindString(2,entity.getShopName());
-        stmt.bindString(3,entity.getImgUrl());
+        stmt.bindString(2, entity.getShopName());
+        stmt.bindString(3, entity.getImgUrl());
         stmt.bindLong(4, entity.isSelect() ? 1 : 0);
         stmt.bindString(5, entity.getMedicinalName());
         stmt.bindString(6, entity.getCurrentPrice());
         stmt.bindString(7, entity.getDiscountPrice());
         stmt.bindString(8, entity.getSaleCount());
         stmt.bindString(9, entity.getCommentCount());
-        stmt.bindString(10,entity.getGuid());
-        stmt.bindString(11,entity.getShopIp());
+        stmt.bindString(10, entity.getGuid());
+        stmt.bindString(11, entity.getShopIp());
+        stmt.bindLong(12, entity.getIsCare());
     }
 
 
