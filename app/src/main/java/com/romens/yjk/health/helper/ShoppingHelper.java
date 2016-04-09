@@ -33,7 +33,7 @@ public class ShoppingHelper {
         } else {
             decimalFormat = new DecimalFormat(prefix + "#,##0.00");
         }
-        String priceStr = decimalFormat.format(price);
+        String priceStr = decimalFormat.format(price==null?BigDecimal.ZERO:price);
         SpannableString spannableString = new SpannableString(priceStr);
         int length = priceStr.length();
         if (formatFont) {
@@ -96,5 +96,13 @@ public class ShoppingHelper {
         }
         ssb.append(name);
         return ssb;
+    }
+
+    public static BigDecimal formatDecimal(BigDecimal value) {
+        if (value == null) {
+            value = BigDecimal.ZERO;
+        }
+        value = value.setScale(2, java.math.BigDecimal.ROUND_HALF_UP);
+        return value;
     }
 }

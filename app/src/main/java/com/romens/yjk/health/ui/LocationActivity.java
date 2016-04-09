@@ -41,6 +41,7 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ApplicationLoader;
 import com.romens.android.log.FileLog;
+import com.romens.android.network.request.ConnectManager;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
@@ -121,6 +122,7 @@ public class LocationActivity extends BaseLocationActivity {
 
     @Override
     public void onDestroy() {
+        ConnectManager.getInstance().destroyInitiator(LocationActivity.class);
         super.onDestroy();
         if (mapView != null) {
             mapView.onDestroy();
@@ -233,7 +235,7 @@ public class LocationActivity extends BaseLocationActivity {
                     searchAdapter.searchDelayed(searchType, text, userLocation);
                 }
             });
-            item.getSearchField().setHint("搜索");
+            item.getSearchField().setHint(searchType == BaseLocationAdapter.SearchType.USER ? "输入地点名称" : "输入药店名称");
         }
 
         otherMenuItem = menu.addItem(0, R.drawable.ic_ab_other);
@@ -433,6 +435,7 @@ public class LocationActivity extends BaseLocationActivity {
                 public void didLoadedSearchResult(ArrayList<LocationEntity> places) {
                     if (!wasResults && !places.isEmpty()) {
                         wasResults = true;
+                        tryCreateLocationMarket(places);
                     }
                 }
             });
@@ -608,6 +611,23 @@ public class LocationActivity extends BaseLocationActivity {
             positionMarker(myLocation = getLastLocation());
         }
         startLocation();
+    }
+
+
+    private void tryCreateLocationMarket(ArrayList<LocationEntity> places) {
+        if (searchType == BaseLocationAdapter.SearchType.SHOP) {
+            for (LocationEntity location :
+                    places) {
+                try {
+                    aMap.addMarker(new MarkerOptions()
+                            .position(location.createLocation())
+                            .title(location.name)
+                            .snippet(location.address));
+                } catch (Exception e) {
+                    FileLog.e("LocationActivity", e);
+                }
+            }
+        }
     }
 
     /**

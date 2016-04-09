@@ -49,7 +49,7 @@ public class BindUserMedicareNoActivity extends BaseActionBarActivityWithAnalyti
 
     private boolean isBind = true;
 
-    private TextInputCell userNameCell;
+    //private TextInputCell userNameCell;
     private TextInputCell certNoCell;
     private TextInputCell cardNoCell;
 
@@ -86,10 +86,10 @@ public class BindUserMedicareNoActivity extends BaseActionBarActivityWithAnalyti
             }
         });
 
-        userNameCell = new TextInputCell(this);
-        content.addView(userNameCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-        userNameCell.setValue("姓名", "");
-        userNameCell.setValueHint("请输入姓名");
+//        userNameCell = new TextInputCell(this);
+//        content.addView(userNameCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+//        userNameCell.setValue("姓名", "");
+//        userNameCell.setValueHint("请输入姓名");
 
         certNoCell = new TextInputCell(this);
         content.addView(certNoCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
@@ -133,7 +133,7 @@ public class BindUserMedicareNoActivity extends BaseActionBarActivityWithAnalyti
             actionBar.setTitle("修改绑定的社会保障卡");
             bindBtn.setText("修改");
 
-            userNameCell.setValue("姓名", currMedicareCard.userName);
+            //userNameCell.setValue("姓名", currMedicareCard.userName);
             certNoCell.setValue("身份证号码", currMedicareCard.certNo);
             cardNoCell.setValue("社会保障卡号", currMedicareCard.cardNo);
         }
@@ -153,10 +153,10 @@ public class BindUserMedicareNoActivity extends BaseActionBarActivityWithAnalyti
     }
 
     private void tryBindUserMedicareNo() {
-        if (userNameCell.isEmpty()) {
-            ToastCell.toast(this, "请输入姓名!");
-            return;
-        }
+//        if (userNameCell.isEmpty()) {
+//            ToastCell.toast(this, "请输入姓名!");
+//            return;
+//        }
 
         if (certNoCell.isEmpty()) {
             ToastCell.toast(this, "请输入身份证号!");
@@ -169,17 +169,16 @@ public class BindUserMedicareNoActivity extends BaseActionBarActivityWithAnalyti
         }
 
         String certNo = certNoCell.getValue().toUpperCase();
-        ;
+
         if (certNo.length() != 18) {
             ToastCell.toast(this, "请输入正确的身份证号!");
             return;
         }
 
-        String userName = userNameCell.getValue();
+        //String userName = userNameCell.getValue();
         String cardNo = cardNoCell.getValue().toUpperCase();
 
         currMedicareCard = new MedicareCard.Builder(medicareCardId)
-                .withUserName(userName)
                 .withCertNo(certNo)
                 .withCardNo(cardNo)
                 .build();

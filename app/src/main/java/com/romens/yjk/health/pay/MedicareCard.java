@@ -1,5 +1,7 @@
 package com.romens.yjk.health.pay;
 
+import android.text.TextUtils;
+
 /**
  * @author Zhou Lisi
  * @create 16/2/26
@@ -44,6 +46,9 @@ public class MedicareCard {
         }
 
         public MedicareCard build() {
+            if (TextUtils.isEmpty(userName)) {
+                userName = "";
+            }
             return new MedicareCard(id, userName, certNo, cardNo);
         }
     }

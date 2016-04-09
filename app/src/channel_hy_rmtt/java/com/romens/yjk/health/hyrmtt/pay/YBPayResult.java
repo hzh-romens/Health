@@ -52,6 +52,9 @@ public class YBPayResult extends PayActivity {
     @Override
     protected void onPayResponse(Intent intent) {
         if (intent.hasExtra("bundle")) {
+            //Bundle[{cardNo=11204688X, certNo=230102198506053415, payAmount=0.01,
+            // totalAmount=0.01, status=1, balance=904.83, custname=赵宇, lastPayAmount=0.00,
+            // transferFlowNo=C06714601693452016040910}]
             changePayState(PayState.PROCESSING);
             Bundle bundle = intent.getBundleExtra("bundle");
             String status = bundle.getString("status");

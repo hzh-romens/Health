@@ -186,6 +186,10 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         // "payment_type":"1","_input_charset":"utf-8","it_b_pay":"30m","sign":"yCu9SAXLndsM+UgIsC3BnTPeHW85shxz8G9BLCrMNfjFk4cKI9kf/y3KPI8ebf7yBGQDenhArXOvdjq6EOxMpAKKOxqqZBmm/g3/0dQNnZJWcrIentUE6LMmWkiOr+Uz6TC9bZDS0aGCFES3VYt0NvQGfnw8rMra4QITX2Q1CMk=","signText":"_input_charset=utf-8&it_b_pay=30m&notify_url=http://115.28.244.190/index.php/Alipay&out_trade_no=2048131457006054&partner=2088701740074813&payment_type=1&seller_id=2088701740074813&service=mobile.securitypay.pay&subject=测试&total_fee=0.01","sign_type":"RSA"}}
         final String payMode = jsonNode.get("PAYMODE").asText();
         JsonNode payParamsNode = jsonNode.get("PAYPARAMS");
+        //2016-04-09 zhoulisi 支付金额和订单总金额总服务器获取返回
+        double payAmount=jsonNode.get("PAYPRICE").asDouble();
+        double orderTransportAmount=jsonNode.get("TRANSPORTAMOUNT").asDouble();
+        double orderAmount=jsonNode.get("ORDERPRICE").asDouble();
         Bundle extBundle = new Bundle();
         extBundle.putString("ORDER_NO", orderNo);
         Bundle payParams = Pay.getInstance().createPayParams(PayPrepareBaseActivity.this, payMode, payParamsNode, extBundle);
@@ -196,7 +200,9 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         Bundle pay = new Bundle();
         pay.putString(PayActivity.ARGUMENT_KEY_ORDER_NO, orderNo);
         pay.putString(PayActivity.ARGUMENT_KEY_ORDER_TIME, orderDate);
-        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_AMOUNT, orderPayAmount.doubleValue());
+        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_AMOUNT, orderAmount);
+        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_TRANSPORT_AMOUNT,orderTransportAmount);
+        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_PAY_AMOUNT,payAmount);
         pay.putBundle("PAY", payParams);
 
         bundle.putBundle(PayActivity.ARGUMENTS_KEY_PAY_PARAMS, pay);

@@ -53,6 +53,8 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     public static final String ARGUMENT_KEY_ORDER_NO = "app_key_order_no";
     public static final String ARGUMENT_KEY_ORDER_TIME = "app_key_order_time";
     public static final String ARGUMENT_KEY_ORDER_AMOUNT = "app_key_order_amount";
+    public static final String ARGUMENT_KEY_ORDER_TRANSPORT_AMOUNT = "app_key_order_transport_amount";
+    public static final String ARGUMENT_KEY_ORDER_PAY_AMOUNT = "app_key_order_pay_amount";
 
     protected boolean isFromPayPrepare = false;
     protected Bundle payParams;
@@ -65,6 +67,8 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     protected String orderNo;
     protected String orderDate;
     protected BigDecimal orderAmount;
+    protected BigDecimal orderTransportAmount;
+    protected BigDecimal orderPayAmount;
 
     private final List<PayResultInfo> payResultInfo = new ArrayList<>();
 
@@ -130,8 +134,21 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
             payParams = extras.getBundle(ARGUMENTS_KEY_PAY_PARAMS);
             orderNo = payParams.getString(ARGUMENT_KEY_ORDER_NO);
             orderDate = payParams.getString(ARGUMENT_KEY_ORDER_TIME);
-            double amount = payParams.getDouble(ARGUMENT_KEY_ORDER_AMOUNT, 0);
+            double amount = payParams.getDouble(ARGUMENT_KEY_ORDER_AMOUNT);
             orderAmount = new BigDecimal(amount);
+            orderAmount = ShoppingHelper.formatDecimal(orderAmount);
+            amount = payParams.getDouble(ARGUMENT_KEY_ORDER_PAY_AMOUNT);
+            orderPayAmount = new BigDecimal(amount);
+            orderPayAmount = ShoppingHelper.formatDecimal(orderPayAmount);
+
+            //配送费
+            if (payParams.containsKey(ARGUMENT_KEY_ORDER_TRANSPORT_AMOUNT)) {
+                amount = payParams.getDouble(ARGUMENT_KEY_ORDER_TRANSPORT_AMOUNT, 0);
+                orderTransportAmount = new BigDecimal(amount);
+            } else {
+                orderTransportAmount = BigDecimal.ZERO;
+            }
+            orderTransportAmount = ShoppingHelper.formatDecimal(orderTransportAmount);
 
             onPayRequest(payParams);
         } else {
@@ -216,6 +233,8 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         orderNoRow = rowCount++;
         orderTimeRow = rowCount++;
         orderAmountRow = rowCount++;
+        orderTransportAmountRow = rowCount++;
+        orderPayAmountRow = rowCount++;
         orderPayModeRow = rowCount++;
         checkOrderRow = rowCount++;
         if (payResultInfo.size() > 0) {
@@ -236,6 +255,8 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     private int orderNoRow;
     private int orderTimeRow;
     private int orderAmountRow;
+    private int orderTransportAmountRow;
+    private int orderPayAmountRow;
     private int orderPayModeRow;
     private int checkOrderSectionRow;
     private int checkOrderRow;
@@ -328,6 +349,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                     convertView = new PayInfoCell(adapterContext);
                 }
                 PayInfoCell cell = (PayInfoCell) convertView;
+                cell.setSmall(true);
                 cell.setTextSize(16);
                 cell.setValueTextSize(18);
                 cell.setTextColor(0xff212121);
@@ -338,8 +360,14 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                     cell.setValueTextColor(0xff757575);
                     cell.setTextAndValue("订单日期", orderDate, true);
                 } else if (position == orderAmountRow) {
+                    cell.setValueTextColor(0xff212121);
+                    cell.setTextAndValue("订单金额", ShoppingHelper.formatPrice(orderAmount, false), true);
+                } else if (position == orderTransportAmountRow) {
+                    cell.setValueTextColor(0xff212121);
+                    cell.setTextAndValue("配送费", ShoppingHelper.formatPrice(orderTransportAmount, false), true);
+                } else if (position == orderPayAmountRow) {
                     cell.setValueTextColor(ResourcesConfig.priceFontColor);
-                    cell.setTextAndValue("支付金额", ShoppingHelper.formatPrice(orderAmount), true);
+                    cell.setTextAndValue("支付金额", ShoppingHelper.formatPrice(orderPayAmount), true);
                 } else if (position == orderPayModeRow) {
                     cell.setValueTextColor(0xff757575);
                     String payModeText = getPayModeText();

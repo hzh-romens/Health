@@ -3,26 +3,27 @@ package com.romens.yjk.health.ui.adapter;
 import android.content.Context;
 import android.location.Location;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.log.FileLog;
-import com.romens.android.network.FacadeClient;
 import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
+import com.romens.android.network.request.Connect;
+import com.romens.android.network.request.ConnectManager;
+import com.romens.android.network.request.RMConnect;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.model.LocationEntity;
+import com.romens.yjk.health.ui.LocationActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -189,43 +190,55 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
         args.put("COUNT", 50);
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetNearbyShops", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Message message = new Message.MessageBuilder()
+        Connect connect = new RMConnect.Builder(LocationActivity.class)
                 .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
-                .build();
-        FacadeClient.request(mContext, message, new FacadeClient.FacadeCallback() {
-            @Override
-            public void onTokenTimeout(Message msg) {
-                Log.e("GetDiscoveryData", "ERROR");
-            }
-
-            @Override
-            public void onResult(Message msg, Message errorMsg) {
-                if (isDestroy) {
-                    return;
-                }
-                if (errorMsg == null) {
-                    ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) msg.protocol;
-                    onResponseShops(responseProtocol.getResponse());
-                } else {
-                    Toast.makeText(mContext, "查询发生异常,请稍候再试!", Toast.LENGTH_SHORT).show();
-                }
-                searching = false;
-                notifyDataSetChanged();
-                if (delegate != null) {
-                    delegate.didLoadedSearchResult(places);
-                }
-            }
-        });
+                .withParser(new JSONNodeParser())
+                .withDelegate(new Connect.AckDelegate() {
+                    @Override
+                    public void onResult(Message message, Message errorMessage) {
+                        if (isDestroy) {
+                            return;
+                        }
+                        if (errorMessage == null) {
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+                            JsonNode response = responseProtocol.getResponse();
+                            onResponseShops(response);
+                        } else {
+                            Toast.makeText(mContext, "查询发生异常,请稍候再试!", Toast.LENGTH_SHORT).show();
+                        }
+                        searching = false;
+                        notifyDataSetChanged();
+                        if (delegate != null) {
+                            delegate.didLoadedSearchResult(places);
+                        }
+                    }
+                }).build();
+        ConnectManager.getInstance().request(mContext, connect);
+//        Message message = new Message.MessageBuilder()
+//                .withProtocol(protocol)
+//                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
+//                }))
+//                .build();
+//        FacadeClient.request(mContext, message, new FacadeClient.FacadeCallback() {
+//            @Override
+//            public void onTokenTimeout(Message msg) {
+//                Log.e("GetDiscoveryData", "ERROR");
+//            }
+//
+//            @Override
+//            public void onResult(Message msg, Message errorMsg) {
+//
+//            }
+//        });
         notifyDataSetChanged();
     }
 
-    private void onResponseShops(List<LinkedTreeMap<String, String>> data) {
+    private void onResponseShops(JsonNode data) {
         places.clear();
         if (data != null) {
-            for (LinkedTreeMap<String, String> item : data) {
-                places.add(LocationEntity.mapToEntity(item));
+            int size = data.size();
+            for (int i = 0; i < size; i++) {
+                places.add(LocationEntity.jsonToEntity(data.get(i)));
             }
         }
         Collections.sort(places, new Comparator<LocationEntity>() {
