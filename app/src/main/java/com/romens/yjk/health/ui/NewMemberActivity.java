@@ -11,7 +11,7 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.model.MemberType;
-import com.romens.yjk.health.ui.activity.LightActionBarActivity;
+import com.romens.yjk.health.ui.base.LightActionBarActivity;
 import com.romens.yjk.health.ui.adapter.NewMemberAdapter;
 
 /**

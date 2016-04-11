@@ -24,7 +24,7 @@ import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.FavoritesDao;
 import com.romens.yjk.health.db.entity.FavoritesEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.adapter.CollectAdapter;
 import com.romens.yjk.health.ui.cells.CollectDrawerCell;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
@@ -39,7 +39,7 @@ import java.util.List;
  * Created by anlc on 2015/10/14.
  * 收藏页面
  */
-public class CollectActivity extends BaseActionBarActivityWithAnalytics implements AppNotificationCenter.NotificationCenterDelegate {
+public class CollectActivity extends DarkActionBarActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SlidingFixTabLayout tabLayout;
     private ViewPager viewPager;

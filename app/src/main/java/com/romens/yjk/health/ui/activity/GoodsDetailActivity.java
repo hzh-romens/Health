@@ -44,7 +44,6 @@ import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.LoadingCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.android.ui.cells.TextInfoCell;
-import com.romens.android.ui.cells.TextSettingSelectCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
@@ -55,12 +54,14 @@ import com.romens.yjk.health.core.LocationHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.entity.HistoryEntity;
+import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsCommentEntity;
 import com.romens.yjk.health.model.MedicineGoodsItem;
 import com.romens.yjk.health.model.MedicineSaleStoreEntity;
 import com.romens.yjk.health.model.MedicineServiceModeEntity;
 import com.romens.yjk.health.ui.ShoppingCartUtils;
+import com.romens.yjk.health.ui.base.LightActionBarActivity;
 import com.romens.yjk.health.ui.cells.GoodsCommentCell;
 import com.romens.yjk.health.ui.cells.MedicineImagesCell;
 import com.romens.yjk.health.ui.cells.MedicineMainCell;
@@ -68,6 +69,7 @@ import com.romens.yjk.health.ui.cells.MedicinePriceCell;
 import com.romens.yjk.health.ui.cells.MedicinePropertyCell;
 import com.romens.yjk.health.ui.cells.MedicineServiceModesCell;
 import com.romens.yjk.health.ui.cells.MedicineStoreCell;
+import com.romens.yjk.health.ui.cells.TextNavInfoCell;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 
 import org.json.JSONArray;
@@ -98,8 +100,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private FrameLayout mapViewClip;
     private GoodsDetailAdapter adapter;
     private ListView listView;
-
-    private AnimatorSet animatorSet;
 
     private int markerTop;
 
@@ -381,7 +381,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     private void tryAddMedicineFavorites() {
         isFavorites = true;
-        isFavoritesAnim = true;
         updateDate();
         ShoppingServiceFragment.instance(getSupportFragmentManager()).addFavorites(goodsId);
     }
@@ -486,8 +485,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             return;
         }
         showProgress(true);
-        Map<String, String> args = new FacadeArgs.MapBuilder()
-                .put("GUID", goodsId).build();
+        Map<String, Object> args = new HashMap<>();
+        args.put("GUID", goodsId);
+        args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsInfo", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
@@ -535,7 +535,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
     private void initMedicineServiceModes() {
         currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "正品保证"));
-        currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "免运费"));
+        //currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "免运费"));
         currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "货到付款"));
         currMedicineGoodsServiceModes.add(new MedicineServiceModeEntity(R.drawable.ic_check_circle_grey600_18dp, 0xff42bd41, "在线支付"));
     }
@@ -544,8 +544,13 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private int goodsEmptyRow;
     private int goodsMainRow;
     private int goodsPriceRow;
+    //促销信息
+    private int goodsSalePromotionRow;
     private int goodsCDRow;
     private int goodsSpecRow;
+    //运费信息
+    private int goodsShippingCostRow;
+
     private int goodsServiceModesRow;
     private int dividerRow;
 
@@ -575,7 +580,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private MedicineGoodsItem currMedicineGoodsItem;
 
     private boolean isFavorites = false;
-    private boolean isFavoritesAnim = false;
     //支持的购买方式
     private final List<MedicineServiceModeEntity> currMedicineGoodsServiceModes = new ArrayList<>();
     //附近其他在售药店
@@ -595,8 +599,16 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             goodsEmptyRow = -1;
             goodsMainRow = rowCount++;
             goodsPriceRow = rowCount++;
+
+            if (currMedicineGoodsItem.hasSalesPromotionDesc()) {
+                goodsSalePromotionRow = rowCount++;
+            }
+
             goodsCDRow = rowCount++;
             goodsSpecRow = rowCount++;
+            if (currMedicineGoodsItem.hasShippingCostsDesc()) {
+                goodsShippingCostRow = rowCount++;
+            }
             goodsServiceModesRow = rowCount++;
             dividerRow = rowCount++;
             storeSectionRow = rowCount++;
@@ -653,6 +665,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         goodsPriceRow = -1;
         goodsCDRow = -1;
         goodsSpecRow = -1;
+        goodsShippingCostRow = -1;
+        goodsSalePromotionRow = -1;
         goodsServiceModesRow = -1;
         dividerRow = -1;
 
@@ -726,7 +740,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 return 2;
             } else if (position == goodsPriceRow) {
                 return 3;
-            } else if (position == goodsCDRow || position == goodsSpecRow) {
+            } else if (position == goodsCDRow || position == goodsSpecRow || position == goodsShippingCostRow || position == goodsSalePromotionRow) {
                 return 4;
             } else if (position == storeRow || (position >= otherStoresBeginRow && position <= otherStoresEndRow)) {
                 return 5;
@@ -758,7 +772,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
 
         @Override
         public boolean isEnabled(int i) {
-            if (i == serviceMedicineManualRow || i == serviceCallCenterRow || i == otherStoresRow ) {
+            if (i == serviceMedicineManualRow || i == serviceCallCenterRow || i == otherStoresRow) {
                 return true;
             }
             return false;
@@ -792,7 +806,8 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     view = new MedicineMainCell(adapterContext);
                 }
                 MedicineMainCell cell = (MedicineMainCell) view;
-                cell.setValue(currMedicineGoodsItem.name, currMedicineGoodsItem.detailDescription, isFavorites, false);
+                CharSequence name = ShoppingHelper.createShoppingCartGoodsName(currMedicineGoodsItem.name, goodsFlag == GoodsFlag.MEDICARE);
+                cell.setValue(name, currMedicineGoodsItem.detailDescription, isFavorites, false);
                 cell.setFavoritesDelegate(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -803,10 +818,6 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                         }
                     }
                 });
-                if (isFavoritesAnim) {
-                    cell.showAddFavoritesAnim();
-                    isFavoritesAnim = false;
-                }
             } else if (viewType == 3) {
                 if (view == null) {
                     view = new MedicinePriceCell(adapterContext);
@@ -818,10 +829,20 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     view = new MedicinePropertyCell(adapterContext);
                 }
                 MedicinePropertyCell cell = (MedicinePropertyCell) view;
+                cell.setSmallStyle(true);
+                cell.setValueTextColor();
+                cell.setMultilineValue(false);
                 if (i == goodsCDRow) {
                     cell.setTextAndValue("产地", currMedicineGoodsItem.cd, true);
                 } else if (i == goodsSpecRow) {
                     cell.setTextAndValue("规格", currMedicineGoodsItem.spec, true);
+                } else if (i == goodsSalePromotionRow) {
+                    cell.setMultilineValue(true);
+                    cell.setValueTextColor(ResourcesConfig.shoppingAccent);
+                    cell.setTextAndValue("促销", currMedicineGoodsItem.getSalesPromotionDesc(), true);
+                } else if (i == goodsShippingCostRow) {
+                    cell.setMultilineValue(true);
+                    cell.setTextAndValue("运费", currMedicineGoodsItem.getShippingCostsDesc(), true);
                 }
             } else if (viewType == 5) {
                 if (view == null) {
@@ -840,7 +861,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                     int storeIndex = i - otherStoresBeginRow;
                     MedicineSaleStoreEntity storeEntity = saleStoreEntities.get(storeIndex);
                     cell.setValue(storeEntity.shopIcon, storeEntity.name, storeEntity.address, storeEntity.storeCount, currMedicineGoodsItem.userPrice, i != otherStoresEndRow);
-                    cell.setDistance(storeEntity.distance);
+                    //cell.setDistance(storeEntity.distance);
                     cell.setAddShoppingCartDelegate(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -863,9 +884,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 }
             } else if (viewType == 7) {
                 if (view == null) {
-                    view = new TextSettingSelectCell(adapterContext);
+                    view = new TextNavInfoCell(adapterContext);
                 }
-                TextSettingSelectCell cell = (TextSettingSelectCell) view;
+                TextNavInfoCell cell = (TextNavInfoCell) view;
                 if (i == serviceMedicineManualRow) {
                     cell.setTextColor(ResourcesConfig.textPrimary);
                     cell.setValueTextColor(ResourcesConfig.bodyText3);
@@ -1018,7 +1039,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     }
 
     public void AddToHistory(MedicineGoodsItem item) {
-        HistoryEntity historyEntity = HistoryEntity.toEntity(item,goodsFlag);
+        HistoryEntity historyEntity = HistoryEntity.toEntity(item, goodsFlag);
         HistoryDao historyDao = DBInterface.instance().openWritableDb().getHistoryDao();
         DeleteQuery<HistoryEntity> historyEntityDeleteQuery = historyDao.queryBuilder().where(HistoryDao.Properties.Guid.eq(item.guid)).buildDelete();
         historyEntityDeleteQuery.executeDeleteWithoutDetachingEntities();

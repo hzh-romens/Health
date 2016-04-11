@@ -1,21 +1,12 @@
 package com.romens.yjk.health.ui.activity.medicare;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.pay.PayAppManager;
-import com.romens.yjk.health.pay.PayMode;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Zhou Lisi
@@ -27,7 +18,7 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getMyActionBar();
-        actionBar.setTitle("选择医保支付方式");
+        actionBar.setTitle("选择社保卡支付方式");
         actionBar.setBackButtonImage(R.drawable.ic_close_white_24dp);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -35,13 +26,23 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
                 if (position == payActionRow) {
                     trySendPayPrepareRequest();
                 } else if (position >= payModeStartRow && position <= payModeEndRow) {
-                    selectedPayModeKey = position - payModeStartRow;
+                    int index = position - payModeStartRow;
+                    selectedPayModeId = payModes.valueAt(index).id;
+                    updateAdapter();
+                }else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
+                    int index = position - otherPayModeStartRow;
+                    selectedPayModeId = otherPayModes.valueAt(index).id;
                     updateAdapter();
                 }
             }
         });
-        medicarePayModes.clear();
-        onInitPayMode(medicarePayModes);
+        //支付方式
+        payModes.clear();
+        onCreatePayMode(payModes);
+        //其他支付方式
+        otherPayModes.clear();
+        onCreateOtherPayMode(otherPayModes);
+
         updateAdapter();
     }
 
@@ -51,9 +52,4 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
     }
 
     protected abstract void trySendPayPrepareRequest();
-    /**
-     * 初始化支付方式
-     * @param payModes 支付方式
-     */
-    protected abstract void onInitPayMode(SparseArray<PayMode> payModes);
 }

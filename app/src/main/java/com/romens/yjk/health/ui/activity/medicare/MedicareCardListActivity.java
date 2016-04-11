@@ -39,7 +39,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.pay.MedicareCard;
 import com.romens.yjk.health.pay.PayAppManager;
 import com.romens.yjk.health.pay.PayModeEnum;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.MedicareCardCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 
@@ -54,7 +54,7 @@ import java.util.Map;
  * @create 16/2/26
  * @description 医保卡选择界面
  */
-public class MedicareCardListActivity extends BaseActionBarActivityWithAnalytics {
+public class MedicareCardListActivity extends DarkActionBarActivity {
 
     public static final String ARGUMENTS_KEY_ONLY_SELECT = "key_only_select";
     public static final String ARGUMENTS_KEY_PAY_AMOUNT = "key_pay_amount";

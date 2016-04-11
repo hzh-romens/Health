@@ -37,7 +37,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodListEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.adapter.ShopListAdapter;
 import com.romens.yjk.health.ui.adapter.ShopListNoPictureAdapter;
 import com.romens.yjk.health.ui.components.ReviseRadioButton;
@@ -53,7 +53,7 @@ import java.util.Map;
 /**
  * Created by AUSU on 2015/9/23.
  */
-public class ShopListActivity extends BaseActionBarActivityWithAnalytics implements View.OnClickListener, AppNotificationCenter.NotificationCenterDelegate {
+public class ShopListActivity extends DarkActionBarActivity implements View.OnClickListener, AppNotificationCenter.NotificationCenterDelegate {
     private ShopListNoPictureAdapter shopListNoPictureAdapter;
     private ReviseRadioButton priceButton, saleButton;
     private LinearLayoutManager linearLayoutManager;
@@ -414,7 +414,7 @@ public class ShopListActivity extends BaseActionBarActivityWithAnalytics impleme
         } else {
             args.put("SORTFIELD", "default");
         }
-     //   args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
+        //   args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol;
         if (key != null && !("".equals(key)) && SEARCHDEFAULT) {
             protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetGoodsList", args);

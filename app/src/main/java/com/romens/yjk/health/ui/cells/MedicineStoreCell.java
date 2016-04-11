@@ -45,7 +45,7 @@ public class MedicineStoreCell extends FrameLayout {
     private AvatarDrawable avatarDrawable;
 
     private TextView storeCountView;
-    private Button addShoppingCartView;
+    private TextView addShoppingCartView;
 
     public MedicineStoreCell(Context context) {
         super(context);
@@ -70,8 +70,8 @@ public class MedicineStoreCell extends FrameLayout {
         nameTextView.setEllipsize(TextUtils.TruncateAt.MIDDLE);
         nameTextView.setSingleLine(true);
         nameTextView.setTextColor(0xff212121);
-        nameTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
         nameTextView.setGravity(Gravity.LEFT);
+        AndroidUtilities.setMaterialTypeface(nameTextView);
         topContainer.addView(nameTextView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 0, 0, 8, 0));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameTextView.getLayoutParams();
         layoutParams.weight = 1;
@@ -84,7 +84,7 @@ public class MedicineStoreCell extends FrameLayout {
         distanceTextView.setSingleLine(true);
         distanceTextView.setTextColor(ResourcesConfig.bodyText2);
         distanceTextView.setGravity(Gravity.RIGHT);
-        distanceTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+        AndroidUtilities.setMaterialTypeface(distanceTextView);
         topContainer.addView(distanceTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
 
         addressTextView = new TextView(context);
@@ -97,21 +97,22 @@ public class MedicineStoreCell extends FrameLayout {
         addView(addressTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 72, 30, 16, 0));
 
         LinearLayout bottomContainer = new LinearLayout(context);
-        bottomContainer.setOrientation(LinearLayout.VERTICAL);
+        bottomContainer.setOrientation(LinearLayout.HORIZONTAL);
         bottomContainer.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-        addView(bottomContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 80, Gravity.BOTTOM, 72, 0, 16, 10));
+        addView(bottomContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.BOTTOM, 72, 0, 16, 8));
 
 
         storeCountView = new TextView(context);
-        storeCountView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        storeCountView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         storeCountView.setMaxLines(1);
         storeCountView.setEllipsize(TextUtils.TruncateAt.END);
         storeCountView.setSingleLine(true);
         storeCountView.setTextColor(ResourcesConfig.textPrimary);
         storeCountView.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-        bottomContainer.addView(storeCountView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 8, 8, 0));
+        bottomContainer.addView(storeCountView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 8, 8, 0));
 
-        addShoppingCartView = new Button(context);
+        addShoppingCartView = new TextView(context);
+        addShoppingCartView.setClickable(true);
         addShoppingCartView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         addShoppingCartView.setMaxLines(1);
         addShoppingCartView.setEllipsize(TextUtils.TruncateAt.END);
@@ -131,7 +132,7 @@ public class MedicineStoreCell extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(136) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(114) + (needDivider ? 1 : 0), MeasureSpec.EXACTLY));
     }
 
     public void setValue(String storeIcon, String storeName, String storeAddress, int storeCount, BigDecimal price, boolean divider) {
@@ -163,11 +164,11 @@ public class MedicineStoreCell extends FrameLayout {
             addShoppingCartResId = R.drawable.btn_border_emergency;
         } else if (storeCount < 999) {
             storeCountStr = String.format("现在有货 (%d)", storeCount);
-            storeCountFontColor = Color.WHITE;
+            storeCountFontColor = ResourcesConfig.bodyText2;
             addShoppingCartResId = R.drawable.btn_primary;
         } else {
             storeCountStr = "现在有货";
-            storeCountFontColor = Color.WHITE;
+            storeCountFontColor = ResourcesConfig.bodyText2;
             addShoppingCartResId = R.drawable.btn_primary;
         }
 
@@ -176,7 +177,7 @@ public class MedicineStoreCell extends FrameLayout {
         storeCountView.setText(storeCountSpan);
 
         addShoppingCartView.setBackgroundResource(addShoppingCartResId);
-        addShoppingCartView.setTextColor(storeCountFontColor);
+        addShoppingCartView.setTextColor(0xffffffff);
         //DecimalFormat decimalFormat = new DecimalFormat("￥#,###.00");
         String priceStr = FormatHelper.formatPrice(price);//decimalFormat.format(price);
         String addShoppingCartText = String.format("加入购物车 %s", priceStr);

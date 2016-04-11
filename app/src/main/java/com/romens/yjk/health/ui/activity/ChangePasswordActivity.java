@@ -33,11 +33,12 @@ import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 
 import java.util.Map;
 
 
-public class ChangePasswordActivity extends BaseActionBarActivityWithAnalytics {
+public class ChangePasswordActivity extends DarkActionBarActivity {
 
     private MaterialEditText oldPasswordField;
     private MaterialEditText newPasswordField;

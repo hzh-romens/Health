@@ -39,7 +39,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.SearchHistoryDao;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.model.SearchResultEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/8/17.
  */
-public class SearchActivityNew extends BaseActionBarActivityWithAnalytics {
+public class SearchActivityNew extends DarkActionBarActivity {
 
     private View searchHistoryContainer;
     private FlowLayout historyLayout;

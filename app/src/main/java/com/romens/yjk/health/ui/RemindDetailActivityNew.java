@@ -17,13 +17,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
-import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.RemindUtils;
@@ -31,8 +29,7 @@ import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
-import com.romens.yjk.health.ui.cells.ImgAndValueCell;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
 
 import java.util.ArrayList;
@@ -41,7 +38,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/10/30.
  */
-public class RemindDetailActivityNew extends BaseActionBarActivityWithAnalytics {
+public class RemindDetailActivityNew extends DarkActionBarActivity {
 
     private ListView listView;
     private DetailListViewAdapter adapter;

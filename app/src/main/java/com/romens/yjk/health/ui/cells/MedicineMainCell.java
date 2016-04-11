@@ -31,7 +31,7 @@ public class MedicineMainCell extends FrameLayout {
     private boolean needDivider;
 
     private TextView nameView;
-    private ImageView favoritesView;
+    private TextView favoritesView;
 
     public MedicineMainCell(Context context) {
         super(context);
@@ -60,24 +60,25 @@ public class MedicineMainCell extends FrameLayout {
         nameView.setLines(2);
         nameView.setMaxLines(2);
         nameView.setEllipsize(TextUtils.TruncateAt.END);
-        nameView.setGravity(Gravity.LEFT);
-        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL, 17, 10, 64, 10));
+        nameView.setGravity(Gravity.LEFT|Gravity.TOP);
+        AndroidUtilities.setMaterialTypeface(nameView);
+        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 17, 10, 80, 10));
 
-        favoritesView = new ImageView(context);
-        favoritesView.setClickable(true);
-        favoritesView.setScaleType(ImageView.ScaleType.CENTER);
-        favoritesView.setBackgroundResource(R.drawable.list_selector);
-        favoritesView.setColorFilter(ResourcesConfig.favoritesColor);
-        addView(favoritesView, LayoutHelper.createFrame(64, 56, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
+        favoritesView = new TextView(context);
+        favoritesView.setBackgroundResource(R.drawable.button_favorites);
+        favoritesView.setTextColor(getResources().getColor(R.color.medicine_favorites));
+        favoritesView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        favoritesView.setSingleLine(true);
+        favoritesView.setEllipsize(TextUtils.TruncateAt.END);
+        favoritesView.setGravity(Gravity.CENTER);
+        favoritesView.setText("收藏");
+        favoritesView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
+        addView(favoritesView, LayoutHelper.createFrame(64, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.TOP, 0, 10, 16, 10));
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(64) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
-    }
-
-    public void showAddFavoritesAnim() {
-        AnimHelper.addFavoritesAnim(favoritesView);
     }
 
     public void setValue(CharSequence name, String desc, boolean isFavorites, boolean divider) {
@@ -91,7 +92,7 @@ public class MedicineMainCell extends FrameLayout {
             textSpanBuilder.append(descSpan);
         }
         nameView.setText(textSpanBuilder);
-        favoritesView.setImageResource(isFavorites ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
+        favoritesView.setText(isFavorites ? "已收藏" : "收藏");
         needDivider = divider;
         setWillNotDraw(!divider);
     }

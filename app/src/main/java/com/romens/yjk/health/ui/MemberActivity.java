@@ -30,7 +30,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.adapter.CardListAdapter;
 import com.romens.yjk.health.ui.adapter.MemberAdapter;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * Created by HZH on 2015/12/31.
  */
-public class MemberActivity extends BaseActionBarActivityWithAnalytics {
+public class MemberActivity extends DarkActionBarActivity {
     private boolean isMember = true;
     private LinearLayout btnOk, pwdLayout;
     private ActionBar actionBar;

@@ -1,14 +1,10 @@
 package com.romens.yjk.health.ui;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +30,9 @@ import com.romens.yjk.health.db.dao.FamilyDrugGroupDao;
 import com.romens.yjk.health.db.entity.FamilyDrugGroupEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.SearchResultEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.AvatarAndInfoCell;
 import com.romens.yjk.health.ui.cells.ImgAndValueCell;
-import com.romens.yjk.health.ui.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +40,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/9.
  */
-public class FamilyDrugGroupActivity extends BaseActionBarActivityWithAnalytics {
+public class FamilyDrugGroupActivity extends DarkActionBarActivity {
 
     private ListView listView;
     private List<FamilyDrugGroupEntity> entityList;

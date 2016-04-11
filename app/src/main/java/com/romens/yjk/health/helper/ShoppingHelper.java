@@ -33,7 +33,7 @@ public class ShoppingHelper {
         } else {
             decimalFormat = new DecimalFormat(prefix + "#,##0.00");
         }
-        String priceStr = decimalFormat.format(price==null?BigDecimal.ZERO:price);
+        String priceStr = decimalFormat.format(price == null ? BigDecimal.ZERO : price);
         SpannableString spannableString = new SpannableString(priceStr);
         int length = priceStr.length();
         if (formatFont) {
@@ -104,5 +104,25 @@ public class ShoppingHelper {
         }
         value = value.setScale(2, java.math.BigDecimal.ROUND_HALF_UP);
         return value;
+    }
+
+    public static String mixedString(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            char[] textChars = text.toCharArray();
+            int length = textChars.length;
+            if (length == 18) {
+                for (int i = 6; i < length - 4; i++) {
+                    textChars[i] = '*';
+                }
+            } else if (length > 4) {
+                for (int i = 2; i < length - 2; i++) {
+                    textChars[i] = '*';
+                }
+            } else {
+                return text;
+            }
+            return new String(textChars);
+        }
+        return "";
     }
 }

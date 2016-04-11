@@ -1,4 +1,4 @@
-package com.romens.yjk.health.ui.activity;
+package com.romens.yjk.health.ui.base;
 
 import com.romens.android.ui.base.BaseActionBarActivity;
 

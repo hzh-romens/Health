@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,20 +14,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
-import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
@@ -37,9 +32,8 @@ import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.RemindTimesDailogCallBack;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
-import com.romens.yjk.health.ui.cells.AddRemindTimesDailog;
 import com.romens.yjk.health.ui.cells.KeyAndImgCell;
 import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
@@ -51,7 +45,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/10.
  */
-public class AddNewRemindActivity extends BaseActionBarActivityWithAnalytics implements RemindTimesDailogCallBack {
+public class AddNewRemindActivity extends DarkActionBarActivity implements RemindTimesDailogCallBack {
 
     private ListView listView;
     private List<String> timesDataTemp;

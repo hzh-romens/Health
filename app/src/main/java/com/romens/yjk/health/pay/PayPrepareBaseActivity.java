@@ -3,7 +3,6 @@ package com.romens.yjk.health.pay;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.PayInfoCell;
@@ -46,7 +45,7 @@ import java.util.Map;
  * @create 16/2/26
  * @description
  */
-public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAnalytics {
+public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_FROM_ORDER_DETAIL = "key_from_order_detail";
     public static final String ARGUMENTS_KEY_ORDER_NO = "key_order_no";
     public static final String ARGUMENTS_KEY_ORDER_DATE = "key_order_date";
@@ -65,8 +64,9 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
     //订单待支付金额
     protected BigDecimal orderPayAmount;
 
-    protected int selectedPayModeKey;
-    protected final SparseArray<PayMode> medicarePayModes = new SparseArray<>();
+    protected int selectedPayModeId;
+    protected final SparseArray<PayMode> payModes = new SparseArray<>();
+    protected final SparseArray<PayMode> otherPayModes = new SparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +107,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         listView.setAdapter(listAdapter);
     }
 
-    protected void onInitPayMode(SparseArray<PayMode> payModes) {
+    protected void onCreatePayMode(SparseArray<PayMode> payModes) {
         payModes.put(0, new PayMode.Builder(0)
                 .withIconResId(R.drawable.ic_appwx_logo)
                 .withName("微信支付(现金支付)")
@@ -119,14 +119,18 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
                 .withName("支付宝支付(现金支付)")
                 .withDesc("推荐支付宝用户使用")
                 .withMode(PayModeEnum.ALIPAY).build());
-        selectedPayModeKey = 0;
+        selectedPayModeId = 0;
+    }
+
+    protected void onCreateOtherPayMode(SparseArray<PayMode> payModes) {
+
     }
 
     protected void sendPayPrepareRequest() {
         Map<String, String> args = new HashMap<>();
         args.put("APPTYPE", "ANDROID");
         args.put("ORDERCODE", orderNo);
-        String payMode = medicarePayModes.get(selectedPayModeKey).getPayModeKey();
+        String payMode = payModes.get(selectedPayModeId).getPayModeKey();
         args.put("PAYMODE", payMode);
         doPayPrepareRequest(args);
     }
@@ -187,9 +191,9 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         final String payMode = jsonNode.get("PAYMODE").asText();
         JsonNode payParamsNode = jsonNode.get("PAYPARAMS");
         //2016-04-09 zhoulisi 支付金额和订单总金额总服务器获取返回
-        double payAmount=jsonNode.get("PAYPRICE").asDouble();
-        double orderTransportAmount=jsonNode.get("TRANSPORTAMOUNT").asDouble();
-        double orderAmount=jsonNode.get("ORDERPRICE").asDouble();
+        double payAmount = jsonNode.get("PAYPRICE").asDouble();
+        double orderTransportAmount = jsonNode.get("TRANSPORTAMOUNT").asDouble();
+        double orderAmount = jsonNode.get("ORDERPRICE").asDouble();
         Bundle extBundle = new Bundle();
         extBundle.putString("ORDER_NO", orderNo);
         Bundle payParams = Pay.getInstance().createPayParams(PayPrepareBaseActivity.this, payMode, payParamsNode, extBundle);
@@ -201,8 +205,8 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         pay.putString(PayActivity.ARGUMENT_KEY_ORDER_NO, orderNo);
         pay.putString(PayActivity.ARGUMENT_KEY_ORDER_TIME, orderDate);
         pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_AMOUNT, orderAmount);
-        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_TRANSPORT_AMOUNT,orderTransportAmount);
-        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_PAY_AMOUNT,payAmount);
+        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_TRANSPORT_AMOUNT, orderTransportAmount);
+        pay.putDouble(PayActivity.ARGUMENT_KEY_ORDER_PAY_AMOUNT, payAmount);
         pay.putBundle("PAY", payParams);
 
         bundle.putBundle(PayActivity.ARGUMENTS_KEY_PAY_PARAMS, pay);
@@ -235,13 +239,34 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         dividerRow = rowCount++;
         payModeSection = rowCount++;
         payModeStartRow = rowCount;
-        rowCount += medicarePayModes.size();
+        rowCount += payModes.size();
         payModeEndRow = rowCount - 1;
+
+        if (otherPayModes.size() > 0) {
+            otherPayModeSection = rowCount++;
+            otherPayModeStartRow = rowCount;
+            rowCount += otherPayModes.size();
+            otherPayModeEndRow = rowCount - 1;
+        } else {
+            otherPayModeSection = -1;
+            otherPayModeStartRow = -1;
+            otherPayModeEndRow = -1;
+        }
+
         payModeDividerRow = rowCount++;
         payActionRow = rowCount++;
 
         listAdapter.notifyDataSetChanged();
     }
+
+    protected String getPayModeSectionText() {
+        return "支付方式";
+    }
+
+    protected String getOtherPayModeSectionText() {
+        return "其他支付方式";
+    }
+
 
     protected int rowCount;
     protected int tipRow;
@@ -255,6 +280,9 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
     protected int payModeSection;
     protected int payModeStartRow;
     protected int payModeEndRow;
+    protected int otherPayModeSection;
+    protected int otherPayModeStartRow;
+    protected int otherPayModeEndRow;
     protected int payModeDividerRow;
     protected int payActionRow;
 
@@ -290,6 +318,8 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
         public boolean isEnabled(int position) {
             if (position >= payModeStartRow && position <= payModeEndRow) {
                 return true;
+            } else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
+                return true;
             } else if (position == payActionRow) {
                 return true;
             }
@@ -298,11 +328,13 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
 
         @Override
         public int getItemViewType(int position) {
-            if (position == billNoRow || position == orderDateRow || position == payAmountRow||position==orderAmountRow) {
+            if (position == billNoRow || position == orderDateRow || position == payAmountRow || position == orderAmountRow) {
                 return 1;
-            } else if (position == billSection || position == payModeSection) {
+            } else if (position == billSection || position == payModeSection || position == otherPayModeSection) {
                 return 2;
             } else if (position >= payModeStartRow && position <= payModeEndRow) {
+                return 3;
+            } else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
                 return 3;
             } else if (position == payModeDividerRow) {
                 return 4;
@@ -347,7 +379,7 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
                     cell.setTextAndValue("支付金额", ShoppingHelper.formatPrice(orderPayAmount), false);
                 } else if (position == orderAmountRow) {
                     cell.setValueTextColor(0xff212121);
-                    cell.setTextAndValue("订单金额", ShoppingHelper.formatPrice(orderPayAmount,false), true);
+                    cell.setTextAndValue("订单金额", ShoppingHelper.formatPrice(orderPayAmount, false), true);
                 }
             } else if (viewType == 2) {
                 if (convertView == null) {
@@ -359,17 +391,25 @@ public abstract class PayPrepareBaseActivity extends BaseActionBarActivityWithAn
                 if (position == billSection) {
                     cell.setText("待支付订单");
                 } else if (position == payModeSection) {
-                    cell.setText("支付方式");
+                    cell.setText(getPayModeSectionText());
+                } else if (position == otherPayModeSection) {
+                    cell.setText(getOtherPayModeSectionText());
                 }
             } else if (viewType == 3) {
                 if (convertView == null) {
                     convertView = new PayModeCell(adapterContext);
                 }
-
                 PayModeCell cell = (PayModeCell) convertView;
-                int key = position - payModeStartRow;
-                PayMode mode = medicarePayModes.get(key);
-                cell.setValue(mode.iconResId, mode.name, mode.desc, key == selectedPayModeKey, position != payModeEndRow);
+                if (position >= payModeStartRow && position <= payModeEndRow) {
+                    int index = position - payModeStartRow;
+                    PayMode mode = payModes.valueAt(index);
+                    cell.setValue(mode.iconResId, mode.name, mode.desc, mode.id == selectedPayModeId, position != payModeEndRow);
+                } else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
+                    int index = position - otherPayModeStartRow;
+                    PayMode mode = otherPayModes.valueAt(index);
+                    cell.setValue(mode.iconResId, mode.name, mode.desc, mode.id == selectedPayModeId, position != otherPayModeEndRow);
+                }
+
             } else if (viewType == 4) {
                 if (convertView == null) {
                     convertView = new DividerCell(adapterContext);

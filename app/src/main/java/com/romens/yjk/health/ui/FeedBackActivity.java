@@ -20,7 +20,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.components.FlowLayout;
 import com.romens.yjk.health.ui.components.FlowLayoutCallback;
 
@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/10/14.
  */
-public class FeedBackActivity extends BaseActionBarActivityWithAnalytics implements View.OnClickListener {
+public class FeedBackActivity extends DarkActionBarActivity implements View.OnClickListener {
 
     private FlowLayout tagFlowLayout;
     private FlowLayout selectTagFlowLayout;

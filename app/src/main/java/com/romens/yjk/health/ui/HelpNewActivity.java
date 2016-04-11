@@ -2,14 +2,13 @@ package com.romens.yjk.health.ui;
 
 import android.os.Bundle;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.ui.activity.WebActivity;
+import com.romens.yjk.health.ui.base.WebActivity;
 
 /**
  * Created by anlc on 2016/2/25.

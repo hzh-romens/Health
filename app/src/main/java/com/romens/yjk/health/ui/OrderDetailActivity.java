@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.Gson;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.FacadeClient;
@@ -40,25 +37,20 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
-import com.romens.yjk.health.ui.adapter.OrderExpandableDetailAdapter;
-import com.romens.yjk.health.ui.cells.ActionCell;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.KeyAndValueCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
 import com.romens.yjk.health.ui.cells.OrderStoreCell;
 import com.romens.yjk.health.ui.components.ToastCell;
-import com.romens.yjk.health.ui.utils.UIHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,7 +64,7 @@ import java.util.Map;
  * Created by anlc on 2015/9/24.
  * 订单详情
  */
-public class OrderDetailActivity extends BaseActionBarActivityWithAnalytics {
+public class OrderDetailActivity extends DarkActionBarActivity {
     public static final String ARGUMENT_KEY_ORDER_NO = "KEY_ORDER_NO";
 
     private LinearLayout linearLayout;

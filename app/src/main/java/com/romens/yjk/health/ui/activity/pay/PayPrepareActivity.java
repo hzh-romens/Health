@@ -1,22 +1,12 @@
 package com.romens.yjk.health.ui.activity.pay;
 
-import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.pay.Pay;
-import com.romens.yjk.health.pay.PayActivity;
-import com.romens.yjk.health.pay.PayParamsForYBHEB;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * @author Zhou Lisi
@@ -37,13 +27,22 @@ public class PayPrepareActivity extends PayPrepareBaseActivity {
                 if (position == payActionRow) {
                     sendPayPrepareRequest();
                 } else if (position >= payModeStartRow && position <= payModeEndRow) {
-                    selectedPayModeKey = position - payModeStartRow;
+                    int index = position - payModeStartRow;
+                    selectedPayModeId = payModes.valueAt(index).id;
+                    updateAdapter();
+                }else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
+                    int index = position - otherPayModeStartRow;
+                    selectedPayModeId = otherPayModes.valueAt(index).id;
                     updateAdapter();
                 }
+//                else if (position >= payModeStartRow && position <= payModeEndRow) {
+//                    selectedPayModeKey = position - payModeStartRow;
+//                    updateAdapter();
+//                }
             }
         });
-        medicarePayModes.clear();
-        onInitPayMode(medicarePayModes);
+        payModes.clear();
+        onCreatePayMode(payModes);
         updateAdapter();
     }
 

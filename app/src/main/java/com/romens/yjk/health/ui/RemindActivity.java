@@ -1,9 +1,6 @@
 package com.romens.yjk.health.ui;
 
-import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,7 +24,6 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.BottomSheet;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.TextInfoCell;
-import com.romens.android.ui.cells.TextInfoPrivacyCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.RemindUtils;
 import com.romens.yjk.health.config.UserGuidConfig;
@@ -35,23 +31,19 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.pay.MedicareCard;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ADHolder;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
 import com.romens.yjk.health.ui.cells.RemindItemCell;
-import com.romens.yjk.health.ui.components.RemindReceiver;
-import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by anlc on 2015/8/21.
  * 用药提醒列表页面
  */
-public class RemindActivity extends BaseActionBarActivityWithAnalytics {
+public class RemindActivity extends DarkActionBarActivity {
 
     private ActionBar actionBar;
     private RecyclerView listView;

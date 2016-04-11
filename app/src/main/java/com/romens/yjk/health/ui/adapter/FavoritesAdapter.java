@@ -36,7 +36,7 @@ public class FavoritesAdapter extends FavoritesBaseAdapter {
 
     @Override
     public FavoritesEntity getItem(int position) {
-        return favoritesEntities.get(position - 1);
+        return favoritesEntities.get(position);
     }
 
     @Override
@@ -49,15 +49,12 @@ public class FavoritesAdapter extends FavoritesBaseAdapter {
         if(favoritesEntities.isEmpty()){
             return 2;
         }
-        if (position == 0) {
-            return 1;
-        }
         return 0;
     }
 
     @Override
     public int getItemCount() {
         int count = favoritesEntities == null ? 0 : favoritesEntities.size();
-        return count > 0 ? (count + 1) : 1;
+        return count > 0 ? count : 1;
     }
 }

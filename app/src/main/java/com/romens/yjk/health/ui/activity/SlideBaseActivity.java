@@ -20,6 +20,7 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.components.SlideView;
 
 import java.util.Set;
@@ -27,7 +28,7 @@ import java.util.Set;
 /**
  * Created by siery on 15/9/17.
  */
-public abstract class SlideBaseActivity extends BaseActionBarActivityWithAnalytics {
+public abstract class SlideBaseActivity extends DarkActionBarActivity {
 
     private int currentViewNum = 0;
     private int pageCount;

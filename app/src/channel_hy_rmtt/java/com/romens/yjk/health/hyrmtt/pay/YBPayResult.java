@@ -4,20 +4,14 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Gravity;
-import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.romens.android.AndroidUtilities;
 import com.romens.android.io.json.JacksonMapper;
-import com.romens.android.ui.ActionBar.ActionBar;
-import com.romens.android.ui.ActionBar.ActionBarLayout;
-import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.pay.PayActivity;
 import com.romens.yjk.health.pay.PayState;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +29,7 @@ public class YBPayResult extends PayActivity {
 
     @Override
     protected String getPayModeText() {
-        return "医保支付(哈尔滨银行)";
+        return "社保卡支付(哈尔滨银行)";
     }
 
     @Override
@@ -62,14 +56,35 @@ public class YBPayResult extends PayActivity {
                 Map<String, String> args = new HashMap<>();
                 args.put("ORDERCODE", orderNo);
                 ObjectNode payResult = JacksonMapper.getInstance().createObjectNode();
+
+                final String medicineCarUserName = bundle.getString("custname");
+                final String medicineCardNo = bundle.getString("cardNo");
+                final String medicineCertNo = bundle.getString("certNo");
+                final String balance = bundle.getString("balance");
+
                 payResult.put("transferFlowNo", bundle.getString("transferFlowNo"));
                 payResult.put("lastPayAmount", bundle.getString("lastPayAmount"));
                 payResult.put("totalAmount", bundle.getString("totalAmount"));
-                payResult.put("balance", bundle.getString("balance"));
-                payResult.put("cardNo", bundle.getString("cardNo"));
-                payResult.put("certNo", bundle.getString("certNo"));
-                payResult.put("custname", bundle.getString("custname"));
+                payResult.put("balance", balance);
+                payResult.put("cardNo", medicineCardNo);
+                payResult.put("certNo", medicineCertNo);
+                payResult.put("custname", medicineCarUserName);
                 args.put("PAYRESULT", payResult.toString());
+
+                payResultInfo.clear();
+                payResultInfo.add(new PayResultInfo("姓名", medicineCarUserName));
+                payResultInfo.add(new PayResultInfo("社保卡号码", ShoppingHelper.mixedString(medicineCardNo)));
+                payResultInfo.add(new PayResultInfo("身份证号码", ShoppingHelper.mixedString(medicineCertNo)));
+
+                CharSequence balanceText;
+                try {
+                    BigDecimal balanceDecimal = new BigDecimal(balance);
+                    balanceText = ShoppingHelper.formatPrice(balanceDecimal, false);
+                } catch (Exception e) {
+                    balanceText = balance;
+                }
+                payResultInfo.add(new PayResultInfo("社保卡余额", balanceText));
+
                 postPayResponseToServerAndCheckPayResult(args);
             } else {
                 changePayState(PayState.FAIL);

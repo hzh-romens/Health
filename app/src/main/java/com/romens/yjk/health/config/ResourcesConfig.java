@@ -25,6 +25,8 @@ public class ResourcesConfig {
 
     public static final int favoritesColor = 0xffe51c23;
 
+    public static final int shoppingAccent;
+
     static {
         primaryColor = MyApplication.applicationContext.getResources().getColor(R.color.theme_primary);
         accentColor = MyApplication.applicationContext.getResources().getColor(R.color.theme_accent);
@@ -32,5 +34,7 @@ public class ResourcesConfig {
         textPrimary = MyApplication.applicationContext.getResources().getColor(R.color.text_primary);
 
         emergencyText = MyApplication.applicationContext.getResources().getColor(R.color.font_emergency);
+
+        shoppingAccent= MyApplication.applicationContext.getResources().getColor(R.color.md_red_500);
     }
 }

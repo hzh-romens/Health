@@ -19,7 +19,7 @@ import com.romens.yjk.health.R;
  * @create 2016-04-07 14:58
  * @description
  */
-public class TextInfoCell extends FrameLayout {
+public class TextNavInfoCell extends FrameLayout {
 
     private TextView textView;
     private TextView valueTextView;
@@ -27,7 +27,7 @@ public class TextInfoCell extends FrameLayout {
     private static Paint paint;
     private boolean needDivider;
 
-    public TextInfoCell(Context context) {
+    public TextNavInfoCell(Context context) {
         super(context);
 
         if (paint == null) {

@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.adapter.CuoponFragmentPagerAdapter;
 import com.romens.yjk.health.ui.fragment.CouponFragment;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * 优惠券界面
  */
 
-public class CuoponActivity extends BaseActionBarActivityWithAnalytics {
+public class CuoponActivity extends DarkActionBarActivity {
     public static final String ARGUMENT_KEY_SELECT_COUPON_ID = "select_coupon_id";
     public static final String ARGUMENT_KEY_ORDER_AMOUNT = "order_amount";
 

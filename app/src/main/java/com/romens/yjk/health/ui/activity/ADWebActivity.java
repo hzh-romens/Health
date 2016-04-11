@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -13,6 +12,7 @@ import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.BottomSheet;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.core.AppNotificationCenter;
+import com.romens.yjk.health.ui.base.WebActivity;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.web.ADWebJsInterface;
 import com.romens.yjk.health.web.JsBaseInterface;

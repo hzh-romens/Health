@@ -14,6 +14,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.adapter.BaseFragmentAdapter;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Created by siery on 15/10/28.
  */
-public class ListSelectActivity extends BaseActionBarActivityWithAnalytics {
+public class ListSelectActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_TITLE = "title";
     public static final String ARGUMENTS_KEY_NAME_LIST = "name_list";
     public static final String ARGUMENTS_KEY_VALUE_LIST = "value_list";

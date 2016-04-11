@@ -31,7 +31,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.PayInfoCell;
 import com.romens.yjk.health.ui.cells.PayStateCell;
@@ -46,7 +46,7 @@ import java.util.Map;
  * @create 16/3/1
  * @description
  */
-public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
+public abstract class PayActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_FROM_PAY_PREPARE = "app_key_from_pay_prepare";
     public static final String ARGUMENTS_KEY_PAY_PARAMS = "app_key_pay_params";
 
@@ -70,7 +70,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     protected BigDecimal orderTransportAmount;
     protected BigDecimal orderPayAmount;
 
-    private final List<PayResultInfo> payResultInfo = new ArrayList<>();
+    protected final List<PayResultInfo> payResultInfo = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,6 +229,15 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     protected void updateAdapter() {
         rowCount = 0;
         payStateRow = rowCount++;
+        if (payState == PayState.SUCCESS && payResultInfo.size() > 0) {
+            payResultBeginRow = rowCount;
+            rowCount += payResultInfo.size();
+            payResultEndRow = rowCount - 1;
+        } else {
+            payResultBeginRow = -1;
+            payResultEndRow = -1;
+        }
+
         dividerRow = rowCount++;
         orderNoRow = rowCount++;
         orderTimeRow = rowCount++;
@@ -237,20 +246,15 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
         orderPayAmountRow = rowCount++;
         orderPayModeRow = rowCount++;
         checkOrderRow = rowCount++;
-        if (payResultInfo.size() > 0) {
-            payResultSection = rowCount++;
-            payResultBeginRow = rowCount++;
-            rowCount += payResultInfo.size() - 1;
-        } else {
-            payResultSection = -1;
-            payResultBeginRow = -1;
-        }
 
         listAdapter.notifyDataSetChanged();
     }
 
     private int rowCount;
     private int payStateRow;
+    private int payResultBeginRow;
+    private int payResultEndRow;
+
     private int dividerRow;
     private int orderNoRow;
     private int orderTimeRow;
@@ -260,9 +264,6 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
     private int orderPayModeRow;
     private int checkOrderSectionRow;
     private int checkOrderRow;
-
-    private int payResultSection;
-    private int payResultBeginRow;
 
 
     class ListAdapter extends BaseAdapter {
@@ -308,7 +309,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                 return 2;
             } else if (position == checkOrderRow) {
                 return 3;
-            } else if (position == checkOrderSectionRow || position == payResultSection) {
+            } else if (position == checkOrderSectionRow) {
                 return 4;
             }
             return 0;
@@ -331,7 +332,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                     convertView = new PayStateCell(adapterContext);
                 }
                 PayStateCell cell = (PayStateCell) convertView;
-                cell.setValue(payState, false);
+                cell.setValue(payState, payResultBeginRow != -1);
             } else if (viewType == 3) {
                 if (convertView == null) {
                     convertView = new ActionCell(adapterContext);
@@ -372,7 +373,7 @@ public abstract class PayActivity extends BaseActionBarActivityWithAnalytics {
                     cell.setValueTextColor(0xff757575);
                     String payModeText = getPayModeText();
                     cell.setTextAndValue("支付方式", payModeText, true);
-                } else if (payResultBeginRow != -1 && position > payResultBeginRow) {
+                } else if (position >= payResultBeginRow && position <= payResultEndRow) {
                     cell.setValueTextColor(0xff757575);
                     PayResultInfo item = payResultInfo.get(position - payResultBeginRow);
                     cell.setTextAndValue(item.caption, item.value, true);

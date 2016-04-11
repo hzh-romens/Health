@@ -17,6 +17,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.AvatarDrawable;
 import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.helper.ShoppingHelper;
 
 /**
  * @author Zhou Lisi
@@ -134,15 +135,16 @@ public class MedicareCardCell extends CardView {
         avatarImageView.setPlaceholderImage(avatarDrawable);
 
         nameTextView.setText(userName);
-        StringBuilder certNoStr = new StringBuilder();
-        if (certNo != null && certNo.length() == 18) {
-            certNoStr.append(certNo.substring(0, 6));
-            certNoStr.append("********");
-            certNoStr.append(certNo.substring(14, 18));
-        } else {
-            certNoStr.append(certNo == null ? "" : certNo);
-        }
-        descTextView.setText(certNoStr.toString());
+//        StringBuilder certNoStr = new StringBuilder();
+//        if (certNo != null && certNo.length() == 18) {
+//            certNoStr.append(certNo.substring(0, 6));
+//            certNoStr.append("********");
+//            certNoStr.append(certNo.substring(14, 18));
+//        } else {
+//            certNoStr.append(certNo == null ? "" : certNo);
+//        }
+        String certNoText = ShoppingHelper.mixedString(certNo);
+        descTextView.setText(certNoText);
         cardNoTextView.setText(cardNo);
     }
 }

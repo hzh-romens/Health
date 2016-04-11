@@ -14,7 +14,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.entity.HistoryEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.adapter.HistoryAdapter;
 import com.romens.yjk.health.ui.utils.DialogUtils;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -25,7 +25,7 @@ import java.util.List;
  * Created by anlc on 2015/10/13.
  * Modify by hzh on 2015/10/18
  */
-public class HistoryActivity extends BaseActionBarActivityWithAnalytics implements View.OnClickListener {
+public class HistoryActivity extends DarkActionBarActivity implements View.OnClickListener {
     private ExpandableListView listView;
     private SwipeRefreshLayout refreshLayout;
     private HistoryAdapter adapter;

@@ -16,7 +16,7 @@ import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.components.logger.Log;
 
@@ -28,7 +28,7 @@ import java.util.Calendar;
  * @create 16/2/23
  * @description 开发者模式
  */
-public class DevelopModeActivity extends BaseActionBarActivityWithAnalytics {
+public class DevelopModeActivity extends DarkActionBarActivity {
     private ListAdapter adapter;
 
     @Override

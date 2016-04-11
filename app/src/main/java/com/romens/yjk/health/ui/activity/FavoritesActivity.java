@@ -32,6 +32,7 @@ import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.adapter.FavoritesAdapter;
 import com.romens.yjk.health.ui.adapter.FavoritesSearchAdapter;
+import com.romens.yjk.health.ui.base.LightActionBarActivity;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 import com.romens.yjk.health.ui.utils.UIHelper;
 

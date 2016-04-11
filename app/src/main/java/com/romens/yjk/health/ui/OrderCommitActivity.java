@@ -1,9 +1,7 @@
 package com.romens.yjk.health.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -33,8 +31,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.model.GoodsListEntity;
-import com.romens.yjk.health.model.OrderListEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
 import com.romens.yjk.health.ui.cells.OrderStoreCell;
@@ -53,7 +50,7 @@ import java.util.Map;
  * @create 2016-04-06 14:08
  * @description
  */
-public class OrderCommitActivity extends BaseActionBarActivityWithAnalytics {
+public class OrderCommitActivity extends DarkActionBarActivity {
     public static final String ARGUMENT_KEY_ORDER_ENTITY = "key_order_entity";
 
     private TextInputNoLineCell commitTextCell;

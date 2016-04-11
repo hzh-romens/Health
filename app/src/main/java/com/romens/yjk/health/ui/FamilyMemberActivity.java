@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -22,13 +21,12 @@ import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.FamilyMemberDao;
 import com.romens.yjk.health.db.entity.FamilyMemberEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.AvatarAndInfoCell;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
@@ -38,7 +36,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/9.
  */
-public class FamilyMemberActivity extends BaseActionBarActivityWithAnalytics {
+public class FamilyMemberActivity extends DarkActionBarActivity {
 
     private ListView listView;
     private List<FamilyMemberEntity> entitiesList;

@@ -59,6 +59,14 @@ public class RatingBarCell extends FrameLayout {
 
 
         ratingBar = new FlexibleRatingBar(context);
+        ratingBar.setColorFillOff(0xffffffff);
+        ratingBar.setColorFillOn(0xfff9a825);
+        ratingBar.setColorFillPressedOff(0xffffffff);
+        ratingBar.setColorFillPressedOn(0xfff9a825);
+        ratingBar.setColorOutlineOff(0xfff57f17);
+        ratingBar.setColorOutlineOn(0xfff57f17);
+        ratingBar.setColorOutlinePressed(0xfff57f17);
+        ratingBar.setStrokeWidth(AndroidUtilities.dp(2));
         ratingBar.setNumStars(5);
         ratingBar.setStepSize(1f);
         addView(ratingBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 144, 0, 16, 0));

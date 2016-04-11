@@ -1,10 +1,11 @@
-package com.romens.yjk.health.ui.activity;
+package com.romens.yjk.health.ui.base;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.ActionBar.ActionBarMenuItem;
 import com.romens.android.ui.base.BaseActionBarActivity;
 import com.romens.yjk.health.R;
+import com.tencent.stat.StatService;
 
 /**
  * Created by siery on 15/10/23.
@@ -48,5 +49,17 @@ public class LightActionBarActivity extends BaseActionBarActivity {
         if (actionBar != null) {
             actionBar.setTitle(title, 0x8a000000);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        StatService.onResume(this);      //统计时长
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        StatService.onPause(this);
     }
 }

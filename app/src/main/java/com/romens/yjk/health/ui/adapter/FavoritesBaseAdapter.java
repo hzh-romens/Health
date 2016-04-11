@@ -181,10 +181,7 @@ public abstract class FavoritesBaseAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
-        } else if (viewType == 1) {
-            FavoritesTipCell cell = (FavoritesTipCell) viewHolder.itemView;
-            cell.setValue("小提示:点击 [favorites] 可以取消收藏哦!", "[favorites]", R.drawable.ic_favorite_white_24dp, false);
-        } else if (viewType == 2) {
+        }else if (viewType == 2) {
             TextInfoCell cell = (TextInfoCell) viewHolder.itemView;
             String emptyText = getEmptyText();
             cell.setText(emptyText);

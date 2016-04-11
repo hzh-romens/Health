@@ -54,4 +54,7 @@
 
     <color name="transparents">#00000000</color>
 
+
+    <color name="medicine_favorites">@color/md_red_500</color>
+
 </resources>

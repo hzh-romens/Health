@@ -23,6 +23,7 @@ public class MedicinePropertyCell extends LinearLayout {
     private static Paint paint;
     private boolean needDivider;
     private boolean multiline;
+    private boolean smallStyle=false;
 
     public MedicinePropertyCell(Context context) {
         super(context);
@@ -46,7 +47,7 @@ public class MedicinePropertyCell extends LinearLayout {
             paint.setStrokeWidth(1);
         }
         setOrientation(HORIZONTAL);
-        setMinimumHeight(AndroidUtilities.dp(48));
+        setMinimumHeight(AndroidUtilities.dp(44));
         setGravity(Gravity.TOP);
         textView = new TextView(context);
         textView.setTextColor(ResourcesConfig.bodyText3);
@@ -67,10 +68,24 @@ public class MedicinePropertyCell extends LinearLayout {
         addView(valueTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 8, 17, 8));
     }
 
+    public void setValueTextColor(){
+        valueTextView.setTextColor(0xff616161);
+    }
+
+    public void setValueTextColor(int color){
+        valueTextView.setTextColor(color);
+    }
+
+
+    public void setSmallStyle(boolean small){
+        smallStyle=small;
+        setMinimumHeight(AndroidUtilities.dp(small?36:44));
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!multiline) {
-            super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(44) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
+            super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(smallStyle?36:44) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }

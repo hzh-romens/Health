@@ -8,11 +8,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,12 +18,11 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.library.datetimepicker.time.RadialPickerLayout;
 import com.romens.android.library.datetimepicker.time.TimePickerDialog;
 import com.romens.android.ui.ActionBar.ActionBar;
-import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.TimesAdapterCallBack;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.adapter.TimesAdapter;
 import com.romens.yjk.health.ui.components.SwipeDismissListView;
 
@@ -36,7 +33,7 @@ import java.util.List;
 /**
  * Created by anlc on 2015/11/16.
  */
-public class AddRemindTimesActivity extends BaseActionBarActivityWithAnalytics implements TimesAdapterCallBack {
+public class AddRemindTimesActivity extends DarkActionBarActivity implements TimesAdapterCallBack {
 
     private SwipeDismissListView listView;
     private TimesAdapter timesAdapter;

@@ -1,7 +1,6 @@
 package com.romens.yjk.health.ui.activity.dev;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.network.Message;
@@ -11,16 +10,13 @@ import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.network.request.Connect;
 import com.romens.android.network.request.ConnectManager;
 import com.romens.android.network.request.RMConnect;
-import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.pay.PayParamsForAlipay;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.components.logger.Log;
 import com.yunuo.pay.alipay.AlipayPay;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Iterator;
 
 /**
@@ -28,7 +24,7 @@ import java.util.Iterator;
  * @create 16/3/2
  * @description
  */
-public class DevTextAlipay extends BaseActionBarActivityWithAnalytics {
+public class DevTextAlipay extends DarkActionBarActivity {
 
     private AlipayPay alipayPay;
 

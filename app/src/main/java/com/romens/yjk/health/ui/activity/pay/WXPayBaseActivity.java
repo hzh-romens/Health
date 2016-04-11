@@ -90,6 +90,8 @@ public abstract class WXPayBaseActivity extends PayActivity implements WXPay.Del
         ObjectNode payResult = JacksonMapper.getInstance().createObjectNode();
         payResult.put("prepayId", payResp.prepayId);
         args.put("PAYRESULT", payResult.toString());
+        payResultInfo.clear();
+        payResultInfo.add(new PayResultInfo("微信交易流水号", payResp.prepayId));
         postPayResponseToServerAndCheckPayResult(args);
     }
 

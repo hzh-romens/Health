@@ -52,6 +52,7 @@ import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.pay.Pay;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.CuoponActivity;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
@@ -73,7 +74,7 @@ import java.util.Map;
  * @create 16/2/24
  * @description
  */
-public abstract class CommitOrderBaseActivity extends BaseActionBarActivityWithAnalytics {
+public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
 
     public static final String ARGUMENTS_KEY_SELECT_GOODS = "key_select_goods";
     public static final String ARGUMENTS_KEY_SUPPORT_MEDICARE = "SupportMedicareCardPay";

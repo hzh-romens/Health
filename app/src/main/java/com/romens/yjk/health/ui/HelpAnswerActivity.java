@@ -5,14 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.ActionBar.ActionBar;
@@ -21,7 +17,7 @@ import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.HelpQuestionConfig;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.KeyAndImgCell;
 import com.romens.yjk.health.ui.cells.TitleAndBodyCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -35,7 +31,7 @@ import java.util.Map;
  * Created by anlc on 2015/10/16.
  * 问题回答页面
  */
-public class HelpAnswerActivity extends BaseActionBarActivityWithAnalytics {
+public class HelpAnswerActivity extends DarkActionBarActivity {
 
     private ListView listView;
     private SwipeRefreshLayout refreshLayout;

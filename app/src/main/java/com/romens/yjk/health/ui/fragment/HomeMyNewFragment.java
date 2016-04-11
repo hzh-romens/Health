@@ -57,7 +57,7 @@ import com.romens.yjk.health.ui.cells.GridViewCell;
 import com.romens.yjk.health.ui.cells.LoginCell;
 import com.romens.yjk.health.ui.cells.NewUserProfileCell;
 import com.romens.yjk.health.ui.cells.SupportCell;
-import com.romens.yjk.health.ui.cells.TextInfoCell;
+import com.romens.yjk.health.ui.cells.TextNavInfoCell;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -423,9 +423,9 @@ public class HomeMyNewFragment extends AppFragment implements AppNotificationCen
                 }
             } else if (type == 6) {
                 if (view == null) {
-                    view = new TextInfoCell(adapterContext);
+                    view = new TextNavInfoCell(adapterContext);
                 }
-                TextInfoCell cell = (TextInfoCell) view;
+                TextNavInfoCell cell = (TextNavInfoCell) view;
                 cell.setTextColor(0xff757575);
                 cell.setValueTextColor(0xff757575);
                 cell.setClickable(true);

@@ -29,13 +29,17 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
     }
 
     @Override
-    protected void onInitPayMode(SparseArray<PayMode> payModes) {
+    protected void onCreatePayMode(SparseArray<PayMode> payModes) {
         payModes.put(0, new PayMode.Builder(0)
                 .withIconResId(R.drawable.medicare_pay_haerbin)
-                .withName("哈尔滨银行(医保支付)")
-                .withDesc("支持使用哈尔滨银行账户进行医保支付")
+                .withName("哈尔滨银行(社保卡支付)")
+                .withDesc("支持使用哈尔滨银行账户进行社保卡支付")
                 .withMode(PayModeEnum.YB_HEB).build());
+        selectedPayModeId = 0;
+    }
 
+    @Override
+    protected void onCreateOtherPayMode(SparseArray<PayMode> payModes) {
         payModes.put(1, new PayMode.Builder(1)
                 .withIconResId(R.drawable.ic_appwx_logo)
                 .withName("微信支付(现金支付)")
@@ -47,7 +51,15 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
                 .withName("支付宝支付(现金支付)")
                 .withDesc("推荐支付宝用户使用")
                 .withMode(PayModeEnum.ALIPAY).build());
-        selectedPayModeKey = 0;
+    }
+
+    @Override
+    protected String getPayModeSectionText() {
+        return "社保卡支付方式";
+    }
+
+    protected String getOtherPayModeSectionText() {
+        return "其他现金支付方式";
     }
 
     @Override
@@ -57,21 +69,21 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
 
     @Override
     protected CharSequence getTip() {
-        return "小提示：医保支付请确认余额充足。如果医保账户余额不足，可以使用其他在线支付方式付款购买。";
+        return "小提示：社保卡支付请确认支付使用的社保卡余额充足。可以在选择社保卡界面查看余额。";
     }
 
     @Override
     protected void trySendPayPrepareRequest() {
-        if (selectedPayModeKey == 0) {
+        if (selectedPayModeId == 0) {
             if (!PayAppManager.isSetupYBHEB(this)) {
                 new AlertDialog.Builder(this)
-                        .setTitle("医保支付")
+                        .setTitle("社保卡支付")
                         .setMessage("检测手机没有安装 哈尔滨银行 所需的支付客户端,是否跳转到银行官方页面下载?")
                         .setPositiveButton("现在去下载", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                PayAppManager.needDownloadPayApp(MedicarePayActivity.this, medicarePayModes.get(0).mode);
+                                PayAppManager.needDownloadPayApp(MedicarePayActivity.this, payModes.get(0).mode);
                             }
                         }).setNegativeButton("取消", null)
                         .create().show();
@@ -106,7 +118,7 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
         args.put("APPTYPE", "ANDROID");
         args.put("ORDERCODE", orderNo);
         args.put("MEDICARECARD", medicareCardNo);
-        String payMode = medicarePayModes.get(selectedPayModeKey).getPayModeKey();
+        String payMode = payModes.get(selectedPayModeId).getPayModeKey();
         args.put("PAYMODE", payMode);
         doPayPrepareRequest(args);
     }

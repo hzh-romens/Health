@@ -61,6 +61,11 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
             payResult.put(key, extData.getString(key));
         }
         args.put("PAYRESULT", payResult.toString());
+        payResultInfo.clear();
+        if (extData.containsKey("trade_no")) {
+            payResultInfo.add(new PayResultInfo("支付宝交易流水号", extData.getString("trade_no")));
+        }
+
         postPayResponseToServerAndCheckPayResult(args);
     }
 

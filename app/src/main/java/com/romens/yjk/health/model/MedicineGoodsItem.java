@@ -1,10 +1,8 @@
 package com.romens.yjk.health.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import android.text.TextUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -49,13 +47,16 @@ public class MedicineGoodsItem {
     public final String shopAddress;
     public final int storeCount;
 
-    public MedicineGoodsItem(JsonNode jsonObject){
+    private String shippingCostsText;
+    private String salesPromotionText;
+
+    public MedicineGoodsItem(JsonNode jsonObject) {
         guid = jsonObject.get("GUID").asText();
         name = jsonObject.get("NAME").asText();
         userPrice = new BigDecimal(jsonObject.get("USERPRICE").asDouble(0));
         marketPrice = new BigDecimal(jsonObject.get("MARKETPRICE").asDouble(0));
         shortDescription = jsonObject.get("SHORTDESCRIPTION").asText();
-        detailDescription= jsonObject.get("DETAILDESCRIPTION").asText();
+        detailDescription = jsonObject.get("DETAILDESCRIPTION").asText();
         spec = jsonObject.get("SPEC").asText();
         pzwh = jsonObject.get("PZWH").asText();
         smallImageUrl = jsonObject.get("URL").asText();
@@ -72,9 +73,35 @@ public class MedicineGoodsItem {
         }
 
         shopId = jsonObject.get("SHOPID").asText();
-        shopIcon= jsonObject.get("BRANCHIMAGEPATH").asText();
+        shopIcon = jsonObject.get("BRANCHIMAGEPATH").asText();
         shopName = jsonObject.get("SHOPNAME").asText();
         shopAddress = jsonObject.get("SHOPADDRESS").asText();
         storeCount = jsonObject.get("STORECOUNT").asInt(0);
+
+        if (jsonObject.has("SHOPPINGINFO")) {
+            JsonNode shoppingInfoNode = jsonObject.get("SHOPPINGINFO");
+            if (shoppingInfoNode.has("TRNSPORTANTDESC")) {
+                shippingCostsText = shoppingInfoNode.get("TRNSPORTANTDESC").asText();
+            }
+            if (shoppingInfoNode.has("PROMOTIONS")) {
+                salesPromotionText = shoppingInfoNode.get("PROMOTIONS").asText();
+            }
+        }
+    }
+
+    public String getShippingCostsDesc() {
+        return shippingCostsText;
+    }
+
+    public boolean hasShippingCostsDesc(){
+        return !TextUtils.isEmpty(shippingCostsText);
+    }
+
+    public String getSalesPromotionDesc() {
+        return salesPromotionText;
+    }
+
+    public boolean hasSalesPromotionDesc(){
+        return !TextUtils.isEmpty(salesPromotionText);
     }
 }

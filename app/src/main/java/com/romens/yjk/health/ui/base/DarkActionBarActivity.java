@@ -1,6 +1,5 @@
-package com.romens.yjk.health.ui.activity;
+package com.romens.yjk.health.ui.base;
 
-import com.romens.android.ui.base.BaseActionBarActivity;
 import com.tencent.stat.StatService;
 
 /**
@@ -8,7 +7,7 @@ import com.tencent.stat.StatService;
  * @create 16/2/20
  * @description
  */
-public class BaseActionBarActivityWithAnalytics extends BaseActivity {
+public class DarkActionBarActivity extends BaseActivity {
 
     @Override
     public void onResume() {

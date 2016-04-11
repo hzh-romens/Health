@@ -11,6 +11,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.ui.base.WebActivity;
 import com.romens.yjk.health.web.ADWebJsInterface;
 import com.romens.yjk.health.web.JsBaseInterface;
 

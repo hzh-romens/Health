@@ -1,8 +1,6 @@
 package com.romens.yjk.health.ui;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
@@ -27,7 +25,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.HealthNewsEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.NewsCell;
 import com.romens.yjk.health.ui.cells.NewsTopCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
@@ -36,10 +34,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -49,7 +43,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/8/13.
  */
-public class HealthNewsActivity extends BaseActionBarActivityWithAnalytics {
+public class HealthNewsActivity extends DarkActionBarActivity {
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerListView recyclerView;

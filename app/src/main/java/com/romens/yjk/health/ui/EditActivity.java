@@ -4,36 +4,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.network.FacadeClient;
-import com.romens.android.network.Message;
-import com.romens.android.network.parser.JsonParser;
-import com.romens.android.network.protocol.FacadeProtocol;
-import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.ActionBar.ActionBarMenu;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.UserGuidConfig;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 
 /**
  * Created by anlc on 2015/12/21.
  */
-public class EditActivity extends BaseActionBarActivityWithAnalytics {
+public class EditActivity extends DarkActionBarActivity {
 
     private String formActivityName;
     private String result;

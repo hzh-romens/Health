@@ -20,7 +20,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.model.EvaluateDatailsEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 
 import org.json.JSONException;
@@ -32,7 +32,7 @@ import java.util.Map;
  * Created by anlc on 2015/9/23.
  * 订单评价详情页面
  */
-public class OrderEvaluateDetailActivity extends BaseActionBarActivityWithAnalytics {
+public class OrderEvaluateDetailActivity extends DarkActionBarActivity {
 
     private BackupImageView leftImageView;
     private TextView titleTextView;

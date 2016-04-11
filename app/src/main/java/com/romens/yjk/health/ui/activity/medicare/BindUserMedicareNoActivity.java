@@ -29,7 +29,7 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.entity.UserEntity;
 import com.romens.yjk.health.pay.MedicareCard;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.TextInputCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 
@@ -41,7 +41,7 @@ import java.util.Map;
  * @create 16/2/26
  * @description 社会保障卡号绑定（现阶段属于哈药人民同泰 applicationId hy_rmtt）
  */
-public class BindUserMedicareNoActivity extends BaseActionBarActivityWithAnalytics {
+public class BindUserMedicareNoActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_MEDICARE_ID = "key_medicare_id";
     public static final String ARGUMENTS_KEY_MEDICARE_USER = "key_medicare_user";
     public static final String ARGUMENTS_KEY_MEDICARE_CERTNO = "key_medicare_certno";

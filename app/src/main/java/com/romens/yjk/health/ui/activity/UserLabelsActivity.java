@@ -22,6 +22,7 @@ import com.romens.yjk.health.db.entity.UserAttributeEntity;
 import com.romens.yjk.health.helper.LabelHelper;
 import com.romens.yjk.health.model.PersonalEntity;
 import com.romens.yjk.health.ui.AccountSettingActivity;
+import com.romens.yjk.health.ui.base.BaseActivity;
 import com.romens.yjk.health.ui.cells.TextDetailSelectCell;
 
 import java.util.ArrayList;

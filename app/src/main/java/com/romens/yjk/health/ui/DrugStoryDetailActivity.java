@@ -3,7 +3,6 @@ package com.romens.yjk.health.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,29 +26,25 @@ import com.romens.android.network.protocol.ResponseProtocol;
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
-import com.romens.android.ui.cells.HeaderCell;
 import com.romens.android.ui.cells.TextSettingsCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.config.ResourcesConfig;
-import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.model.DrugDetailEntity;
 import com.romens.yjk.health.model.LocationEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by anlc on 2015/10/17.
  * 药店详情页面
  */
-public class DrugStoryDetailActivity extends BaseActionBarActivityWithAnalytics {
+public class DrugStoryDetailActivity extends DarkActionBarActivity {
 
     private ListView listView;
     private SwipeRefreshLayout refreshLayout;

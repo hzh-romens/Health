@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.style.StrikethroughSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -17,6 +18,7 @@ import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.FormatHelper;
+import com.romens.yjk.health.helper.ShoppingHelper;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -56,6 +58,19 @@ public class MedicinePriceCell extends LinearLayout {
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER_VERTICAL);
 
+
+        userPriceView = new TextView(context);
+        userPriceView.setTextColor(ResourcesConfig.bodyText2);
+        userPriceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+        userPriceView.setLines(1);
+        userPriceView.setMaxLines(1);
+        userPriceView.setSingleLine(true);
+        userPriceView.setGravity(Gravity.LEFT);
+        addView(userPriceView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 16, 0, 16, 0));
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) userPriceView.getLayoutParams();
+        layoutParams.weight = 1;
+        userPriceView.setLayoutParams(layoutParams);
+
         saleCountView = new TextView(context);
         saleCountView.setTextColor(0xff8a8a8a);
         saleCountView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
@@ -63,31 +78,8 @@ public class MedicinePriceCell extends LinearLayout {
         saleCountView.setMaxLines(1);
         saleCountView.setSingleLine(true);
         saleCountView.setGravity(Gravity.LEFT);
-        addView(saleCountView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 17, 0, 8, 0));
+        addView(saleCountView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 16, 0, 16, 0));
 
-        marketPriceView = new TextView(context);
-        marketPriceView.setTextColor(0xff8a8a8a);
-        marketPriceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        marketPriceView.setLines(1);
-        marketPriceView.setMaxLines(1);
-        marketPriceView.setSingleLine(true);
-        marketPriceView.setGravity(Gravity.RIGHT);
-        addView(marketPriceView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 8, 0, 8, 0));
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) marketPriceView.getLayoutParams();
-        layoutParams.weight = 1;
-        marketPriceView.setLayoutParams(layoutParams);
-
-        userPriceView = new TextView(context);
-        userPriceView.setTextColor(ResourcesConfig.priceFontColor);
-        userPriceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        userPriceView.setLines(1);
-        userPriceView.setMaxLines(1);
-        userPriceView.setSingleLine(true);
-        userPriceView.setGravity(Gravity.RIGHT);
-        addView(userPriceView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 8, 0, 17, 0));
-        layoutParams = (LinearLayout.LayoutParams) userPriceView.getLayoutParams();
-        layoutParams.weight = 1;
-        userPriceView.setLayoutParams(layoutParams);
 
     }
 
@@ -97,22 +89,19 @@ public class MedicinePriceCell extends LinearLayout {
     }
 
     public void setValue(BigDecimal marketPrice, BigDecimal userPrice, int saleCount, boolean divider) {
-        if (marketPrice.compareTo(userPrice) == 0) {
-            marketPriceView.setVisibility(INVISIBLE);
-        } else {
-            marketPriceView.setVisibility(VISIBLE);
+
+        SpannableStringBuilder priceText = new SpannableStringBuilder();
+        CharSequence userPriceStr = ShoppingHelper.formatPrice(userPrice);
+        priceText.append(userPriceStr);
+        if (userPrice.compareTo(marketPrice) != 0) {
+            priceText.append("  ");
+            CharSequence marketPriceStr = ShoppingHelper.formatPrice(marketPrice, false);
+            SpannableString marketPriceSpan = new SpannableString(marketPriceStr);
+            StrikethroughSpan span = new StrikethroughSpan();
+            marketPriceSpan.setSpan(span, 0, marketPriceStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            priceText.append(marketPriceSpan);
         }
-        DecimalFormat decimalFormat = new DecimalFormat(FormatHelper.priceFormat);
-        String marketPriceStr = decimalFormat.format(marketPrice);
-        String userPriceStr = decimalFormat.format(userPrice);
-
-        SpannableString marketPriceSpan = new SpannableString(marketPriceStr);
-        StrikethroughSpan span = new StrikethroughSpan();
-        marketPriceSpan.setSpan(span, 0, marketPriceStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        marketPriceView.setText(marketPriceSpan);
-
-        userPriceView.setText(userPriceStr);
-
+        userPriceView.setText(priceText);
         String saleCountStr = String.format("已售 %d", saleCount);
         saleCountView.setText(saleCountStr);
         saleCountView.setVisibility(saleCount <= 0 ? View.INVISIBLE : View.VISIBLE);

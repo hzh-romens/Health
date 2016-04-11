@@ -25,7 +25,7 @@ import com.romens.yjk.health.core.LocationAddressHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.LocationAddressDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
-import com.romens.yjk.health.ui.activity.BaseActivity;
+import com.romens.yjk.health.ui.base.BaseActivity;
 import com.romens.yjk.health.ui.activity.LocationAddressSelectActivity;
 import com.romens.yjk.health.ui.cells.TextInputNoLineCell;
 import com.romens.yjk.health.ui.cells.LocationAddressInputCell;

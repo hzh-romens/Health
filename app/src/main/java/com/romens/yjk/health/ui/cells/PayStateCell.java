@@ -29,7 +29,11 @@ public class PayStateCell extends FrameLayout {
 
     public PayStateCell(Context context) {
         super(context);
-
+        if (paint == null) {
+            paint = new Paint();
+            paint.setColor(0xffd9d9d9);
+            paint.setStrokeWidth(1);
+        }
         stateImgView = new ImageView(context);
         stateImgView.setScaleType(ImageView.ScaleType.CENTER);
         addView(stateImgView, LayoutHelper.createFrame(24, 24, Gravity.LEFT | Gravity.CENTER_VERTICAL, 16, 0, 16, 0));

@@ -19,7 +19,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.FamilyMemberDao;
 import com.romens.yjk.health.db.entity.FamilyMemberEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.KeyAndViewCell;
 
 import java.util.Calendar;
@@ -27,7 +27,7 @@ import java.util.Calendar;
 /**
  * Created by anlc on 2015/11/9.
  */
-public class FamilyMemberAddActivity extends BaseActionBarActivityWithAnalytics {
+public class FamilyMemberAddActivity extends DarkActionBarActivity {
 
     private ListView listView;
 

@@ -17,7 +17,7 @@ import com.romens.android.ui.widget.SlidingFixTabLayout;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.common.OrderStatus;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.fragment.OrderFragment;
 import com.romens.yjk.health.ui.fragment.OrderServiceFragment;
 
@@ -28,7 +28,7 @@ import java.util.List;
  * Created by anlc on 2015/9/18.
  * 我的订单页面
  */
-public class MyOrderActivity extends BaseActionBarActivityWithAnalytics implements AppNotificationCenter.NotificationCenterDelegate {
+public class MyOrderActivity extends DarkActionBarActivity implements AppNotificationCenter.NotificationCenterDelegate {
 
     private SlidingFixTabLayout slidingFixTabLayout;
     private ViewPager viewPager;

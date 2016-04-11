@@ -7,13 +7,14 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 
 /**
  * @author Zhou Lisi
  * @create 2016-04-07 11:23
  * @description
  */
-public abstract class BaseLocationActivity extends BaseActionBarActivityWithAnalytics implements AMapLocationListener {
+public abstract class BaseLocationActivity extends DarkActionBarActivity implements AMapLocationListener {
     public AMapLocationClient mLocationClient = null;
 
     @Override

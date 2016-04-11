@@ -35,8 +35,8 @@ public class MedicineListCell extends LinearLayout {
     private TextView priceInfoView;
 
 
-    private ImageView favoritesView;
-    private Button addShoppingCartBtn;
+    private TextView favoritesView;
+    private TextView addShoppingCartBtn;
 
     private static Paint paint;
     private boolean needDivider;
@@ -83,12 +83,16 @@ public class MedicineListCell extends LinearLayout {
         content.setLayoutParams(layoutParams);
 
 
-        favoritesView = new ImageView(context);
-        favoritesView.setClickable(true);
-        favoritesView.setScaleType(ImageView.ScaleType.CENTER);
-        favoritesView.setBackgroundResource(R.drawable.list_selector);
-        favoritesView.setColorFilter(ResourcesConfig.favoritesColor);
-        cellContainer.addView(favoritesView, LayoutHelper.createFrame(48, 48, Gravity.RIGHT | Gravity.TOP));
+        favoritesView = new TextView(context);
+        favoritesView.setBackgroundResource(R.drawable.button_favorites);
+        favoritesView.setTextColor(getResources().getColor(R.color.medicine_favorites));
+        favoritesView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        favoritesView.setSingleLine(true);
+        favoritesView.setEllipsize(TextUtils.TruncateAt.END);
+        favoritesView.setGravity(Gravity.CENTER);
+        favoritesView.setText("收藏");
+        favoritesView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
+        cellContainer.addView(favoritesView, LayoutHelper.createLinear(64, LayoutHelper.WRAP_CONTENT, 0, 10, 16, 10));
 
 
         nameView = new TextView(context);
@@ -134,8 +138,9 @@ public class MedicineListCell extends LinearLayout {
         addView(bottomContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
 
 
-        addShoppingCartBtn = new Button(context);
-        addShoppingCartBtn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        addShoppingCartBtn = new TextView(context);
+        addShoppingCartBtn.setClickable(true);
+        addShoppingCartBtn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         addShoppingCartBtn.setMaxLines(1);
         addShoppingCartBtn.setEllipsize(TextUtils.TruncateAt.END);
         addShoppingCartBtn.setSingleLine(true);
@@ -147,7 +152,7 @@ public class MedicineListCell extends LinearLayout {
         if (Build.VERSION.SDK_INT >= 21) {
             addShoppingCartBtn.setStateListAnimator(null);
         }
-        bottomContainer.addView(addShoppingCartBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 28, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 8, 0, 16, 0));
+        bottomContainer.addView(addShoppingCartBtn, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 8, 0, 16, 0));
     }
 
     public void setValue(boolean enableFavorites, boolean isFavorites, String iconUrl, Drawable defaultIcon, CharSequence name, CharSequence desc, CharSequence price, CharSequence priceInfo, boolean showAdd, boolean divider) {
@@ -173,7 +178,7 @@ public class MedicineListCell extends LinearLayout {
         }
 
         favoritesView.setVisibility(enableFavorites ? View.VISIBLE : View.GONE);
-        favoritesView.setImageResource(isFavorites ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
+        favoritesView.setText(isFavorites ? "已收藏" : "收藏");
 
         addShoppingCartBtn.setVisibility(showAdd ? View.VISIBLE : View.GONE);
 

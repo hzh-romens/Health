@@ -1,4 +1,4 @@
-package com.romens.yjk.health.ui.activity;
+package com.romens.yjk.health.ui.base;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +20,7 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.ui.base.LightActionBarActivity;
 
 /**
  * Created by siery on 15/5/5.

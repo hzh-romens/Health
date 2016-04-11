@@ -18,6 +18,7 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.pay.Pay;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.DoubleTextCheckCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
@@ -29,7 +30,7 @@ import com.romens.yjk.health.ui.cells.TipCell;
  * @create 16/3/1
  * @description
  */
-public class OrderPayTypeActivity extends BaseActionBarActivityWithAnalytics {
+public class OrderPayTypeActivity extends DarkActionBarActivity {
     private boolean supportMedicareCardPay = false;
     private ListView listView;
     private ListAdapter listAdapter;

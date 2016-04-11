@@ -21,13 +21,11 @@ import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
-import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.db.DBHelper;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.FlexibleRatingBar;
 
 import org.json.JSONException;
@@ -39,7 +37,7 @@ import java.util.Map;
  * Created by anlc on 2015/9/23.
  * 编辑订单评价页面
  */
-public class OrderEvaluateActivity extends BaseActionBarActivityWithAnalytics {
+public class OrderEvaluateActivity extends DarkActionBarActivity {
     public static final String ARGUMENT_KEY_ORDER_ENTITY = "key_order_entity";
 
     private BackupImageView leftImageView;
@@ -80,7 +78,27 @@ public class OrderEvaluateActivity extends BaseActionBarActivityWithAnalytics {
         leftImageView = (BackupImageView) findViewById(R.id.order_img);
 
         qualityRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_quality_ratingbar);
+        qualityRatingBar.setStepSize(0.5f);
+        qualityRatingBar.setColorFillOff(0xffffffff);
+        qualityRatingBar.setColorFillOn(0xfff9a825);
+        qualityRatingBar.setColorFillPressedOff(0xffffffff);
+        qualityRatingBar.setColorFillPressedOn(0xfff9a825);
+        qualityRatingBar.setColorOutlineOff(0xfff57f17);
+        qualityRatingBar.setColorOutlineOn(0xfff57f17);
+        qualityRatingBar.setColorOutlinePressed(0xfff57f17);
+        qualityRatingBar.setStrokeWidth(AndroidUtilities.dp(2));
+
         speedRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_speed_ratingbar);
+        speedRatingBar.setStepSize(0.5f);
+        speedRatingBar.setColorFillOff(0xffffffff);
+        speedRatingBar.setColorFillOn(0xfff9a825);
+        speedRatingBar.setColorFillPressedOff(0xffffffff);
+        speedRatingBar.setColorFillPressedOn(0xfff9a825);
+        speedRatingBar.setColorOutlineOff(0xfff57f17);
+        speedRatingBar.setColorOutlineOn(0xfff57f17);
+        speedRatingBar.setColorOutlinePressed(0xfff57f17);
+        speedRatingBar.setStrokeWidth(AndroidUtilities.dp(2));
+
         opinionEditText = (EditText) findViewById(R.id.order_evaluate_edit_opinion);
         submitBut = (Button) findViewById(R.id.order_evaluate_submit_btn);
         submitBut.setOnClickListener(new View.OnClickListener() {

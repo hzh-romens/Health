@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.romens.android.ui.ActionBar.ActionBar;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 
 /**
@@ -11,7 +12,7 @@ import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
  * @create 16/2/27
  * @description
  */
-public class ShoppingCartActivity extends BaseActionBarActivityWithAnalytics {
+public class ShoppingCartActivity extends DarkActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -14,6 +14,7 @@ import com.romens.android.ui.ActionBar.ActionBarLayout;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.TipCell;
 
 /**
@@ -21,7 +22,7 @@ import com.romens.yjk.health.ui.cells.TipCell;
  * @create 16/3/1
  * @description 提交订单发票信息
  */
-public class OrderInvoiceActivity extends BaseActionBarActivityWithAnalytics {
+public class OrderInvoiceActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_INVOICE_NAME = "key_invoice_name";
 
     private MaterialEditText inputEditText;

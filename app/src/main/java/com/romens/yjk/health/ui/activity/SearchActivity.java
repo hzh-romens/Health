@@ -47,7 +47,7 @@ import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.SearchResultEntity;
 import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
-import com.romens.yjk.health.ui.HealthActivity;
+import com.romens.yjk.health.ui.base.BaseActivity;
 import com.romens.yjk.health.ui.cells.DrugCell;
 
 import java.io.IOException;

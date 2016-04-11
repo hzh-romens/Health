@@ -1,7 +1,5 @@
 package com.romens.yjk.health.ui;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +17,12 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.UserConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 
 /**
  * Created by anlc on 2016/2/23.
  */
-public class SettingActivity extends BaseActionBarActivityWithAnalytics {
+public class SettingActivity extends DarkActionBarActivity {
 
     private ListView listView;
 

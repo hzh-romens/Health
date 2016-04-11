@@ -29,7 +29,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.activity.medicare.BindUserMedicareNoActivity;
 import com.romens.yjk.health.ui.cells.PayInfoCell;
 import com.romens.yjk.health.ui.cells.TipCell;
@@ -43,7 +43,7 @@ import java.util.Map;
  * @create 16/3/11
  * @description
  */
-public class BalanceInfoActivity extends BaseActionBarActivityWithAnalytics {
+public class BalanceInfoActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_PAY_AMOUNT = "YJK_PAY_AMOUNT";
     public static final String ARGUMENTS_KEY_MEDICARE_USER = "YJK_MEDICARE_USER";
     public static final String ARGUMENTS_KEY_MEDICARE_CARDNO = "YJK_MEDICARE_CARDNO";

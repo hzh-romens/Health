@@ -36,7 +36,7 @@ import com.romens.yjk.health.db.dao.CitysDao;
 import com.romens.yjk.health.db.entity.AddressEntity;
 import com.romens.yjk.health.db.entity.CitysEntity;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.activity.BaseActionBarActivityWithAnalytics;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.adapter.ControlAddressAdapter;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
@@ -51,7 +51,7 @@ import java.util.Map;
  * Created by anlc on 2015/8/19.
  * 用户地址管理页面
  */
-public class ControlAddressActivity extends BaseActionBarActivityWithAnalytics {
+public class ControlAddressActivity extends DarkActionBarActivity {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView listView;
