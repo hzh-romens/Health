@@ -99,11 +99,11 @@ public class MedicineStoreCell extends FrameLayout {
         LinearLayout bottomContainer = new LinearLayout(context);
         bottomContainer.setOrientation(LinearLayout.HORIZONTAL);
         bottomContainer.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-        addView(bottomContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.BOTTOM, 72, 0, 16, 8));
+        addView(bottomContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.BOTTOM, 16, 0, 16, 8));
 
 
         storeCountView = new TextView(context);
-        storeCountView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        storeCountView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         storeCountView.setMaxLines(1);
         storeCountView.setEllipsize(TextUtils.TruncateAt.END);
         storeCountView.setSingleLine(true);
@@ -113,7 +113,7 @@ public class MedicineStoreCell extends FrameLayout {
 
         addShoppingCartView = new TextView(context);
         addShoppingCartView.setClickable(true);
-        addShoppingCartView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        addShoppingCartView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         addShoppingCartView.setMaxLines(1);
         addShoppingCartView.setEllipsize(TextUtils.TruncateAt.END);
         addShoppingCartView.setSingleLine(true);
@@ -123,9 +123,6 @@ public class MedicineStoreCell extends FrameLayout {
         addShoppingCartView.setText("加入购物车");
         addShoppingCartView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         addShoppingCartView.setGravity(Gravity.CENTER);
-        if (Build.VERSION.SDK_INT >= 21) {
-            addShoppingCartView.setStateListAnimator(null);
-        }
         bottomContainer.addView(addShoppingCartView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, 8, 8, 0, 0));
 
     }

@@ -50,6 +50,9 @@ public class MedicineGoodsItem {
     private String shippingCostsText;
     private String salesPromotionText;
 
+    //提示信息
+    private String tipDescText;
+
     public MedicineGoodsItem(JsonNode jsonObject) {
         guid = jsonObject.get("GUID").asText();
         name = jsonObject.get("NAME").asText();
@@ -86,6 +89,10 @@ public class MedicineGoodsItem {
             if (shoppingInfoNode.has("PROMOTIONS")) {
                 salesPromotionText = shoppingInfoNode.get("PROMOTIONS").asText();
             }
+
+            if (shoppingInfoNode.has("TIPDESC")) {
+                tipDescText = shoppingInfoNode.get("TIPDESC").asText();
+            }
         }
     }
 
@@ -93,7 +100,7 @@ public class MedicineGoodsItem {
         return shippingCostsText;
     }
 
-    public boolean hasShippingCostsDesc(){
+    public boolean hasShippingCostsDesc() {
         return !TextUtils.isEmpty(shippingCostsText);
     }
 
@@ -101,7 +108,14 @@ public class MedicineGoodsItem {
         return salesPromotionText;
     }
 
-    public boolean hasSalesPromotionDesc(){
+    public boolean hasSalesPromotionDesc() {
         return !TextUtils.isEmpty(salesPromotionText);
+    }
+
+    public String getTipDescText() {
+        return tipDescText;
+    }
+    public boolean hasTipDescText() {
+        return !TextUtils.isEmpty(tipDescText);
     }
 }

@@ -1,5 +1,7 @@
 package com.romens.yjk.health.config;
 
+import android.graphics.Color;
+
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 
@@ -26,6 +28,10 @@ public class ResourcesConfig {
     public static final int favoritesColor = 0xffe51c23;
 
     public static final int shoppingAccent;
+
+    public static final int tipColor=0xfffff9c4;
+
+    public static final int transparentColor= Color.TRANSPARENT;
 
     static {
         primaryColor = MyApplication.applicationContext.getResources().getColor(R.color.theme_primary);

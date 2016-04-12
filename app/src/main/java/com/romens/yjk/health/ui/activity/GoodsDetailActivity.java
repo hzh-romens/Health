@@ -550,8 +550,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     private int goodsSpecRow;
     //运费信息
     private int goodsShippingCostRow;
-
+    private int tipInfoRow;
     private int goodsServiceModesRow;
+
     private int dividerRow;
 
     private int storeSectionRow;
@@ -609,7 +610,11 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
             if (currMedicineGoodsItem.hasShippingCostsDesc()) {
                 goodsShippingCostRow = rowCount++;
             }
+            if (currMedicineGoodsItem.hasTipDescText()) {
+                tipInfoRow = rowCount++;
+            }
             goodsServiceModesRow = rowCount++;
+
             dividerRow = rowCount++;
             storeSectionRow = rowCount++;
             storeRow = rowCount++;
@@ -667,7 +672,9 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
         goodsSpecRow = -1;
         goodsShippingCostRow = -1;
         goodsSalePromotionRow = -1;
+        tipInfoRow = -1;
         goodsServiceModesRow = -1;
+
         dividerRow = -1;
 
         storeSectionRow = -1;
@@ -740,7 +747,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 return 2;
             } else if (position == goodsPriceRow) {
                 return 3;
-            } else if (position == goodsCDRow || position == goodsSpecRow || position == goodsShippingCostRow || position == goodsSalePromotionRow) {
+            } else if (position == goodsCDRow || position == goodsSpecRow || position == goodsShippingCostRow || position == goodsSalePromotionRow || position == tipInfoRow) {
                 return 4;
             } else if (position == storeRow || (position >= otherStoresBeginRow && position <= otherStoresEndRow)) {
                 return 5;
@@ -832,6 +839,7 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 cell.setSmallStyle(true);
                 cell.setValueTextColor();
                 cell.setMultilineValue(false);
+                cell.setBackgroundColor(ResourcesConfig.transparentColor);
                 if (i == goodsCDRow) {
                     cell.setTextAndValue("产地", currMedicineGoodsItem.cd, true);
                 } else if (i == goodsSpecRow) {
@@ -843,6 +851,10 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
                 } else if (i == goodsShippingCostRow) {
                     cell.setMultilineValue(true);
                     cell.setTextAndValue("运费", currMedicineGoodsItem.getShippingCostsDesc(), true);
+                } else if (i == tipInfoRow) {
+                    cell.setMultilineValue(true);
+                    cell.setBackgroundColor(ResourcesConfig.tipColor);
+                    cell.setTextAndValue("提示", currMedicineGoodsItem.getTipDescText(), true);
                 }
             } else if (viewType == 5) {
                 if (view == null) {
