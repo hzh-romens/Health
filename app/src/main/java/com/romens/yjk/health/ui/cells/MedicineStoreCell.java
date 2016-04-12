@@ -121,7 +121,7 @@ public class MedicineStoreCell extends FrameLayout {
         //addShoppingCartView.setTextColor(ResourcesConfig.textPrimary);
         addShoppingCartView.setBackgroundResource(R.drawable.btn_primary);
         addShoppingCartView.setText("加入购物车");
-        addShoppingCartView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(4), AndroidUtilities.dp(16), AndroidUtilities.dp(4));
+        addShoppingCartView.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(4), AndroidUtilities.dp(8), AndroidUtilities.dp(4));
         addShoppingCartView.setGravity(Gravity.CENTER);
         if (Build.VERSION.SDK_INT >= 21) {
             addShoppingCartView.setStateListAnimator(null);

@@ -32,7 +32,7 @@ import com.romens.yjk.health.model.DeleteEntity;
 import com.romens.yjk.health.model.GoodsEntity;
 import com.romens.yjk.health.model.ParentEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
-import com.romens.yjk.health.ui.activity.CommitOrderBaseActivity;
+import com.romens.yjk.health.ui.activity.OrderSubmitBaseActivity;
 import com.romens.yjk.health.ui.adapter.ShopAdapter;
 import com.romens.yjk.health.ui.components.CheckableFrameLayout;
 import com.romens.yjk.health.ui.utils.DialogUtils;
@@ -459,7 +459,7 @@ public class ShopCarFragment extends AppFragment {
                             JSONObject jsonObject = new JSONObject(responseProtocol.getResponse());
                             String success = jsonObject.getString("success");
                             if (success.equals("yes")) {
-                                Intent i = new Intent(getActivity(), CommitOrderBaseActivity.class);
+                                Intent i = new Intent(getActivity(), OrderSubmitBaseActivity.class);
                                 i.putExtra("childData", filterChildData);
                                 i.putExtra("parentData", filterParentData);
                                 startActivity(i);

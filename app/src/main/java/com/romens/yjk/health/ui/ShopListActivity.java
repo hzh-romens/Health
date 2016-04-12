@@ -414,6 +414,7 @@ public class ShopListActivity extends DarkActionBarActivity implements View.OnCl
         } else {
             args.put("SORTFIELD", "default");
         }
+        args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         //   args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol;
         if (key != null && !("".equals(key)) && SEARCHDEFAULT) {

@@ -47,7 +47,7 @@ import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
-import com.romens.yjk.health.ui.activity.CommitOrderBaseActivity;
+import com.romens.yjk.health.ui.activity.OrderSubmitBaseActivity;
 import com.romens.yjk.health.ui.cells.ShoppingCartEmptyCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartGoodsCell;
 import com.romens.yjk.health.ui.cells.ShoppingCartStoreCell;
@@ -70,7 +70,7 @@ import java.util.Map;
  * @description
  */
 public class ShoppingCartFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
-    public static final String ARGUMENTS_KEY_SELECT_GOODS="key_select_goods";
+    public static final String ARGUMENTS_KEY_SELECT_GOODS = "key_select_goods";
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView listView;
@@ -98,14 +98,14 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments=getArguments();
-        if(arguments!=null&&arguments.containsKey(ARGUMENTS_KEY_SELECT_GOODS)){
-            needSelectedGoods=arguments.getStringArrayList(ARGUMENTS_KEY_SELECT_GOODS);
+        Bundle arguments = getArguments();
+        if (arguments != null && arguments.containsKey(ARGUMENTS_KEY_SELECT_GOODS)) {
+            needSelectedGoods = arguments.getStringArrayList(ARGUMENTS_KEY_SELECT_GOODS);
         }
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginOut);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onShoppingCartChanged);
-        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onCommitShoppingCart);
+        AppNotificationCenter.getInstance().addObserver(this, AppNotificationCenter.onSubmitShoppingCart);
         unLogin = !UserSession.getInstance().isClientLogin();
         listAdapter = new ListAdapter();
     }
@@ -188,7 +188,7 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
         commitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tryCommitSelectGoods();
+                trySubmitSelectGoods();
             }
         });
         updateAmount();
@@ -206,11 +206,11 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginOut);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.loginSuccess);
         AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onShoppingCartChanged);
-        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onCommitShoppingCart);
+        AppNotificationCenter.getInstance().removeObserver(this, AppNotificationCenter.onSubmitShoppingCart);
         super.onDestroy();
     }
 
-    private void tryCommitSelectGoods() {
+    private void trySubmitSelectGoods() {
 
         if (isSyncingServerShoppingCart) {
             return;
@@ -221,33 +221,33 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
             return;
         }
         //清除废数据
-        final ArrayList<String> needCommitGoods = new ArrayList<>();
+        final ArrayList<String> needSubmitGoods = new ArrayList<>();
         for (String id : selectGoods) {
             if (shoppingCartData.containsKey(id)) {
-                needCommitGoods.add(id);
+                needSubmitGoods.add(id);
             }
         }
-        if (needCommitGoods.size() <= 0) {
+        if (needSubmitGoods.size() <= 0) {
             ToastCell.toast(getActivity(), "请至少选择一个商品!");
             return;
         }
 
         //检测购物车内商品是否是普通商品和医保商品混合
-        boolean needMedicareAlert = false;
+        boolean hasUnMedicareGoods = false;
         boolean hasMedicareGoods = false;
         ShoppingCartDataEntity entityTemp;
-        for (String goodsId : needCommitGoods) {
+        for (String goodsId : needSubmitGoods) {
             entityTemp = shoppingCartData.get(goodsId);
             if (entityTemp.getGoodsType() == GoodsFlag.MEDICARE) {
                 hasMedicareGoods = true;
             } else {
-                needMedicareAlert = hasMedicareGoods;
+                hasUnMedicareGoods = true;
             }
-            if (needMedicareAlert) {
+            if (hasUnMedicareGoods && hasMedicareGoods) {
                 break;
             }
         }
-        if (needMedicareAlert) {
+        if (hasUnMedicareGoods && hasMedicareGoods) {
             new AlertDialog.Builder(getActivity())
                     .setTitle("提示")
                     .setMessage("准备提交的商品中，含有非医保支付商品。结算将不能使用医保支付，是否确定去结算？")
@@ -255,21 +255,44 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
                     .setNegativeButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            commitSelectGoods(needCommitGoods, false);
+                            submitSelectGoods(needSubmitGoods, false);
                         }
                     }).create().show();
         } else {
-            commitSelectGoods(needCommitGoods, hasMedicareGoods);
+            if (hasMedicareGoods) {
+                submitSelectGoodsForMedicare(needSubmitGoods, hasMedicareGoods);
+            } else {
+                submitSelectGoods(needSubmitGoods, hasMedicareGoods);
+            }
         }
     }
 
-    private void commitSelectGoods(ArrayList<String> needCommitGoods, boolean supportMedicare) {
+    /**
+     * 全部是医保商品提示医保商品不允许退换
+     *
+     * @param needSubmitGoods
+     * @param supportMedicare
+     */
+    private void submitSelectGoodsForMedicare(final ArrayList<String> needSubmitGoods, final boolean supportMedicare) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("友情提示")
+                .setMessage("请您确认好要支付的商品，医保药品不退不换哟!")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        submitSelectGoods(needSubmitGoods, supportMedicare);
+                    }
+                }).create().show();
+    }
+
+    private void submitSelectGoods(ArrayList<String> needSubmitGoods, boolean supportMedicare) {
         String packName = getActivity().getPackageName();
-        ComponentName componentName = new ComponentName(packName, packName + ".ui.activity.CommitOrderActivity");
+        ComponentName componentName = new ComponentName(packName, packName + ".ui.activity.OrderSubmitActivity");
         Intent intent = new Intent();
         intent.setComponent(componentName);
-        intent.putExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SUPPORT_MEDICARE, supportMedicare);
-        intent.putStringArrayListExtra(CommitOrderBaseActivity.ARGUMENTS_KEY_SELECT_GOODS, needCommitGoods);
+        intent.putExtra(OrderSubmitBaseActivity.ARGUMENTS_KEY_SUPPORT_MEDICARE, supportMedicare);
+        intent.putStringArrayListExtra(OrderSubmitBaseActivity.ARGUMENTS_KEY_SELECT_GOODS, needSubmitGoods);
         startActivity(intent);
     }
 
@@ -333,7 +356,7 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
         checkShoppingCartState();
         updateAdapter();
         if (isContainMedicareGoods) {
-            needShowTip("小提示: 购物车内含有医保商品.结算时选择的商品只有全部为医保商品才可以进行医保支付.或者使用其他的支付方式.");
+            needShowTip("小提示: 购物车内含有医保商品.结算时选择的商品只有全部为医保商品才可以进行社保卡支付.或者使用其他的支付方式.");
         } else {
             if (showTip) {
                 needHideTip();
@@ -582,12 +605,13 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
     @Override
     public void didReceivedNotification(int i, Object... objects) {
         if (i == AppNotificationCenter.onShoppingCartChanged) {
+            allCheckView.setChecked(false);
             syncShoppingCartForDB();
         } else if (i == AppNotificationCenter.loginSuccess || i == AppNotificationCenter.loginOut) {
             unLogin = !UserSession.getInstance().isClientLogin();
             checkShoppingCartState();
             syncShoppingCartForServer();
-        } else if (i == AppNotificationCenter.onCommitShoppingCart) {
+        } else if (i == AppNotificationCenter.onSubmitShoppingCart) {
             listAdapter.onAllSelectedChanged(false);
             syncShoppingCartForDB();
             syncShoppingCartForServer();

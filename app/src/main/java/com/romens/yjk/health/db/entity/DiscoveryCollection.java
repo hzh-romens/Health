@@ -87,7 +87,6 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "附近药店";
         public static final int isCover = 1;
-        public static final int sortIndex = 0;
         public static final int primaryColor = 0xFF8BC34A;
     }
 
@@ -106,7 +105,6 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "用药咨询";
         public static final int isCover = 0;
-        public static final int sortIndex = 4;
         public static final int primaryColor = 0xFFA1887F;
     }
 
@@ -117,7 +115,6 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "用药提醒";
         public static final int isCover = 0;
-        public static final int sortIndex = 5;
         public static final int primaryColor = 0xFFA1887F;
     }
 
@@ -136,7 +133,6 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "最新资讯";
         public static final int isCover = 0;
-        public static final int sortIndex = 1;
         public static final int primaryColor = 0xFFFF8A65;
     }
 
@@ -147,7 +143,6 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "扫码识药";
         public static final int isCover = 0;
-        public static final int sortIndex = 2;
         public static final int primaryColor = 0xFFA1887F;
     }
 
@@ -158,7 +153,6 @@ public class DiscoveryCollection {
         public static final String iconUrl = "";
         public static final String name = "个人健康";
         public static final int isCover = 0;
-        public static final int sortIndex = 6;
         public static final int primaryColor = 0xFFA1887F;
     }
 }

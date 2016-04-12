@@ -86,44 +86,16 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
 
     public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion) {
         dropTable(db, true);
-        createTable(db, true);
+        createTable(db, false);
     }
 
     public static void initCreatedTableData(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
-        //附近药店
-        ContentValues value = new ContentValues();
-        value.put("KEY", NearbyPharmacy.key);
-        value.put("ICON_RES", NearbyPharmacy.iconRes);
-        value.put("ICON_URL", NearbyPharmacy.iconUrl);
-        value.put("NAME", NearbyPharmacy.name);
-        value.put("VALUE", NearbyPharmacy.value);
-        value.put("STATUS", 0);
-        int time = (int) Calendar.getInstance().getTimeInMillis();
-        value.put("CREATED", time);
-        value.put("UPDATED", time);
-        value.put("IS_COVER", NearbyPharmacy.isCover);
-        value.put("SORT_INDEX", NearbyPharmacy.sortIndex);
-        value.put("PRIMARY_COLOR", NearbyPharmacy.primaryColor);
-        values.putAll(value);
-        db.insert(TABLENAME, null, values);
-        //最新资讯
-        value = new ContentValues();
-        value.put("KEY", InformationNews.key);
-        value.put("ICON_RES", InformationNews.iconRes);
-        value.put("ICON_URL", InformationNews.iconUrl);
-        value.put("NAME", InformationNews.name);
-        value.put("VALUE", InformationNews.value);
-        value.put("STATUS", 0);
-        time = (int) Calendar.getInstance().getTimeInMillis();
-        value.put("CREATED", time);
-        value.put("UPDATED", time);
-        value.put("IS_COVER", InformationNews.isCover);
-        value.put("SORT_INDEX", InformationNews.sortIndex);
-        value.put("PRIMARY_COLOR", InformationNews.primaryColor);
-        values.putAll(value);
-        db.insert(TABLENAME, null, values);
-        //附近药店
+        ContentValues value;
+        int time;
+
+        int sortIndex = 0;
+        //扫码识药
         value = new ContentValues();
         value.put("KEY", FindDrugWithScanner.key);
         value.put("ICON_RES", FindDrugWithScanner.iconRes);
@@ -135,10 +107,29 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         value.put("CREATED", time);
         value.put("UPDATED", time);
         value.put("IS_COVER", FindDrugWithScanner.isCover);
-        value.put("SORT_INDEX", FindDrugWithScanner.sortIndex);
+        value.put("SORT_INDEX", sortIndex++);
         value.put("PRIMARY_COLOR", FindDrugWithScanner.primaryColor);
         values.putAll(value);
         db.insert(TABLENAME, null, values);
+
+        //附近药店
+        value = new ContentValues();
+        value.put("KEY", NearbyPharmacy.key);
+        value.put("ICON_RES", NearbyPharmacy.iconRes);
+        value.put("ICON_URL", NearbyPharmacy.iconUrl);
+        value.put("NAME", NearbyPharmacy.name);
+        value.put("VALUE", NearbyPharmacy.value);
+        value.put("STATUS", 0);
+        time = (int) Calendar.getInstance().getTimeInMillis();
+        value.put("CREATED", time);
+        value.put("UPDATED", time);
+        value.put("IS_COVER", NearbyPharmacy.isCover);
+        value.put("SORT_INDEX", sortIndex++);
+        value.put("PRIMARY_COLOR", NearbyPharmacy.primaryColor);
+        values.putAll(value);
+        db.insert(TABLENAME, null, values);
+
+
         //用药提醒
         value = new ContentValues();
         value.put("KEY", MedicationReminders.key);
@@ -151,7 +142,7 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         value.put("CREATED", time);
         value.put("UPDATED", time);
         value.put("IS_COVER", MedicationReminders.isCover);
-        value.put("SORT_INDEX", MedicationReminders.sortIndex);
+        value.put("SORT_INDEX", sortIndex++);
         value.put("PRIMARY_COLOR", MedicationReminders.primaryColor);
         values.putAll(value);
         db.insert(TABLENAME, null, values);
@@ -168,10 +159,28 @@ public class DiscoveryDao extends AbstractDao<DiscoveryEntity, Long> {
         value.put("CREATED", time);
         value.put("UPDATED", time);
         value.put("IS_COVER", PharmicCounseling.isCover);
-        value.put("SORT_INDEX", PharmicCounseling.sortIndex);
+        value.put("SORT_INDEX", sortIndex++);
         value.put("PRIMARY_COLOR", PharmicCounseling.primaryColor);
         values.putAll(value);
         db.insert(TABLENAME, null, values);
+
+        //最新资讯
+        value = new ContentValues();
+        value.put("KEY", InformationNews.key);
+        value.put("ICON_RES", InformationNews.iconRes);
+        value.put("ICON_URL", InformationNews.iconUrl);
+        value.put("NAME", InformationNews.name);
+        value.put("VALUE", InformationNews.value);
+        value.put("STATUS", 0);
+        time = (int) Calendar.getInstance().getTimeInMillis();
+        value.put("CREATED", time);
+        value.put("UPDATED", time);
+        value.put("IS_COVER", InformationNews.isCover);
+        value.put("SORT_INDEX", sortIndex++);
+        value.put("PRIMARY_COLOR", InformationNews.primaryColor);
+        values.putAll(value);
+        db.insert(TABLENAME, null, values);
+
 
 //        //个人健康
 //        value = new ContentValues();

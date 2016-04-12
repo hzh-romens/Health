@@ -279,7 +279,7 @@
 
 
         <activity
-            android:name="${CHANNEL_PACKAGE}.ui.activity.CommitOrderActivity"
+            android:name="${CHANNEL_PACKAGE}.ui.activity.OrderSubmitActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"></activity>

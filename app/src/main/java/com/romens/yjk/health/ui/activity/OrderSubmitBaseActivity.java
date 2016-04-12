@@ -74,7 +74,7 @@ import java.util.Map;
  * @create 16/2/24
  * @description
  */
-public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
+public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
 
     public static final String ARGUMENTS_KEY_SELECT_GOODS = "key_select_goods";
     public static final String ARGUMENTS_KEY_SUPPORT_MEDICARE = "SupportMedicareCardPay";
@@ -186,26 +186,26 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
 
     private void processItemSelect(int position) {
         if (position == addressRow) {
-            UIOpenHelper.openControlAddressActivityForResult(CommitOrderBaseActivity.this, REQUEST_CODE_ADDRESS);
+            UIOpenHelper.openControlAddressActivityForResult(OrderSubmitBaseActivity.this, REQUEST_CODE_ADDRESS);
         } else if (position == orderPayTypeRow) {
             if (isLoadingDeliveryModes) {
-                ToastCell.toast(CommitOrderBaseActivity.this, "正在加载支付和配送方式...");
+                ToastCell.toast(OrderSubmitBaseActivity.this, "正在加载支付和配送方式...");
                 return;
             }
-            Intent intent = new Intent(CommitOrderBaseActivity.this, OrderPayTypeActivity.class);
+            Intent intent = new Intent(OrderSubmitBaseActivity.this, OrderPayTypeActivity.class);
             boolean supportMedicareCard = supportMedicareCardPay();
             intent.putExtra("SupportMedicareCard", supportMedicareCard);
             intent.putExtra("PayType", selectPayType);
             intent.putExtra("DeliveryType", selectDeliveryType);
             startActivityForResult(intent, REQUEST_CODE_PAY_DELIVERY);
         } else if (position == couponRow) {
-            Intent intent = new Intent(CommitOrderBaseActivity.this, CuoponActivity.class);
+            Intent intent = new Intent(OrderSubmitBaseActivity.this, CuoponActivity.class);
             intent.putExtra(CuoponActivity.ARGUMENT_KEY_SELECT_COUPON_ID, orderCouponID);
             intent.putExtra(CuoponActivity.ARGUMENT_KEY_ORDER_AMOUNT, goodsAmount.doubleValue());
             intent.putExtra("canClick", true);
             startActivityForResult(intent, REQUEST_CODE_COUPON);
         } else if (position == invoiceRow) {
-            Intent intent = new Intent(CommitOrderBaseActivity.this, OrderInvoiceActivity.class);
+            Intent intent = new Intent(OrderSubmitBaseActivity.this, OrderInvoiceActivity.class);
             intent.putExtra(OrderInvoiceActivity.ARGUMENTS_KEY_INVOICE_NAME, TextUtils.isEmpty(orderInvoice) ? "" : orderInvoice);
             startActivityForResult(intent, REQUEST_CODE_INVOICE);
         } else if (position == orderSubmitRow) {
@@ -262,7 +262,7 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetUserAddressList", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
-        Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
+        Connect connect = new RMConnect.Builder(OrderSubmitBaseActivity.class)
                 .withProtocol(protocol)
                 .withParser(new JSONNodeParser())
                 .withDelegate(new Connect.AckDelegate() {
@@ -316,7 +316,7 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetTransport", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
-        Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
+        Connect connect = new RMConnect.Builder(OrderSubmitBaseActivity.class)
                 .withProtocol(protocol)
                 .withParser(new JSONNodeParser())
                 .withDelegate(new Connect.AckDelegate() {
@@ -344,20 +344,20 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
 
     private void tryPostOrder() {
         if (isLoadingDefaultAddress) {
-            ToastCell.toast(CommitOrderBaseActivity.this, "正在加载送货地址...");
+            ToastCell.toast(OrderSubmitBaseActivity.this, "正在加载送货地址...");
             return;
         }
         if (isLoadingDeliveryModes) {
-            ToastCell.toast(CommitOrderBaseActivity.this, "正在加载支付和配送方式...");
+            ToastCell.toast(OrderSubmitBaseActivity.this, "正在加载支付和配送方式...");
             return;
         }
         if (addressInfo == null || addressInfo.size() <= 0) {
-            ToastCell.toast(CommitOrderBaseActivity.this, "请选择送货地址!");
+            ToastCell.toast(OrderSubmitBaseActivity.this, "请选择送货地址!");
             return;
         }
         Pay.DeliveryMode deliveryMode = Pay.getInstance().getSupportDeliveryMode(selectDeliveryType);
         if (deliveryMode == null) {
-            ToastCell.toast(CommitOrderBaseActivity.this, "请选择配送方式!");
+            ToastCell.toast(OrderSubmitBaseActivity.this, "请选择配送方式!");
             return;
         }
         SpannableStringBuilder message = new SpannableStringBuilder();
@@ -373,7 +373,7 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
 
         message.append("\n是否确定提交订单?");
 
-        new AlertDialog.Builder(CommitOrderBaseActivity.this)
+        new AlertDialog.Builder(OrderSubmitBaseActivity.this)
                 .setTitle("提交订单")
                 .setMessage(message)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -402,7 +402,7 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetNewAmountByCoupon", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
-        Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
+        Connect connect = new RMConnect.Builder(OrderSubmitBaseActivity.class)
                 .withProtocol(protocol)
                 .withParser(new JSONNodeParser())
                 .withDelegate(new Connect.AckDelegate() {
@@ -419,10 +419,10 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
                         }
                         clearCoupon();
                         updateAdapter();
-                        ToastCell.toast(CommitOrderBaseActivity.this, "获取优惠券信息失败!");
+                        ToastCell.toast(OrderSubmitBaseActivity.this, "获取优惠券信息失败!");
                     }
                 }).build();
-        ConnectManager.getInstance().request(CommitOrderBaseActivity.this, connect);
+        ConnectManager.getInstance().request(OrderSubmitBaseActivity.this, connect);
     }
 
     private void handleCheckOrderAmountForUserCouponResponse(JsonNode jsonNode) {
@@ -473,7 +473,7 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "SaveOrderNew", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
-        Connect connect = new RMConnect.Builder(CommitOrderBaseActivity.class)
+        Connect connect = new RMConnect.Builder(OrderSubmitBaseActivity.class)
                 .withProtocol(protocol)
                 .withParser(new JSONNodeParser())
                 .withDelegate(new Connect.AckDelegate() {
@@ -485,11 +485,11 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
                             JsonNode response = protocol.getResponse();
                             handlePostOrderResponse(response);
                         } else {
-                            ToastCell.toast(CommitOrderBaseActivity.this, "提交订单失败!");
+                            ToastCell.toast(OrderSubmitBaseActivity.this, "提交订单失败!");
                         }
                     }
                 }).build();
-        ConnectManager.getInstance().request(CommitOrderBaseActivity.this, connect);
+        ConnectManager.getInstance().request(OrderSubmitBaseActivity.this, connect);
     }
 
     private void handlePostOrderResponse(JsonNode response) {
@@ -497,7 +497,7 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
         if (!response.has("ERROR")) {
             //提交订单成功，清除购物车内已提交商品
             DBInterface.instance().deleteShoppingCartGoods(needCommitGoodsIds);
-            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onCommitShoppingCart);
+            AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onSubmitShoppingCart);
             //发起支付
             String orderNo = response.get("ORDERCODE").asText();
             String orderDate = response.get("CREATEDATE").asText();
@@ -507,20 +507,20 @@ public abstract class CommitOrderBaseActivity extends DarkActionBarActivity {
             boolean isOpen = true;
             int id = Pay.getInstance().getPayTypeId(payType);
             if (id == Pay.PAY_TYPE_OFFLINE) {
-                UIOpenHelper.openOrderDetailForOrderNoActivity(CommitOrderBaseActivity.this, orderNo);
+                UIOpenHelper.openOrderDetailForOrderNoActivity(OrderSubmitBaseActivity.this, orderNo);
             } else {
                 Bundle arguments = new Bundle();
                 arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
                 arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
                 arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, orderAmount.doubleValue());
                 arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, payAmount.doubleValue());
-                isOpen = UIOpenHelper.openPayPrepareActivity(CommitOrderBaseActivity.this, payType, arguments);
+                isOpen = UIOpenHelper.openPayPrepareActivity(OrderSubmitBaseActivity.this, payType, arguments);
             }
             if (isOpen) {
                 finish();
             }
         } else {
-            ToastCell.toast(CommitOrderBaseActivity.this, "提交订单失败!");
+            ToastCell.toast(OrderSubmitBaseActivity.this, "提交订单失败!");
         }
     }
 
