@@ -28,11 +28,11 @@ public class PayPrepareActivity extends PayPrepareBaseActivity {
                     sendPayPrepareRequest();
                 } else if (position >= payModeStartRow && position <= payModeEndRow) {
                     int index = position - payModeStartRow;
-                    selectedPayModeId = payModes.valueAt(index).id;
+                    selectedPayModeId = defaultPayModes.get(index);
                     updateAdapter();
                 }else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
                     int index = position - otherPayModeStartRow;
-                    selectedPayModeId = otherPayModes.valueAt(index).id;
+                    selectedPayModeId = otherPayModes.get(index);
                     updateAdapter();
                 }
 //                else if (position >= payModeStartRow && position <= payModeEndRow) {

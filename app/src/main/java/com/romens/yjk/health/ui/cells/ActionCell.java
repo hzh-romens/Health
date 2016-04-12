@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.R;
+import com.romens.yjk.health.config.ResourcesConfig;
 
 /**
  * @author Zhou Lisi
@@ -46,6 +47,16 @@ public class ActionCell extends FrameLayout {
         button.setEllipsize(TextUtils.TruncateAt.END);
         button.setGravity(Gravity.CENTER);
         addView(button, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 40, Gravity.LEFT, 16, 8, 16, 8));
+    }
+
+    public void setPrimaryAction() {
+        button.setBackgroundResource(R.drawable.btn_primary);
+        button.setTextColor(0xffffffff);
+    }
+
+    public void setNormalAction() {
+        button.setBackgroundResource(R.drawable.btn_normal);
+        button.setTextColor(ResourcesConfig.bodyText2);
     }
 
     @Override

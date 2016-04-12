@@ -27,11 +27,11 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
                     trySendPayPrepareRequest();
                 } else if (position >= payModeStartRow && position <= payModeEndRow) {
                     int index = position - payModeStartRow;
-                    selectedPayModeId = payModes.valueAt(index).id;
+                    selectedPayModeId = defaultPayModes.get(index);
                     updateAdapter();
                 }else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
                     int index = position - otherPayModeStartRow;
-                    selectedPayModeId = otherPayModes.valueAt(index).id;
+                    selectedPayModeId = otherPayModes.get(index);
                     updateAdapter();
                 }
             }
@@ -39,10 +39,6 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
         //支付方式
         payModes.clear();
         onCreatePayMode(payModes);
-        //其他支付方式
-        otherPayModes.clear();
-        onCreateOtherPayMode(otherPayModes);
-
         updateAdapter();
     }
 

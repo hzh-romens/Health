@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.romens.android.AndroidUtilities;
@@ -19,13 +20,14 @@ import com.romens.yjk.health.R;
  * @create 16/2/26
  * @description
  */
-public class PayInfoCell extends FrameLayout {
+public class PayInfoCell extends LinearLayout {
 
-    private TextView textView;
-    private TextView valueTextView;
+    protected TextView textView;
+    protected TextView valueTextView;
     private ImageView navView;
     private static Paint paint;
     private boolean needDivider;
+    private boolean multiline;
     private boolean isSmall = false;
 
     public PayInfoCell(Context context) {
@@ -36,6 +38,9 @@ public class PayInfoCell extends FrameLayout {
             paint.setColor(0xffd9d9d9);
             paint.setStrokeWidth(1);
         }
+        setOrientation(HORIZONTAL);
+        setGravity(Gravity.TOP);
+        setMinimumHeight(AndroidUtilities.dp(44));
 
         textView = new TextView(context);
         textView.setTextColor(0xff212121);
@@ -46,7 +51,7 @@ public class PayInfoCell extends FrameLayout {
         textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setGravity((Gravity.LEFT) | Gravity.CENTER_VERTICAL);
         AndroidUtilities.setMaterialTypeface(textView);
-        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, (Gravity.LEFT) | Gravity.TOP, 17, 0, 17, 0));
+        addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 16, 8, 8, 8));
 
         valueTextView = new TextView(context);
         valueTextView.setTextColor(0xff2f8cc9);
@@ -56,36 +61,41 @@ public class PayInfoCell extends FrameLayout {
         valueTextView.setSingleLine(true);
         valueTextView.setEllipsize(TextUtils.TruncateAt.END);
         valueTextView.setGravity((Gravity.RIGHT) | Gravity.CENTER_VERTICAL);
+        valueTextView.setMinWidth(AndroidUtilities.dp(64));
         AndroidUtilities.setMaterialTypeface(valueTextView);
-        addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, (Gravity.RIGHT) | Gravity.TOP, 17, 0, 17, 0));
+        addView(valueTextView, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f, 8, 0, 16, 0));
 
         navView = new ImageView(context);
         navView.setScaleType(ImageView.ScaleType.CENTER);
         navView.setColorFilter(0xffe5e5e5);
         navView.setImageResource(R.drawable.ic_chevron_right_grey600_24dp);
         navView.setVisibility(GONE);
-        addView(navView, LayoutHelper.createFrame(24, 24, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 8, 0));
+        addView(navView, LayoutHelper.createLinear(24, 24, 0, 8, 8, 8));
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(isSmall ? 36 : 48) + (needDivider ? 1 : 0));
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), AndroidUtilities.dp(isSmall ? 36 : 48) + (needDivider ? 1 : 0));
+//
+//        int availableWidth;
+//        if (navView.getVisibility() == VISIBLE) {
+//            availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(58);
+//            navView.measure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(24), MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(24), MeasureSpec.EXACTLY));
+//        } else {
+//            availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(34);
+//        }
+//        int width = (availableWidth * 2) / 3;
+//        if (valueTextView.getVisibility() == VISIBLE) {
+//            valueTextView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+//            width = availableWidth - valueTextView.getMeasuredWidth() - AndroidUtilities.dp(8);
+//        } else {
+//            width = availableWidth;
+//        }
+//        textView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+//    }
 
-        int availableWidth;
-        if (navView.getVisibility() == VISIBLE) {
-            availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(58);
-            navView.measure(MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(24), MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(24), MeasureSpec.EXACTLY));
-        } else {
-            availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - AndroidUtilities.dp(34);
-        }
-        int width = (availableWidth * 2) / 3;
-        if (valueTextView.getVisibility() == VISIBLE) {
-            valueTextView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
-            width = availableWidth - valueTextView.getMeasuredWidth() - AndroidUtilities.dp(8);
-        } else {
-            width = availableWidth;
-        }
-        textView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+    public void setTextColor() {
+        textView.setTextColor(0xff212121);
     }
 
     public void setTextColor(int color) {
@@ -95,6 +105,24 @@ public class PayInfoCell extends FrameLayout {
     public void setValueTextColor(int color) {
         valueTextView.setTextColor(color);
     }
+
+    public void setValueTextColor() {
+        valueTextView.setTextColor(0xff2f8cc9);
+    }
+
+    public void setMultilineValue(boolean value) {
+        multiline = value;
+        if (value) {
+            valueTextView.setLines(0);
+            valueTextView.setMaxLines(0);
+            valueTextView.setSingleLine(false);
+        } else {
+            valueTextView.setLines(1);
+            valueTextView.setMaxLines(1);
+            valueTextView.setSingleLine(true);
+        }
+    }
+
 
     public void setText(CharSequence text, boolean divider) {
         textView.setText(text);
@@ -135,6 +163,7 @@ public class PayInfoCell extends FrameLayout {
 
     public void setSmall(boolean small) {
         this.isSmall = small;
+        setMinimumHeight(AndroidUtilities.dp(isSmall ? 36 : 44));
         requestLayout();
     }
 

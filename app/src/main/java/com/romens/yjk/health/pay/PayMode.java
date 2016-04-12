@@ -1,5 +1,7 @@
 package com.romens.yjk.health.pay;
 
+import android.text.TextUtils;
+
 /**
  * @author Zhou Lisi
  * @create 16/2/26
@@ -64,6 +66,17 @@ public class PayMode {
             return "PAY_WX";
         } else if (mode == PayModeEnum.ALIPAY) {
             return "PAY_ALIPAY";
+        }
+        return "";
+    }
+
+    public static String getPayModeDesc(String key) {
+        if (TextUtils.equals("PAY_YB_HEB", key)) {
+            return "社保卡支付(哈尔滨银行)";
+        } else if (TextUtils.equals("PAY_WX", key)) {
+            return "微信支付";
+        } else if (TextUtils.equals("PAY_ALIPAY", key)) {
+            return "支付宝支付";
         }
         return "";
     }

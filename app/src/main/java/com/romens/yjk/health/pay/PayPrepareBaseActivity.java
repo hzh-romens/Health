@@ -37,7 +37,9 @@ import com.romens.yjk.health.ui.cells.TipCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,7 +68,9 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
 
     protected int selectedPayModeId;
     protected final SparseArray<PayMode> payModes = new SparseArray<>();
-    protected final SparseArray<PayMode> otherPayModes = new SparseArray<>();
+
+    protected final List<Integer> defaultPayModes=new ArrayList<>();
+    protected final List<Integer> otherPayModes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,11 +123,11 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
                 .withName("支付宝支付(现金支付)")
                 .withDesc("推荐支付宝用户使用")
                 .withMode(PayModeEnum.ALIPAY).build());
+        defaultPayModes.clear();
+        defaultPayModes.add(0);
+        defaultPayModes.add(1);
+        otherPayModes.clear();
         selectedPayModeId = 0;
-    }
-
-    protected void onCreateOtherPayMode(SparseArray<PayMode> payModes) {
-
     }
 
     protected void sendPayPrepareRequest() {
@@ -239,7 +243,7 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
         dividerRow = rowCount++;
         payModeSection = rowCount++;
         payModeStartRow = rowCount;
-        rowCount += payModes.size();
+        rowCount += defaultPayModes.size();
         payModeEndRow = rowCount - 1;
 
         if (otherPayModes.size() > 0) {
@@ -402,11 +406,13 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
                 PayModeCell cell = (PayModeCell) convertView;
                 if (position >= payModeStartRow && position <= payModeEndRow) {
                     int index = position - payModeStartRow;
-                    PayMode mode = payModes.valueAt(index);
+                    int payModeId=defaultPayModes.get(index);;
+                    PayMode mode = payModes.get(payModeId);
                     cell.setValue(mode.iconResId, mode.name, mode.desc, mode.id == selectedPayModeId, position != payModeEndRow);
                 } else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
                     int index = position - otherPayModeStartRow;
-                    PayMode mode = otherPayModes.valueAt(index);
+                    int payModeId=otherPayModes.get(index);;
+                    PayMode mode = payModes.get(payModeId);
                     cell.setValue(mode.iconResId, mode.name, mode.desc, mode.id == selectedPayModeId, position != otherPayModeEndRow);
                 }
 

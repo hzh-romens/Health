@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
@@ -39,16 +40,19 @@ import com.romens.android.ui.cells.ShadowSectionCell;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
+import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.config.UserGuidConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.helper.ShoppingHelper;
 import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderListEntity;
+import com.romens.yjk.health.pay.PayMode;
 import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.base.DarkActionBarActivity;
-import com.romens.yjk.health.ui.cells.KeyAndValueCell;
+import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
+import com.romens.yjk.health.ui.cells.OrderPropertyCell;
 import com.romens.yjk.health.ui.cells.OrderStoreCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 
@@ -106,6 +110,12 @@ public class OrderDetailActivity extends DarkActionBarActivity {
         listView.setDividerHeight(0);
         listView.setVerticalScrollBarEnabled(false);
         listContainer.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
         setContentView(container);
         initData();
         adapter = new OrderDetailAdapter(this);
@@ -143,45 +153,62 @@ public class OrderDetailActivity extends DarkActionBarActivity {
     }
 
     private int rowCount;
-    private int orderNumRow;
+    private int orderNoRow;
     private int dataRow;
     private int lineRow;
-    private int shopNameRow ;
+
+    private int shippingSectionRow;
+    private int shippingNameRow;
+    private int shippingPhoneRow;
+    private int shippingAddressRow;
+    private int line2Row;
+
+    private int shopSectionRow;
+    private int shopNameRow;
     private int goodsBeginRow;
     private int goodsEndRow;
+
+    private int orderPaySection;
     private int totalPriceRow;
-    private int couponPriceRow ;
-    private int payPriceRow ;
-    private int payWayRow;
-    private int line2Row;
-    private int consigneeTitleRow;
-    private int consigneeNameRow;
-    private int consigneePhoneRow;
-    private int consignessAddressRow;
-    private int toPayRow;
+    private int couponPriceRow;
+    private int payPriceRow;
+    private int orderPayModeRow;
+
+
+    private int payOrderActionRow;
+    private int cancelOrderActionRow;
 
     private void setRow() {
         rowCount = 0;
-        orderNumRow = rowCount++;
+        orderNoRow = rowCount++;
         dataRow = rowCount++;
         lineRow = rowCount++;
-        shopNameRow = rowCount++ ;
+
+        shippingSectionRow = rowCount++;
+        shippingNameRow = rowCount++;
+        shippingPhoneRow = rowCount++;
+        shippingAddressRow = rowCount++;
+        line2Row = rowCount++;
+
+        shopSectionRow = rowCount++;
+        shopNameRow = rowCount++;
         goodsBeginRow = rowCount;
         rowCount += goodsListEntities.size();
         goodsEndRow = rowCount - 1;
+
+
+        orderPaySection = rowCount++;
         totalPriceRow = rowCount++;
-        couponPriceRow = rowCount++ ;
-        payPriceRow = rowCount++ ;
-        payWayRow = rowCount++;
-        line2Row = rowCount++;
-        consigneeTitleRow = rowCount++;
-        consigneeNameRow = rowCount++;
-        consigneePhoneRow = rowCount++;
-        consignessAddressRow = rowCount++;
+        couponPriceRow = rowCount++;
+        payPriceRow = rowCount++;
+        orderPayModeRow = rowCount++;
+
         if (orderListEntity != null && orderListEntity.getOrderStatusStr().equals("未付款")) {
-            toPayRow = rowCount++;
+            payOrderActionRow = rowCount++;
+            cancelOrderActionRow = rowCount++;
         } else {
-            toPayRow = -1;
+            payOrderActionRow = -1;
+            cancelOrderActionRow = -1;
         }
     }
 
@@ -227,38 +254,51 @@ public class OrderDetailActivity extends DarkActionBarActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == dataRow || position == totalPriceRow || position == payWayRow || position == couponPriceRow || position == payPriceRow) {
-                return 0;
-            } else if (position == consigneeTitleRow || position == orderNumRow) {
+            if (position == lineRow || position == line2Row) {
+                return 1;
+            } else if (position == shippingSectionRow || position == shopSectionRow || position == orderPaySection) {
                 return 2;
-            } else if (position == consigneeNameRow || position == consigneePhoneRow || position == consignessAddressRow) {
+            } else if (position == shippingNameRow || position == shippingPhoneRow || position == shippingAddressRow) {
                 return 0;
             } else if (position >= goodsBeginRow && position <= goodsEndRow) {
                 int itemIndex = position - goodsBeginRow;
                 return 3;
-            } else if (position == toPayRow) {
+            } else if (position == payOrderActionRow || position == cancelOrderActionRow) {
                 return 4;
-            } else if (position == shopNameRow){
+            } else if (position == shopNameRow) {
                 return 5;
             }
-            return 1;
+            return 0;
         }
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             int type = getItemViewType(position);
             if (type == 0) {
-                KeyAndValueCell cell = new KeyAndValueCell(context);
-                if (position == dataRow) {
-                    cell.setKeyAndValue(orderListEntity.getCreateTime() + "  下单", orderListEntity.getOrderStatusStr());
+                if (convertView == null) {
+                    convertView = new OrderPropertyCell(context);
+                }
+                OrderPropertyCell cell = (OrderPropertyCell) convertView;
+                cell.setSmall(true);
+                cell.setMultilineValue(false);
+                cell.setTextColor();
+                cell.setValueTextColor();
+                if (position == orderNoRow) {
+                    cell.setTextColor(0xff212121);
                     cell.setValueTextColor(context.getResources().getColor(R.color.order_statu_color));
+                    cell.setTextAndValue("订单编号:" + orderListEntity.getOrderNo(), orderListEntity.getOrderStatusStr(), true);
+                } else if (position == dataRow) {
+                    cell.setTextAndValue(orderListEntity.getCreateTime() + "  下单", "", true);
                 } else if (position == totalPriceRow) {
-                    cell.setKeyAndValue("总计",ShoppingHelper.formatPrice(  orderListEntity.getOrderPrice(),"￥",false));
+                    //cell.setKeyAndValue("总计",ShoppingHelper.formatPrice(  orderListEntity.getOrderPrice(),"￥",false));
+                    cell.setTextAndValue("商品金额", ShoppingHelper.formatPrice(orderListEntity.getOrderPrice(), "￥", false), false);
                 } else if (position == couponPriceRow) {
-                    cell.setKeyAndValue("优惠金额",ShoppingHelper.formatPrice( orderListEntity.getCouponPrice(), "-￥", false));
+                    //cell.setKeyAndValue("优惠金额",ShoppingHelper.formatPrice( orderListEntity.getCouponPrice(), "-￥", false));
+                    cell.setTextAndValue("优惠金额", ShoppingHelper.formatPrice(orderListEntity.getCouponPrice(), "-￥", false), false);
                 } else if (position == payPriceRow) {
-                    cell.setKeyAndValue("支付金额", ShoppingHelper.formatPrice(  orderListEntity.getPayPrice(),"￥",true));
-                } else if (position == payWayRow) {
+                    //cell.setKeyAndValue("支付金额", ShoppingHelper.formatPrice(  orderListEntity.getPayPrice(),"￥",true));
+                    cell.setTextAndValue("订单合计", ShoppingHelper.formatPrice(orderListEntity.getPayPrice(), "￥", true), true);
+                } else if (position == orderPayModeRow) {
 //                    String result = "";
 //                    if (orderListEntity.getDeliverType().equals("1")) {
 //                        result = "药店派送";
@@ -266,48 +306,72 @@ public class OrderDetailActivity extends DarkActionBarActivity {
 //                        result = "到店自取";
 //                    }
 //                    cell.setKeyAndValue("支付方式", result, true);
-                    cell.setKeyAndValue("支付方式", orderListEntity.getDeliverType());
-                } else if (position == consigneeNameRow) {
-                    cell.setKeyAndValue("收货人姓名", orderListEntity.getReceiver());
-                } else if (position == consigneePhoneRow) {
-                    cell.setKeyAndValue("联系方式", orderListEntity.getTelephone());
-                } else if (position == consignessAddressRow) {
-                    cell.setKeyAndValue("地址", orderListEntity.getAddress());
+                    //cell.setKeyAndValue("支付方式", orderListEntity.getPayType());
+
+                    cell.setTextAndValue("支付方式", PayMode.getPayModeDesc(orderListEntity.getPayType()), true);
+                } else if (position == shippingNameRow) {
+                    //cell.setKeyAndValue("收货人姓名", orderListEntity.getReceiver());
+                    cell.setTextAndValue("收货人姓名", orderListEntity.getReceiver(), true);
+                } else if (position == shippingPhoneRow) {
+                    //cell.setKeyAndValue("联系方式", orderListEntity.getTelephone());
+                    cell.setTextAndValue("联系方式", orderListEntity.getTelephone(), true);
+                } else if (position == shippingAddressRow) {
+                    cell.setMultilineValue(true);
+                    //cell.setKeyAndValue("地址", orderListEntity.getAddress());
+                    cell.setTextAndValue("收货地址", orderListEntity.getAddress(), true);
                 }
-                return cell;
             } else if (type == 1) {
-                return new ShadowSectionCell(context);
+                if (convertView == null) {
+                    convertView = new ShadowSectionCell(context);
+                }
             } else if (type == 2) {
-                HeaderCell cell = new HeaderCell(context);
-                cell.setTextColor(getResources().getColor(R.color.theme_title));
-                if (position == consigneeTitleRow) {
-                    cell.setText("收货人信息");
+                if (convertView == null) {
+                    convertView = new HeaderCell(context);
                 }
-                if (position == orderNumRow) {
-                    cell.setText("订单编号：" + orderListEntity.getOrderNo());
+                HeaderCell cell = (HeaderCell) convertView;
+                cell.setTextColor(ResourcesConfig.bodyText3);
+                if (position == shippingSectionRow) {
+                    cell.setText("收货信息");
+                } else if (position == shopSectionRow) {
+                    cell.setText("商品信息");
+                } else if (position == orderPaySection) {
+                    cell.setText("合计");
                 }
-                return cell;
             } else if (type == 3) {//药品
-                OrderGoodsCell cell = new OrderGoodsCell(parent.getContext());
+                if (convertView == null) {
+                    convertView = new OrderGoodsCell(context);
+                }
+                OrderGoodsCell cell = (OrderGoodsCell) convertView;
                 int itemIndex = position - goodsBeginRow;
                 GoodsListEntity item = goodsListEntities.get(itemIndex);
-                String iconPath = item.getGoodsUrl() ;
-                String name = item.getName() ;
+                String iconPath = item.getGoodsUrl();
+                String name = item.getName();
                 String desc = String.format("规格:%s", item.getSpec());
-                BigDecimal userPrice = new BigDecimal(item.getGoodsPrice()) ;
-                int count = Integer.parseInt(item.getBuyCount()) ;
+                BigDecimal userPrice = new BigDecimal(item.getGoodsPrice());
+                int count = Integer.parseInt(item.getBuyCount());
                 cell.setValue(iconPath, name, desc, userPrice, count, true);
-                return cell;
             } else if (type == 4) {
-                LinearLayout cell = getBtnLayout();
-                return cell;
-            } else if (type == 5){//药店
-                OrderStoreCell cell = new OrderStoreCell(parent.getContext()) ;
+                if (convertView == null) {
+                    convertView = new ActionCell(context);
+                }
+                ActionCell cell = (ActionCell) convertView;
+                if (position == payOrderActionRow) {
+                    cell.setPrimaryAction();
+                    cell.setValue("支付此订单");
+                } else if (position == cancelOrderActionRow) {
+                    cell.setNormalAction();
+                    cell.setValue("取消此订单");
+                }
+            } else if (type == 5) {//药店
+
+                if (convertView == null) {
+                    convertView = new OrderStoreCell(context);
+                }
+                OrderStoreCell cell = (OrderStoreCell) convertView;
                 GoodsListEntity item = goodsListEntities.get(0);
-                cell.setValue(item.getShopName(),true);
-                return cell ;
+                cell.setValue(item.getShopName(), true);
             }
-            return null;
+            return convertView;
         }
     }
 
