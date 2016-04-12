@@ -142,4 +142,8 @@ public class ShoppingCartDataEntity {
     public void updateCount(int count) {
         buyCount = count;
     }
+
+    public String getGoodsGuid() {
+        return goodsGuid;
+    }
 }

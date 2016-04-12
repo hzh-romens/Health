@@ -737,7 +737,15 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
 
                     @Override
                     public void onItemClick() {
-
+                        int index = getDataIndex(position);
+                        ShoppingCartItem select = adapterData.get(index);
+                        String key = select.getKey();
+                        if (shoppingCartData.containsKey(key)) {
+                            ShoppingCartDataEntity dataEntity = shoppingCartData.get(key);
+                            String goodsGuid = dataEntity.getGoodsGuid();
+                            int goodsType = dataEntity.getGoodsType();
+                            UIOpenHelper.openMedicineActivity(getActivity(), goodsGuid, goodsType);
+                        }
                     }
 
                     @Override
@@ -897,12 +905,12 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
      */
     private static class ShoppingCartGoodsItem extends ShoppingCartItem {
         public final String shopID;
-        public final String goodsID;
+        public final String shopGoodsID;
         public final int storePosition;
 
-        public ShoppingCartGoodsItem(String goodsID, String shopID, int storePosition) {
+        public ShoppingCartGoodsItem(String shopGoodsID, String shopID, int storePosition) {
             this.shopID = shopID;
-            this.goodsID = goodsID;
+            this.shopGoodsID = shopGoodsID;
             this.storePosition = storePosition;
         }
 
@@ -913,7 +921,7 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
 
         @Override
         public String getKey() {
-            return goodsID;
+            return shopGoodsID;
         }
     }
 

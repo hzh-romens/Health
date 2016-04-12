@@ -92,9 +92,6 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
 
     private boolean supportMedicareCardPay = false;
 
-    private int goodsCount = 0;
-    private BigDecimal goodsAmount = BigDecimal.ZERO;
-
     private List<OrderItem> orderItems;
 
     private int selectPayType = Pay.PAY_TYPE_ONLINE;
@@ -102,8 +99,14 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
 
     private String orderCouponID;
     private String orderCouponName;
+
+    private int goodsCount = 0;
+    private BigDecimal goodsAmount = BigDecimal.ZERO;
+    private BigDecimal shippingAmount = BigDecimal.ZERO;
     private BigDecimal couponAmount = BigDecimal.ZERO;
-    ;
+    private BigDecimal orderPayAmount = BigDecimal.ZERO;
+
+
     private String orderInvoice;
 
     private static final int REQUEST_CODE_ADDRESS = 0;
@@ -184,6 +187,12 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
         loadDeliveryMode();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateOrderAmountForServer(false);
+    }
+
     private void processItemSelect(int position) {
         if (position == addressRow) {
             UIOpenHelper.openControlAddressActivityForResult(OrderSubmitBaseActivity.this, REQUEST_CODE_ADDRESS);
@@ -213,6 +222,13 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
         }
     }
 
+    private void initAmount() {
+        goodsAmount = BigDecimal.ZERO;
+        shippingAmount = BigDecimal.ZERO;
+        couponAmount = BigDecimal.ZERO;
+        orderPayAmount = BigDecimal.ZERO;
+    }
+
     private void handleShoppingCartData() {
         shopEntities.clear();
         needCommitGoods.clear();
@@ -222,12 +238,12 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
         ArrayList<String> needCommitGoodIds = intent.getStringArrayListExtra(ARGUMENTS_KEY_SELECT_GOODS);
         List<ShoppingCartDataEntity> data = DBInterface.instance().findShoppingCartData(needCommitGoodIds);
         goodsCount = 0;
-        goodsAmount = BigDecimal.ZERO;
+        initAmount();
         for (ShoppingCartDataEntity entity :
                 data) {
             needCommitGoodsIds.add(entity.getGuid());
             goodsCount += entity.getBuyCount();
-            goodsAmount = goodsAmount.add(entity.getSum());
+            //goodsAmount = goodsAmount.add(entity.getSum());
             String shopID = entity.getShopID();
             if (!needCommitGoods.containsKey(shopID)) {
                 shopEntities.add(new ShopEntity(shopID, entity.getShopName()));
@@ -361,15 +377,22 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
             return;
         }
         SpannableStringBuilder message = new SpannableStringBuilder();
-        message.append(String.format("订单共 %d 个商品,总合计 ", goodsCount));
-        message.append(ShoppingHelper.formatPrice(goodsAmount));
-        if (!TextUtils.isEmpty(orderCouponID)) {
-            message.append("\n优惠 ");
-            message.append(ShoppingHelper.formatPrice(couponAmount));
-            message.append(",还需支付 ");
-            BigDecimal amount = createOrderAmount();
-            message.append(ShoppingHelper.formatPrice(amount));
+        message.append(String.format("订单共 %d 个商品，总合计 ", goodsCount));
+        message.append(ShoppingHelper.formatPrice(goodsAmount, false));
+
+        if (BigDecimal.ZERO.compareTo(shippingAmount) == -1) {
+            message.append("，配送费 ");
+            message.append(ShoppingHelper.formatPrice(shippingAmount, false));
         }
+
+        if (BigDecimal.ZERO.compareTo(couponAmount) == -1) {
+            message.append("，优惠 ");
+            message.append(ShoppingHelper.formatPrice(couponAmount, false));
+        }
+
+        message.append("，还需支付 ");
+        BigDecimal amount = createOrderAmount();
+        message.append(ShoppingHelper.formatPrice(amount));
 
         message.append("\n是否确定提交订单?");
 
@@ -387,19 +410,75 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
     }
 
     private BigDecimal createOrderAmount() {
-        BigDecimal amount = goodsAmount.subtract(couponAmount);
-        if (BigDecimal.ZERO.compareTo(amount) > 0) {
-            amount = BigDecimal.ZERO;
-        }
-        return amount;
+//        BigDecimal amount = goodsAmount.subtract(couponAmount);
+//        if (BigDecimal.ZERO.compareTo(amount) > 0) {
+//            amount = BigDecimal.ZERO;
+//        }
+        return orderPayAmount;
     }
 
-    private void checkOrderAmountForUserCoupon() {
-        needShowProgress("查询优惠券信息...");
+//    private void checkOrderAmountForUserCoupon() {
+//        needShowProgress("查询优惠券信息...");
+//        Map<String, Object> args = new HashMap<>();
+//        args.put("COUPONGUID", orderCouponID);
+//        args.put("AMOUNT", goodsAmount.doubleValue());
+//        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetNewAmountByCoupon", args);
+//        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+//
+//        Connect connect = new RMConnect.Builder(OrderSubmitBaseActivity.class)
+//                .withProtocol(protocol)
+//                .withParser(new JSONNodeParser())
+//                .withDelegate(new Connect.AckDelegate() {
+//                    @Override
+//                    public void onResult(Message message, Message errorMessage) {
+//                        needHideProgress();
+//                        if (errorMessage == null) {
+//                            ResponseProtocol<JsonNode> protocol = (ResponseProtocol) message.protocol;
+//                            JsonNode response = protocol.getResponse();
+//                            if (!response.has("ERROR")) {
+//                                handleCheckOrderAmountForUserCouponResponse(response);
+//                                return;
+//                            }
+//                        }
+//                        clearCoupon();
+//                        updateAdapter();
+//                        ToastCell.toast(OrderSubmitBaseActivity.this, "获取优惠券信息失败!");
+//                    }
+//                }).build();
+//        ConnectManager.getInstance().request(OrderSubmitBaseActivity.this, connect);
+//    }
+//
+//    private void handleCheckOrderAmountForUserCouponResponse(JsonNode jsonNode) {
+//        boolean enableCoupon = TextUtils.equals("1", jsonNode.get("ISUSED").asText());
+//        if (enableCoupon) {
+//            couponAmount = new BigDecimal(jsonNode.get("COUPON").asDouble());
+//        } else {
+//            clearCoupon();
+//        }
+//        updateAdapter();
+//    }
+
+    private void clearCoupon() {
+        orderCouponID = "";
+        orderCouponName = "";
+        couponAmount = BigDecimal.ZERO;
+    }
+
+    private void updateOrderAmountForServer(final boolean fromCoupon) {
+        needShowProgress("查询价格信息...");
+        ArrayNode goodsArrayNode = JacksonMapper.getInstance().createArrayNode();
+        for (String goodsID : needCommitGoodsIds) {
+            ObjectNode goodsNode = JacksonMapper.getInstance().createObjectNode();
+            goodsNode.put("GOODSID", goodsID);
+            goodsArrayNode.add(goodsNode);
+        }
         Map<String, Object> args = new HashMap<>();
-        args.put("COUPONGUID", orderCouponID);
-        args.put("AMOUNT", goodsAmount.doubleValue());
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetNewAmountByCoupon", args);
+        args.put("GOODSLIST", goodsArrayNode.toString());
+        if (!TextUtils.isEmpty(orderCouponID)) {
+            args.put("COUPONGUID", orderCouponID);
+        }
+
+        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "GetOrderAmount", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
         Connect connect = new RMConnect.Builder(OrderSubmitBaseActivity.class)
@@ -413,32 +492,37 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
                             ResponseProtocol<JsonNode> protocol = (ResponseProtocol) message.protocol;
                             JsonNode response = protocol.getResponse();
                             if (!response.has("ERROR")) {
-                                handleCheckOrderAmountForUserCouponResponse(response);
+                                handleUpdateOrderAmountResponse(response);
                                 return;
                             }
                         }
-                        clearCoupon();
+                        if (fromCoupon) {
+                            ToastCell.toast(OrderSubmitBaseActivity.this, "获取优惠券信息失败!");
+                            clearCoupon();
+                        } else {
+                            ToastCell.toast(OrderSubmitBaseActivity.this, "获取价格信息失败,请返回重试!");
+                        }
                         updateAdapter();
-                        ToastCell.toast(OrderSubmitBaseActivity.this, "获取优惠券信息失败!");
+
                     }
                 }).build();
         ConnectManager.getInstance().request(OrderSubmitBaseActivity.this, connect);
     }
 
-    private void handleCheckOrderAmountForUserCouponResponse(JsonNode jsonNode) {
-        boolean enableCoupon = TextUtils.equals("1", jsonNode.get("ISUSED").asText());
-        if (enableCoupon) {
-            couponAmount = new BigDecimal(jsonNode.get("COUPON").asDouble());
-        } else {
-            clearCoupon();
-        }
-        updateAdapter();
-    }
+    private void handleUpdateOrderAmountResponse(JsonNode jsonNode) {
+        double goodsAmountValue = jsonNode.get("GOODSAMOUNT").asDouble(0);
+        goodsAmount = new BigDecimal(goodsAmountValue);
 
-    private void clearCoupon() {
-        orderCouponID = "";
-        orderCouponName = "";
-        couponAmount = BigDecimal.ZERO;
+        double shippingAmountValue = jsonNode.get("TRANSPORTAMOUNT").asDouble(0);
+        shippingAmount = new BigDecimal(shippingAmountValue);
+
+        double couponAmountValue = jsonNode.get("COUPONAMOUNT").asDouble(0);
+        couponAmount = new BigDecimal(couponAmountValue);
+
+        double payAmountValue = jsonNode.get("PAYAMOUNT").asDouble(0);
+        orderPayAmount = new BigDecimal(payAmountValue);
+
+        updateAdapter();
     }
 
     /**
@@ -503,7 +587,7 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
             String orderDate = response.get("CREATEDATE").asText();
             String payType = response.get("PAYTYPE").asText();
             BigDecimal orderAmount = new BigDecimal(response.get("PAYMOUNT").asDouble());
-            BigDecimal payAmount=new BigDecimal(response.get("PAYPRICE").asDouble());
+            BigDecimal payAmount = new BigDecimal(response.get("PAYPRICE").asDouble());
             boolean isOpen = true;
             int id = Pay.getInstance().getPayTypeId(payType);
             if (id == Pay.PAY_TYPE_OFFLINE) {
@@ -556,10 +640,11 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
                 orderCouponID = data.getStringExtra("orderCouponID");
                 orderCouponName = data.getStringExtra("coupon_name");
                 if (!TextUtils.isEmpty(orderCouponID)) {
-                    checkOrderAmountForUserCoupon();
+                    updateOrderAmountForServer(true);
                 } else {
                     clearCoupon();
                     updateAdapter();
+                    updateOrderAmountForServer(true);
                 }
 
             }
@@ -804,7 +889,7 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
                 }
                 String delivery = deliveryMode == null ? "" : deliveryMode.name;
                 BigDecimal orderAmount = createOrderAmount();
-                cell.setValue(delivery, name, address, goodsAmount, couponAmount, orderAmount);
+                cell.setValue(delivery, name, address, goodsAmount, shippingAmount, couponAmount, orderAmount);
             } else if (viewType == 8) {
                 ActionCell cell = (ActionCell) holder.itemView;
                 cell.setValue("提交订单");
