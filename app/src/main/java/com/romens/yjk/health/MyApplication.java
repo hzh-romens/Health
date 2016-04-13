@@ -1,5 +1,6 @@
 package com.romens.yjk.health;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.PowerManager;
@@ -12,6 +13,14 @@ import com.romens.bug.BugConfig;
 import com.romens.bug.BugManager;
 import com.romens.images.CloudImagesManager;
 import com.romens.yjk.health.config.UserConfig;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.entity.PushMessageEntity;
+import com.romens.yjk.health.wx.push.PushMessageReceiver;
+import com.tencent.android.tpush.XGNotifaction;
+import com.tencent.android.tpush.XGPushManager;
+import com.tencent.android.tpush.XGPushNotifactionCallback;
+
+import java.util.List;
 
 /**
  * Created by zhoulisi on 15/1/15.
@@ -22,6 +31,22 @@ public class MyApplication extends ApplicationLoader {
     @Override
     public void onCreate() {
         super.onCreate();
+        // 在主进程设置信鸽相关的内容
+        if (isMainProcess()) {
+            // 为保证弹出通知前一定调用本方法，需要在application的onCreate注册
+            // 收到通知时，会调用本回调函数。
+            // 相当于这个回调会拦截在信鸽的弹出通知之前被截取
+            // 一般上针对需要获取通知内容、标题，设置通知点击的跳转逻辑等等
+            XGPushManager
+                    .setNotifactionCallback(new XGPushNotifactionCallback() {
+
+                        @Override
+                        public void handleNotify(XGNotifaction xGNotifaction) {
+                            PushMessageReceiver.handleNotify(xGNotifaction);
+                        }
+                    });
+        }
+
         //初始化网路库
         ConnectManager.setEnableLog(BuildConfig.ENABLE_DEVELOP_MODE);
         //初始化日志
@@ -74,5 +99,18 @@ public class MyApplication extends ApplicationLoader {
 //            FacadeToken.getInstance().init();
 //        }
         FileLog.e("romens", "app initied");
+    }
+
+    public boolean isMainProcess() {
+        ActivityManager am = ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));
+        List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
+        String mainProcessName = getPackageName();
+        int myPid = android.os.Process.myPid();
+        for (ActivityManager.RunningAppProcessInfo info : processInfos) {
+            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

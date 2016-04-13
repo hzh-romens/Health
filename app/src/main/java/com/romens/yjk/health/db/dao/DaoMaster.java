@@ -15,7 +15,7 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
  * Master of DAO (schema version 12): knows all DAOs.
 */
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 75;
+    public static final int SCHEMA_VERSION = 78;
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
@@ -37,6 +37,9 @@ public class DaoMaster extends AbstractDaoMaster {
         ShoppingCartDataDao.createTable(db,ifNotExists);
 
         OrderDao.createTable(db,ifNotExists);
+
+        //推送信息
+        PushMessageDao.createTable(db,ifNotExists);
     }
     
     /** Drops underlying database table using DAOs. */
@@ -59,6 +62,9 @@ public class DaoMaster extends AbstractDaoMaster {
         ShoppingCartDataDao.dropTable(db,ifExists);
 
         OrderDao.dropTable(db,ifExists);
+
+        //推送信息
+        PushMessageDao.dropTable(db,ifExists);
     }
 
     public static void upgradeAllTables(SQLiteDatabase db, int oldVersion, int newVersion){
@@ -80,6 +86,9 @@ public class DaoMaster extends AbstractDaoMaster {
         ShoppingCartDataDao.upgradeTable(db, oldVersion, newVersion);
 
         OrderDao.upgradeTable(db,oldVersion,newVersion);
+
+        //推送信息
+        PushMessageDao.upgradeTable(db,oldVersion,newVersion);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -127,6 +136,9 @@ public class DaoMaster extends AbstractDaoMaster {
         //购物车
         registerDaoClass(ShoppingCartDataDao.class);
         registerDaoClass(OrderDao.class);
+
+        //推送信息
+        registerDaoClass(PushMessageDao.class);
     }
     
     public DaoSession newSession() {

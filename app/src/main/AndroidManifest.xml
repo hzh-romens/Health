@@ -723,6 +723,12 @@
                 <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".ui.activity.PushMessagesActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"></activity>
         <!-- ********************** PUSH END *************************** -->
 
         <!-- ********************** MTA BEGIN *************************** -->

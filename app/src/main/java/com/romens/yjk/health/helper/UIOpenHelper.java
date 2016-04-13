@@ -38,6 +38,7 @@ import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
+import com.romens.yjk.health.ui.activity.PushMessagesActivity;
 import com.romens.yjk.health.ui.activity.ScannerNewActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
@@ -72,6 +73,11 @@ public class UIOpenHelper {
 
     public static void openChangedPasswordActivity(Context context) {
         Intent intent = new Intent(context, ChangePasswordActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void openPushMessagesActivity(Context context) {
+        Intent intent = new Intent(context, PushMessagesActivity.class);
         context.startActivity(intent);
     }
 

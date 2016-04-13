@@ -1,9 +1,18 @@
 package com.romens.yjk.health.wx.push;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.romens.yjk.health.MyApplication;
+import com.romens.yjk.health.db.DBInterface;
+import com.romens.yjk.health.db.entity.PushMessageEntity;
+import com.tencent.android.tpush.XGNotifaction;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
@@ -21,10 +30,16 @@ public abstract class PushMessageReceiver extends XGPushBaseReceiver {
     // 通知展示
     @Override
     public void onNotifactionShowedResult(Context context,
-                                          XGPushShowedResult notifiShowedRlt) {
-        if (context == null || notifiShowedRlt == null) {
+                                          XGPushShowedResult xgPushShowedResult) {
+        if (context == null || xgPushShowedResult == null) {
             return;
         }
+        Long messageId = xgPushShowedResult.getMsgId();
+        String title = xgPushShowedResult.getTitle();
+        String content = xgPushShowedResult.getContent();
+        String customContent = xgPushShowedResult.getCustomContent();
+        PushMessageEntity messageEntity = new PushMessageEntity(title, content, customContent, messageId);
+        DBInterface.instance().savePushMessage(messageEntity);
     }
 
     @Override
@@ -79,6 +94,7 @@ public abstract class PushMessageReceiver extends XGPushBaseReceiver {
         if (context == null || message == null) {
             return;
         }
+
         if (message.getActionType() == XGPushClickedResult.NOTIFACTION_CLICKED_TYPE) {
             // 通知在通知栏被点击啦。。。。。
             // APP自己处理点击的相关动作
@@ -96,17 +112,11 @@ public abstract class PushMessageReceiver extends XGPushBaseReceiver {
     protected void onNotificationClicked(Context context, XGPushClickedResult message) {
     }
 
-    ;
-
     protected void onNotificationCleared(Context context, XGPushClickedResult message) {
     }
 
-    ;
-
     protected void onNotificationOtherAction(Context context, XGPushClickedResult message) {
     }
-
-    ;
 
     @Override
     public void onRegisterResult(Context context, int errorCode,
@@ -125,6 +135,17 @@ public abstract class PushMessageReceiver extends XGPushBaseReceiver {
         editor.putInt("push_register_result", errorCode);
         editor.putString("push_token", token == null ? "" : token);
         editor.commit();
+    }
+
+    public static void handleNotify(XGNotifaction xGNotifaction) {
+        Notification notification = xGNotifaction.getNotifaction();
+        ComponentName componentName = new ComponentName(MyApplication.applicationContext, "com.romens.yjk.health.ui.MyOrderActivity");
+        Intent intent = new Intent();
+        intent.setComponent(componentName);
+        notification.contentIntent = PendingIntent.getActivity(MyApplication.applicationContext, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationManager notificationManager = (NotificationManager) MyApplication.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(xGNotifaction.getNotifyId(), notification);
     }
 
 }

@@ -130,6 +130,7 @@ public class HomeActivity extends BaseLocationActivity implements AppNotificatio
         actionBarMenu.addItem(0, R.drawable.ic_menu_search);
         //   shoppingCartItem = actionBarMenu.addItem(1, R.drawable.ic_shopping_cart_white_24dp);
         otherMenu = actionBarMenu.addItem(1, R.drawable.ic_more_vert_white_24dp);
+        otherMenu.addSubItem(5, "我的消息", R.drawable.ic_about);
         otherMenu.addSubItem(2, "关于", R.drawable.ic_about);
         otherMenu.addSubItem(3, "修改密码", R.drawable.ic_change_password);
         otherMenu.addSubItem(4, "退出登录", R.drawable.ic_exit);
@@ -155,6 +156,8 @@ public class HomeActivity extends BaseLocationActivity implements AppNotificatio
                     UIOpenHelper.openChangedPasswordActivity(HomeActivity.this);
                 } else if (id == 4) {
                     needLogout();
+                } else if (id == 5) {
+                    UIOpenHelper.openPushMessagesActivity(HomeActivity.this);
                 }
 //                else if (id == 1) {
 //                    if (UserConfig.isClientLogined()) {

@@ -12,14 +12,7 @@ import com.tencent.android.tpush.XGPushManager;
 public class PushManager {
     public static boolean init(Context context) {
         XGPushConfig.enableDebug(context, false);
-        try {
-            // 开启信鸽Pro
-            //XGPro.enableXGPro(context.getApplicationContext(), true);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        return true;
     }
 
     public static void register(Context context) {

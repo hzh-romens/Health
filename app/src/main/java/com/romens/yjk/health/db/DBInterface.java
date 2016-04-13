@@ -13,6 +13,7 @@ import com.romens.yjk.health.db.dao.DrugGroupDao;
 import com.romens.yjk.health.db.dao.FavoritesDao;
 import com.romens.yjk.health.db.dao.HistoryDao;
 import com.romens.yjk.health.db.dao.OrderDao;
+import com.romens.yjk.health.db.dao.PushMessageDao;
 import com.romens.yjk.health.db.dao.ShopCarDao;
 import com.romens.yjk.health.db.dao.ShoppingCartDataDao;
 import com.romens.yjk.health.db.entity.DiscoveryEntity;
@@ -20,6 +21,7 @@ import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.db.entity.OrderEntity;
+import com.romens.yjk.health.db.entity.PushMessageEntity;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
 import com.romens.yjk.health.model.ShopCarEntity;
 
@@ -346,5 +348,18 @@ public class DBInterface {
             orderEntities = new ArrayList<>();
         }
         return orderEntities;
+    }
+
+    public void savePushMessage(PushMessageEntity messageEntity) {
+        PushMessageDao dao = openWritableDb().getPushMessageDao();
+        dao.insertOrReplaceInTx(messageEntity);
+    }
+
+    public List<PushMessageEntity> loadLocalPushMessage() {
+        PushMessageDao dao = openReadableDb().getPushMessageDao();
+        List<PushMessageEntity> pushMessageEntities = dao.queryBuilder()
+                .orderDesc(PushMessageDao.Properties.CreateDate)
+                .list();
+        return pushMessageEntities;
     }
 }

@@ -205,7 +205,7 @@ dependencies {
     //信鸽
     compile files('libs/jg_filter_sdk_1.1.jar')
     compile files('libs/wup-1.0.0.E-SNAPSHOT.jar')
-    compile files('libs/Xg_sdk_v2.42_20160111_1539.jar')
+    compile files('libs/Xg_sdk_v2.43_20160308_1031.jar')
     //高德地图
     compile files('libs/AMap_2DMap_V2.8.1_20160202.jar')
     compile files('libs/AMap_3DMap_V3.3.0_20160331.jar')

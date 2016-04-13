@@ -13,6 +13,7 @@ import com.romens.yjk.health.db.entity.FavoritesEntity;
 import com.romens.yjk.health.db.entity.HistoryEntity;
 import com.romens.yjk.health.db.entity.LocationAddressEntity;
 import com.romens.yjk.health.db.entity.OrderEntity;
+import com.romens.yjk.health.db.entity.PushMessageEntity;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.db.entity.SearchHistoryEntity;
 import com.romens.yjk.health.db.entity.ShoppingCartDataEntity;
@@ -81,6 +82,10 @@ public class DaoSession extends AbstractDaoSession {
     //订单数据
     private final OrderDao orderDataDao;
     private final DaoConfig orderDataDaoConfig;
+
+    //推送信息
+    private final PushMessageDao pushMessageDao;
+    private final DaoConfig pushMessageDaoConfig;
 
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
@@ -165,6 +170,12 @@ public class DaoSession extends AbstractDaoSession {
         orderDataDaoConfig.initIdentityScope(type);
         orderDataDao = new OrderDao(orderDataDaoConfig, this);
         registerDao(OrderEntity.class, orderDataDao);
+
+        //推送信息
+        pushMessageDaoConfig = daoConfigMap.get(PushMessageDao.class).clone();
+        pushMessageDaoConfig.initIdentityScope(type);
+        pushMessageDao = new PushMessageDao(pushMessageDaoConfig, this);
+        registerDao(PushMessageEntity.class, pushMessageDao);
     }
 
     public void clear() {
@@ -186,6 +197,8 @@ public class DaoSession extends AbstractDaoSession {
         shoppingCartDataDaoConfig.getIdentityScope().clear();
 
         orderDataDaoConfig.getIdentityScope().clear();
+
+        pushMessageDaoConfig.getIdentityScope().clear();
     }
 
     public DataCacheDao getDataCacheDao() {
@@ -252,5 +265,9 @@ public class DaoSession extends AbstractDaoSession {
 
     public OrderDao getOrderDataDao() {
         return orderDataDao;
+    }
+
+    public PushMessageDao getPushMessageDao() {
+        return pushMessageDao;
     }
 }
