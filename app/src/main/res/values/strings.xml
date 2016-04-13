@@ -90,5 +90,6 @@
 
     <string name="order_cancel_tip_for_payed">友情提示：暂不支持在线取消已付款订单，请致电客服电话！给您带来的麻烦请谅解！\n点击此处联系客服...</string>
     <string name="order_cancel_alert_for_payed">暂不支持在线取消已付款订单，如果需要取消，请致电客服电话！给您带来的麻烦请谅解！\n点击此处联系客服...</string>
-
+    <string name="submit_order_medicare_tip">友情提示：请您确认好要结算的商品，药品无质量问题不退不换哟！</string>
+    <string name="submit_order_medicare_alert">请您确认好要结算的商品，药品无质量问题不退不换哟！</string>
 </resources>

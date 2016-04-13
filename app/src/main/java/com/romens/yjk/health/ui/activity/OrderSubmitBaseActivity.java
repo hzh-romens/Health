@@ -13,10 +13,12 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.Gravity;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.amap.api.services.help.Tip;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -59,6 +61,7 @@ import com.romens.yjk.health.ui.cells.OrderGoodsCell;
 import com.romens.yjk.health.ui.cells.OrderInfoCell;
 import com.romens.yjk.health.ui.cells.OrderStoreCell;
 import com.romens.yjk.health.ui.cells.TextDetailInfoCell;
+import com.romens.yjk.health.ui.cells.TipCell;
 import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 
@@ -604,7 +607,8 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
                 finish();
             }
         } else {
-            ToastCell.toast(OrderSubmitBaseActivity.this, "提交订单失败!");
+            String error = response.get("ERROR").asText();
+            ToastCell.toast(OrderSubmitBaseActivity.this, TextUtils.isEmpty(error) ? "提交订单失败!" : error);
         }
     }
 
@@ -652,6 +656,7 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
     }
 
     private int rowCount;
+    private int tipRow;
     private int addressSection;
     private int addressSection1;
     private int addressLoadingRow;
@@ -680,6 +685,11 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
 
     private void updateAdapter() {
         rowCount = 0;
+        if (supportMedicareCardPay) {
+            tipRow = rowCount++;
+        } else {
+            tipRow = -1;
+        }
         addressSection = rowCount++;
         addressSection1 = rowCount++;
         if (isLoadingDefaultAddress) {
@@ -762,6 +772,10 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
                 return new Holder(cell);
             } else if (viewType == 8) {
                 ActionCell cell = new ActionCell(parent.getContext());
+                cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                return new Holder(cell);
+            } else if (viewType == 9) {
+                TipCell cell = new TipCell(parent.getContext());
                 cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
                 return new Holder(cell);
             }
@@ -902,6 +916,9 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
                         }
                     }
                 });
+            } else if (viewType == 9) {
+                TipCell cell = (TipCell) holder.itemView;
+                cell.setValue(getString(R.string.submit_order_medicare_tip));
             }
         }
 
@@ -922,6 +939,8 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
                 return 7;
             } else if (position == orderSubmitRow) {
                 return 8;
+            } else if (position == tipRow) {
+                return 9;
             }
             return 0;
         }

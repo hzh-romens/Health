@@ -41,7 +41,7 @@ public class MTAManager {
      */
     public static void testConnectServerSpeed() {
         Map<String, Integer> map = new HashMap<>();
-        map.put(FacadeConfig.getUrl(), 80);
+        map.put(FacadeConfig.IP, 80);
         StatService.testSpeed(MyApplication.applicationContext, map);
     }
 }
