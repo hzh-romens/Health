@@ -7,17 +7,5 @@ import com.tencent.stat.StatService;
  * @create 16/2/20
  * @description
  */
-public class DarkActionBarActivity extends BaseActivity {
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        StatService.onResume(this);      //统计时长
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        StatService.onPause(this);
-    }
+public abstract class DarkActionBarActivity extends BaseActivity {
 }

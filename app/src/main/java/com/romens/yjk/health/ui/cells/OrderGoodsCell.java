@@ -103,7 +103,7 @@ public class OrderGoodsCell extends FrameLayout {
         bottom.addView(countView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
 
         priceView = new TextView(context);
-        priceView.setTextColor(ResourcesConfig.priceFontColor);
+        priceView.setTextColor(0xff212121);
         priceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         priceView.setSingleLine(true);
         priceView.setEllipsize(TextUtils.TruncateAt.END);
@@ -115,16 +115,20 @@ public class OrderGoodsCell extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         if (needDivider) {
-            canvas.drawLine(0, getHeight() - 1, getWidth() - AndroidUtilities.dp(16), getHeight() - 1, paint);
+            canvas.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1, paint);
         }
     }
 
     public void setValue(String iconPath, CharSequence name, CharSequence desc, BigDecimal price, int count, boolean divider) {
+        setValue(iconPath, name, desc, price, true, count, divider);
+    }
+
+    public void setValue(String iconPath, CharSequence name, CharSequence desc, BigDecimal price, boolean formatPrice, int count, boolean divider) {
         iconView.setImagePath(iconPath);
 
         nameView.setText(name);
         descView.setText(desc);
-        CharSequence priceText = ShoppingHelper.formatPrice(price);
+        CharSequence priceText = ShoppingHelper.formatPrice(price, formatPrice);
         priceView.setVisibility(VISIBLE);
         priceView.setText(priceText);
 

@@ -78,4 +78,9 @@ public class AlipayPayActivity extends PayActivity implements AlipayPay.Delegate
     public void onPayProcessing(Bundle extData) {
         changePayState(PayState.PROCESSING);
     }
+
+    @Override
+    protected String getActivityName() {
+        return "支付宝支付";
+    }
 }

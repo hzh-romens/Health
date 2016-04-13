@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,8 +39,6 @@ public class PayInfoCell extends LinearLayout {
             paint.setColor(0xffd9d9d9);
             paint.setStrokeWidth(1);
         }
-        setOrientation(HORIZONTAL);
-        setGravity(Gravity.TOP);
         setMinimumHeight(AndroidUtilities.dp(44));
 
         textView = new TextView(context);
@@ -51,7 +50,7 @@ public class PayInfoCell extends LinearLayout {
         textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setGravity((Gravity.LEFT) | Gravity.CENTER_VERTICAL);
         AndroidUtilities.setMaterialTypeface(textView);
-        addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 16, 8, 8, 8));
+        addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 16, 10, 8, 8));
 
         valueTextView = new TextView(context);
         valueTextView.setTextColor(0xff2f8cc9);
@@ -63,14 +62,24 @@ public class PayInfoCell extends LinearLayout {
         valueTextView.setGravity((Gravity.RIGHT) | Gravity.CENTER_VERTICAL);
         valueTextView.setMinWidth(AndroidUtilities.dp(64));
         AndroidUtilities.setMaterialTypeface(valueTextView);
-        addView(valueTextView, LayoutHelper.createLinear(0, LayoutHelper.MATCH_PARENT, 1f, 8, 0, 16, 0));
+        addView(valueTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 1f, 16, 10, 16, 8));
 
         navView = new ImageView(context);
         navView.setScaleType(ImageView.ScaleType.CENTER);
         navView.setColorFilter(0xffe5e5e5);
         navView.setImageResource(R.drawable.ic_chevron_right_grey600_24dp);
         navView.setVisibility(GONE);
-        addView(navView, LayoutHelper.createLinear(24, 24, 0, 8, 8, 8));
+        addView(navView, LayoutHelper.createLinear(24, 24, 0, 10, 8, 8));
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (!multiline) {
+            super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(isSmall ? 36 : 44) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+
     }
 
 //    @Override

@@ -60,7 +60,7 @@ public class OrderCommitActivity extends DarkActionBarActivity {
     private OrderEntity entity;
 
     private List<GoodsListEntity> goodsListEntities;
-    private GoodsAdapter adapter ;
+    private GoodsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +128,7 @@ public class OrderCommitActivity extends DarkActionBarActivity {
         listView.setVerticalScrollBarEnabled(false);
         dataContent.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        adapter = new GoodsAdapter() ;
+        adapter = new GoodsAdapter();
         initData();
     }
 
@@ -141,18 +141,18 @@ public class OrderCommitActivity extends DarkActionBarActivity {
         submitCommit(orderId, bodyText, goodsStar, buyStar);
     }
 
-    public void initData(){
+    public void initData() {
         requestOrderDetailList(entity.orderId);
     }
 
-    private int rowCount ;
-    private int shopNameRow ;
+    private int rowCount;
+    private int shopNameRow;
     private int goodsBeginRow;
     private int goodsEndRow;
 
-    public void setRow(){
+    public void setRow() {
         rowCount = 0;
-        shopNameRow = rowCount++ ;
+        shopNameRow = rowCount++;
         goodsBeginRow = rowCount;
         rowCount += goodsListEntities.size();
         goodsEndRow = rowCount - 1;
@@ -232,7 +232,7 @@ public class OrderCommitActivity extends DarkActionBarActivity {
                             ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                             JsonNode response = responseProtocol.getResponse();
                             if (!response.has("ERROR")) {
-                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
+                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange, orderId);
                                 finish();
                                 return;
                             }
@@ -281,7 +281,12 @@ public class OrderCommitActivity extends DarkActionBarActivity {
 //        });
     }
 
-    class GoodsAdapter extends BaseAdapter{
+    @Override
+    protected String getActivityName() {
+        return "订单新增评价";
+    }
+
+    class GoodsAdapter extends BaseAdapter {
 
         @Override
         public boolean areAllItemsEnabled() {
@@ -310,32 +315,32 @@ public class OrderCommitActivity extends DarkActionBarActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if(position == shopNameRow){
-                return 1 ;
-            }else if(position >= goodsBeginRow && position <= goodsEndRow){
-                return 2 ;
+            if (position == shopNameRow) {
+                return 1;
+            } else if (position >= goodsBeginRow && position <= goodsEndRow) {
+                return 2;
             }
 
-            return 0 ;
+            return 0;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             int type = getItemViewType(position);
-            if(type == 1){
-                OrderStoreCell cell = new OrderStoreCell(parent.getContext()) ;
+            if (type == 1) {
+                OrderStoreCell cell = new OrderStoreCell(parent.getContext());
                 GoodsListEntity item = goodsListEntities.get(0);
-                cell.setValue(item.getShopName(),true);
-                return cell ;
-            }else if(type == 2){
+                cell.setValue(item.getShopName(), true);
+                return cell;
+            } else if (type == 2) {
                 OrderGoodsCell cell = new OrderGoodsCell(parent.getContext());
                 int itemIndex = position - goodsBeginRow;
                 GoodsListEntity item = goodsListEntities.get(itemIndex);
-                String iconPath = item.getGoodsUrl() ;
-                String name = item.getName() ;
+                String iconPath = item.getGoodsUrl();
+                String name = item.getName();
                 String desc = String.format("规格:%s", item.getSpec());
-                BigDecimal userPrice = new BigDecimal(item.getGoodsPrice()) ;
-                int count = Integer.parseInt(item.getBuyCount()) ;
+                BigDecimal userPrice = new BigDecimal(item.getGoodsPrice());
+                int count = Integer.parseInt(item.getBuyCount());
                 cell.setValue(iconPath, name, desc, userPrice, count, true);
                 return cell;
             }

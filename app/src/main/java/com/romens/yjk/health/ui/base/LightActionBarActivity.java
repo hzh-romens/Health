@@ -10,7 +10,7 @@ import com.tencent.stat.StatService;
 /**
  * Created by siery on 15/10/23.
  */
-public class LightActionBarActivity extends BaseActionBarActivity {
+public abstract class LightActionBarActivity extends BaseActivity {
 
     @Override
     protected void onSetupActionBar(ActionBar actionBar) {
@@ -49,17 +49,5 @@ public class LightActionBarActivity extends BaseActionBarActivity {
         if (actionBar != null) {
             actionBar.setTitle(title, 0x8a000000);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        StatService.onResume(this);      //统计时长
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        StatService.onPause(this);
     }
 }

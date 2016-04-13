@@ -105,6 +105,11 @@ public class HelpAnswerActivity extends DarkActionBarActivity {
         });
     }
 
+    @Override
+    protected String getActivityName() {
+        return "帮助";
+    }
+
     class HelpAdapter extends BaseAdapter {
 
         private Context context;

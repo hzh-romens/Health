@@ -296,4 +296,9 @@ public class NewShoppingAddressActivity extends BaseActivity implements AppNotif
         }
         editAddressIdView.setTextAndValue("所在地区:", province, city, county, false, true);
     }
+
+    @Override
+    protected String getActivityName() {
+        return "修改收货地址";
+    }
 }

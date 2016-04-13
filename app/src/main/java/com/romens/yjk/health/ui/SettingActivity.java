@@ -90,6 +90,11 @@ public class SettingActivity extends DarkActionBarActivity {
         exitRow = rowCount++;
     }
 
+    @Override
+    protected String getActivityName() {
+        return "设置";
+    }
+
     class MyAdapter extends BaseAdapter {
 
         @Override

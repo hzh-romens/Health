@@ -9,15 +9,16 @@ import com.romens.android.ui.base.BaseActionBarActivity;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.common.GoodsFlag;
 import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 
 /**
  * Created by siery on 15/12/22.
  */
-public class MedicineGroupActivity extends BaseActionBarActivity {
+public class MedicineGroupActivity extends DarkActionBarActivity {
     private HomeHealthNewFragment fragment;
     private int goodsFlag = GoodsFlag.NORMAL;
-
+    private String title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +43,20 @@ public class MedicineGroupActivity extends BaseActionBarActivity {
         });
 
         if (intent.hasExtra("title")) {
-            actionBar.setTitle(intent.getStringExtra("title"));
+            title=intent.getStringExtra("title");
         } else {
-            actionBar.setTitle(getString(R.string.app_name));
+            title=getString(R.string.app_name);
         }
+        actionBar.setTitle(title);
         fragment = new HomeHealthNewFragment();
         Bundle arguments = new Bundle();
         arguments.putInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, goodsFlag);
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
+    }
+
+    @Override
+    protected String getActivityName() {
+        return String.format("药品分类[%s][%s]",title,goodsFlag==GoodsFlag.MEDICARE?"医保药品":"药品");
     }
 }

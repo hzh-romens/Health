@@ -270,6 +270,11 @@ public class SearchActivity extends DarkActionBarActivity {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "搜索";
+    }
+
     class ListAdapter extends BaseFragmentAdapter {
         private Context adapterContext;
 

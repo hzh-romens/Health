@@ -200,6 +200,11 @@ public class DrugStoryDetailActivity extends DarkActionBarActivity {
         }
     }
 
+    @Override
+    protected String getActivityName() {
+        return "药店详情";
+    }
+
     class DrugDetailAdapter extends BaseAdapter {
 
         private Context context;

@@ -155,6 +155,11 @@ public class MyOrderActivity extends DarkActionBarActivity implements AppNotific
         }
     }
 
+    @Override
+    protected String getActivityName() {
+        return "我的订单";
+    }
+
     class OrderPagerAdapter extends FragmentViewPagerAdapter {
         private final List<String> mPageTitle = new ArrayList<>();
 

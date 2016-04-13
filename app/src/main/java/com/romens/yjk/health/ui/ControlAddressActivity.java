@@ -270,6 +270,11 @@ public class ControlAddressActivity extends DarkActionBarActivity {
         super.onPause();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "收货地址管理";
+    }
+
     public void removeDialogView(final int position) {
         editDialog = new BottomSheet.Builder(this)
                 .setTitle("地址管理")

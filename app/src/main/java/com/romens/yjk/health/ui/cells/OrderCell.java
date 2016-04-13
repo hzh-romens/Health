@@ -21,6 +21,7 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.db.entity.OrderEntity;
 import com.romens.yjk.health.helper.ShoppingHelper;
+import com.romens.yjk.health.pay.OrderAction;
 
 /**
  * @author Zhou Lisi
@@ -42,15 +43,12 @@ public class OrderCell extends LinearLayout {
     private TextView btn1View;
     private TextView btn2View;
 
-    private Action btn1Action = Action.NONE;
-    private Action btn2Action = Action.NONE;
+    private OrderAction btn1Action = OrderAction.NONE;
+    private OrderAction btn2Action = OrderAction.NONE;
 
     private OrderEntity currOrderEntity;
     private Delegate delegate;
 
-    private enum Action {
-        NONE, CANCEL, BUY_AGAIN, COMMIT, LOOK_COMMIT, RETRY, COMPLETED
-    }
 
     public interface Delegate {
         void onCompleted(OrderEntity entity);
@@ -187,6 +185,7 @@ public class OrderCell extends LinearLayout {
         addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
     }
 
+
     public void setValue(OrderEntity orderEntity, Delegate delegate) {
         this.currOrderEntity = orderEntity;
         this.delegate = delegate;
@@ -195,28 +194,28 @@ public class OrderCell extends LinearLayout {
 
         boolean isNoPayOrder = false;
         final String orderStatus = orderEntity.orderStatusStr;
-        int color = 0xff212121;
+        int color = ShoppingHelper.getOrderStatusColor(orderStatus);
         if (TextUtils.equals("未付款", orderStatus)) {
             isNoPayOrder = true;
-            btn1Action = Action.NONE;
-            btn2Action = Action.CANCEL;
-            color = getResources().getColor(R.color.md_red_500);
+            btn1Action = OrderAction.NONE;
+            btn2Action = OrderAction.CANCEL;
+            //color = getResources().getColor(R.color.md_red_500);
         } else if (TextUtils.equals("交易取消", orderStatus)) {
-            btn1Action = Action.NONE;
-            btn2Action = Action.RETRY;
-            color = getResources().getColor(R.color.md_grey_400);
+            btn1Action = OrderAction.NONE;
+            btn2Action = OrderAction.RETRY;
+            //color = getResources().getColor(R.color.md_grey_400);
         } else if (TextUtils.equals("交易完成", orderStatus)) {
-            btn1Action = Action.BUY_AGAIN;
-            btn2Action = Action.COMMIT;
-            color = 0xff212121;
+            btn1Action = OrderAction.BUY_AGAIN;
+            btn2Action = OrderAction.COMMIT;
+            //color = 0xff212121;
         } else if (TextUtils.equals("已评价", orderStatus)) {
-            btn1Action = Action.NONE;
-            btn2Action = Action.NONE;// Action.LOOK_COMMIT;
-            color = 0xff212121;
+            btn1Action = OrderAction.NONE;
+            btn2Action = OrderAction.NONE;// Action.LOOK_COMMIT;
+            //color = 0xff212121;
         } else {
-            color = 0xff2baf2b;
-            btn1Action = Action.CANCEL;
-            btn2Action = Action.COMPLETED;
+            //color = 0xff2baf2b;
+            btn1Action = OrderAction.CANCEL;
+            btn2Action = OrderAction.COMPLETED;
         }
         SpannableString statusSpan = new SpannableString(orderStatus);
         statusSpan.setSpan(new ForegroundColorSpan(color), 0, orderStatus.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -241,28 +240,28 @@ public class OrderCell extends LinearLayout {
         formatBtn(btn2View, btn2Action);
     }
 
-    private void formatBtn(TextView btn, final Action action) {
+    private void formatBtn(TextView btn, final OrderAction action) {
         int textColor = 0xff757575;
         int backgroundResId = R.drawable.border_grey_selector;
-        if (action == Action.COMPLETED) {
+        if (action == OrderAction.COMPLETED) {
             textColor = ResourcesConfig.textPrimary;
             backgroundResId = R.drawable.btn_primary_border;
         }
         btn.setTextColor(textColor);
         btn.setBackgroundResource(backgroundResId);
-        btn.setVisibility(action == Action.NONE ? View.GONE : View.VISIBLE);
+        btn.setVisibility(action == OrderAction.NONE ? View.GONE : View.VISIBLE);
         String text;
-        if (action == Action.COMPLETED) {
+        if (action == OrderAction.COMPLETED) {
             text = "确认收货";
-        } else if (action == Action.BUY_AGAIN) {
+        } else if (action == OrderAction.BUY_AGAIN) {
             text = "再来一单";
-        } else if (action == Action.CANCEL) {
+        } else if (action == OrderAction.CANCEL) {
             text = "取消订单";
-        } else if (action == Action.COMMIT) {
+        } else if (action == OrderAction.COMMIT) {
             text = "评价";
-        } else if (action == Action.LOOK_COMMIT) {
+        } else if (action == OrderAction.LOOK_COMMIT) {
             text = "查看评价";
-        } else if (action == Action.RETRY) {
+        } else if (action == OrderAction.RETRY) {
             text = "重新购买";
         } else {
             text = "";
@@ -274,17 +273,17 @@ public class OrderCell extends LinearLayout {
                 if (delegate == null) {
                     return;
                 }
-                if (action == Action.COMPLETED) {
+                if (action == OrderAction.COMPLETED) {
                     delegate.onCompleted(currOrderEntity);
-                } else if (action == Action.BUY_AGAIN) {
+                } else if (action == OrderAction.BUY_AGAIN) {
                     delegate.onBuyAgain(currOrderEntity);
-                } else if (action == Action.CANCEL) {
+                } else if (action == OrderAction.CANCEL) {
                     delegate.onCancel(currOrderEntity);
-                } else if (action == Action.COMMIT) {
+                } else if (action == OrderAction.COMMIT) {
                     delegate.onCommit(currOrderEntity);
-                } else if (action == Action.LOOK_COMMIT) {
+                } else if (action == OrderAction.LOOK_COMMIT) {
                     delegate.onLookCommit(currOrderEntity);
-                } else if (action == Action.RETRY) {
+                } else if (action == OrderAction.RETRY) {
                     delegate.onRetry(currOrderEntity);
                 }
             }

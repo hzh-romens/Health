@@ -1,5 +1,7 @@
 package com.romens.yjk.health.model;
 
+import com.romens.yjk.health.common.GoodsFlag;
+
 /**
  * Created by anlc on 2015/9/25.
  * 药品详情中的列表的实体类
@@ -18,6 +20,8 @@ public class GoodsListEntity {
     private String shopId;
     private String shopName;
     private boolean isSelect;
+
+    private int goodsType = GoodsFlag.NORMAL;
 
     public boolean isSelect() {
         return isSelect;
@@ -121,5 +125,13 @@ public class GoodsListEntity {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public void setGoodsType(int goodsType) {
+        this.goodsType = goodsType;
+    }
+
+    public int getGoodsType() {
+        return goodsType;
     }
 }

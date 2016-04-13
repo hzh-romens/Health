@@ -116,6 +116,7 @@ public class LocationActivity extends BaseLocationActivity {
     private String targetLocationAddress;
 
 
+    private  String actionBarTitle;
     private ActionBarMenuItem otherMenuItem;
 
     private BaseLocationAdapter.SearchType searchType = BaseLocationAdapter.SearchType.SHOP;
@@ -186,13 +187,13 @@ public class LocationActivity extends BaseLocationActivity {
 //
         ActionBarMenu menu = actionBar.createMenu();
         if (isReadOnly) {
-            actionBar.setTitle("药店位置");
+            actionBarTitle="药店位置";
             menu.addItem(share, R.drawable.share);
         } else {
             if (searchType == BaseLocationAdapter.SearchType.SHOP) {
-                actionBar.setTitle("附近药店");
+                actionBarTitle="附近药店";
             } else {
-                actionBar.setTitle("送达药品至...");
+                actionBarTitle="送达药品至...";
             }
 
             ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
@@ -237,6 +238,7 @@ public class LocationActivity extends BaseLocationActivity {
             });
             item.getSearchField().setHint(searchType == BaseLocationAdapter.SearchType.USER ? "输入地点名称" : "输入药店名称");
         }
+        actionBar.setTitle(actionBarTitle);
 
         otherMenuItem = menu.addItem(0, R.drawable.ic_ab_other);
         otherMenuItem.addSubItem(map_list_menu_map, "地图模式", 0);
@@ -846,6 +848,11 @@ public class LocationActivity extends BaseLocationActivity {
                 FileLog.e("LocationActivity", e);
             }
         }
+    }
+
+    @Override
+    protected String getActivityName() {
+        return actionBarTitle;
     }
 
     @Override

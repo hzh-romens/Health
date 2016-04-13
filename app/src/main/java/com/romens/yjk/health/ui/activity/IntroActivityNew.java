@@ -22,6 +22,7 @@ import com.romens.android.log.FileLog;
 import com.romens.android.ui.Image.NetImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.romens.yjk.health.ui.base.BaseActivity;
 import com.romens.yjk.health.wx.mta.MTAManager;
 import com.romens.yjk.health.wx.push.PushManager;
 import com.tencent.stat.StatService;
@@ -29,7 +30,7 @@ import com.tencent.stat.StatService;
 /**
  * Created by anlc on 2015/10/28.
  */
-public class IntroActivityNew extends Activity {
+public class IntroActivityNew extends BaseActivity {
 
     private ViewPager viewPager;
 
@@ -38,6 +39,8 @@ public class IntroActivityNew extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         MTAManager.init(this);
         PushManager.init(this);
@@ -50,8 +53,6 @@ public class IntroActivityNew extends Activity {
         if (openGuidePager) {
             sharedPreferences.edit().putBoolean("open_guide_pager", false).commit();
         }
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_intro);
         viewPager = (ViewPager) findViewById(R.id.intro_view_pager);
         if (openGuidePager) {
@@ -75,6 +76,11 @@ public class IntroActivityNew extends Activity {
         intent2.putExtra("fromIntro", true);
         startActivity(intent2);
         finish();
+    }
+
+    @Override
+    protected String getActivityName() {
+        return "起始页";
     }
 
     class ADPagerAdapter extends PagerAdapter {

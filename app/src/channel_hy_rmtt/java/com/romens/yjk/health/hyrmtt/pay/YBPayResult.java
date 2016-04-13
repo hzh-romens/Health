@@ -98,4 +98,9 @@ public class YBPayResult extends PayActivity {
     protected void needFinish() {
         finish();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "医保支付";
+    }
 }

@@ -129,6 +129,11 @@ public class ADWebActivity extends WebActivity implements AppNotificationCenter.
         shareDialog.show();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "广告Web页";
+    }
+
     /**
      * 异步获取封面图标
      */

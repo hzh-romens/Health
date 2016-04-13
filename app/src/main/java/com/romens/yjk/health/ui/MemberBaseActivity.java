@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * Created by HZH on 2016/3/24.
  */
-public class MemberBaseActivity extends DarkActionBarActivity {
+public abstract class MemberBaseActivity extends DarkActionBarActivity {
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private ActionBar actionBar;

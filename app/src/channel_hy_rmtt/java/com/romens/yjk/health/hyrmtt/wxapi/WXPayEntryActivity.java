@@ -17,4 +17,9 @@ public class WXPayEntryActivity extends WXPayBaseActivity {
     protected String getAppId() {
         return "wx90fa435b695657da";
     }
+
+    @Override
+    protected String getActivityName() {
+        return "微信支付";
+    }
 }

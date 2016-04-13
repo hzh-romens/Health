@@ -70,6 +70,17 @@ public class PayMode {
         return "";
     }
 
+    public static PayModeEnum getPayMode(String key) {
+        if (TextUtils.equals("PAY_YB_HEB", key)) {
+            return PayModeEnum.YB_HEB;
+        } else if (TextUtils.equals("PAY_WX", key)) {
+            return PayModeEnum.WX;
+        } else if (TextUtils.equals("PAY_ALIPAY", key)) {
+            return PayModeEnum.ALIPAY;
+        }
+        return null;
+    }
+
     public static String getPayModeDesc(String key) {
         if (TextUtils.equals("PAY_YB_HEB", key)) {
             return "社保卡支付(哈尔滨银行)";

@@ -38,6 +38,7 @@ import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
+import com.romens.yjk.health.wx.mta.MTAManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -255,6 +256,8 @@ public class HomeActivity extends BaseLocationActivity implements AppNotificatio
             }
         });
 
+        MTAManager.testConnectServerSpeed();
+
     }
 
     /**
@@ -333,6 +336,11 @@ public class HomeActivity extends BaseLocationActivity implements AppNotificatio
     public void onResume() {
         super.onResume();
         updateLastLocation();
+    }
+
+    @Override
+    protected String getActivityName() {
+        return "首页";
     }
 
     @Override

@@ -166,4 +166,9 @@ public class OrderEvaluateDetailActivity extends DarkActionBarActivity {
         speedRatingBar = (FlexibleRatingBar) findViewById(R.id.order_evaluate_speed_ratingbar);
         opinionTextView = (TextView) findViewById(R.id.order_evaluate_opinion_text);
     }
+
+    @Override
+    protected String getActivityName() {
+        return "订单评价详情";
+    }
 }

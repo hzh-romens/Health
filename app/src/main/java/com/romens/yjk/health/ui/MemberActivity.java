@@ -69,7 +69,7 @@ public class MemberActivity extends DarkActionBarActivity {
                     finish();
                 } else if (i == 0) {
                     //跳转到添加会员卡界面
-                    startActivity(new Intent(MemberActivity.this, NewMemberActivity.class));
+                    startActivity(new Intent(MemberActivity.this, AddMemberActivity.class));
                 }
             }
         });
@@ -178,4 +178,8 @@ public class MemberActivity extends DarkActionBarActivity {
     }
 
 
+    @Override
+    protected String getActivityName() {
+        return "我的会员卡";
+    }
 }

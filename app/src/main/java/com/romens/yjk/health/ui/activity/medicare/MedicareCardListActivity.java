@@ -305,6 +305,11 @@ public class MedicareCardListActivity extends DarkActionBarActivity {
         super.onPause();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "社保卡列表";
+    }
+
     private void onCancel() {
         setResult(RESULT_CANCELED);
         finish();

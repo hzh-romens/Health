@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.AndroidUtilities;
-import com.romens.android.network.FacadeArgs;
 import com.romens.android.network.Message;
 import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.protocol.FacadeProtocol;
@@ -34,16 +33,12 @@ import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.core.UserSession;
 import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.dao.OrderDao;
 import com.romens.yjk.health.db.entity.OrderEntity;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.MyOrderActivity;
-import com.romens.yjk.health.ui.OrderCommitActivity;
 import com.romens.yjk.health.ui.OrderDetailActivity;
-import com.romens.yjk.health.ui.OrderEvaluateActivity;
-import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.adapter.OrderListViewAdapter;
 import com.romens.yjk.health.ui.cells.ImageAndTextCell;
-import com.romens.yjk.health.ui.components.ToastCell;
 import com.romens.yjk.health.ui.utils.UIHelper;
 
 import java.util.ArrayList;
@@ -56,7 +51,7 @@ import java.util.Map;
 /**
  * Created by anlc on 2015/10/22.
  */
-public class OrderFragment extends AppFragment implements AppNotificationCenter.NotificationCenterDelegate {
+public class OrderFragment extends OrderBaseFragment implements AppNotificationCenter.NotificationCenterDelegate {
     public static final String ARGUMENTS_KEY_ORDER_STATUS = "key_order_status";
     private SwipeRefreshLayout swipeRefreshLayout;
     //    private ExpandableListView expandableListView;
@@ -83,24 +78,35 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
 
             @Override
             public void onCompleted(OrderEntity entity) {
-                tryCompleteOrder(entity);
+                tryCompleteOrder(entity.orderNo, entity.orderId);
             }
 
             @Override
             public void onBuyAgain(OrderEntity entity) {
-                putOrderGoodsToShoppingCart(entity);
+                putOrderGoodsToShoppingCart(entity.orderNo);
             }
 
             @Override
             public void onCancel(OrderEntity entity) {
-                tryCancelOrder(entity);
+                if (entity.needCancelAlert()) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("友情提示")
+                            .setMessage(R.string.order_cancel_alert_for_payed)
+                            .setNegativeButton("联系客服", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    UIOpenHelper.openHelperActivity(getActivity());
+                                }
+                            }).setPositiveButton("知道了", null)
+                            .create().show();
+                } else {
+                    tryCancelOrder(entity.orderId);
+                }
             }
 
             @Override
             public void onCommit(OrderEntity entity) {
-                Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
-                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY, entity.orderId);
-                startActivity(intent);
+                doCommitOrder(entity.orderId);
             }
 
             @Override
@@ -110,46 +116,11 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
 
             @Override
             public void onRetry(OrderEntity entity) {
-                putOrderGoodsToShoppingCart(entity);
+                putOrderGoodsToShoppingCart(entity.orderNo);
             }
         });
     }
 
-    private void putOrderGoodsToShoppingCart(OrderEntity entity) {
-        needShowProgress("正在处理...");
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("ORDERCODE", entity.orderNo);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "InsertIntoCarFromOrder", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Connect content = new RMConnect.Builder(MyOrderActivity.class)
-                .withProtocol(protocol)
-                .withParser(new JSONNodeParser())
-                .withDelegate(new Connect.AckDelegate() {
-                    @Override
-                    public void onResult(Message message, Message errorMessage) {
-                        needHideProgress();
-                        if (errorMessage == null) {
-                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
-                            JsonNode response = responseProtocol.getResponse();
-                            if (!response.has("ERROR")) {
-                                ArrayList<String> shoppingCart = new ArrayList<>();
-                                int size = response.size();
-                                for (int i = 0; i < size; i++) {
-                                    shoppingCart.add(response.get(i).asText());
-                                }
-                                Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
-                                Bundle arguments = new Bundle();
-                                arguments.putStringArrayList(ShoppingCartFragment.ARGUMENTS_KEY_SELECT_GOODS, shoppingCart);
-                                intent.putExtras(arguments);
-                                startActivity(intent);
-                                return;
-                            }
-                        }
-                        ToastCell.toast(getContext(), "失败,请重试!");
-                    }
-                }).build();
-        ConnectManager.getInstance().request(getContext(), content);
-    }
 
     private void openOrderDetail(OrderEntity entity) {
         Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
@@ -157,103 +128,103 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
         startActivity(intent);
     }
 
-    private void tryCancelOrder(final OrderEntity entity) {
-        new AlertDialog.Builder(getActivity()).setTitle("确定取消订单吗？")
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestCancelOrderList(entity.orderId);
-                    }
-                }).create().show();
-    }
+//    private void tryCancelOrder(final OrderEntity entity) {
+//        new AlertDialog.Builder(getActivity()).setTitle("确定取消订单吗？")
+//                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                })
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        requestCancelOrderList(entity.orderId);
+//                    }
+//                }).create().show();
+//    }
+//
+//    private void requestCancelOrderList(String orderId) {
+//        needShowProgress("正在处理...");
+//        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+//        args.put("USERGUID", UserSession.getInstance().getUser());
+//        args.put("ORDERID", orderId);
+//        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "CancelOrder", args);
+//        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+//        Connect content = new RMConnect.Builder(MyOrderActivity.class)
+//                .withProtocol(protocol)
+//                .withParser(new JSONNodeParser())
+//                .withDelegate(new Connect.AckDelegate() {
+//                    @Override
+//                    public void onResult(Message message, Message errorMessage) {
+//                        needHideProgress();
+//                        if (errorMessage == null) {
+//                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+//                            JsonNode response = responseProtocol.getResponse();
+//                            String requestCode = response.get("success").asText();
+//                            if (requestCode.equals("yes")) {
+//                                ToastCell.toast(getContext(), "取消成功");
+//                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
+//                                return;
+//                            }
+//                        }
+//                        ToastCell.toast(getContext(), "取消失败");
+//                    }
+//                }).build();
+//        ConnectManager.getInstance().request(getContext(), content);
+//    }
 
-    private void requestCancelOrderList(String orderId) {
-        needShowProgress("正在处理...");
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", UserSession.getInstance().getUser());
-        args.put("ORDERID", orderId);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "CancelOrder", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-        Connect content = new RMConnect.Builder(MyOrderActivity.class)
-                .withProtocol(protocol)
-                .withParser(new JSONNodeParser())
-                .withDelegate(new Connect.AckDelegate() {
-                    @Override
-                    public void onResult(Message message, Message errorMessage) {
-                        needHideProgress();
-                        if (errorMessage == null) {
-                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
-                            JsonNode response = responseProtocol.getResponse();
-                            String requestCode = response.get("success").asText();
-                            if (requestCode.equals("yes")) {
-                                ToastCell.toast(getContext(), "取消成功");
-                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
-                                return;
-                            }
-                        }
-                        ToastCell.toast(getContext(), "取消失败");
-                    }
-                }).build();
-        ConnectManager.getInstance().request(getContext(), content);
-    }
-
-    private void tryCompleteOrder(final OrderEntity entity) {
-        String message = String.format("订单 %s 是否确定收货?", entity.orderNo);
-        new AlertDialog.Builder(getActivity()).setTitle("提示")
-                .setMessage(message)
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestConfirmReceive(entity);
-                    }
-                }).create().show();
-    }
-
-    public void requestConfirmReceive(final OrderEntity entity) {
-        needShowProgress("正在处理...");
-        Map<String, String> args = new FacadeArgs.MapBuilder().build();
-        args.put("USERGUID", UserSession.getInstance().getUser());
-        args.put("ORDERID", entity.orderId);
-        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "ConfirmReceive", args);
-        protocol.withToken(FacadeToken.getInstance().getAuthToken());
-
-        Connect content = new RMConnect.Builder(MyOrderActivity.class)
-                .withProtocol(protocol)
-                .withParser(new JSONNodeParser())
-                .withDelegate(new Connect.AckDelegate() {
-                    @Override
-                    public void onResult(Message message, Message errorMessage) {
-                        needHideProgress();
-                        if (errorMessage == null) {
-                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
-                            JsonNode response = responseProtocol.getResponse();
-                            String requestCode = response.get("success").asText();
-                            if (requestCode.equals("yes")) {
-                                ToastCell.toast(getActivity(), "确认收货成功!");
-                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
-                                Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
-                                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY, entity.orderId);
-                                startActivity(intent);
-                            }
-                        } else {
-                            ToastCell.toast(getActivity(), "确认收货失败!");
-                        }
-                    }
-                }).build();
-        ConnectManager.getInstance().request(getContext(), content);
-    }
+//    private void tryCompleteOrder(final OrderEntity entity) {
+//        String message = String.format("订单 %s 是否确定收货?", entity.orderNo);
+//        new AlertDialog.Builder(getActivity()).setTitle("提示")
+//                .setMessage(message)
+//                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                })
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        requestConfirmReceive(entity);
+//                    }
+//                }).create().show();
+//    }
+//
+//    public void requestConfirmReceive(final OrderEntity entity) {
+//        needShowProgress("正在处理...");
+//        Map<String, String> args = new FacadeArgs.MapBuilder().build();
+//        args.put("USERGUID", UserSession.getInstance().getUser());
+//        args.put("ORDERID", entity.orderId);
+//        FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "Handle", "ConfirmReceive", args);
+//        protocol.withToken(FacadeToken.getInstance().getAuthToken());
+//
+//        Connect content = new RMConnect.Builder(MyOrderActivity.class)
+//                .withProtocol(protocol)
+//                .withParser(new JSONNodeParser())
+//                .withDelegate(new Connect.AckDelegate() {
+//                    @Override
+//                    public void onResult(Message message, Message errorMessage) {
+//                        needHideProgress();
+//                        if (errorMessage == null) {
+//                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
+//                            JsonNode response = responseProtocol.getResponse();
+//                            String requestCode = response.get("success").asText();
+//                            if (requestCode.equals("yes")) {
+//                                ToastCell.toast(getActivity(), "确认收货成功!");
+//                                AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onOrderStateChange);
+//                                Intent intent = new Intent(getActivity(), OrderCommitActivity.class);
+//                                intent.putExtra(OrderCommitActivity.ARGUMENT_KEY_ORDER_ENTITY, entity.orderId);
+//                                startActivity(intent);
+//                            }
+//                        } else {
+//                            ToastCell.toast(getActivity(), "确认收货失败!");
+//                        }
+//                    }
+//                }).build();
+//        ConnectManager.getInstance().request(getContext(), content);
+//    }
 
 //    public void requestOrderBuyAgain(OrderEntity entity) {
 //        Map<String, String> args = new FacadeArgs.MapBuilder().build();
@@ -418,7 +389,7 @@ public class OrderFragment extends AppFragment implements AppNotificationCenter.
         AndroidUtilities.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                List<OrderEntity> orderEntities=DBInterface.instance().loadOrderData(orderStatus);
+                List<OrderEntity> orderEntities = DBInterface.instance().loadOrderData(orderStatus);
                 listViewAdapter.bindData(orderEntities);
                 refreshContentView();
             }

@@ -6,7 +6,11 @@ import android.graphics.Paint;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -17,8 +21,6 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.yjk.health.config.ResourcesConfig;
-import com.romens.yjk.health.helper.FormatHelper;
-import com.romens.yjk.health.helper.ShoppingHelper;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -29,7 +31,6 @@ import java.text.DecimalFormat;
 public class MedicinePriceCell extends LinearLayout {
 
     private TextView saleCountView;
-    private TextView marketPriceView;
     private TextView userPriceView;
     private static Paint paint;
     private boolean needDivider;
@@ -88,18 +89,38 @@ public class MedicinePriceCell extends LinearLayout {
         super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(48) + (needDivider ? 1 : 0), View.MeasureSpec.EXACTLY));
     }
 
+    private SpannableString formatPrice(BigDecimal price, String prefix, String suffix, boolean pricePrimary, boolean isSubPrice) {
+        String pattern = String.format("%s￥#,##0.00%s", prefix == null ? "" : prefix, suffix == null ? "" : suffix);
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        String priceStr = decimalFormat.format(price == null ? BigDecimal.ZERO : price);
+        SpannableString spannableString = new SpannableString(priceStr);
+        int length = priceStr.length();
+        if (pricePrimary) {
+            spannableString.setSpan(new ForegroundColorSpan(ResourcesConfig.priceFontColor), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        if (isSubPrice) {
+            spannableString.setSpan(new RelativeSizeSpan(0.8f), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  //0.5f表示默认字体大小的一半
+        }
+        return spannableString;
+    }
+
     public void setValue(BigDecimal marketPrice, BigDecimal userPrice, int saleCount, boolean divider) {
 
         SpannableStringBuilder priceText = new SpannableStringBuilder();
-        CharSequence userPriceStr = ShoppingHelper.formatPrice(userPrice);
+        CharSequence userPriceStr = formatPrice(userPrice, null, null, true, false);
         priceText.append(userPriceStr);
         if (userPrice.compareTo(marketPrice) != 0) {
             priceText.append("  ");
-            CharSequence marketPriceStr = ShoppingHelper.formatPrice(marketPrice, false);
-            SpannableString marketPriceSpan = new SpannableString(marketPriceStr);
+            SpannableString marketPriceStr = formatPrice(marketPrice, null, null, false, true);
             StrikethroughSpan span = new StrikethroughSpan();
-            marketPriceSpan.setSpan(span, 0, marketPriceStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            priceText.append(marketPriceSpan);
+            marketPriceStr.setSpan(span, 0, marketPriceStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            priceText.append(marketPriceStr);
+
+            priceText.append("  ");
+            BigDecimal subPrice = marketPrice.subtract(userPrice);
+            SpannableString subPriceStr = formatPrice(subPrice, "立省", "元", false, true);
+            priceText.append(subPriceStr);
         }
         userPriceView.setText(priceText);
         String saleCountStr = String.format("已售 %d", saleCount);

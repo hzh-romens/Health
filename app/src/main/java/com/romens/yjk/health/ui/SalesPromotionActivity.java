@@ -224,4 +224,9 @@ public class SalesPromotionActivity extends DarkActionBarActivity implements Col
 
         return entity;
     }
+
+    @Override
+    protected String getActivityName() {
+        return "";
+    }
 }

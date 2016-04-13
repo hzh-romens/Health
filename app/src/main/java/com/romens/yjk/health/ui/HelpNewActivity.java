@@ -47,4 +47,9 @@ public class HelpNewActivity extends WebActivity {
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected String getActivityName() {
+        return "帮助";
+    }
 }

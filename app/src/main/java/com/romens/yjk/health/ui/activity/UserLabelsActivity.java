@@ -141,6 +141,11 @@ public class UserLabelsActivity extends BaseActivity {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "个人信息-详细信息";
+    }
+
     class ListAdapter extends BaseFragmentAdapter {
         private Context adapterContext;
 

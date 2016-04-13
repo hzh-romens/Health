@@ -144,6 +144,11 @@ public class FamilyDrugGroupActivity extends DarkActionBarActivity {
         }
     }
 
+    @Override
+    protected String getActivityName() {
+        return "家庭药箱";
+    }
+
     class FamilyDrugGroupAdapter extends BaseAdapter {
 
         private Context context;

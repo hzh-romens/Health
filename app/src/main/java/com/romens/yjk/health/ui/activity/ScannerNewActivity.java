@@ -27,6 +27,7 @@ import com.romens.extend.scanner.model.MenuModel;
 import com.romens.extend.scanner.params.DecodeParams;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.cells.ScannerMenuCell;
+import com.tencent.stat.StatService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,20 @@ public class ScannerNewActivity extends CaptureActivity {
 
     private ActionBar actionBar;
     private ActionBarMenuItem inputSearchItem;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        StatService.onResume(this);      //统计时长
+        StatService.trackBeginPage(this,"扫码识药");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        StatService.onPause(this);
+        StatService.trackEndPage(this,"扫码识药");
+    }
 
     @Override
     protected void onSetupContentView() {

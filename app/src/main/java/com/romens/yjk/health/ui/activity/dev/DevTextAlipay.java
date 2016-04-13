@@ -93,4 +93,9 @@ public class DevTextAlipay extends DarkActionBarActivity {
         }
         return payParams;
     }
+
+    @Override
+    protected String getActivityName() {
+        return "支付宝测试入口";
+    }
 }

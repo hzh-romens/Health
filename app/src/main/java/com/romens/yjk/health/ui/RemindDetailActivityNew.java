@@ -160,6 +160,11 @@ public class RemindDetailActivityNew extends DarkActionBarActivity {
         return times ;
     }
 
+    @Override
+    protected String getActivityName() {
+        return "用药提醒详情";
+    }
+
     class DetailListViewAdapter extends BaseAdapter {
 
         private Context context;

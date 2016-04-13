@@ -154,6 +154,11 @@ public class AddRemindTimesActivity extends DarkActionBarActivity implements Tim
         return false;
     }
 
+    @Override
+    protected String getActivityName() {
+        return "新增用药提醒时间";
+    }
+
     class HintViewCell extends FrameLayout {
 
         public HintViewCell(Context context) {

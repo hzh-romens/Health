@@ -154,6 +154,11 @@ public class DevelopModeActivity extends DarkActionBarActivity {
     private int testShoppingCartRow;
     private int testAlipayRow;
 
+    @Override
+    protected String getActivityName() {
+        return "开发者模式";
+    }
+
     class ListAdapter extends BaseAdapter {
 
         @Override

@@ -237,4 +237,9 @@ public class FeedBackNewActivity extends DarkActionBarActivity implements View.O
             }
         });
     }
+
+    @Override
+    protected String getActivityName() {
+        return "意见反馈";
+    }
 }

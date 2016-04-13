@@ -235,6 +235,11 @@ public class HealthNewsActivity extends DarkActionBarActivity {
         return entities;
     }
 
+    @Override
+    protected String getActivityName() {
+        return "健康资讯";
+    }
+
     static class Holder extends RecyclerView.ViewHolder {
         public Holder(View itemView) {
             super(itemView);

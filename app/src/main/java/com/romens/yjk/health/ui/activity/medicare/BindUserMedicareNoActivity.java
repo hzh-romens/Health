@@ -245,4 +245,9 @@ public class BindUserMedicareNoActivity extends DarkActionBarActivity {
         setResult(RESULT_CANCELED);
         finish();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "绑定社保卡";
+    }
 }

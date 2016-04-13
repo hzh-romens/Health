@@ -85,6 +85,7 @@ public class SearchActivity extends BaseActivity {
     private boolean fromFramilyDrugGroupTag = false;
 
     private int goodsFlag = GoodsFlag.NORMAL;
+    private String actionBarTitle;
 
 
     @Override
@@ -125,8 +126,9 @@ public class SearchActivity extends BaseActivity {
         searchResultList.setAdapter(searchResultAdapter);
 
         ActionBarMenu actionBarMenu = actionBar.createMenu();
+
         if (searchType == SEARCH_TYPE_BARCODE) {
-            actionBar.setTitle("扫描结果");
+            actionBarTitle="扫描结果";
         } else {
             ActionBarMenuItem searchItem = actionBarMenu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, true);
             searchItem.getSearchField().setHint("输入药品或者症状,比如:感冒");
@@ -163,8 +165,9 @@ public class SearchActivity extends BaseActivity {
                 }
             });
             actionBarMenu.addItem(1, R.drawable.ic_camera_alt_white_24dp);
-            actionBar.setTitle("搜索");
+            actionBarTitle="搜索";
         }
+        actionBar.setTitle(actionBarTitle);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -414,6 +417,11 @@ public class SearchActivity extends BaseActivity {
             }
         }
         searchResultAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected String getActivityName() {
+        return String.format("%s[%s]",actionBarTitle,goodsFlag==GoodsFlag.MEDICARE?"医保":"非医保");
     }
 
     class SearchResultAdapter extends RecyclerView.Adapter<CellHolder> {

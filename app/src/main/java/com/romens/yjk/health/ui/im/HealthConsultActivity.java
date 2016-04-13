@@ -133,4 +133,9 @@ public class HealthConsultActivity extends WebActivity {
     public void onBackPressed() {
         finish();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "用药咨询";
+    }
 }

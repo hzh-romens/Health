@@ -197,6 +197,11 @@ public class CollectActivity extends DarkActionBarActivity implements AppNotific
         updateGoodsFavorites();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "我的收藏";
+    }
+
     private void actionBarEvent(ActionBar actionBar) {
         actionBar.setTitle("我的收藏");
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);

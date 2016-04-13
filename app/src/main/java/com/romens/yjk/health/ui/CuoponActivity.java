@@ -111,4 +111,9 @@ public class CuoponActivity extends DarkActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    protected String getActivityName() {
+        return "我的优惠券";
+    }
 }

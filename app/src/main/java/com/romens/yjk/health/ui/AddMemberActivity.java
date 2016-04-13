@@ -17,7 +17,7 @@ import com.romens.yjk.health.ui.adapter.NewMemberAdapter;
 /**
  * Created by HZH on 2016/3/18.
  */
-public class NewMemberActivity extends LightActionBarActivity {
+public class AddMemberActivity extends LightActionBarActivity {
     private RecyclerView listView;
     private NewMemberAdapter adapter;
 
@@ -57,5 +57,10 @@ public class NewMemberActivity extends LightActionBarActivity {
         types.append(3, MemberType.PSW);
         types.append(4, MemberType.ADVICE);
         types.append(5, MemberType.BUTTON);
+    }
+
+    @Override
+    protected String getActivityName() {
+        return "绑定会员卡";
     }
 }

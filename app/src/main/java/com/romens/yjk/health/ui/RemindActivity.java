@@ -117,6 +117,11 @@ public class RemindActivity extends DarkActionBarActivity {
         super.onPause();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "用药提醒";
+    }
+
     private void initData() {
         RemindDao remindDao = DBInterface.instance().openReadableDb().getRemindDao();
         data = remindDao.readDb(remindDao);

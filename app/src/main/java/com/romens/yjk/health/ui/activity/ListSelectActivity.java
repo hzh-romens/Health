@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by siery on 15/10/28.
  */
-public class ListSelectActivity extends DarkActionBarActivity {
+public  class ListSelectActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_TITLE = "title";
     public static final String ARGUMENTS_KEY_NAME_LIST = "name_list";
     public static final String ARGUMENTS_KEY_VALUE_LIST = "value_list";
@@ -117,6 +117,11 @@ public class ListSelectActivity extends DarkActionBarActivity {
     private void cancelSelect() {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    @Override
+    protected String getActivityName() {
+        return title;
     }
 
     class ListAdapter extends BaseFragmentAdapter {

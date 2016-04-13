@@ -2,8 +2,13 @@ package com.romens.yjk.health.wx.mta;
 
 import android.content.Context;
 
+import com.romens.yjk.health.MyApplication;
+import com.romens.yjk.health.config.FacadeConfig;
 import com.tencent.stat.StatConfig;
 import com.tencent.stat.StatService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by siery on 15/12/8.
@@ -21,7 +26,7 @@ public class MTAManager {
     public static boolean init(Context context, String mtaAppKey) {
         try {
             // 开启MTA debug，发布时一定要删除本行或设置为false
-            StatConfig.setAutoExceptionCaught(true);
+            StatConfig.setAutoExceptionCaught(false);
             StatConfig.setDebugEnable(false);
             return StatService.startStatService(context, mtaAppKey,
                     com.tencent.stat.common.StatConstants.VERSION);
@@ -29,5 +34,14 @@ public class MTAManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 测试服务器网速
+     */
+    public static void testConnectServerSpeed() {
+        Map<String, Integer> map = new HashMap<>();
+        map.put(FacadeConfig.getUrl(), 80);
+        StatService.testSpeed(MyApplication.applicationContext, map);
     }
 }

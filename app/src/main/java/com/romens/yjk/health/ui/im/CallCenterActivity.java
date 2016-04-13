@@ -151,4 +151,9 @@ public class CallCenterActivity extends WebActivity {
     public void onBackPressed() {
         finish();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "在线客服";
+    }
 }

@@ -192,6 +192,11 @@ public class ChangePasswordActivity extends DarkActionBarActivity {
         AndroidUtilities.showKeyboard(oldPasswordField);
     }
 
+    @Override
+    protected String getActivityName() {
+        return "修改密码";
+    }
+
     private void tryChangePassword() {
         String oldPassword = oldPasswordField.getText().toString();
         String s = UserConfig.formatCode(oldPassword);

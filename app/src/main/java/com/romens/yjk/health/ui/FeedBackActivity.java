@@ -340,4 +340,9 @@ public class FeedBackActivity extends DarkActionBarActivity implements View.OnCl
             }
         });
     }
+
+    @Override
+    protected String getActivityName() {
+        return "意见反馈";
+    }
 }

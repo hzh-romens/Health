@@ -35,4 +35,9 @@ public class ShoppingCartActivity extends DarkActionBarActivity {
                 .replace(R.id.fragment, fragment)
                 .commit();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "购物车";
+    }
 }

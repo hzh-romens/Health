@@ -1,5 +1,6 @@
 package com.romens.yjk.health.helper;
 
+import android.content.res.Resources;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -8,6 +9,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 
+import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.ResourcesConfig;
 
@@ -124,5 +126,27 @@ public class ShoppingHelper {
             return new String(textChars);
         }
         return "";
+    }
+
+    public static  boolean needCancelAlert(String orderStatus){
+        return TextUtils.equals(orderStatus,"已付款");
+    }
+
+
+    public static int getOrderStatusColor(String orderStatus) {
+        int color = 0xff212121;
+        Resources resources = MyApplication.applicationContext.getResources();
+        if (TextUtils.equals("未付款", orderStatus)) {
+            color = resources.getColor(R.color.md_red_500);
+        } else if (TextUtils.equals("交易取消", orderStatus)) {
+            color = resources.getColor(R.color.md_grey_400);
+        } else if (TextUtils.equals("交易完成", orderStatus)) {
+            color = 0xff212121;
+        } else if (TextUtils.equals("已评价", orderStatus)) {
+            color = 0xff212121;
+        } else {
+            color = 0xff2baf2b;
+        }
+        return color;
     }
 }

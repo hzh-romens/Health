@@ -339,7 +339,8 @@ public class HomeMyNewFragment extends AppFragment implements AppNotificationCen
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             if (position == 0) {//帮助
-                                startActivity(new Intent(getActivity(), HelpNewActivity.class));
+                                UIOpenHelper.openHelperActivity(getActivity());
+                                //startActivity(new Intent(getActivity(), HelpNewActivity.class));
                             } else if (position == 1) {//意见反馈
                                 startActivity(new Intent(getActivity(), FeedBackNewActivity.class));
                             } else if (position == 2) {//检查更新

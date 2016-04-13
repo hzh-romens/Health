@@ -125,6 +125,11 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
         doPayPrepareRequest(args);
     }
 
+    @Override
+    protected String getActivityName() {
+        return "医保在线支付选择";
+    }
+
 
 //    @Override
 //    protected void formatPayParamsResponse(JsonNode jsonNode) {

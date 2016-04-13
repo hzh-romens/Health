@@ -105,6 +105,11 @@ public class FamilyMemberAddActivity extends DarkActionBarActivity {
         ageRow = rowCount++;
     }
 
+    @Override
+    protected String getActivityName() {
+        return "新增家庭成员";
+    }
+
     class MemberAddAdapter extends BaseAdapter implements DatePickerDialog.OnDateSetListener {
 
         private Context context;

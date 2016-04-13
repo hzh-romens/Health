@@ -22,6 +22,7 @@ import com.romens.yjk.health.ui.CuoponActivity;
 import com.romens.yjk.health.ui.EditActivity;
 import com.romens.yjk.health.ui.FamilyDrugGroupActivity;
 import com.romens.yjk.health.ui.FamilyMemberActivity;
+import com.romens.yjk.health.ui.HelpNewActivity;
 import com.romens.yjk.health.ui.HistoryActivity;
 import com.romens.yjk.health.ui.HomeActivity;
 import com.romens.yjk.health.ui.LocationActivity;
@@ -42,6 +43,7 @@ import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
+import com.romens.yjk.health.ui.fragment.OrderDetailFragment;
 import com.romens.yjk.health.ui.im.CallCenterActivity;
 import com.yunuo.pay.PayActivity;
 
@@ -113,7 +115,7 @@ public class UIOpenHelper {
         context.startActivity(intent);
     }
 
-    public static void openSearchActivity(Context context,int goodsFlag) {
+    public static void openSearchActivity(Context context, int goodsFlag) {
         Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, goodsFlag);
         context.startActivity(intent);
@@ -361,7 +363,9 @@ public class UIOpenHelper {
 
     public static void openOrderDetailForOrderNoActivity(Context context, String orderNo) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
-        intent.putExtra(OrderDetailActivity.ARGUMENT_KEY_ORDER_NO, orderNo);
+        Bundle extras = new Bundle();
+        extras.putString(OrderDetailFragment.ARGUMENT_KEY_ORDER_NO, orderNo);
+        intent.putExtras(extras);
         context.startActivity(intent);
     }
 
@@ -369,6 +373,10 @@ public class UIOpenHelper {
         Intent i = new Intent(context, HomeActivity.class);
         context.startActivity(i);
         ((Activity) context).finish();
+    }
+
+    public static void openHelperActivity(Context context) {
+        context.startActivity(new Intent(context, HelpNewActivity.class));
     }
 
     public static void openHistoryActivity(Context context) {

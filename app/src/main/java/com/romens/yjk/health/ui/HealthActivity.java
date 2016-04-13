@@ -33,4 +33,9 @@ public class HealthActivity extends DarkActionBarActivity {
             }
         });
     }
+
+    @Override
+    protected String getActivityName() {
+        return "搜索分类";
+    }
 }

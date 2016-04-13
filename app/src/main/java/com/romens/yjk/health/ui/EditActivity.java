@@ -29,12 +29,13 @@ public class EditActivity extends DarkActionBarActivity {
     private String formActivityName;
     private String result;
     private OrganizationCodeView cell;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent data = getIntent();
-        String title = data.getStringExtra("activity_title");
+        title = data.getStringExtra("activity_title");
         formActivityName = data.getStringExtra("formActivityName");
 
         ActionBarLayout.LinearLayoutContainer content = new ActionBarLayout.LinearLayoutContainer(this);
@@ -69,6 +70,11 @@ public class EditActivity extends DarkActionBarActivity {
         intent.putExtra("editActivityResult", result);
         setResult(UserGuidConfig.RESPONSE_EDITACTIVITY, intent);
         finish();
+    }
+
+    @Override
+    protected String getActivityName() {
+        return String.format("录入信息[%s]", title);
     }
 
     public class OrganizationCodeView extends LinearLayout {

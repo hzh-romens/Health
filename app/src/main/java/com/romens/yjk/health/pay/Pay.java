@@ -64,7 +64,7 @@ public class Pay {
             String key;
             String desc;
             for (int i = 0; i < size; i++) {
-                JsonNode item=data.get(i);
+                JsonNode item = data.get(i);
                 key = item.get("ANDROIDGUID").asText();
                 if (TextUtils.equals("DELIVERY_STORE", key)) {
                     desc = "推荐到店自提,有机会得到积分加倍累计";
@@ -96,6 +96,14 @@ public class Pay {
 
     public String getPayType(int id) {
         return payTypes[id];
+    }
+
+    public String getPayType(String key) {
+        int id = getPayTypeId(key);
+        if (id >= 0) {
+            return getPayType(id);
+        }
+        return "";
     }
 
     public int getPayTypeId(String key) {
@@ -137,7 +145,7 @@ public class Pay {
                 intent = new Intent();
                 ComponentName componentName = new ComponentName(context.getPackageName(), context.getPackageName() + ".ui.activity.MedicarePayActivity");
                 intent.setComponent(componentName);
-            } else if(id==PAY_TYPE_ONLINE) {
+            } else if (id == PAY_TYPE_ONLINE) {
                 intent = new Intent(context, PayPrepareActivity.class);
             }
         }

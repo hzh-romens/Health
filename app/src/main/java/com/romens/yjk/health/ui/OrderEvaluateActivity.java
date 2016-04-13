@@ -184,4 +184,9 @@ public class OrderEvaluateActivity extends DarkActionBarActivity {
             }
         });
     }
+
+    @Override
+    protected String getActivityName() {
+        return "订单评价";
+    }
 }

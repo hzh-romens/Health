@@ -455,6 +455,11 @@ public class GoodsDetailActivity extends LightActionBarActivity implements AppNo
     }
 
     @Override
+    protected String getActivityName() {
+        return String.format("商品详细页[%s][%s]",goodsId==null?"":goodsId,goodsFlag==GoodsFlag.MEDICARE?"医保药品":"药品");
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (!AndroidUtilities.isTablet()) {

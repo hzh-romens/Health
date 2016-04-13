@@ -105,4 +105,9 @@ public class HistoryActivity extends DarkActionBarActivity implements View.OnCli
             }
         });
     }
+
+    @Override
+    protected String getActivityName() {
+        return "历史浏览";
+    }
 }

@@ -337,6 +337,11 @@ public class LoginActivity extends DarkActionBarActivity {
         finish();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "登录";
+    }
+
     public class OrganizationCodeView extends SlideView {
 
         private EditText organizationCodeField;

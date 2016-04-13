@@ -94,6 +94,11 @@ public class OrderInvoiceActivity extends DarkActionBarActivity {
         AndroidUtilities.showKeyboard(inputEditText);
     }
 
+    @Override
+    protected String getActivityName() {
+        return "订单发票信息";
+    }
+
     private void trySaveInvoice() {
         String text = inputEditText.getText().toString().trim();
         onSaveInvoice(text);

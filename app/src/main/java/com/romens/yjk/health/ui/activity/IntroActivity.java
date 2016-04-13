@@ -26,9 +26,10 @@ import com.romens.yjk.health.R;
 import com.romens.yjk.health.config.AppConfig;
 import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.ui.HomeActivity;
+import com.romens.yjk.health.ui.base.BaseActivity;
 import com.tencent.stat.StatService;
 
-public class IntroActivity extends Activity implements NotificationCenterDelegate {
+public class IntroActivity extends BaseActivity implements NotificationCenterDelegate {
     private ViewPager viewPager;
     private ImageView topImage1;
     private ImageView topImage2;
@@ -193,13 +194,18 @@ public class IntroActivity extends Activity implements NotificationCenterDelegat
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (justCreated) {
             viewPager.setCurrentItem(0);
             lastPage = 0;
             justCreated = false;
         }
+    }
+
+    @Override
+    protected String getActivityName() {
+        return "起始页";
     }
 
     @Override

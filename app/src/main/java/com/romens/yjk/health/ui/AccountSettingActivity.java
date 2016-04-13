@@ -345,6 +345,11 @@ public class AccountSettingActivity extends DarkActionBarActivity implements Dat
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "个人信息";
+    }
+
     class AccountAdapter extends BaseAdapter {
 
         private Context context;

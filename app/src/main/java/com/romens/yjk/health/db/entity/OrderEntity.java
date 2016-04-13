@@ -1,9 +1,11 @@
 package com.romens.yjk.health.db.entity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.romens.android.time.FastDateFormat;
+import com.romens.yjk.health.helper.ShoppingHelper;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -31,6 +33,10 @@ public class OrderEntity {
 
     public OrderEntity() {
 
+    }
+
+    public boolean needCancelAlert(){
+        return ShoppingHelper.needCancelAlert(orderStatusStr);
     }
 
     public OrderEntity(JsonNode item) {

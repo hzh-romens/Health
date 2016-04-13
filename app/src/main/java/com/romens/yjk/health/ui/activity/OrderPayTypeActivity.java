@@ -149,6 +149,11 @@ public class OrderPayTypeActivity extends DarkActionBarActivity {
     private int saveSection;
     private int saveActionRow;
 
+    @Override
+    protected String getActivityName() {
+        return "选择支付和配送方式";
+    }
+
 
     private class ListAdapter extends BaseAdapter {
         private Context adapterContext;

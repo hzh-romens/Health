@@ -293,4 +293,9 @@ public class FavoritesActivity extends LightActionBarActivity implements AppNoti
         }
         finish();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "我的收藏";
+    }
 }

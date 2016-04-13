@@ -417,6 +417,11 @@ public class SearchActivityNew extends DarkActionBarActivity {
         return false;
     }
 
+    @Override
+    protected String getActivityName() {
+        return "搜索";
+    }
+
     class SearchResultAdapter extends BaseFragmentAdapter {
         private Context adapterContext;
 

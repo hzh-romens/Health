@@ -58,6 +58,11 @@ public class BalanceInfoActivity extends DarkActionBarActivity {
     private BigDecimal medicareBalance = BigDecimal.ZERO;
     private CheckStatus checkStatus = CheckStatus.PROCESSING;
 
+    @Override
+    protected String getActivityName() {
+        return "医保余额查询";
+    }
+
     private enum CheckStatus {
         PROCESSING, COMPLETED, ERROR
     }

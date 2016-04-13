@@ -124,6 +124,11 @@ public class FamilyMemberActivity extends DarkActionBarActivity {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected String getActivityName() {
+        return "家庭成员";
+    }
+
     private void deleteDb(FamilyMemberEntity entity) {
         if (entity.isDefault() == 1) {
             Toast.makeText(this, "默认成员不能删除", Toast.LENGTH_SHORT).show();

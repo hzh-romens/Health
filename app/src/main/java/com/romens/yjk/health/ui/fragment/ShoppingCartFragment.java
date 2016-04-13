@@ -276,7 +276,7 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
     private void submitSelectGoodsForMedicare(final ArrayList<String> needSubmitGoods, final boolean supportMedicare) {
         new AlertDialog.Builder(getActivity())
                 .setTitle("友情提示")
-                .setMessage("请您确认好要支付的商品，医保药品不退不换哟!")
+                .setMessage("请您确认好要结算的商品，药品无质量问题不退不换哟!")
                 .setNegativeButton("取消", null)
                 .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
                     @Override

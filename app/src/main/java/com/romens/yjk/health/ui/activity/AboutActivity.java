@@ -67,4 +67,9 @@ public class AboutActivity extends WebActivity {
     public void onBackPressed() {
         finish();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "关于";
+    }
 }

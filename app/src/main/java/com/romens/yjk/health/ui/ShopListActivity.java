@@ -78,6 +78,7 @@ public class ShopListActivity extends DarkActionBarActivity implements View.OnCl
     private String choice;
     private int page = 0;
     private int goodsFlag = GoodsFlag.NORMAL;
+    private String actionBarTitle;
 
 
     @Override
@@ -256,11 +257,13 @@ public class ShopListActivity extends DarkActionBarActivity implements View.OnCl
                 requestSearchData(editTextValue, keyValue, SEARCHDEFAULT);
             }
         });
+
         if (goodsFlag == GoodsFlag.MEDICARE) {
-            actionBar.setTitle(name + "(医保)");
+            actionBarTitle=name + "(医保)";
         } else {
-            actionBar.setTitle(name);
+            actionBarTitle=name;
         }
+        actionBar.setTitle(actionBarTitle);
         actionBar.setBackgroundResource(R.color.theme_primary);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -494,5 +497,10 @@ public class ShopListActivity extends DarkActionBarActivity implements View.OnCl
             return;
         }
         finish();
+    }
+
+    @Override
+    protected String getActivityName() {
+        return actionBarTitle;
     }
 }

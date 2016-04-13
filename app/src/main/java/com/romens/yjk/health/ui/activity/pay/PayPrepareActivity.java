@@ -50,5 +50,10 @@ public class PayPrepareActivity extends PayPrepareBaseActivity {
     protected void needFinish() {
         finish();
     }
+
+    @Override
+    protected String getActivityName() {
+        return "在线支付方式选择";
+    }
 }
 

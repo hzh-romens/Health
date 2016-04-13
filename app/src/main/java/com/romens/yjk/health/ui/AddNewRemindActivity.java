@@ -212,6 +212,11 @@ public class AddNewRemindActivity extends DarkActionBarActivity implements Remin
         adapter.setTimesData(timesData);
     }
 
+    @Override
+    protected String getActivityName() {
+        return "新增用药提醒";
+    }
+
     class AddRemindAdapter extends BaseAdapter {
 
         private Context context;
