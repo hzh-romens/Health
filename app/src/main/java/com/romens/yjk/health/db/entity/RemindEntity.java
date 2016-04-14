@@ -1,5 +1,12 @@
 package com.romens.yjk.health.db.entity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
+import com.romens.yjk.health.service.RemindAlarmServiceBroadcastReceiver;
+
 import java.io.Serializable;
 import java.util.Date;
 

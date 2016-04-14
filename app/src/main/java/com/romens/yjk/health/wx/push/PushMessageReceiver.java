@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 import com.romens.yjk.health.MyApplication;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.PushMessageEntity;
+import com.romens.yjk.health.service.RemindService;
+import com.romens.yjk.health.service.UploadPushTokenService;
 import com.tencent.android.tpush.XGNotifaction;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
@@ -130,11 +132,9 @@ public abstract class PushMessageReceiver extends XGPushBaseReceiver {
             // 在这里拿token
             token = message.getToken();
         }
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("push_register_result", errorCode);
-        editor.putString("push_token", token == null ? "" : token);
-        editor.commit();
+        PushManager.setPushInfo(errorCode, token);
+
+        PushManager.doUpload(context, token);
     }
 
     public static void handleNotify(XGNotifaction xGNotifaction) {

@@ -39,6 +39,7 @@ import com.romens.yjk.health.ui.fragment.HomeMyNewFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingCartFragment;
 import com.romens.yjk.health.ui.fragment.ShoppingServiceFragment;
 import com.romens.yjk.health.wx.mta.MTAManager;
+import com.romens.yjk.health.wx.push.PushManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -260,7 +261,7 @@ public class HomeActivity extends BaseLocationActivity implements AppNotificatio
         });
 
         MTAManager.testConnectServerSpeed();
-
+        PushManager.doUpload(this);
     }
 
     /**

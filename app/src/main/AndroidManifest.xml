@@ -506,6 +506,26 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
 
+        <!--  用药提醒 BEGIN -->
+        <receiver android:name=".service.RemindAlarmServiceBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <!-- 系统广播：开屏和网络切换 -->
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".service.RemindService"></service>
+
+        <!-- 用药提醒 END -->
+
+
         <!--************** romens pay begin **************************-->
         <activity android:name="com.yunuo.pay.PayActivity"></activity>
         <activity android:name="com.yunuo.pay.apply.ApplyActivity"></activity>
@@ -737,6 +757,8 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"></activity>
+
+        <service android:name=".service.UploadPushTokenService" />
         <!-- ********************** PUSH END *************************** -->
 
         <!-- ********************** MTA BEGIN *************************** -->

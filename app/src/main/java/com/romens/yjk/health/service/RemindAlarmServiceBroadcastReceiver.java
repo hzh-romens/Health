@@ -13,7 +13,7 @@ public class RemindAlarmServiceBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent serviceIntent = new Intent(context, AlarmService.class);
+        Intent serviceIntent = new Intent(context, RemindService.class);
         context.startService(serviceIntent);
     }
 
