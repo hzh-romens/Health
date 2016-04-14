@@ -36,6 +36,7 @@ import com.romens.yjk.health.ui.activity.AboutActivity;
 import com.romens.yjk.health.ui.activity.ChangePasswordActivity;
 import com.romens.yjk.health.ui.activity.FavoritesActivity;
 import com.romens.yjk.health.ui.activity.GoodsDetailActivity;
+import com.romens.yjk.health.ui.activity.LocalStoreActivity;
 import com.romens.yjk.health.ui.activity.LoginActivity;
 import com.romens.yjk.health.ui.activity.MedicineGroupActivity;
 import com.romens.yjk.health.ui.activity.PushMessagesActivity;
@@ -91,6 +92,15 @@ public class UIOpenHelper {
 //        intent.putExtra("guid", drugId);
 //        context.startActivity(intent);
 //    }
+
+    public static void openLocalStoreActivity(Context context, String storeId, String storeName) {
+        Intent intent = new Intent(context, LocalStoreActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(LocalStoreActivity.ARGUMENTS_KEY_LOCAL_STORE_ID, storeId);
+        extras.putString(LocalStoreActivity.ARGUMENTS_KEY_LOCAL_STORE_NAME, storeName);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
 
     public static void openShoppingCartActivity(Context context) {
         Intent intent = new Intent(context, ShoppingCartActivity.class);

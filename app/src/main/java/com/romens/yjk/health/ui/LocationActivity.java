@@ -51,6 +51,7 @@ import com.romens.android.ui.Image.AvatarDrawable;
 import com.romens.android.ui.Image.BackupImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.core.LocationHelper;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.LocationEntity;
 import com.romens.yjk.health.ui.activity.BaseLocationActivity;
 import com.romens.yjk.health.ui.adapter.BaseLocationAdapter;
@@ -639,9 +640,10 @@ public class LocationActivity extends BaseLocationActivity {
      */
     private void processLocationSelected(LocationEntity entity) {
         if (searchType == BaseLocationAdapter.SearchType.SHOP) {
-            Intent intent = new Intent(LocationActivity.this, DrugStoryDetailActivity.class);
-            intent.putExtra("locationEntity", entity);
-            startActivity(intent);
+            UIOpenHelper.openLocalStoreActivity(LocationActivity.this,entity.id,entity.name);
+//            Intent intent = new Intent(LocationActivity.this, DrugStoryDetailActivity.class);
+//            intent.putExtra("locationEntity", entity);
+//            startActivity(intent);
         } else {
             LocationHelper.updateLastLocation(LocationActivity.this, entity);
             finish();
