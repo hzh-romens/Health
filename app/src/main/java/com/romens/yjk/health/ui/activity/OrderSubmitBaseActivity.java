@@ -380,7 +380,7 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
             return;
         }
         SpannableStringBuilder message = new SpannableStringBuilder();
-        message.append(String.format("订单共 %d 个商品，总合计 ", goodsCount));
+        message.append(String.format("订单共 %d 个商品，商品金额 ", goodsCount));
         message.append(ShoppingHelper.formatPrice(goodsAmount, false));
 
         if (BigDecimal.ZERO.compareTo(shippingAmount) == -1) {
