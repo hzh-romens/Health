@@ -14,12 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.log.FileLog;
+import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.NetImageView;
+import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
 import com.romens.yjk.health.ui.base.BaseActivity;
@@ -48,25 +52,15 @@ public class IntroActivityNew extends BaseActivity {
         StatService.trackCustomEvent(this, "onCreate", "");
 
         //是否首次打开App，首次打开App启动引导页
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        openGuidePager = sharedPreferences.getBoolean("open_guide_pager", false);
-        if (openGuidePager) {
-            sharedPreferences.edit().putBoolean("open_guide_pager", false).commit();
-        }
         setContentView(R.layout.activity_intro);
         viewPager = (ViewPager) findViewById(R.id.intro_view_pager);
-        if (openGuidePager) {
-            pagerImages = new int[]{R.drawable.guide_1, R.drawable.guide_2, R.drawable.guide_3};
-            viewPager.setAdapter(new MyPagerAdapter(pagerImages, this));
-        } else {
-            viewPager.setAdapter(new ADPagerAdapter(this));
-            AndroidUtilities.runOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    openHomeActivity();
-                }
-            }, 2000);
-        }
+        viewPager.setAdapter(new ADPagerAdapter(this));
+        AndroidUtilities.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                openHomeActivity();
+            }
+        }, 2000);
 
         FileLog.d("IntroActivity start");
     }
@@ -97,12 +91,14 @@ public class IntroActivityNew extends BaseActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            View view = LayoutInflater.from(context).inflate(R.layout.list_item_intro_ad, null);
-            NetImageView imageView = (NetImageView) view.findViewById(R.id.ad_image);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageView.setImage("", R.drawable.intro_ad_pager, 0);
-            container.addView(view);
-            return view;
+            Context context = container.getContext();
+            FrameLayout content = new FrameLayout(context);
+            CloudImageView cloudImageView = CloudImageView.create(context);
+            cloudImageView.setActualImageScaleType(ScalingUtils.ScaleType.FIT_XY);
+            cloudImageView.setImagePath(R.drawable.intro_ad_pager);
+            content.addView(cloudImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            container.addView(content, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            return container;
         }
 
         @Override
@@ -117,49 +113,49 @@ public class IntroActivityNew extends BaseActivity {
         }
     }
 
-    class MyPagerAdapter extends PagerAdapter {
-
-        private int[] imgs;
-        private Context context;
-
-        public MyPagerAdapter(int[] imgs, Context context) {
-            this.imgs = imgs;
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return imgs.length;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
-            View view = LayoutInflater.from(context).inflate(R.layout.list_item_intro, null);
-            ImageView imageView = (ImageView) view.findViewById(R.id.item_intro_image);
-            TextView textView = (TextView) view.findViewById(R.id.item_intro_btn);
-            imageView.setImageResource(imgs[position]);
-            textView.setVisibility(View.VISIBLE);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (position == 2) {
-                        openHomeActivity();
-                    }
-                }
-            });
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object o) {
-
-            return view == o;
-        }
-    }
+//    class MyPagerAdapter extends PagerAdapter {
+//
+//        private int[] imgs;
+//        private Context context;
+//
+//        public MyPagerAdapter(int[] imgs, Context context) {
+//            this.imgs = imgs;
+//            this.context = context;
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return imgs.length;
+//        }
+//
+//        @Override
+//        public Object instantiateItem(ViewGroup container, final int position) {
+//            View view = LayoutInflater.from(context).inflate(R.layout.list_item_intro, null);
+//            ImageView imageView = (ImageView) view.findViewById(R.id.item_intro_image);
+//            TextView textView = (TextView) view.findViewById(R.id.item_intro_btn);
+//            imageView.setImageResource(imgs[position]);
+//            textView.setVisibility(View.VISIBLE);
+//            textView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (position == 2) {
+//                        openHomeActivity();
+//                    }
+//                }
+//            });
+//            container.addView(view);
+//            return view;
+//        }
+//
+//        @Override
+//        public void destroyItem(ViewGroup container, int position, Object object) {
+//            container.removeView((View) object);
+//        }
+//
+//        @Override
+//        public boolean isViewFromObject(View view, Object o) {
+//
+//            return view == o;
+//        }
+//    }
 }

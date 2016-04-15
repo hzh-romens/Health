@@ -50,7 +50,7 @@ public class HomeTabCell extends FrameLayout {
         nameView.setMaxLines(1);
         nameView.setSingleLine(true);
         nameView.setGravity(Gravity.CENTER);
-        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 16, 1, 16, 8));
+        addView(nameView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 4, 1, 4, 8));
     }
 
     @Override

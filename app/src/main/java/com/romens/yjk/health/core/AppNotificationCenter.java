@@ -38,4 +38,8 @@ public class AppNotificationCenter extends NotificationCenter {
 
     public static final int needUpdateOrderData = appTotalEvents++;
     public static final int onOrderDataUpdated = appTotalEvents++;
+
+    //push
+    public static final int onReceivePushMessage = appTotalEvents++;
+    public static final int onPushMessageStateChanged = appTotalEvents++;
 }

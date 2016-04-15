@@ -13,9 +13,7 @@ import com.romens.bug.BugConfig;
 import com.romens.bug.BugManager;
 import com.romens.images.CloudImagesManager;
 import com.romens.yjk.health.config.UserConfig;
-import com.romens.yjk.health.db.DBInterface;
-import com.romens.yjk.health.db.entity.PushMessageEntity;
-import com.romens.yjk.health.wx.push.PushMessageReceiver;
+import com.romens.yjk.health.wx.push.PushManager;
 import com.tencent.android.tpush.XGNotifaction;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.XGPushNotifactionCallback;
@@ -42,7 +40,7 @@ public class MyApplication extends ApplicationLoader {
 
                         @Override
                         public void handleNotify(XGNotifaction xGNotifaction) {
-                            PushMessageReceiver.handleNotify(xGNotifaction);
+                            PushManager.handleNotify(xGNotifaction);
                         }
                     });
         }

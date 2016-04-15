@@ -362,4 +362,10 @@ public class DBInterface {
                 .list();
         return pushMessageEntities;
     }
+
+    public boolean hasUnReadPushMessage() {
+        PushMessageDao dao = openReadableDb().getPushMessageDao();
+        long count = dao.queryBuilder().where(PushMessageDao.Properties.State.eq(1)).buildCount().count();
+        return count > 0;
+    }
 }

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.romens.yjk.health.MyApplication;
+import com.romens.yjk.health.core.AppNotificationCenter;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.entity.PushMessageEntity;
 import com.romens.yjk.health.service.RemindService;
@@ -40,8 +41,9 @@ public abstract class PushMessageReceiver extends XGPushBaseReceiver {
         String title = xgPushShowedResult.getTitle();
         String content = xgPushShowedResult.getContent();
         String customContent = xgPushShowedResult.getCustomContent();
-        PushMessageEntity messageEntity = new PushMessageEntity(title, content, customContent, messageId);
+        PushMessageEntity messageEntity = new PushMessageEntity(title, content, customContent, messageId, 1);
         DBInterface.instance().savePushMessage(messageEntity);
+        AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onReceivePushMessage);
     }
 
     @Override
@@ -137,16 +139,7 @@ public abstract class PushMessageReceiver extends XGPushBaseReceiver {
         PushManager.doUpload(context, token);
     }
 
-    public static void handleNotify(XGNotifaction xGNotifaction) {
-        Notification notification = xGNotifaction.getNotifaction();
-        ComponentName componentName = new ComponentName(MyApplication.applicationContext, "com.romens.yjk.health.ui.MyOrderActivity");
-        Intent intent = new Intent();
-        intent.setComponent(componentName);
-        notification.contentIntent = PendingIntent.getActivity(MyApplication.applicationContext, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationManager notificationManager = (NotificationManager) MyApplication.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(xGNotifaction.getNotifyId(), notification);
-    }
+
 
 }
 

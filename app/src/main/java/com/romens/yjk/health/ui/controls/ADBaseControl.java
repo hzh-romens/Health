@@ -25,6 +25,7 @@ import java.util.List;
  */
 public abstract class ADBaseControl {
     public static final String ACTION_WEB_AD = "WEB_AD";
+    public static final String ACTION_MEDICARE = "YBZQ";
     public int sortIndex;
 
     public abstract void bindViewHolder(Context context, ADHolder holder);
@@ -59,14 +60,15 @@ public abstract class ADBaseControl {
         int type = arguments.getInt("TYPE");
         if (type == 1) {
             String action = arguments.getString("ACTION");
-            if (TextUtils.equals("YBZQ", action)) {
+            if (TextUtils.equals(ACTION_MEDICARE, action)) {
                 //跳转到医保专区
-                ComponentName component = new ComponentName(context, MedicineGroupActivity.class.getName());
-                Intent intent = new Intent();
-                intent.setComponent(component);
-                intent.putExtra("title", "医保专区");
-                intent.putExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.MEDICARE);
-                context.startActivity(intent);
+                onActionMedicare(context);
+//                ComponentName component = new ComponentName(context, MedicineGroupActivity.class.getName());
+//                Intent intent = new Intent();
+//                intent.setComponent(component);
+//                intent.putExtra("title", "医保专区");
+//                intent.putExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.MEDICARE);
+//                context.startActivity(intent);
             } else if (TextUtils.equals("OPENCLASS", action)) {
                 String id = arguments.getString("ID");
                 String name = arguments.getString("NAME");
@@ -79,11 +81,37 @@ public abstract class ADBaseControl {
             if (TextUtils.equals(ACTION_WEB_AD, action)) {
                 String id = arguments.getString("ID");
                 String value = arguments.getString("VALUE");
-                String url = formatADWebUrl(id, value);
                 String name = arguments.getString("NAME");
-                UIOpenHelper.openWebActivity(context, name, url);
+                onActionWebAD(context, id, value, name);
             }
         }
+    }
+
+    public static void onActionMedicare(Context context) {
+        Intent intent = createActionMedicareIntent(context);
+        context.startActivity(intent);
+    }
+
+    public static Intent createActionMedicareIntent(Context context){
+        ComponentName component = new ComponentName(context, MedicineGroupActivity.class.getName());
+        Intent intent = new Intent();
+        intent.setComponent(component);
+        intent.putExtra("title", "医保专区");
+        intent.putExtra(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.MEDICARE);
+        return intent;
+    }
+
+    /**
+     * 打开首页广告
+     *
+     * @param context
+     * @param id
+     * @param value
+     * @param name
+     */
+    public static void onActionWebAD(Context context, String id, String value, String name) {
+        String url = formatADWebUrl(id, value);
+        UIOpenHelper.openWebActivity(context, name, url);
     }
 
     public static void onActionForGroup(Context context, Bundle arguments) {

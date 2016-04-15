@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="22dp"
+    android:paddingTop="2dp">
+
+    <TextView
+        android:id="@+id/label_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:background="@drawable/label_unread_message"
+        android:gravity="center"
+        android:textColor="@color/md_red_400"
+        android:textSize="14dp" />
+
+</FrameLayout>

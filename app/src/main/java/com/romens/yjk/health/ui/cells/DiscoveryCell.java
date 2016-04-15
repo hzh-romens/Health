@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -13,19 +14,20 @@ import android.widget.TextView;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.images.ui.CloudImageView;
 
 /**
  * Created by siery on 15/8/28.
  */
 public class DiscoveryCell extends FrameLayout {
     public static final int DEFAULT_SIZE = AndroidUtilities.dp(96);
-    private BackupImageView iconView;
+    private CloudImageView iconView;
     private TextView nameView;
 
     public DiscoveryCell(Context context) {
         super(context);
         setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
-        iconView = new BackupImageView(context);
+        iconView = CloudImageView.create(context);
         addView(iconView, LayoutHelper.createFrame(48, 48, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 8, 0, 0));
 
         nameView = new TextView(context);
@@ -54,25 +56,26 @@ public class DiscoveryCell extends FrameLayout {
     }
 
     public void setValue(String iconUrl, Drawable thumb, CharSequence name) {
-        iconView.setImage(iconUrl, "48_48", thumb);
+        iconView.setPlaceholderImage(thumb);
+        iconView.setImagePath(iconUrl);
         nameView.setText(name);
     }
 
     public void setValue(Drawable icon, String name) {
-        iconView.setImageDrawable(icon);
+        iconView.setPlaceholderImage(icon);
         nameView.setText(name);
     }
 
     public void setValue(int resId, String name) {
-        iconView.setImageResource(resId);
+        iconView.setPlaceholderImage(getResources().getDrawable(resId));
         nameView.setText(name);
     }
 
     public void setColorFilter(boolean isFilter, int color) {
         if (isFilter) {
-            iconView.getImageReceiver().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+            iconView.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
         } else {
-            iconView.getImageReceiver().setColorFilter(null);
+            iconView.clearColorFilter();
         }
     }
 }

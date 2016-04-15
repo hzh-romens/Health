@@ -47,7 +47,7 @@ dependencies {
     compile files('libs/libammsdk.jar')
     compile files('libs/alipaySdk-20160120.jar')
     //romens.android
-    compile 'romens:com.romens.android:2.0.5@aar'
+    compile 'romens:com.romens.android:2.0.7@aar'
     compile 'com.squareup.okhttp:okhttp:2.7.4'
     compile 'com.squareup.okio:okio:1.6.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'

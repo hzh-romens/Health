@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.romens.android.ui.Image.NetImageView
+    <com.romens.
         android:id="@+id/ad_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

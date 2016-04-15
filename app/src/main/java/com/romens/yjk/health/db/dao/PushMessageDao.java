@@ -30,6 +30,7 @@ public class PushMessageDao extends AbstractDao<PushMessageEntity, Long> {
         public final static Property Content = new Property(3, String.class, "content", false, "CONTENT");
         public final static Property Extras = new Property(4, String.class, "extras", false, "EXTRAS");
         public final static Property MessageId = new Property(5, Long.class, "messageId", false, "MESSAGEID");
+        public final static Property State = new Property(6, Long.class, "state", false, "STATE");
     }
 
 
@@ -52,7 +53,8 @@ public class PushMessageDao extends AbstractDao<PushMessageEntity, Long> {
                 "'TITLE' TEXT," +
                 "'CONTENT' TEXT," +
                 "'EXTRAS' TEXT ," +
-                "'MESSAGEID' INTEGER );");
+                "'MESSAGEID' INTEGER," +
+                " STATE INTEGER );");
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_PUSH_MESSAGES_CREATEDATE ON PUSH_MESSAGES" +
                 " (CREATEDATE);");
@@ -70,7 +72,7 @@ public class PushMessageDao extends AbstractDao<PushMessageEntity, Long> {
     }
 
     public static void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 78) {
+        if (oldVersion < 81) {
             dropTable(db, true);
             createTable(db, false);
         }
@@ -92,6 +94,7 @@ public class PushMessageDao extends AbstractDao<PushMessageEntity, Long> {
         stmt.bindString(4, entity.getContent());
         stmt.bindString(5, entity.getExtras());
         stmt.bindLong(6, entity.getMessageId());
+        stmt.bindLong(7, entity.getState());
     }
 
     /**
@@ -114,6 +117,7 @@ public class PushMessageDao extends AbstractDao<PushMessageEntity, Long> {
         entity.setContent(cursor.getString(offset + 3));
         entity.setExtras(cursor.getString(offset + 4));
         entity.setMessageId(cursor.getLong(offset + 5));
+        entity.setState(cursor.getInt(offset + 6));
         return entity;
     }
 
@@ -128,6 +132,7 @@ public class PushMessageDao extends AbstractDao<PushMessageEntity, Long> {
         entity.setContent(cursor.getString(offset + 3));
         entity.setExtras(cursor.getString(offset + 4));
         entity.setMessageId(cursor.getLong(offset + 5));
+        entity.setState(cursor.getInt(offset + 6));
     }
 
     /**

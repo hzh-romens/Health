@@ -10,32 +10,24 @@ import android.widget.FrameLayout;
 import com.romens.android.core.ImageReceiver;
 import com.romens.android.ui.Components.LayoutHelper;
 import com.romens.android.ui.Image.BackupImageView;
+import com.romens.images.ui.CloudImageView;
 
 /**
  * Created by siery on 15/8/17.
  */
 public class SalesPromotionADCell extends FrameLayout {
-    private BackupImageView adImageView;
-    private ImageLoadCallback imageLoadCallback;
-
+    private CloudImageView adImageView;
 
     public SalesPromotionADCell(Context context) {
         super(context);
-        adImageView = new BackupImageView(context);
-        adImageView.getImageReceiver().setDelegate(new ImageReceiver.ImageReceiverDelegate() {
-            @Override
-            public void didSetImage(ImageReceiver imageReceiver, boolean set, boolean thumb) {
-                if (imageLoadCallback != null && set) {
-                    imageLoadCallback.onFinished(imageReceiver.getBitmap());
-                }
-            }
-        });
+        adImageView = CloudImageView.create(context);
         addView(adImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT,
                 Gravity.CENTER));
     }
 
-    public void setImage(String httpUrl, String filter, Drawable thumb) {
-        adImageView.setImage(httpUrl, filter, thumb);
+    public void setImage(String httpUrl, Drawable thumb) {
+        adImageView.setPlaceholderImage(thumb);
+        adImageView.setImagePath(httpUrl);
     }
 
     @Override
@@ -54,14 +46,5 @@ public class SalesPromotionADCell extends FrameLayout {
         }
         setMeasuredDimension(measureWidth, measureHeight);
     }
-
-    public void setImageLoadCallback(ImageLoadCallback callback) {
-        this.imageLoadCallback = callback;
-    }
-
-    public interface ImageLoadCallback {
-        void onFinished(Bitmap bitmap);
-    }
-
 
 }

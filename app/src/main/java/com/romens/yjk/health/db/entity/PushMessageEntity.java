@@ -1,9 +1,14 @@
 package com.romens.yjk.health.db.entity;
 
 import android.provider.CalendarContract;
+import android.text.TextUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.android.io.json.JacksonMapper;
+import com.romens.android.log.FileLog;
 import com.romens.android.time.FastDateFormat;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 /**
@@ -19,17 +24,19 @@ public class PushMessageEntity {
     private String content;
     private String extras;
     private Long messageId;
+    private int state;
 
     public PushMessageEntity() {
 
     }
 
-    public PushMessageEntity(String title, String content, String extras, Long messageId) {
+    public PushMessageEntity(String title, String content, String extras, Long messageId, int state) {
         this.create = Calendar.getInstance().getTimeInMillis();
         this.title = title;
         this.content = content;
         this.extras = extras;
         this.messageId = messageId;
+        this.state = state;
     }
 
     public void setMessageId(Long id) {
@@ -72,6 +79,22 @@ public class PushMessageEntity {
         return title;
     }
 
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public boolean unRead() {
+        return state == 1;
+    }
+
+    public void setRead() {
+        state = 0;
+    }
+
     public String getTime() {
         Calendar today = Calendar.getInstance();
         Calendar createDate = Calendar.getInstance();
@@ -93,5 +116,21 @@ public class PushMessageEntity {
 
     public String getExtras() {
         return extras;
+    }
+
+    public JsonNode formatExtras() {
+        return formatExtras(extras);
+    }
+
+    public static JsonNode formatExtras(String extras) {
+        JsonNode jsonNode = null;
+        if (!TextUtils.isEmpty(extras)) {
+            try {
+                jsonNode = JacksonMapper.getInstance().readTree(extras);
+            } catch (IOException e) {
+                FileLog.e(e);
+            }
+        }
+        return jsonNode;
     }
 }

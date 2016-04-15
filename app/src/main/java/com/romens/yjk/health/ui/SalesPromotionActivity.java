@@ -165,12 +165,6 @@ public class SalesPromotionActivity extends DarkActionBarActivity implements Col
         if (groupId == AD_GROUP_ID) {
             SalesPromotionADCell cell = new SalesPromotionADCell(context);
             cell.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            cell.setImageLoadCallback(new SalesPromotionADCell.ImageLoadCallback() {
-                @Override
-                public void onFinished(Bitmap bitmap) {
-                    getADPrimaryColor(bitmap);
-                }
-            });
             return cell;
         }
         ProductCell cell = new ProductCell(context);
@@ -182,7 +176,7 @@ public class SalesPromotionActivity extends DarkActionBarActivity implements Col
     public void bindCollectionItemView(Context context, View view, int groupId, int indexInGroup, int dataIndex, Object tag) {
         if (groupId == AD_GROUP_ID) {
             SalesPromotionADCell cell = (SalesPromotionADCell) view;
-            cell.setImage(adSalesListEntity.iconUrl, null, null);
+            cell.setImage(adSalesListEntity.iconUrl, null);
         } else {
             ADProductEntity entity = adSalesListEntity.productList.get(indexInGroup);
             ProductCell cell = (ProductCell) view;
