@@ -608,7 +608,13 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
             }
         } else {
             String error = response.get("ERROR").asText();
-            ToastCell.toast(OrderSubmitBaseActivity.this, TextUtils.isEmpty(error) ? "提交订单失败!" : error);
+            StringBuilder errorText = new StringBuilder();
+            errorText.append("提交订单失败!");
+            if (!TextUtils.isEmpty(error)) {
+                errorText.append("原因:");
+                errorText.append(error);
+            }
+            ToastCell.toast(OrderSubmitBaseActivity.this, errorText.toString());
         }
     }
 

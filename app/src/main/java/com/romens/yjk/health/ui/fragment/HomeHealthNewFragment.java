@@ -15,10 +15,12 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.network.Message;
+import com.romens.android.network.parser.JSONNodeParser;
 import com.romens.android.network.parser.JsonParser;
 import com.romens.android.network.protocol.FacadeProtocol;
 import com.romens.android.network.protocol.ResponseProtocol;
@@ -36,6 +38,7 @@ import com.romens.yjk.health.db.entity.DrugGroupEntity;
 import com.romens.yjk.health.ui.ShopListActivity;
 import com.romens.yjk.health.ui.adapter.ContentListViewAdapter;
 import com.romens.yjk.health.ui.cells.DrugGroupMenuCell;
+import com.romens.yjk.health.ui.components.ToastCell;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,14 +63,14 @@ public class HomeHealthNewFragment extends AppFragment {
     public static final String ARGUMENTS_KEY_ID = "key_id";
     public static final String ARGUMENTS_KEY_NAME = "key_name";
 
-    private int goodsFlag= GoodsFlag.NORMAL;
+    private int goodsFlag = GoodsFlag.NORMAL;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            goodsFlag = arguments.getInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG,GoodsFlag.NORMAL);
+            goodsFlag = arguments.getInt(GoodsFlag.ARGUMENT_KEY_GOODS_FLAG, GoodsFlag.NORMAL);
         }
     }
 
@@ -170,8 +173,9 @@ public class HomeHealthNewFragment extends AppFragment {
         List<DrugGroupEntity> entities = DBInterface.instance().loadAllDrugGroup();
         groupNodes.clear();
         childNodes.clear();
-        for (DrugGroupEntity entity :
-                entities) {
+        final int size = entities.size();
+        for (int i = 0; i < size; i++) {
+            DrugGroupEntity entity = entities.get(i);
             if (TextUtils.isEmpty(entity.getPID())) {
                 groupNodes.add(entity);
                 if (!childNodes.containsKey(entity.getId())) {
@@ -189,19 +193,18 @@ public class HomeHealthNewFragment extends AppFragment {
 
     private void requestData() {
         Map<String, String> args = new HashMap<>();
-        args.put("FLAG",GoodsFlag.checkFlagForArg(goodsFlag));
+        args.put("FLAG", GoodsFlag.checkFlagForArg(goodsFlag));
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetMedicineKind", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
         Connect connect = new RMConnect.Builder(HomeHealthNewFragment.class)
                 .withProtocol(protocol)
-                .withParser(new JsonParser(new TypeToken<List<LinkedTreeMap<String, String>>>() {
-                }))
+                .withParser(new JSONNodeParser())
                 .withDelegate(new Connect.AckDelegate() {
                     @Override
                     public void onResult(Message message, Message errorMessage) {
                         if (errorMessage == null) {
-                            ResponseProtocol<List<LinkedTreeMap<String, String>>> responseProtocol = (ResponseProtocol) message.protocol;
+                            ResponseProtocol<JsonNode> responseProtocol = (ResponseProtocol) message.protocol;
                             bindData(responseProtocol.getResponse());
                         }
                     }
@@ -209,26 +212,30 @@ public class HomeHealthNewFragment extends AppFragment {
         ConnectManager.getInstance().request(getActivity(), connect);
     }
 
-    private void bindData(List<LinkedTreeMap<String, String>> nodes) {
+    private void bindData(JsonNode nodes) {
         List<DrugGroupEntity> needDb = new ArrayList<>();
         DrugGroupEntity entityTemp;
-        for (LinkedTreeMap<String, String> item : nodes) {
+        int size = nodes.size();
+        JsonNode itemTemp;
+        for (int i = 0; i < size; i++) {
+            itemTemp = nodes.get(i);
             entityTemp = new DrugGroupEntity();
-            entityTemp.setId(item.get("ID"));
-            entityTemp.setName(item.get("NAME"));
-            entityTemp.setPID(item.get("PID"));
-            entityTemp.setSortIndex(item.get("ORDERINDEX"));
+            entityTemp.setId(itemTemp.get("ID").asText());
+            entityTemp.setName(itemTemp.get("NAME").asText());
+            entityTemp.setPID(itemTemp.get("PID").asText());
+            entityTemp.setSortIndex(itemTemp.get("sortnumber").asInt(0));
             entityTemp.setCreated((int) Calendar.getInstance().getTimeInMillis());
             entityTemp.setUpdated((int) Calendar.getInstance().getTimeInMillis());
-            if (item.containsKey("MLOGO")) {
-                entityTemp.setIcon(item.get("MLOGO"));
+            if (itemTemp.has("MLOGO")) {
+                entityTemp.setIcon(itemTemp.get("MLOGO").asText());
             } else {
                 entityTemp.setIcon("");
             }
             needDb.add(entityTemp);
         }
+        DrugGroupDao userDao = DBInterface.instance().openWritableDb().getDrugGroupDao();
+        userDao.deleteAll();
         if (needDb.size() > 0) {
-            DrugGroupDao userDao = DBInterface.instance().openWritableDb().getDrugGroupDao();
             userDao.insertOrReplaceInTx(needDb);
         }
         onDataChanged();

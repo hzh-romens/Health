@@ -1,5 +1,7 @@
 package com.romens.yjk.health.config;
 
+import android.text.TextUtils;
+
 /**
  * Created by zhoulisi on 14-7-14.
  */
@@ -42,6 +44,9 @@ public class FacadeToken {
 
     public String getAuthToken() {
         synchronized (sync) {
+            if (TextUtils.isEmpty(authToken)) {
+                authToken = UserConfig.getInstance().createToken();
+            }
             return authToken;
         }
     }

@@ -46,19 +46,6 @@ public class DrugGroupEntity {
     public void setSortIndex(int _sortIndex) {
         sortIndex = _sortIndex;
     }
-
-    public void setSortIndex(String _sortIndex) {
-        if (TextUtils.isEmpty(_sortIndex)) {
-            sortIndex = 0;
-        } else {
-            try {
-                sortIndex = Integer.parseInt(_sortIndex);
-            } catch (NumberFormatException e) {
-                sortIndex = 0;
-            }
-        }
-    }
-
     /**
      * 分类图标
      * @param icon

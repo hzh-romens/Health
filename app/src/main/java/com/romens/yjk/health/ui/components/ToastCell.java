@@ -18,7 +18,7 @@ import com.romens.yjk.health.R;
  * @create 16/2/26
  * @description
  */
-public class ToastCell  extends LinearLayout {
+public class ToastCell extends LinearLayout {
     private TextView textView;
 
     public ToastCell(Context context) {
@@ -29,19 +29,17 @@ public class ToastCell  extends LinearLayout {
         textView = new TextView(context);
         textView.setTextColor(0xff8a8a8a);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        textView.setLines(1);
-        textView.setMaxLines(1);
-        textView.setSingleLine(true);
+        textView.setSingleLine(false);
         textView.setEllipsize(TextUtils.TruncateAt.END);
-        textView.setGravity((Gravity.LEFT) | Gravity.CENTER_VERTICAL);
-        addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+        textView.setGravity(Gravity.CENTER);
+        addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 16, 8, 16, 8));
 
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(36), View.MeasureSpec.EXACTLY));
-    }
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(36), View.MeasureSpec.EXACTLY));
+//    }
 
     public void setText(CharSequence text) {
         textView.setText(text);

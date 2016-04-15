@@ -1,28 +1,20 @@
 package com.romens.yjk.health.ui.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.romens.android.AndroidUtilities;
 import com.romens.android.log.FileLog;
 import com.romens.android.ui.Components.LayoutHelper;
-import com.romens.android.ui.Image.NetImageView;
 import com.romens.images.ui.CloudImageView;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.ui.HomeActivity;
@@ -37,9 +29,6 @@ import com.tencent.stat.StatService;
 public class IntroActivityNew extends BaseActivity {
 
     private ViewPager viewPager;
-
-    private boolean openGuidePager;
-    private int[] pagerImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +84,10 @@ public class IntroActivityNew extends BaseActivity {
             FrameLayout content = new FrameLayout(context);
             CloudImageView cloudImageView = CloudImageView.create(context);
             cloudImageView.setActualImageScaleType(ScalingUtils.ScaleType.FIT_XY);
-            cloudImageView.setImagePath(R.drawable.intro_ad_pager);
+            cloudImageView.setPlaceholderImage(context.getResources().getDrawable(R.drawable.intro_ad_pager));
             content.addView(cloudImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
             container.addView(content, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            return container;
+            return content;
         }
 
         @Override

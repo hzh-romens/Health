@@ -1,10 +1,5 @@
 package com.romens.yjk.health.model;
 
-import android.content.Context;
-import android.content.Intent;
-
-import com.romens.yjk.health.ui.HealthActivity;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +39,4 @@ public class SearchResultEntity implements Serializable {
         return null;
     }
 
-    public void onAction(Context context) {
-        context.startActivity(new Intent(context, HealthActivity.class));
-    }
 }

@@ -174,7 +174,11 @@ public class ShoppingCartFragment extends AppFragment implements AppNotification
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                syncShoppingCartForServer(true);
+                if (!isSyncingServerShoppingCart) {
+                    syncShoppingCartForServer(true);
+                } else {
+                    refreshLayout.setRefreshing(false);
+                }
             }
         });
         allCheckView.setOnClickListener(new View.OnClickListener() {
