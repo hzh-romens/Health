@@ -238,7 +238,7 @@ public class OrderDetailFragment extends OrderBaseFragment implements AppNotific
             commitOrderActionRow = -1;
             retryOrderActionRow = -1;
             buyOrderActionRow = -1;
-        } else if (TextUtils.equals("交易取消", orderStatus)) {
+        } else if (TextUtils.equals("交易取消", orderStatus)||TextUtils.equals("交易关闭", orderStatus)) {
             payOrderActionRow = -1;
             cancelOrderActionRow = -1;
             completeOrderActionRow = -1;

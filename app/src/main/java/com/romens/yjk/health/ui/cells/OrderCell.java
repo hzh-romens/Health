@@ -36,8 +36,6 @@ public class OrderCell extends LinearLayout {
 
     private OrderGoodsSimpleCell goodsCell;
 
-    private TextView goodsCountTextView;
-
     private TextView orderInfoTextView;
 
     private TextView btn1View;
@@ -124,38 +122,27 @@ public class OrderCell extends LinearLayout {
         addView(divider, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 0, 16, 0));
 
         goodsCell = new OrderGoodsSimpleCell(context);
+        goodsCell.setBackgroundColor(0xfff9f9f9);
         addView(goodsCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        goodsCountTextView = new TextView(context);
-        goodsCountTextView.setTextColor(0xff757575);
-        goodsCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        goodsCountTextView.setLines(1);
-        goodsCountTextView.setMaxLines(1);
-        goodsCountTextView.setSingleLine(true);
-        goodsCountTextView.setEllipsize(TextUtils.TruncateAt.END);
-        goodsCountTextView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        AndroidUtilities.setMaterialTypeface(goodsCountTextView);
-        addView(goodsCountTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 32, 16, 0, 16, 0));
+        orderInfoTextView = new TextView(context);
+        orderInfoTextView.setTextColor(0xff212121);
+        orderInfoTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        orderInfoTextView.setLines(1);
+        orderInfoTextView.setMaxLines(1);
+        orderInfoTextView.setSingleLine(true);
+        orderInfoTextView.setEllipsize(TextUtils.TruncateAt.END);
+        orderInfoTextView.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        AndroidUtilities.setMaterialTypeface(orderInfoTextView);
+        addView(orderInfoTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36, 16, 0, 16, 0));
 
         divider = new DividerCell(context);
         addView(divider, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 16, 0, 16, 0));
 
         LinearLayout footer = new LinearLayout(context);
         footer.setOrientation(HORIZONTAL);
-        footer.setGravity(Gravity.CENTER_VERTICAL);
+        footer.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         addView(footer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
-
-        orderInfoTextView = new TextView(context);
-        orderInfoTextView.setTextColor(0xff212121);
-        orderInfoTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        orderInfoTextView.setLines(1);
-        orderInfoTextView.setMaxLines(1);
-        orderInfoTextView.setSingleLine(true);
-        orderInfoTextView.setEllipsize(TextUtils.TruncateAt.END);
-        orderInfoTextView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        AndroidUtilities.setMaterialTypeface(orderInfoTextView);
-        footer.addView(orderInfoTextView, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1.0f, 16, 0, 16, 0));
-
 
         btn1View = new TextView(context);
         btn1View.setTextColor(0xff212121);
@@ -167,7 +154,7 @@ public class OrderCell extends LinearLayout {
         btn1View.setGravity(Gravity.CENTER);
         btn1View.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
         AndroidUtilities.setMaterialTypeface(btn1View);
-        footer.addView(btn1View, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, 8, 0, 8, 0));
+        footer.addView(btn1View, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, 16, 0, 8, 0));
 
         btn2View = new TextView(context);
         btn2View.setTextColor(0xff212121);
@@ -200,7 +187,7 @@ public class OrderCell extends LinearLayout {
             btn1Action = OrderAction.NONE;
             btn2Action = OrderAction.CANCEL;
             //color = getResources().getColor(R.color.md_red_500);
-        } else if (TextUtils.equals("交易取消", orderStatus)) {
+        } else if (TextUtils.equals("交易取消", orderStatus)||TextUtils.equals("交易关闭", orderStatus)) {
             btn1Action = OrderAction.NONE;
             btn2Action = OrderAction.RETRY;
             //color = getResources().getColor(R.color.md_grey_400);
@@ -212,7 +199,7 @@ public class OrderCell extends LinearLayout {
             btn1Action = OrderAction.NONE;
             btn2Action = OrderAction.NONE;// Action.LOOK_COMMIT;
             //color = 0xff212121;
-        } else {
+        } else{
             //color = 0xff2baf2b;
             btn1Action = OrderAction.CANCEL;
             btn2Action = OrderAction.COMPLETED;
@@ -225,9 +212,13 @@ public class OrderCell extends LinearLayout {
         OrderEntity.OrderGoodsEntity goodsEntity = goodsCount > 0 ? orderEntity.goodsList.get(0) : null;
         goodsCell.setValue(goodsEntity == null ? "" : goodsEntity.getIcon(), goodsEntity == null ? "" : goodsEntity.getName(), "", false);
 
-        goodsCountTextView.setText(String.format("共 %d 个商品", goodsCount));
-
         SpannableStringBuilder orderInfoText = new SpannableStringBuilder();
+
+        String goodsCountStr = String.format("共 %d 个商品", goodsCount);
+        SpannableString goodsCountText = new SpannableString(goodsCountStr);
+        goodsCountText.setSpan(new ForegroundColorSpan(ResourcesConfig.bodyText2), 0, goodsCountStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        orderInfoText.append(goodsCountText);
+        orderInfoText.append(" ");
         if (isNoPayOrder) {
             orderInfoText.append("应付款:");
         } else {
