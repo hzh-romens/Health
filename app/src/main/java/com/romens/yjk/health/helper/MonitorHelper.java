@@ -68,6 +68,10 @@ public class MonitorHelper {
                                         }).create().show();
                         return;
                     }
+                }else{
+                    if (showNoUpdate) {
+                        Toast.makeText(context, "已经是最新版!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
