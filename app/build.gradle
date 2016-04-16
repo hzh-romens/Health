@@ -45,8 +45,8 @@ android {
         }
         channel_nj_xszk {
             applicationId "com.romens.yjk.health.njxszk"
-            versionCode 160327
-            versionName "1.8.18"
+            versionCode 160416
+            versionName "1.9.0"
             manifestPlaceholders = [CHANNEL          : "nj_xszk",
                                     CHANNEL_PACKAGE  : applicationId,
                                     APK_CHANNEL_VALUE: "4;njxs",

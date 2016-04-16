@@ -17,4 +17,9 @@ public class OrderSubmitActivity extends OrderSubmitBaseActivity {
         super.onCreate(savedInstanceState);
 
     }
+
+    @Override
+    protected String getActivityName() {
+        return "提交订单";
+    }
 }
