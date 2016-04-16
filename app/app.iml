@@ -183,8 +183,8 @@
     <orderEntry type="library" exported="" name="mta-stats-sdk-2.0.4" level="project" />
     <orderEntry type="library" exported="" name="AMap_2DMap_V2.8.1_20160202" level="project" />
     <orderEntry type="library" exported="" name="drawee-0.8.1" level="project" />
-    <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="minlog-1.2" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="Xg_sdk_v2.43_20160308_1031" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
