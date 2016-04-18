@@ -18,7 +18,7 @@ public class HomeConfig {
     public static boolean checkCacheValid() {
         long currTimestamp = Calendar.getInstance().getTimeInMillis();
         long cacheTimestamp = getCacheTimestamp();
-        if ((currTimestamp - cacheTimestamp) > 1800000) {
+        if (cacheTimestamp <= 0 || (currTimestamp - cacheTimestamp) > 1800000) {
             return false;
         }
         return true;

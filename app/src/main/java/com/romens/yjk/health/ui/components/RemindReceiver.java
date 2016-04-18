@@ -35,9 +35,10 @@ public class RemindReceiver extends BroadcastReceiver {
     private void showNotification(int type, RemindEntity entity) {
         NotificationManager fm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        String contentText = String.format("%s 到 %s 服药时间了", entity.getUser(), entity.getDrug());
         Notification notification = new Notification.Builder(context)
                 .setContentTitle(context.getResources().getString(R.string.app_name) + "提醒您")// 设置通知栏标题
-                .setContentText(entity.getUser() + "请服药：" + entity.getDrug()) // 设置通知栏显示内容</span>
+                .setContentText(contentText) // 设置通知栏显示内容</span>
                 .setTicker(context.getResources().getString(R.string.app_name) + "提醒您") // 通知首次出现在通知栏，带上升动画效果的
                 .setPriority(Notification.PRIORITY_DEFAULT) // 设置该通知优先级
                 .setAutoCancel(true)//设置这个标志当用户单击面板就可以让通知将自动取消
@@ -48,16 +49,16 @@ public class RemindReceiver extends BroadcastReceiver {
         fm.notify(type, notification);
     }
 
-    public void cancelRemind(RemindEntity entity) {
+    public static void cancelRemind(Context context, RemindEntity entity) {
         long startDateLong = TransformDateUitls.getDate(entity.getStartDate());
-        setCancelRemindTime(startDateLong, entity.getFirstTime());
-        setCancelRemindTime(startDateLong, entity.getSecondtime());
-        setCancelRemindTime(startDateLong, entity.getThreeTime());
-        setCancelRemindTime(startDateLong, entity.getFourTime());
-        setCancelRemindTime(startDateLong, entity.getFiveTime());
+        setCancelRemindTime(context, startDateLong, entity.getFirstTime());
+        setCancelRemindTime(context, startDateLong, entity.getSecondtime());
+        setCancelRemindTime(context, startDateLong, entity.getThreeTime());
+        setCancelRemindTime(context, startDateLong, entity.getFourTime());
+        setCancelRemindTime(context, startDateLong, entity.getFiveTime());
     }
 
-    public void setCancelRemindTime(long startDateLong, String timeStr) {
+    public static void setCancelRemindTime(Context context, long startDateLong, String timeStr) {
         Calendar currentDate = Calendar.getInstance();
         if (!timeStr.equals("-1")) {
             long time = TransformDateUitls.getTimeLong(timeStr);

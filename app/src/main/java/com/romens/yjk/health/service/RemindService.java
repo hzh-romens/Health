@@ -43,6 +43,8 @@ public class RemindService extends Service {
                 entities.remove(i);
         }
         for (RemindEntity entity : entities) {
+            //先取消提醒，不确定好用
+            RemindReceiver.cancelRemind(getApplicationContext(), entity);
             setRemindTime(entity.getFirstTime(), entity);
             setRemindTime(entity.getSecondtime(), entity);
             setRemindTime(entity.getThreeTime(), entity);

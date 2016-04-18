@@ -159,7 +159,7 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
         FacadeProtocol protocol = new FacadeProtocol(FacadeConfig.getUrl(), "UnHandle", "GetHomeConfig", args);
         protocol.withToken(FacadeToken.getInstance().getAuthToken());
 
-        Connect connect=new RMConnect.Builder(HomeFocusFragment.class)
+        Connect connect = new RMConnect.Builder(HomeFocusFragment.class)
                 .withProtocol(protocol)
                 .withDelegate(new Connect.AckDelegate() {
                     @Override
@@ -173,7 +173,7 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
                         }
                     }
                 }).build();
-        ConnectManager.getInstance().request(getActivity(),connect);
+        ConnectManager.getInstance().request(getActivity(), connect);
 //        Message message = new Message.MessageBuilder()
 //                .withProtocol(protocol)
 //                .build();
@@ -242,7 +242,9 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
 
     private void handleResponseData(final String json, boolean fromCache) {
         if (!fromCache) {
-            HomeConfig.saveConfig(json);
+            if (!TextUtils.isEmpty(json)) {
+                HomeConfig.saveConfig(json);
+            }
         }
         if (configHandleThread != null && configHandleThread.isAlive()) {
             configHandleThread.interrupt();
@@ -378,7 +380,7 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
     private List<ADPagerEntity> createADPagerEntitiesFromJsonObject(JsonNode jsonObject) throws IOException {
         List<ADPagerEntity> entities = new ArrayList<>();
         ADPagerEntity entityTemp;
-        JsonNode jsonArray =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        JsonNode jsonArray = JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
         for (int i = 0; i < jsonArray.size(); i++) {
             entityTemp = createADPagerEntityFromJsonObject(jsonArray.get(i));
             if (entityTemp != null) {
@@ -447,7 +449,7 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
     private List<HealthNewsEntity> createADHealthNewsEntitiesFromJsonObject(JsonNode jsonObject) throws IOException {
         List<HealthNewsEntity> entities = new ArrayList<>();
         HealthNewsEntity entityTemp;
-        JsonNode jsonArray =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        JsonNode jsonArray = JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
         for (int i = 0; i < jsonArray.size(); i++) {
             entityTemp = createADHealthNewsEntityFromJsonObject(jsonArray.get(i));
             if (entityTemp != null) {
@@ -458,13 +460,13 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
     }
 
     private HealthNewsEntity createADHealthNewsEntityFromJsonObject(JsonNode jsonObject) {
-        HealthNewsEntity entity = new HealthNewsEntity(jsonObject.get("ID").asText(),jsonObject.get("ICONURL").asText(),jsonObject.get("TEXT").asText()
-                ,  jsonObject.get("VALUE").asText());
+        HealthNewsEntity entity = new HealthNewsEntity(jsonObject.get("ID").asText(), jsonObject.get("ICONURL").asText(), jsonObject.get("TEXT").asText()
+                , jsonObject.get("VALUE").asText());
         return entity;
     }
 
     private ADProductsControl createADProductListEntityFromJsonObject(JsonNode jsonObject) throws IOException {
-        JsonNode valueJsonObject =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        JsonNode valueJsonObject = JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
         if (valueJsonObject == null) {
             return null;
         }
@@ -503,7 +505,7 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
     private ADImagesControl createADImagesControlFromJsonObject(JsonNode jsonObject) throws IOException {
         ADImagesControl control = null;
         ADImageListEntity imageListEntity = new ADImageListEntity();
-        JsonNode valueJsonObject =JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
+        JsonNode valueJsonObject = JacksonMapper.getInstance().readTree(jsonObject.get("VALUE").textValue());
         int sortIndex = jsonObject.get("SORTINDEX").asInt();
 
         ADImageEntity entityTemp;
