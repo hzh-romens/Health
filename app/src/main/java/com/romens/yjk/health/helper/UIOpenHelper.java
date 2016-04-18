@@ -44,6 +44,7 @@ import com.romens.yjk.health.ui.activity.ScannerNewActivity;
 import com.romens.yjk.health.ui.activity.SearchActivity;
 import com.romens.yjk.health.ui.activity.ShoppingCartActivity;
 import com.romens.yjk.health.ui.activity.UserLabelsActivity;
+import com.romens.yjk.health.ui.activity.VIPAboutActivity;
 import com.romens.yjk.health.ui.fragment.HomeHealthNewFragment;
 import com.romens.yjk.health.ui.fragment.OrderDetailFragment;
 import com.romens.yjk.health.ui.im.CallCenterActivity;
@@ -449,13 +450,17 @@ public class UIOpenHelper {
     }
 
     /**
-     * 关于
+     * 关于我们
      *
      * @param context
      */
-    public static final void openAbout(Context context, String title) {
+    public static final void openAbout(Context context) {
         Intent intent = new Intent(context, AboutActivity.class);
-        intent.putExtra("title", title);
+        context.startActivity(intent);
+    }
+
+    public static final void openVIPAbout(Context context) {
+        Intent intent = new Intent(context, VIPAboutActivity.class);
         context.startActivity(intent);
     }
 

@@ -154,7 +154,7 @@ public class HomeActivity extends BaseLocationActivity implements AppNotificatio
                     UIOpenHelper.openSearchActivity(HomeActivity.this);
                     //startActivity(new Intent(HomeActivity.this, SearchActivityNew.class));
                 } else if (id == 2) {
-                    UIOpenHelper.openAbout(HomeActivity.this, "关于我们");
+                    UIOpenHelper.openAbout(HomeActivity.this);
                 } else if (id == 3) {
                     UIOpenHelper.openChangedPasswordActivity(HomeActivity.this);
                 } else if (id == 4) {

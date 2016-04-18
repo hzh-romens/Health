@@ -28,7 +28,7 @@ public class AboutActivity extends WebActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        title = getIntent().getStringExtra("title");
+        title = onCreateActionBarTitle();
         ActionBar actionBar = getMyActionBar();
         actionBar.setBackgroundColor(ResourcesConfig.primaryColor);
         actionBar.setAllowOverlayTitle(true);
@@ -50,12 +50,16 @@ public class AboutActivity extends WebActivity {
                 .withWebView(webView);
         webView.addJavascriptInterface(adWebJsInterface, adWebJsInterface.toString());
 
-        if ("关于".equals(title)) {
-            url = String.format("%sAbout?user=%s", FacadeConfig.getUrl(), FacadeToken.getInstance().getAuthToken());
-        } else if ("会员权益".equals(title)) {
-            url = String.format("%sSystem?user=%s", FacadeConfig.getUrl(), FacadeToken.getInstance().getAuthToken());
-        }
+        url=onCreateURL();
         webView.loadUrl(url);
+    }
+
+    protected String onCreateURL(){
+        return String.format("%sAbout?user=%s", FacadeConfig.getUrl(), FacadeToken.getInstance().getAuthToken());
+    }
+
+    protected String onCreateActionBarTitle(){
+        return "关于我们";
     }
 
 
