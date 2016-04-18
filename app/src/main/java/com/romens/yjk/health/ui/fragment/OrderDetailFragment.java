@@ -168,8 +168,8 @@ public class OrderDetailFragment extends OrderBaseFragment implements AppNotific
     private int orderPaySection;
     private int orderPayModeRow;
     private int goodsAmountRow;
-    private int shippingAmountRow;
     private int couponAmountRow;
+    private int shippingAmountRow;
     private int payAmountRow;
 
     private int payResultSection;
@@ -211,8 +211,8 @@ public class OrderDetailFragment extends OrderBaseFragment implements AppNotific
         orderPaySection = rowCount++;
         orderPayModeRow = rowCount++;
         goodsAmountRow = rowCount++;
-        shippingAmountRow = rowCount++;
         couponAmountRow = rowCount++;
+        shippingAmountRow = rowCount++;
         payAmountRow = rowCount++;
 
         if (orderDetailEntity.payResult.size() > 0) {
@@ -385,10 +385,10 @@ public class OrderDetailFragment extends OrderBaseFragment implements AppNotific
                     //cell.setKeyAndValue("总计",ShoppingHelper.formatPrice(  orderListEntity.getOrderPrice(),"￥",false));
                     cell.setTextAndValue("商品金额", ShoppingHelper.formatPrice(orderDetailEntity.orderPrice, "￥", false), false);
                 } else if (position == shippingAmountRow) {
-                    cell.setTextAndValue("配送费", ShoppingHelper.formatPrice(orderDetailEntity.shippingAmount, "+￥", false), false);
+                    cell.setTextAndValue("配送费", ShoppingHelper.formatPrice(orderDetailEntity.shippingAmount, "+￥", false), true);
                 } else if (position == couponAmountRow) {
                     //cell.setKeyAndValue("优惠金额",ShoppingHelper.formatPrice( orderListEntity.getCouponPrice(), "-￥", false));
-                    cell.setTextAndValue("优惠金额", ShoppingHelper.formatPrice(orderDetailEntity.couponPrice, "-￥", false), true);
+                    cell.setTextAndValue("优惠金额", ShoppingHelper.formatPrice(orderDetailEntity.couponPrice, "-￥", false), false);
                 } else if (position == orderPayModeRow) {
 //                    String result = "";
 //                    if (orderListEntity.getDeliverType().equals("1")) {

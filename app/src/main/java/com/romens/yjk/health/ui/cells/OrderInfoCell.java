@@ -76,6 +76,34 @@ public class OrderInfoCell extends LinearLayout {
         AndroidUtilities.setMaterialTypeface(goodsAmountView);
         goodsAmountContainer.addView(goodsAmountView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
+        //优惠
+        FrameLayout couponContainer = new FrameLayout(context);
+        addView(couponContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 32, 16, 0, 16, 0));
+
+        TextView couponCaptionView = new TextView(context);
+        couponCaptionView.setTextColor(0xff8a8a8a);
+        couponCaptionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        couponCaptionView.setLines(1);
+        couponCaptionView.setMaxLines(1);
+        couponCaptionView.setSingleLine(true);
+        couponCaptionView.setEllipsize(TextUtils.TruncateAt.END);
+        couponCaptionView.setGravity(Gravity.CENTER_VERTICAL);
+        couponCaptionView.setText("优惠金额");
+        AndroidUtilities.setMaterialTypeface(couponCaptionView);
+        couponContainer.addView(couponCaptionView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL));
+
+        couponView = new TextView(context);
+        couponView.setTextColor(0xff212121);
+        couponView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        couponView.setLines(1);
+        couponView.setMaxLines(1);
+        couponView.setSingleLine(true);
+        couponView.setEllipsize(TextUtils.TruncateAt.END);
+        couponView.setGravity(Gravity.CENTER_VERTICAL);
+        AndroidUtilities.setMaterialTypeface(couponView);
+        couponContainer.addView(couponView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
+
+
 
         //配送费
         FrameLayout shippingContainer = new FrameLayout(context);
@@ -89,7 +117,7 @@ public class OrderInfoCell extends LinearLayout {
         shippingCaptionView.setSingleLine(true);
         shippingCaptionView.setEllipsize(TextUtils.TruncateAt.END);
         shippingCaptionView.setGravity(Gravity.CENTER_VERTICAL);
-        shippingCaptionView.setText("配送费 +");
+        shippingCaptionView.setText("配送费");
         AndroidUtilities.setMaterialTypeface(shippingCaptionView);
         shippingContainer.addView(shippingCaptionView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL));
 
@@ -105,33 +133,6 @@ public class OrderInfoCell extends LinearLayout {
         shippingContainer.addView(shippingView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
 
-
-        //优惠
-        FrameLayout couponContainer = new FrameLayout(context);
-        addView(couponContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 32, 16, 0, 16, 0));
-
-        TextView couponCaptionView = new TextView(context);
-        couponCaptionView.setTextColor(0xff8a8a8a);
-        couponCaptionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        couponCaptionView.setLines(1);
-        couponCaptionView.setMaxLines(1);
-        couponCaptionView.setSingleLine(true);
-        couponCaptionView.setEllipsize(TextUtils.TruncateAt.END);
-        couponCaptionView.setGravity(Gravity.CENTER_VERTICAL);
-        couponCaptionView.setText("优惠金额 -");
-        AndroidUtilities.setMaterialTypeface(couponCaptionView);
-        couponContainer.addView(couponCaptionView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL));
-
-        couponView = new TextView(context);
-        couponView.setTextColor(0xff212121);
-        couponView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        couponView.setLines(1);
-        couponView.setMaxLines(1);
-        couponView.setSingleLine(true);
-        couponView.setEllipsize(TextUtils.TruncateAt.END);
-        couponView.setGravity(Gravity.CENTER_VERTICAL);
-        AndroidUtilities.setMaterialTypeface(couponView);
-        couponContainer.addView(couponView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
 
         View amountDivider = new View(context);
@@ -189,9 +190,9 @@ public class OrderInfoCell extends LinearLayout {
         //商品
         goodsAmountView.setText(ShoppingHelper.formatPrice(goodsAmount, false));
         //配送费
-        shippingView.setText(ShoppingHelper.formatPrice(shippingAmount,false));
+        shippingView.setText(ShoppingHelper.formatPrice(shippingAmount,"+ ￥",false));
         //优惠
-        couponView.setText(ShoppingHelper.formatPrice(couponAmount, "-￥", false));
+        couponView.setText(ShoppingHelper.formatPrice(couponAmount, "- ￥", false));
 
         orderAmountView.setText(ShoppingHelper.formatPrice(orderAmount));
     }
