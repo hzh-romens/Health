@@ -28,6 +28,7 @@ import com.romens.yjk.health.config.FacadeConfig;
 import com.romens.yjk.health.config.FacadeToken;
 import com.romens.yjk.health.config.ResourcesConfig;
 import com.romens.yjk.health.helper.ShoppingHelper;
+import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.ui.base.DarkActionBarActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
@@ -53,6 +54,7 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
     public static final String ARGUMENTS_KEY_ORDER_DATE = "key_order_date";
     public static final String ARGUMENTS_KEY_ORDER_AMOUNT = "key_order_amount";
     public static final String ARGUMENTS_KEY_ORDER_PAY_AMOUNT = "key_order_pay_amount";
+    public static final String ARGUMENTS_KEY_PAY_EXTRAS = "key_pay_extras";
 
     protected ListView listView;
     protected BaseAdapter listAdapter;
@@ -69,7 +71,7 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
     protected int selectedPayModeId;
     protected final SparseArray<PayMode> payModes = new SparseArray<>();
 
-    protected final List<Integer> defaultPayModes=new ArrayList<>();
+    protected final List<Integer> defaultPayModes = new ArrayList<>();
     protected final List<Integer> otherPayModes = new ArrayList<>();
 
     @Override
@@ -145,7 +147,10 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
     }
 
 
-    protected abstract void needFinish();
+    protected void needFinish() {
+        UIOpenHelper.openOrderDetailForOrderNoActivity(PayPrepareBaseActivity.this,orderNo);
+        finish();
+    }
 
     protected BaseAdapter onCreateAdapter() {
         return new ListAdapter(this);
@@ -406,12 +411,14 @@ public abstract class PayPrepareBaseActivity extends DarkActionBarActivity {
                 PayModeCell cell = (PayModeCell) convertView;
                 if (position >= payModeStartRow && position <= payModeEndRow) {
                     int index = position - payModeStartRow;
-                    int payModeId=defaultPayModes.get(index);;
+                    int payModeId = defaultPayModes.get(index);
+                    ;
                     PayMode mode = payModes.get(payModeId);
                     cell.setValue(mode.iconResId, mode.name, mode.desc, mode.id == selectedPayModeId, position != payModeEndRow);
                 } else if (position >= otherPayModeStartRow && position <= otherPayModeEndRow) {
                     int index = position - otherPayModeStartRow;
-                    int payModeId=otherPayModes.get(index);;
+                    int payModeId = otherPayModes.get(index);
+                    ;
                     PayMode mode = payModes.get(payModeId);
                     cell.setValue(mode.iconResId, mode.name, mode.desc, mode.id == selectedPayModeId, position != otherPayModeEndRow);
                 }

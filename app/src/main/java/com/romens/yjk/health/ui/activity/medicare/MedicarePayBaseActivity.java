@@ -14,9 +14,19 @@ import com.romens.yjk.health.pay.PayPrepareBaseActivity;
  * @description
  */
 public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
+    protected boolean supportOtherPay=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle.containsKey(ARGUMENTS_KEY_PAY_EXTRAS)) {
+            Bundle payExtras = bundle.getBundle(ARGUMENTS_KEY_PAY_EXTRAS);
+            if(payExtras.containsKey("SUPPORT_OTHER_PAY")){
+                supportOtherPay=payExtras.getBoolean("SUPPORT_OTHER_PAY",false);
+            }
+        }
+
+
         ActionBar actionBar = getMyActionBar();
         actionBar.setTitle("选择社保卡支付方式");
         actionBar.setBackButtonImage(R.drawable.ic_close_white_24dp);
@@ -41,11 +51,5 @@ public abstract class MedicarePayBaseActivity extends PayPrepareBaseActivity {
         onCreatePayMode(payModes);
         updateAdapter();
     }
-
-    @Override
-    protected void needFinish() {
-        finish();
-    }
-
     protected abstract void trySendPayPrepareRequest();
 }

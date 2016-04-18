@@ -586,23 +586,33 @@ public abstract class OrderSubmitBaseActivity extends DarkActionBarActivity {
             DBInterface.instance().deleteShoppingCartGoods(needCommitGoodsIds);
             AppNotificationCenter.getInstance().postNotificationName(AppNotificationCenter.onSubmitShoppingCart);
             //发起支付
-            String orderNo = response.get("ORDERCODE").asText();
-            String orderDate = response.get("CREATEDATE").asText();
-            String payType = response.get("PAYTYPE").asText();
-            BigDecimal orderAmount = new BigDecimal(response.get("PAYMOUNT").asDouble());
-            BigDecimal payAmount = new BigDecimal(response.get("PAYPRICE").asDouble());
-            boolean isOpen = true;
-            int id = Pay.getInstance().getPayTypeId(payType);
-            if (id == Pay.PAY_TYPE_OFFLINE) {
-                UIOpenHelper.openOrderDetailForOrderNoActivity(OrderSubmitBaseActivity.this, orderNo);
-            } else {
-                Bundle arguments = new Bundle();
-                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
-                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
-                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, orderAmount.doubleValue());
-                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, payAmount.doubleValue());
-                isOpen = UIOpenHelper.openPayPrepareActivity(OrderSubmitBaseActivity.this, payType, arguments);
-            }
+//            String orderNo = response.get("ORDERCODE").asText();
+//            String orderDate = response.get("CREATEDATE").asText();
+//            String payType = response.get("PAYTYPE").asText();
+//            BigDecimal orderAmount = new BigDecimal(response.get("PAYMOUNT").asDouble());
+//            BigDecimal payAmount = new BigDecimal(response.get("PAYPRICE").asDouble());
+            boolean isOpen = new Pay.PayRequestBuilder(response).build(OrderSubmitBaseActivity.this);
+//            int id = Pay.getInstance().getPayTypeId(payType);
+//            if (id == Pay.PAY_TYPE_OFFLINE) {
+//                UIOpenHelper.openOrderDetailForOrderNoActivity(OrderSubmitBaseActivity.this, orderNo);
+//            } else {
+//                Bundle arguments = new Bundle();
+//                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+//                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+//                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, orderAmount.doubleValue());
+//                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, payAmount.doubleValue());
+//                if (id == Pay.PAY_TYPE_YB_ONLINE) {
+//                    //20160418 zhoulisi 新增限制医保是否支持其他支付 默认不支持
+//                    boolean supportOtherPay = false;
+//                    if (response.has("SUPPORT_OTHER_PAY")) {
+//                        supportOtherPay = TextUtils.equals("1", response.get("SUPPORT_OTHER_PAY").asText());
+//                    }
+//                    Bundle payExtras = new Bundle();
+//                    payExtras.putBoolean("SUPPORT_OTHER_PAY", supportOtherPay);
+//                    arguments.putBundle(PayPrepareBaseActivity.ARGUMENTS_KEY_PAY_EXTRAS, payExtras);
+//                }
+//                isOpen = UIOpenHelper.openPayPrepareActivity(OrderSubmitBaseActivity.this, payType, arguments);
+//            }
             if (isOpen) {
                 finish();
             }

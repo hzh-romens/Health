@@ -39,7 +39,6 @@ import com.romens.yjk.health.helper.UIOpenHelper;
 import com.romens.yjk.health.model.GoodsListEntity;
 import com.romens.yjk.health.model.OrderDetailEntity;
 import com.romens.yjk.health.pay.Pay;
-import com.romens.yjk.health.pay.PayPrepareBaseActivity;
 import com.romens.yjk.health.ui.cells.ActionCell;
 import com.romens.yjk.health.ui.cells.H3HeaderCell;
 import com.romens.yjk.health.ui.cells.OrderGoodsCell;
@@ -238,7 +237,7 @@ public class OrderDetailFragment extends OrderBaseFragment implements AppNotific
             commitOrderActionRow = -1;
             retryOrderActionRow = -1;
             buyOrderActionRow = -1;
-        } else if (TextUtils.equals("交易取消", orderStatus)||TextUtils.equals("交易关闭", orderStatus)) {
+        } else if (TextUtils.equals("交易取消", orderStatus) || TextUtils.equals("交易关闭", orderStatus)) {
             payOrderActionRow = -1;
             cancelOrderActionRow = -1;
             completeOrderActionRow = -1;
@@ -513,12 +512,13 @@ public class OrderDetailFragment extends OrderBaseFragment implements AppNotific
     }
 
     private void toPay(OrderDetailEntity entity) {
-        Bundle arguments = new Bundle();
-        arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, entity.orderNo);
-        arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, entity.createTime);
-        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, entity.payPrice.doubleValue());
-        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, entity.payPrice.doubleValue());
-        boolean isOpen = UIOpenHelper.openPayPrepareActivity(getActivity(), entity.payType, arguments);
+        boolean isOpen = new Pay.PayRequestBuilder(entity).build(getActivity());
+//        Bundle arguments = new Bundle();
+//        arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, entity.orderNo);
+//        arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, entity.createTime);
+//        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, entity.payPrice.doubleValue());
+//        arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, entity.payPrice.doubleValue());
+//        boolean isOpen = UIOpenHelper.openPayPrepareActivity(getActivity(), entity.payType, arguments);
         if (isOpen) {
             getActivity().finish();
         }

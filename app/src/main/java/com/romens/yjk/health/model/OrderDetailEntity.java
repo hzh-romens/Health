@@ -1,5 +1,6 @@
 package com.romens.yjk.health.model;
 
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,6 +44,8 @@ public class OrderDetailEntity {
 
     private final String payMode;
     public final List<Pair<CharSequence, CharSequence>> payResult = new ArrayList<>();
+
+    public final boolean supportOtherPay;
 
     //{"ORDER_ID":"8ce7c1eb29b0442a9b76f2ffadd22f41",
     // "ORDERNO":"20160412172801461",
@@ -100,6 +103,12 @@ public class OrderDetailEntity {
         payMode = jsonNode.get("PAYMENT").asText();
         String payResultString = jsonNode.get("PAYRESULT").asText();
         formatPayResult(payResultString);
+
+        if (jsonNode.has("SUPPORT_OTHER_PAY")) {
+            supportOtherPay = TextUtils.equals("1", jsonNode.get("SUPPORT_OTHER_PAY").asText());
+        }else{
+            supportOtherPay=false;
+        }
 
         JsonNode array = jsonNode.get("GOODSLIST");
         for (int i = 0; i < array.size(); i++) {

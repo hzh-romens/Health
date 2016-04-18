@@ -8,9 +8,12 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.romens.yjk.health.helper.UIOpenHelper;
+import com.romens.yjk.health.model.OrderDetailEntity;
 import com.romens.yjk.health.ui.activity.pay.AlipayPayActivity;
 import com.romens.yjk.health.ui.activity.pay.PayPrepareActivity;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 /**
@@ -199,6 +202,66 @@ public class Pay {
                 targetPayParams.put(fieldName, payParamsNode.get(fieldName).asText());
             }
         }
+    }
+
+    /**
+     * 20160418 zhoulisi 新增医保支付限制其他支付
+     */
+    public static class PayRequestBuilder {
+        private final String orderNo;
+        private final String orderDate;
+        private final BigDecimal orderAmount;
+        private final BigDecimal payAmount;
+
+        private final String payType;
+        private final boolean supportOtherPay;
+
+        public PayRequestBuilder(JsonNode response) {
+            orderNo = response.get("ORDERCODE").asText();
+            orderDate = response.get("CREATEDATE").asText();
+            payType = response.get("PAYTYPE").asText();
+            orderAmount = new BigDecimal(response.get("PAYMOUNT").asDouble());
+            payAmount = new BigDecimal(response.get("PAYPRICE").asDouble());
+
+            if (response.has("SUPPORT_OTHER_PAY")) {
+                supportOtherPay = TextUtils.equals("1", response.get("SUPPORT_OTHER_PAY").asText());
+            } else {
+                supportOtherPay = false;
+            }
+        }
+
+        public PayRequestBuilder(OrderDetailEntity entity) {
+            orderNo = entity.orderNo;
+            orderDate = entity.createTime;
+            orderAmount = entity.orderPrice;
+            payAmount = entity.payPrice;
+            payType = entity.payType;
+            supportOtherPay = entity.supportOtherPay;
+        }
+
+        public boolean build(Context context) {
+            boolean isOpen = true;
+            int id = Pay.getInstance().getPayTypeId(payType);
+            if (id == Pay.PAY_TYPE_OFFLINE) {
+                UIOpenHelper.openOrderDetailForOrderNoActivity(context, orderNo);
+            } else {
+                Bundle arguments = new Bundle();
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_NO, orderNo);
+                arguments.putString(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_DATE, orderDate);
+                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_AMOUNT, orderAmount.doubleValue());
+                arguments.putDouble(PayPrepareBaseActivity.ARGUMENTS_KEY_ORDER_PAY_AMOUNT, payAmount.doubleValue());
+                if (id == Pay.PAY_TYPE_YB_ONLINE) {
+                    //20160418 zhoulisi 新增限制医保是否支持其他支付 默认不支持
+                    Bundle payExtras = new Bundle();
+                    payExtras.putBoolean("SUPPORT_OTHER_PAY", supportOtherPay);
+                    arguments.putBundle(PayPrepareBaseActivity.ARGUMENTS_KEY_PAY_EXTRAS, payExtras);
+                }
+                isOpen = UIOpenHelper.openPayPrepareActivity(context, payType, arguments);
+            }
+            return isOpen;
+        }
+
+
     }
 
     public static class DeliveryMode {

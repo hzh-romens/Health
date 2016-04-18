@@ -35,23 +35,26 @@ public class MedicarePayActivity extends MedicarePayBaseActivity {
                 .withName("哈尔滨银行(社保卡支付)")
                 .withDesc("支持使用哈尔滨银行账户进行社保卡支付")
                 .withMode(PayModeEnum.YB_HEB).build());
-        payModes.put(1, new PayMode.Builder(1)
-                .withIconResId(R.drawable.ic_appwx_logo)
-                .withName("微信支付(现金支付)")
-                .withDesc("推荐微信用户使用")
-                .withMode(PayModeEnum.WX).build());
-
-        payModes.put(2, new PayMode.Builder(2)
-                .withIconResId(R.drawable.ic_pay_alipay)
-                .withName("支付宝支付(现金支付)")
-                .withDesc("推荐支付宝用户使用")
-                .withMode(PayModeEnum.ALIPAY).build());
-
         defaultPayModes.clear();
         defaultPayModes.add(0);
+
         otherPayModes.clear();
-        otherPayModes.add(1);
-        otherPayModes.add(2);
+        if (supportOtherPay) {
+            payModes.put(1, new PayMode.Builder(1)
+                    .withIconResId(R.drawable.ic_appwx_logo)
+                    .withName("微信支付(现金支付)")
+                    .withDesc("推荐微信用户使用")
+                    .withMode(PayModeEnum.WX).build());
+
+            payModes.put(2, new PayMode.Builder(2)
+                    .withIconResId(R.drawable.ic_pay_alipay)
+                    .withName("支付宝支付(现金支付)")
+                    .withDesc("推荐支付宝用户使用")
+                    .withMode(PayModeEnum.ALIPAY).build());
+
+            otherPayModes.add(1);
+            otherPayModes.add(2);
+        }
         selectedPayModeId = 0;
     }
 
