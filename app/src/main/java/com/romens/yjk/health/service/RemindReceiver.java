@@ -1,4 +1,4 @@
-package com.romens.yjk.health.ui.components;
+package com.romens.yjk.health.service;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -7,9 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
-import com.google.gson.Gson;
 import com.romens.yjk.health.R;
 import com.romens.yjk.health.db.entity.RemindEntity;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
@@ -35,11 +33,11 @@ public class RemindReceiver extends BroadcastReceiver {
     private void showNotification(int type, RemindEntity entity) {
         NotificationManager fm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        String contentText = String.format("%s 到 %s 服药时间了", entity.getUser(), entity.getDrug());
+        String contentText = String.format("%s #%s 服药时间到了，记得每次%s哦!", entity.getUser(), entity.getDrug(), entity.getDosage());
         Notification notification = new Notification.Builder(context)
                 .setContentTitle(context.getResources().getString(R.string.app_name) + "提醒您")// 设置通知栏标题
                 .setContentText(contentText) // 设置通知栏显示内容</span>
-                .setTicker(context.getResources().getString(R.string.app_name) + "提醒您") // 通知首次出现在通知栏，带上升动画效果的
+                .setTicker(contentText) // 通知首次出现在通知栏，带上升动画效果的
                 .setPriority(Notification.PRIORITY_DEFAULT) // 设置该通知优先级
                 .setAutoCancel(true)//设置这个标志当用户单击面板就可以让通知将自动取消
                 .setDefaults(Notification.DEFAULT_VIBRATE)// 向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合

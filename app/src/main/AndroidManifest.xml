@@ -311,7 +311,7 @@
             android:screenOrientation="portrait" />
 
         <receiver
-            android:name=".ui.components.RemindReceiver"
+            android:name=".service.RemindReceiver"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />

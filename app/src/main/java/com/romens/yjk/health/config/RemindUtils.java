@@ -4,10 +4,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.romens.yjk.health.db.entity.RemindEntity;
-import com.romens.yjk.health.ui.components.RemindReceiver;
+import com.romens.yjk.health.service.RemindReceiver;
 import com.romens.yjk.health.ui.utils.TransformDateUitls;
 
 import java.text.ParseException;

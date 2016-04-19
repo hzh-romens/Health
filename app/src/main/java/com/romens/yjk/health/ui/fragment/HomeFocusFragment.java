@@ -117,8 +117,10 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                HomeConfig.clearCache();
-                requestDataChanged();
+                if (!refreshLayout.isRefreshing()) {
+                    HomeConfig.clearCache();
+                    requestDataChanged();
+                }
             }
         });
         recyclerListView.setAdapter(focusAdapter);
@@ -136,6 +138,9 @@ public class HomeFocusFragment extends AppFragment implements AppNotificationCen
     @Override
     public void onResume() {
         super.onResume();
+        if (focusAdapter != null) {
+            focusAdapter.notifyDataSetChanged();
+        }
         //updateLastLocation();
     }
 

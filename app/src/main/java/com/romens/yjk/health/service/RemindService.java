@@ -10,7 +10,6 @@ import android.os.IBinder;
 import com.romens.yjk.health.db.DBInterface;
 import com.romens.yjk.health.db.dao.RemindDao;
 import com.romens.yjk.health.db.entity.RemindEntity;
-import com.romens.yjk.health.ui.components.RemindReceiver;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
